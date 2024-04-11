@@ -106,6 +106,38 @@ public class DeckLoader {
     }
 
     /**
+     * @param id the id of the requested card
+     * @return a copy of the card with the specified id, or null if it doesn't exist
+     */
+    public ResourceCard getNewResourceCardById(int id) {
+        return this.resourceCardImmutableDeck.getCardCopyById(id);
+    }
+
+    /**
+     * @param id the id of the requested card
+     * @return a copy of the card with the specified id, or null if it doesn't exist
+     */
+    public GoldCard getNewGoldCardById(int id) {
+        return this.goldCardImmutableDeck.getCardCopyById(id);
+    }
+
+    /**
+     * @param id the id of the requested card
+     * @return a copy of the card with the specified id, or null if it doesn't exist
+     */
+    public ObjectiveCard getNewObjectiveCardById(int id) {
+        return this.objectiveCardImmutableDeck.getCardCopyById(id);
+    }
+
+    /**
+     * @param id the id of the requested card
+     * @return a copy of the card with the specified id, or null if it doesn't exist
+     */
+    public StarterCard getNewStarterCardById(int id) {
+        return this.starterCardImmutableDeck.getCardCopyById(id);
+    }
+
+    /**
      * Finds the path to the JSON file containing the cards and reads it as a stream that is converted into a list of cards.
      * @return the list of cards.
      * See the following path for the resourcesCards JSON file: {@code src/main/resources/resourceCards.jason}.

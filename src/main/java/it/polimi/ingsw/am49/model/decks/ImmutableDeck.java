@@ -38,4 +38,13 @@ public class ImmutableDeck<T extends Card> {
         return copy;
     }
 
+    /**
+     * @param id the id of the card to be returned.
+     * @return a card from the deck with the specified id, or null if there is no card with the specified id.
+     */
+    @SuppressWarnings(value="unchecked")
+    public T getCardCopyById(int id) {
+        return (T) cards.stream().filter(c -> c.getId() == id).findFirst().map(Card::clone).orElse(null);
+    }
+
 }

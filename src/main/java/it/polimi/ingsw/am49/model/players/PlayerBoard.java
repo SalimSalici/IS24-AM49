@@ -52,7 +52,7 @@ public class PlayerBoard {
      * @param relativePosition indicates which corner has been covered
      */
     public void placeTile(PlaceableCard card, int parentRow, int parentCol, RelativePosition relativePosition) throws Exception {
-        Pair<Integer, Integer> coords = this.getCoords(parentRow, parentCol, relativePosition);
+        Pair<Integer, Integer> coords = this.getCoords(relativePosition, parentRow, parentCol);
         if (!this.isPlaceableTile(coords.first, coords.second)) throw new Exception("Invalid tile");
 
         BoardTile newBoardTile = new BoardTile(card, coords.first, coords.second, this);
@@ -69,34 +69,6 @@ public class PlayerBoard {
             neighbour.coverTr();
 
         this.placementOrder.add(newBoardTile);
-    }
-
-    /**
-     * @return the coordinates of the tile situated in the appropriate relative position with respect to the supplied row and column
-     */
-    private Pair<Integer, Integer> getCoords(int parentRow, int parentCol, RelativePosition relativePosition) throws Exception {
-        BoardTile parentTile;
-
-        try {
-            parentTile = this.board[parentRow][parentCol];
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new Exception("Invalid board tile");
-        }
-
-        if (!this.placementOrder.contains(parentTile)) throw new Exception("Invalid board tile");
-        Pair<Integer, Integer> coords;
-        switch (relativePosition) {
-            case TOP -> coords = parentTile.getCoords(RelativePosition.TOP);
-            case BOTTOM -> coords = parentTile.getCoords(RelativePosition.BOTTOM);
-            case LEFT -> coords = parentTile.getCoords(RelativePosition.LEFT);
-            case RIGHT -> coords = parentTile.getCoords(RelativePosition.RIGHT);
-            case TOP_LEFT -> coords = parentTile.getCoords(RelativePosition.TOP_LEFT);
-            case TOP_RIGHT -> coords = parentTile.getCoords(RelativePosition.TOP_RIGHT);
-            case BOTTOM_LEFT -> coords = parentTile.getCoords(RelativePosition.BOTTOM_LEFT);
-            case BOTTOM_RIGHT -> coords = parentTile.getCoords(RelativePosition.BOTTOM_RIGHT);
-            case null, default -> throw new Exception("Invalid position");
-        }
-        return coords;
     }
 
     /**
