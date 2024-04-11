@@ -61,6 +61,14 @@ public class BoardTile {
 
     public PlaceableCard getCard() { return this.card; }
 
+    public int getRow() {
+        return this.row;
+    }
+
+    public int getCol() {
+        return this.col;
+    }
+
     public void coverTr() {
         this.trCovered = true;
         this.updateActiveSymbols();

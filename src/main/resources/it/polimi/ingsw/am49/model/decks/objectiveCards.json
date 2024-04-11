@@ -16,14 +16,32 @@
     "name": "PatternObjectiveStrategy",
     "object": {
       "pattern": {
-        "pivotResource": "LEAVES",
+        "pivotResource": "MUSHROOMS",
         "resources": [
-          "LEAVES",
+          "MUSHROOMS",
           "MUSHROOMS"
         ],
         "positions": [
-          "TOP_LEFT",
+          "TOP_RIGHT",
           "TOP_RIGHT"
+        ]
+      }
+    }
+  },
+  {
+    "id": 3,
+    "points": 3,
+    "name": "PatternObjectiveStrategy",
+    "object": {
+      "pattern": {
+        "pivotResource": "WOLVES",
+        "resources": [
+          "BUGS",
+          "BUGS"
+        ],
+        "positions": [
+          "BOTTOM_RIGHT",
+          "BOTTOM"
         ]
       }
     }
