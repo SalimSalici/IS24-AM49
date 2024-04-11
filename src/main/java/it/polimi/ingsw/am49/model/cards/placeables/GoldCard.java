@@ -64,6 +64,15 @@ public class GoldCard extends ColouredCard {
         return Collections.unmodifiableMap(price);
     }
 
+    public Map<Symbol, Integer> getPriceAsSymbols() {
+        Map<Symbol, Integer> result = new HashMap<>();
+
+        for (Map.Entry<Resource, Integer> entry : price.entrySet()) {
+            result.put(entry.getKey().toSymbol(), entry.getValue());
+        }
+        return Collections.unmodifiableMap(result);
+    }
+
     @Override
     public GoldCard clone() {
         return new GoldCard(this);

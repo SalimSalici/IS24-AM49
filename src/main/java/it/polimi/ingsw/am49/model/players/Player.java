@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.model.players;
 
 import it.polimi.ingsw.am49.model.cards.placeables.ColouredCard;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
+import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
 import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.enumerations.Color;
@@ -40,7 +41,9 @@ public class Player {
 
         ArrayList<Integer> iterationsList = new ArrayList<Integer>();
 
-        //TODO: controllare se una carta oro è piazzabile controllando price
+        if(card instanceof GoldCard && !card.isFlipped()){
+            if(!board.isCardCostMet((GoldCard) card)) throw new Exception("There aren't enough resources to play this car");
+        }
 
         int parentX = boardTile.getCoords(corner.toRelativePosition()).first;
         int parentY = boardTile.getCoords(corner.toRelativePosition()).second;

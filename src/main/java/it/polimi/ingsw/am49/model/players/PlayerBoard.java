@@ -3,12 +3,11 @@ package it.polimi.ingsw.am49.model.players;
 import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.util.Pair;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
+import java.util.*;
 
 /**
  * The personal board of the player, where he places the cards
@@ -18,13 +17,32 @@ public class PlayerBoard {
     private final BoardTile[][] board;
     private final List<BoardTile> placementOrder;
     private final BoardTile starterTile;
-
+    private Map<Symbol, Integer> availableResources;
     public PlayerBoard(StarterCard starterCard) {
         this.placementOrder = new ArrayList<>();
         this.board = new BoardTile[50][50];
         this.starterTile = new BoardTile(starterCard, 25, 25, this);
         this.board[25][25] = this.starterTile;
         this.placementOrder.add(this.starterTile);
+        this.availableResources = new HashMap<>();
+    }
+    private void updateAvailableResources(Map<Symbol, Integer> availableResources, PlayerBoard board) {
+        Map<Symbol, Integer> tileSymbols;
+        for(BoardTile tile : board.getPlacementOrder()){
+            tileSymbols = tile.getActiveSymbols();
+
+            for(Map.Entry<Symbol, Integer> entry : tileSymbols.entrySet()){
+                Symbol symbol = entry.getKey();
+                Integer value = entry.getValue();
+
+                availableResources.merge(symbol, value, Integer::sum);
+            }
+        }
+    }
+
+    public Map<Symbol, Integer> getAvailableResources(PlayerBoard board) {
+        updateAvailableResources(availableResources, board);
+        return availableResources;
     }
 
     public List<BoardTile> getPlacementOrder() {
@@ -93,6 +111,27 @@ public class PlayerBoard {
         if (br != null && br.getCard().getTl().equals(Symbol.FORBIDDEN)) return false;
         if (bl != null && bl.getCard().getTr().equals(Symbol.FORBIDDEN)) return false;
 
+        return true;
+    }
+
+    public boolean isCardCostMet(GoldCard card){
+        Map<Symbol, Integer> cardCost;
+
+        cardCost = card.getPriceAsSymbols();
+        updateAvailableResources(availableResources, this);
+        for(Map.Entry<Symbol, Integer> entry : cardCost.entrySet()){
+            Symbol symbol = entry.getKey();
+            Integer valueCardCost = entry.getValue();
+            if(availableResources.containsKey(symbol)){
+                Integer availableValue = availableResources.get(symbol);
+
+                if(availableValue < valueCardCost){
+                    return false;
+                }
+            }else {
+                return false;
+            }
+        }
         return true;
     }
 
