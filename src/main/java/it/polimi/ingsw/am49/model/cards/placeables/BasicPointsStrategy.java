@@ -1,7 +1,7 @@
-package it.polimi.am49.cn_demo.model.cards.placeables;
+package it.polimi.ingsw.am49.model.cards.placeables;
 
-import it.polimi.am49.cn_demo.model.players.BoardTile;
-import it.polimi.am49.cn_demo.model.players.PlayerBoard;
+import it.polimi.ingsw.am49.model.players.BoardTile;
+import it.polimi.ingsw.am49.model.players.PlayerBoard;
 
 /**
  * Is the strategy of {@link PlacementPointsStrategy} used to rapresent the

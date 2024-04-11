@@ -1,8 +1,8 @@
-package it.polimi.am49.cn_demo.model.cards.objectives;
+package it.polimi.ingsw.am49.model.cards.objectives;
 
-import it.polimi.am49.cn_demo.model.cards.placeables.ColouredCard;
-import it.polimi.am49.cn_demo.model.players.BoardTile;
-import it.polimi.am49.cn_demo.model.players.PlayerBoard;
+import it.polimi.ingsw.am49.model.cards.placeables.ColouredCard;
+import it.polimi.ingsw.am49.model.players.BoardTile;
+import it.polimi.ingsw.am49.model.players.PlayerBoard;
 
 /**
  * It implements the Strategy Pattern, used to choose the right way of

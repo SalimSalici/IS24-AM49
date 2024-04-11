@@ -1,10 +1,10 @@
-package it.polimi.am49.cn_demo.model.cards.placeables;
+package it.polimi.ingsw.am49.model.cards.placeables;
 
 import com.google.gson.Gson;
-import it.polimi.am49.cn_demo.model.cards.Card;
-import it.polimi.am49.cn_demo.model.decks.DeckLoader;
-import it.polimi.am49.cn_demo.model.enumerations.Resource;
-import it.polimi.am49.cn_demo.model.enumerations.Symbol;
+import it.polimi.ingsw.am49.model.cards.Card;
+import it.polimi.ingsw.am49.model.decks.DeckLoader;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
+import it.polimi.ingsw.am49.model.enumerations.Symbol;
 
 import java.util.List;
 

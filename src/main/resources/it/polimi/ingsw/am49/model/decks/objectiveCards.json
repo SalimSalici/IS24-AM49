@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "points": 2,
+    "name": "SymbolsObjectiveStrategy",
+    "object": {
+      "requirements": {
+        "WOLVES": 4,
+        "LEAVES": 2
+      }
+    }
+  },
+  {
+    "id": 2,
+    "points": 3,
+    "name": "PatternObjectiveStrategy",
+    "object": {
+      "pattern": {
+        "pivotResource": "LEAVES",
+        "resources": [
+          "LEAVES",
+          "MUSHROOMS"
+        ],
+        "positions": [
+          "TOP_LEFT",
+          "TOP_RIGHT"
+        ]
+      }
+    }
+  }
+]

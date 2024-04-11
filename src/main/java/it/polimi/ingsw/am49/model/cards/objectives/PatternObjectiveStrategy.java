@@ -1,5 +1,5 @@
-package it.polimi.am49.cn_demo.model.cards.objectives;
-import it.polimi.am49.cn_demo.model.players.PlayerBoard;
+package it.polimi.ingsw.am49.model.cards.objectives;
+import it.polimi.ingsw.am49.model.players.PlayerBoard;
 public class PatternObjectiveStrategy implements ObjectivePointsStrategy {
 
     Pattern pattern;

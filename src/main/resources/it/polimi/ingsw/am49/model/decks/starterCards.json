@@ -1,0 +1,98 @@
+[
+  {
+    "id": 81,
+    "tr": "LEAVES",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "BUGS",
+    "trb": "LEAVES",
+    "tlb": "MUSHROOMS",
+    "brb": "WOLVES",
+    "blb": "BUGS",
+    "centerResources": [
+      "BUGS"
+    ],
+    "flipped": false
+  },
+  {
+    "id": 82,
+    "tr": "EMPTY",
+    "tl": "WOLVES",
+    "br": "MUSHROOMS",
+    "bl": "EMPTY",
+    "trb": "WOLVES",
+    "tlb": "LEAVES",
+    "brb": "BUGS",
+    "blb": "MUSHROOMS",
+    "centerResources": [
+      "MUSHROOMS"
+    ],
+    "flipped": false
+  },
+  {
+    "id": 83,
+    "tr": "EMPTY",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "EMPTY",
+    "trb": "WOLVES",
+    "tlb": "BUGS",
+    "brb": "LEAVES",
+    "blb": "MUSHROOMS",
+    "centerResources": [
+      "LEAVES",
+      "MUSHROOMS"
+    ],
+    "flipped": false
+  },
+  {
+    "id": 84,
+    "tr": "EMPTY",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "EMPTY",
+    "trb": "BUGS",
+    "tlb": "LEAVES",
+    "brb": "MUSHROOMS",
+    "blb": "WOLVES",
+    "centerResources": [
+      "WOLVES",
+      "BUGS"
+    ],
+    "flipped": false
+  },
+  {
+    "id": 85,
+    "tr": "EMPTY",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "FORBIDDEN",
+    "trb": "MUSHROOMS",
+    "tlb": "BUGS",
+    "brb": "WOLVES",
+    "blb": "LEAVES",
+    "centerResources": [
+      "WOLVES",
+      "BUGS",
+      "LEAVES"
+    ],
+    "flipped": false
+  },
+  {
+    "id": 86,
+    "tr": "EMPTY",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "FORBIDDEN",
+    "trb": "WOLVES",
+    "tlb": "MUSHROOMS",
+    "brb": "BUGS",
+    "blb": "LEAVES",
+    "centerResources": [
+      "LEAVES",
+      "WOLVES",
+      "MUSHROOMS"
+    ],
+    "flipped": false
+  }
+]

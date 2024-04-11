@@ -1,11 +1,11 @@
-package it.polimi.am49.cn_demo.model.cards.objectives;
+package it.polimi.ingsw.am49.model.cards.objectives;
 
-import it.polimi.am49.cn_demo.model.cards.Card;
-import it.polimi.am49.cn_demo.model.cards.placeables.ColouredCard;
-import it.polimi.am49.cn_demo.model.cards.placeables.GoldCard;
-import it.polimi.am49.cn_demo.model.cards.placeables.StarterCard;
-import it.polimi.am49.cn_demo.model.players.BoardTile;
-import it.polimi.am49.cn_demo.model.players.PlayerBoard;
+import it.polimi.ingsw.am49.model.cards.Card;
+import it.polimi.ingsw.am49.model.cards.placeables.ColouredCard;
+import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
+import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
+import it.polimi.ingsw.am49.model.players.BoardTile;
+import it.polimi.ingsw.am49.model.players.PlayerBoard;
 
 /**
  * Rapresents the cards that give points to the player once the game is over,
