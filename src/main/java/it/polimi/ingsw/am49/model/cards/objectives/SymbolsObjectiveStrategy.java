@@ -1,8 +1,5 @@
 package it.polimi.ingsw.am49.model.cards.objectives;
 
-import it.polimi.ingsw.am49.model.cards.placeables.ColouredCard;
-import it.polimi.ingsw.am49.model.cards.placeables.PlacementPointsStrategy;
-import it.polimi.ingsw.am49.model.enumerations.Item;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.PlayerBoard;

@@ -1,4 +1,5 @@
 package it.polimi.ingsw.am49.model.cards.objectives;
+
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 

@@ -74,7 +74,7 @@ public class DeckLoader {
     }
 
     /**
-     *Mackes a copy of each resource card and creates an array containing all the resource cards.
+     * Makes a copy of each resource card and creates an array containing all the resource cards.
      * @return the resource card array.
      */
     public GameDeck<ResourceCard> getNewResourceDeck() {
@@ -82,7 +82,7 @@ public class DeckLoader {
     }
 
     /**
-     *Mackes a copy of each gold card and creates an array containing all the gold cards.
+     * Makes a copy of each gold card and creates an array containing all the gold cards.
      * @return the gold card array.
      */
     public GameDeck<GoldCard> getNewGoldDeck() {
@@ -90,7 +90,7 @@ public class DeckLoader {
     }
 
     /**
-     *Mackes a copy of each starter card and creates an array containing all the starter cards.
+     * Makes a copy of each starter card and creates an array containing all the starter cards.
      * @return the starter card array.
      */
     public GameDeck<StarterCard> getNewStarterDeck() {
@@ -98,7 +98,7 @@ public class DeckLoader {
     }
 
     /**
-     *Mackes a copy of each objective card and creates an array containing all the objective cards.
+     * Makes a copy of each objective card and creates an array containing all the objective cards.
      * @return the objective card array.
      */
     public GameDeck<ObjectiveCard> getNewObjectiveDeck() {
@@ -176,25 +176,5 @@ public class DeckLoader {
             System.exit(1);
             return null;
         }
-//        List<ObjectiveCard> tmpObj = new ArrayList<>();
-//        HashMap<Symbol, Integer> requirements = new HashMap<>();
-//        requirements.put(Symbol.LEAVES, 2);
-//        requirements.put(Symbol.WOLVES, 4);
-//
-//        ObjectiveCard symObjectiveCard = new ObjectiveCard(1, 2, new SymbolsObjectiveStrategy(requirements));
-//
-//        Pattern pattern = new Pattern(
-//                Resource.LEAVES,
-//                Arrays.asList(Resource.LEAVES, Resource.MUSHROOMS),
-//                Arrays.asList(RelativePosition.TOP_LEFT, RelativePosition.TOP_RIGHT)
-//        );
-//
-//        ObjectiveCard patternObjectiveCard = new ObjectiveCard(2, 3, new PatternObjectiveStrategy(pattern));
-//
-//        System.out.println(this.gson.toJson(symObjectiveCard));
-//        System.out.println(this.gson.toJson(patternObjectiveCard));
-//        System.exit(1);
-//
-//        return tmpObj;
     }
 }

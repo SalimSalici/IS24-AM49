@@ -1,8 +1,6 @@
 package it.polimi.ingsw.am49.model.cards.placeables;
 
-import com.google.gson.Gson;
 import it.polimi.ingsw.am49.model.cards.Card;
-import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 
