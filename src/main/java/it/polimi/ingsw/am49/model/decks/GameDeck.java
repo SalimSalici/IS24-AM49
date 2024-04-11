@@ -34,4 +34,8 @@ public class GameDeck<T extends Card> {
     public int size() {
         return this.deck.size();
     }
+
+    public boolean isEmpty(){
+        return this.deck.isEmpty();
+    }
 }

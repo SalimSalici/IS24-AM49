@@ -10,6 +10,8 @@ import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Player {
     private int username;
@@ -17,7 +19,8 @@ public class Player {
     private ObjectiveCard personalObjective;
     private StarterCard starterCard;
     private int points;
-    private ColouredCard[] hand;
+    private Set<ColouredCard> hand;
+    private int maxCards;
     private boolean myTurn;
     private boolean isOnline;
     private PlayerBoard board;
@@ -25,13 +28,14 @@ public class Player {
     public Player(int username){
         this.username = username;
         this.points = 0;
-        this.hand = new ColouredCard[3];
+        this.hand = new HashSet<>();
+        this.maxCards = 3;
         this.myTurn = false;
         this.isOnline = false;
     }
 
     public void  placeCard(PlaceableCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
-        if(hand.length < 3) throw new Exception("You need to draw more cards");
+        if(hand.stream().toList().size() <= 0) throw new Exception("You don't have cards to place");
 
         ArrayList<Integer> iterationsList = new ArrayList<Integer>();
 
@@ -46,12 +50,12 @@ public class Player {
 
         points += ((ColouredCard)boardTile.getCard()).calculatePoints(board, boardTile);
 
-        Arrays.stream(hand).toList().remove(card);
+        hand.remove(card);
     }
     public void drawCard(ColouredCard card) throws Exception{
-        if(hand.length >= 3) throw new Exception("You have too many cards");
+        if(hand.stream().toList().size() >= maxCards) throw new Exception("You have too many cards");
 
-        Arrays.stream(hand).toList().add(card);
+        hand.add(card);
     }
 
     /**
@@ -74,8 +78,36 @@ public class Player {
             starterCard.setFlipped(true);
     }
 
+    public int getUsername(){
+        return username;
+    }
+
+    public Color getColor(){
+        return color;
+    }
+
     public int getPoints(){
         return points;
+    }
+
+    public ObjectiveCard getPersonalObjective(){
+        return personalObjective;
+    }
+
+    public Set<ColouredCard> getHand() {
+        return hand;
+    }
+
+    public boolean isMyTurn() {
+        return myTurn;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public PlayerBoard getBoard() {
+        return board;
     }
 }
 

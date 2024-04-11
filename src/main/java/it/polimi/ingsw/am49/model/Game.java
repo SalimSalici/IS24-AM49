@@ -1,24 +1,25 @@
 package it.polimi.ingsw.am49.model;
 
-import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
+import it.polimi.ingsw.am49.model.cards.placeables.*;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
-import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
-import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
+import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameState;
+import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.Player;
 
 import java.lang.reflect.Executable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class Game {
     private final int gameId;
     private int numPlayers;
-    private int turn;
+    private int turn; //TODO: si può togliere
     private int round;
     private List<Player> players;
     private Player startingPlayer;
@@ -54,6 +55,13 @@ public class Game {
             drawableGolds[i] = goldGameDeck.draw();
     }
 
+    private boolean areDecksEmpty(){
+        return Arrays.stream(drawableResources).toList().isEmpty() &&
+                        Arrays.stream(drawableGolds).toList().isEmpty() &&
+                        resourceGameDeck.isEmpty() &&
+                        goldGameDeck.isEmpty();
+    }
+
     public void addPlayer(Player player) throws Exception {
         if (this.gameState != GameState.PREGAME) throw new Exception("Pregame is over");
         if (numPlayers >= 4) throw new Exception("Max players reached");
@@ -77,6 +85,13 @@ public class Game {
     public void chooseStarterSide(Player player, boolean flipped) throws Exception {
         if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
         player.chooseStarterSide(flipped);
+        if(player.equals(players.getLast())) this.gameState = GameState.CHOOSE_OBJECTIVE;
+    }
+
+    public void chooseObjective(Player player, ObjectiveCard objective) throws Exception{
+        if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
+        currentPlayer.setPersonalObjective(objective);
+        if(player.equals(players.getLast())) this.gameState = GameState.PLACE_CARD;
     }
 
     private void nextTurn() {
@@ -85,7 +100,7 @@ public class Game {
         if (this.gameState != GameState.END_GAME) {
             if (endGame && currentPlayer.equals(players.getLast())) finalRound = true;
 
-            if (!endGame && currentPlayer.getPoints() >= 20) endGame = true;
+            if (!endGame && (currentPlayer.getPoints() >= 20 || areDecksEmpty())) endGame = true;
 
             if (currentPlayer.equals(players.getLast())) {
                 currentPlayer = players.getFirst();
@@ -98,34 +113,40 @@ public class Game {
         if (this.gameState != GameState.DRAW_CARD) throw new Exception("You can't draw a card now");
         if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
 
-        switch (fromWhere) {
-            case RESOURCE_DECK -> player.drawCard(resourceGameDeck.draw());
-            case GOLD_DECK -> player.drawCard(goldGameDeck.draw());
-            case FIRST_RESOURCE -> {
-                player.drawCard(drawableResources[0]);
-                drawableResources[0] = resourceGameDeck.draw();
-            }
-            case SECOND_RESOURCE -> {
-                player.drawCard(drawableResources[1]);
-                drawableResources[1] = resourceGameDeck.draw();
-            }
-            case FIRST_GOLD -> {
-                player.drawCard(drawableGolds[0]);
-                drawableGolds[0] = goldGameDeck.draw();
-            }
-            case SECOND_GOLD -> {
-                player.drawCard(drawableGolds[1]);
-                drawableGolds[1] = goldGameDeck.draw();
+        if(!areDecksEmpty()){
+            switch (fromWhere) {
+                case RESOURCE_DECK -> player.drawCard(resourceGameDeck.draw());
+                case GOLD_DECK -> player.drawCard(goldGameDeck.draw());
+                case FIRST_RESOURCE -> {
+                    player.drawCard(drawableResources[0]);
+                    drawableResources[0] = resourceGameDeck.draw();
+                }
+                case SECOND_RESOURCE -> {
+                    player.drawCard(drawableResources[1]);
+                    drawableResources[1] = resourceGameDeck.draw();
+                }
+                case FIRST_GOLD -> {
+                    player.drawCard(drawableGolds[0]);
+                    drawableGolds[0] = goldGameDeck.draw();
+                }
+                case SECOND_GOLD -> {
+                    player.drawCard(drawableGolds[1]);
+                    drawableGolds[1] = goldGameDeck.draw();
+                }
             }
         }
 
         this.gameState = GameState.PLACE_CARD;
+        nextTurn();
     }
 
-    public void placeCard() throws Exception {
+    public void placeCard(Player player, PlaceableCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
         if (this.gameState != GameState.PLACE_CARD) throw new Exception("You can't place a card now");
-        //da fare
-        nextTurn();
+        if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
+
+        player.placeCard(card, boardTile, corner);
+
+        this.gameState = GameState.DRAW_CARD;
     }
 
     public int getGameId() {
