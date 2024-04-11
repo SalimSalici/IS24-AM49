@@ -6,5 +6,6 @@ public enum GameState {
     CHOOSE_OBJECTIVE,
     DRAW_CARD,
     PLACE_CARD,
-    END_GAME
+    END_GAME,
+    POINTS_CALCULATED
 }

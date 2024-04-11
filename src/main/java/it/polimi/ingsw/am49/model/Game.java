@@ -11,10 +11,7 @@ import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.Player;
 
 import java.lang.reflect.Executable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Game {
     private final int gameId;
@@ -24,6 +21,7 @@ public class Game {
     private List<Player> players;
     private Player startingPlayer;
     private Player currentPlayer;
+    private Player winner;
     private boolean endGame;
     private boolean finalRound;
     private ObjectiveCard[] commonObjectives;
@@ -94,8 +92,12 @@ public class Game {
         if(player.equals(players.getLast())) this.gameState = GameState.PLACE_CARD;
     }
 
-    private void nextTurn() {
-        if (endGame && finalRound && currentPlayer.equals(players.getLast())) this.gameState = GameState.END_GAME;
+    private void nextTurn() throws Exception {
+        if (endGame && finalRound && currentPlayer.equals(players.getLast())) {
+            this.gameState = GameState.END_GAME;
+            setFinalPoints();
+            setWinner();
+        }
 
         if (this.gameState != GameState.END_GAME) {
             if (endGame && currentPlayer.equals(players.getLast())) finalRound = true;
@@ -147,6 +149,27 @@ public class Game {
         player.placeCard(card, boardTile, corner);
 
         this.gameState = GameState.DRAW_CARD;
+    }
+
+    private void setFinalPoints() throws Exception{
+        if(this.gameState != GameState.END_GAME) throw new Exception("The game is not over yet");
+
+        for(Player p : this.players){
+            p.setFinalPoints(commonObjectives[0], commonObjectives[1]);
+        }
+
+        this.gameState = GameState.POINTS_CALCULATED;
+    }
+
+    private void setWinner() throws Exception{
+        if (this.gameState != GameState.POINTS_CALCULATED) throw new Exception("The final points were not calculated");
+
+        Optional<Player> winner = players.stream().max(Comparator.comparing(Player::getFinalPoints));
+
+        if(winner.isPresent()){
+            System.out.println("The winner is: " + winner.get());
+            this.winner = winner.get();
+        } else throw new Exception("It was not possible to find the winner");
     }
 
     public int getGameId() {

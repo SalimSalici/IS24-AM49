@@ -24,6 +24,7 @@ public class Player {
     private boolean myTurn;
     private boolean isOnline;
     private PlayerBoard board;
+    private int finalPoints;
 
     public Player(int username){
         this.username = username;
@@ -78,6 +79,10 @@ public class Player {
             starterCard.setFlipped(true);
     }
 
+    public void setFinalPoints(ObjectiveCard o1, ObjectiveCard o2){
+        finalPoints = points + o1.calculatePoints(board) + o2.calculatePoints(board) + personalObjective.calculatePoints(board);
+    }
+
     public int getUsername(){
         return username;
     }
@@ -108,6 +113,10 @@ public class Player {
 
     public PlayerBoard getBoard() {
         return board;
+    }
+
+    public int getFinalPoints(){
+        return finalPoints;
     }
 }
 
