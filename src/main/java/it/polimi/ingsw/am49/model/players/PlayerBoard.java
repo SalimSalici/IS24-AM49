@@ -51,7 +51,7 @@ public class PlayerBoard {
      * @param parentRow,ParentCol are the coordinates of the card(tile) whose corner has been covered by the new card
      * @param relativePosition indicates which corner has been covered
      */
-    public void placeTile(PlaceableCard card, int parentRow, int parentCol, RelativePosition relativePosition) throws Exception {
+    public BoardTile placeTile(PlaceableCard card, int parentRow, int parentCol, RelativePosition relativePosition) throws Exception {
         Pair<Integer, Integer> coords = this.getCoords(relativePosition, parentRow, parentCol);
         if (!this.isPlaceableTile(coords.first, coords.second)) throw new Exception("Invalid tile");
 
@@ -69,6 +69,7 @@ public class PlayerBoard {
             neighbour.coverTr();
 
         this.placementOrder.add(newBoardTile);
+        return newBoardTile;
     }
 
     /**
@@ -131,5 +132,15 @@ public class PlayerBoard {
             }
         }
         return new Pair<>(row, col);
+    }
+
+    public void printSimpleBoard() {
+        for (int r = 0; r < this.board.length; r++) {
+            for (int c = 0; c < this.board[r].length; c++) {
+                char toPrint = this.board[r][c] == null ? '-' : 'O';
+                System.out.print(toPrint);
+            }
+            System.out.print("\n");
+        }
     }
 }
