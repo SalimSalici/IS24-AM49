@@ -3,6 +3,7 @@ package it.polimi.ingsw.am49.model.decks;
 import it.polimi.ingsw.am49.model.cards.Card;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * This Class is used to save a copy of the deck in {@link it.polimi.ingsw.am49.model.decks.GameDeck} as a List
@@ -41,5 +42,9 @@ public class CardStack<T extends Card>{
 
     public int size() {
         return stack.size();
+    }
+
+    public void shuffle(){
+        Collections.shuffle(stack);
     }
 }

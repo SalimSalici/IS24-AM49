@@ -16,9 +16,9 @@ public class GameDeck<T extends Card> {
      */
     public GameDeck(T[] cards) {
         this.deck = new CardStack<>();
-        //TODO: randomize order
         for (T card : cards)
             deck.push(card);
+        deck.shuffle();
     }
 
     /**
