@@ -1,14 +1,14 @@
-package it.polimi.am49.cn_demo.model;
+package it.polimi.ingsw.am49.model;
 
-import it.polimi.am49.cn_demo.model.cards.placeables.GoldCard;
-import it.polimi.am49.cn_demo.model.cards.objectives.ObjectiveCard;
-import it.polimi.am49.cn_demo.model.cards.placeables.ResourceCard;
-import it.polimi.am49.cn_demo.model.cards.placeables.StarterCard;
-import it.polimi.am49.cn_demo.model.decks.DeckLoader;
-import it.polimi.am49.cn_demo.model.decks.GameDeck;
-import it.polimi.am49.cn_demo.model.enumerations.DrawPosition;
-import it.polimi.am49.cn_demo.model.enumerations.GameState;
-import it.polimi.am49.cn_demo.model.players.Player;
+import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
+import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
+import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
+import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
+import it.polimi.ingsw.am49.model.decks.DeckLoader;
+import it.polimi.ingsw.am49.model.decks.GameDeck;
+import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
+import it.polimi.ingsw.am49.model.enumerations.GameState;
+import it.polimi.ingsw.am49.model.players.Player;
 
 import java.lang.reflect.Executable;
 import java.util.ArrayList;
