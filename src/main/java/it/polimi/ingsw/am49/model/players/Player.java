@@ -7,40 +7,32 @@ import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
-import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Player {
-    private int username;
+    private final String username;
     private Color color;
     private ObjectiveCard personalObjective;
     private StarterCard starterCard;
     private int points;
-    private Set<ColouredCard> hand;
-    private int maxCards;
-    private boolean myTurn;
+    private final Set<ColouredCard> hand;
+    private final int maxCards;
     private boolean isOnline;
     private PlayerBoard board;
-    private int finalPoints;
 
-    public Player(int username){
+    public Player(String username){
         this.username = username;
         this.points = 0;
         this.hand = new HashSet<>();
         this.maxCards = 3;
-        this.myTurn = false;
         this.isOnline = false;
     }
 
     public void  placeCard(PlaceableCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
-        if(hand.stream().toList().size() <= 0) throw new Exception("You don't have cards to place");
+        if(hand.isEmpty()) throw new Exception("You don't have cards to place");
 
-        ArrayList<Integer> iterationsList = new ArrayList<Integer>();
-
+        // TODO: add method to PlaceableCard to check if the card can be placed (and avoid casting)
         if(card instanceof GoldCard && !card.isFlipped()){
             if(!board.isCardCostMet((GoldCard) card)) throw new Exception("There aren't enough resources to play this car");
         }
@@ -48,16 +40,14 @@ public class Player {
         int parentX = boardTile.getCoords(corner.toRelativePosition()).first;
         int parentY = boardTile.getCoords(corner.toRelativePosition()).second;
 
-        if(!board.isPlaceableTile(parentX, parentY)) throw new Exception("The selected tile is not avaiable");
-
         board.placeTile(card, parentX, parentY, corner.toRelativePosition());
 
-        points += ((ColouredCard)boardTile.getCard()).calculatePoints(board, boardTile);
+        points += ((ColouredCard)card).calculatePoints(board, boardTile);
 
         hand.remove(card);
     }
     public void drawCard(ColouredCard card) throws Exception{
-        if(hand.stream().toList().size() >= maxCards) throw new Exception("You have too many cards");
+        if(hand.size() >= maxCards) throw new Exception("You have too many cards");
 
         hand.add(card);
     }
@@ -82,11 +72,23 @@ public class Player {
             starterCard.setFlipped(true);
     }
 
-    public void setFinalPoints(ObjectiveCard o1, ObjectiveCard o2){
-        finalPoints = points + o1.calculatePoints(board) + o2.calculatePoints(board) + personalObjective.calculatePoints(board);
+    /**
+     * @param commonObjectives common objective of the game
+     * @return the number of achieved objectives (one objective card is achieved only once)
+     */
+    public int calculateFinalPoints(List<ObjectiveCard> commonObjectives){
+        int achieved = 0;
+        points += personalObjective.calculatePoints(board);
+        achieved = points > 0 ? 1 : 0;
+        for (ObjectiveCard objectiveCard : commonObjectives) {
+            int objPoints = objectiveCard.calculatePoints(board);
+            points += objPoints;
+            if (objPoints > 0) achieved++;
+        }
+        return achieved;
     }
 
-    public int getUsername(){
+    public String getUsername(){
         return username;
     }
 
@@ -106,20 +108,12 @@ public class Player {
         return hand;
     }
 
-    public boolean isMyTurn() {
-        return myTurn;
-    }
-
     public boolean isOnline() {
         return isOnline;
     }
 
     public PlayerBoard getBoard() {
         return board;
-    }
-
-    public int getFinalPoints(){
-        return finalPoints;
     }
 }
 

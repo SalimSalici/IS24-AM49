@@ -19,7 +19,6 @@ public class Game {
     private int turn; //TODO: si può togliere
     private int round;
     private List<Player> players;
-    private Player startingPlayer;
     private Player currentPlayer;
     private Player winner;
     private boolean endGame;
@@ -54,10 +53,7 @@ public class Game {
     }
 
     private boolean areDecksEmpty(){
-        return Arrays.stream(drawableResources).toList().isEmpty() &&
-                        Arrays.stream(drawableGolds).toList().isEmpty() &&
-                        resourceGameDeck.isEmpty() &&
-                        goldGameDeck.isEmpty();
+        return resourceGameDeck.isEmpty() && goldGameDeck.isEmpty();
     }
 
     public void addPlayer(Player player) throws Exception {
@@ -95,8 +91,8 @@ public class Game {
     private void nextTurn() throws Exception {
         if (endGame && finalRound && currentPlayer.equals(players.getLast())) {
             this.gameState = GameState.END_GAME;
-            setFinalPoints();
-            setWinner();
+            // TODO: calculateWinners should be called by the controller
+            calculateWinners();
         }
 
         if (this.gameState != GameState.END_GAME) {
@@ -107,10 +103,12 @@ public class Game {
             if (currentPlayer.equals(players.getLast())) {
                 currentPlayer = players.getFirst();
                 round++;
-            } else currentPlayer = players.iterator().next();
+            } else currentPlayer = players.get(players.indexOf(currentPlayer) + 1);
         }
     }
 
+    // TODO: handle variable lenght of drawable revealed resource / gold cards
+    // TODO: handle case in which some revealed resources are missing
     public void drawCard(Player player, DrawPosition fromWhere) throws Exception {
         if (this.gameState != GameState.DRAW_CARD) throw new Exception("You can't draw a card now");
         if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
@@ -151,25 +149,29 @@ public class Game {
         this.gameState = GameState.DRAW_CARD;
     }
 
-    private void setFinalPoints() throws Exception{
+    private List<Player> calculateWinners() throws Exception{
+        List<Player> winners = new ArrayList<>();
         if(this.gameState != GameState.END_GAME) throw new Exception("The game is not over yet");
 
+        Map<Player, Integer> objectivesAchievedByPlayers = new HashMap<>();
         for(Player p : this.players){
-            p.setFinalPoints(commonObjectives[0], commonObjectives[1]);
+            objectivesAchievedByPlayers.put(p, p.calculateFinalPoints(Arrays.asList(commonObjectives)));
         }
 
-        this.gameState = GameState.POINTS_CALCULATED;
-    }
+        int maxPoints = this.players.stream().mapToInt(Player::getPoints).max().orElse(0);
+        List<Player> maxPointsPlayers = this.players.stream().filter(player -> player.getPoints() == maxPoints).toList();
 
-    private void setWinner() throws Exception{
-        if (this.gameState != GameState.POINTS_CALCULATED) throw new Exception("The final points were not calculated");
-
-        Optional<Player> winner = players.stream().max(Comparator.comparing(Player::getFinalPoints));
-
-        if(winner.isPresent()){
-            System.out.println("The winner is: " + winner.get());
-            this.winner = winner.get();
-        } else throw new Exception("It was not possible to find the winner");
+        if (maxPointsPlayers.size() > 1) {
+            for (Player player : this.players) {
+                if (!maxPointsPlayers.contains(player)) objectivesAchievedByPlayers.remove(player);
+            }
+            int maxAchieved = maxPointsPlayers.stream()
+                    .mapToInt(objectivesAchievedByPlayers::get)
+                    .max()
+                    .orElse(0);
+            return maxPointsPlayers.stream().filter(player -> player.getPoints() == maxAchieved).toList();
+        } else
+            return maxPointsPlayers;
     }
 
     public int getGameId() {
@@ -185,7 +187,11 @@ public class Game {
     }
 
     public Player getStartingPlayer() {
-        return startingPlayer;
+        return this.players.getFirst();
+    }
+
+    public Player getLastPlayer() {
+        return this.players.getLast();
     }
 
     public Player getCurrentPlayer() {

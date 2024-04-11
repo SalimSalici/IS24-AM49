@@ -17,7 +17,7 @@ public class PlayerBoard {
     private final BoardTile[][] board;
     private final List<BoardTile> placementOrder;
     private final BoardTile starterTile;
-    private Map<Symbol, Integer> availableResources;
+    private final Map<Symbol, Integer> availableResources;
     public PlayerBoard(StarterCard starterCard) {
         this.placementOrder = new ArrayList<>();
         this.board = new BoardTile[50][50];
@@ -26,9 +26,10 @@ public class PlayerBoard {
         this.placementOrder.add(this.starterTile);
         this.availableResources = new HashMap<>();
     }
-    private void updateAvailableResources(Map<Symbol, Integer> availableResources, PlayerBoard board) {
+
+    private void updateAvailableResources() {
         Map<Symbol, Integer> tileSymbols;
-        for(BoardTile tile : board.getPlacementOrder()){
+        for(BoardTile tile : this.getPlacementOrder()){
             tileSymbols = tile.getActiveSymbols();
 
             for(Map.Entry<Symbol, Integer> entry : tileSymbols.entrySet()){
@@ -40,9 +41,8 @@ public class PlayerBoard {
         }
     }
 
-    public Map<Symbol, Integer> getAvailableResources(PlayerBoard board) {
-        updateAvailableResources(availableResources, board);
-        return availableResources;
+    public Map<Symbol, Integer> getAvailableResources() {
+        return Collections.unmodifiableMap(availableResources);
     }
 
     public List<BoardTile> getPlacementOrder() {
@@ -87,6 +87,7 @@ public class PlayerBoard {
             neighbour.coverTr();
 
         this.placementOrder.add(newBoardTile);
+        this.updateAvailableResources();
         return newBoardTile;
     }
 
@@ -115,10 +116,8 @@ public class PlayerBoard {
     }
 
     public boolean isCardCostMet(GoldCard card){
-        Map<Symbol, Integer> cardCost;
+        Map<Symbol, Integer> cardCost = card.getPriceAsSymbols();
 
-        cardCost = card.getPriceAsSymbols();
-        updateAvailableResources(availableResources, this);
         for(Map.Entry<Symbol, Integer> entry : cardCost.entrySet()){
             Symbol symbol = entry.getKey();
             Integer valueCardCost = entry.getValue();
@@ -173,6 +172,7 @@ public class PlayerBoard {
         return new Pair<>(row, col);
     }
 
+    // TODO: this method was added mainly for debugging... could be removed in future
     public void printSimpleBoard() {
         for (int r = 0; r < this.board.length; r++) {
             for (int c = 0; c < this.board[r].length; c++) {
