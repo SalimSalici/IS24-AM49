@@ -3,6 +3,7 @@ package it.polimi.ingsw.am49.model.cards.placeables;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.Map;
  * If the player wants to put down this card facing upwords he needs to
  * make sure that the required resources are present in the play area.
  */
-public class GoldCard extends ColouredCard {
+public class GoldCard extends ColouredCard implements Serializable {
 
     /**
      * Is rapresenting the required resources that must be on the player board

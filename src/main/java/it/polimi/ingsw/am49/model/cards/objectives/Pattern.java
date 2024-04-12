@@ -3,11 +3,12 @@ package it.polimi.ingsw.am49.model.cards.objectives;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Pattern {
+public class Pattern implements Serializable {
     private final Resource pivotResource;
     private final List<Resource> resources;
     private final List<RelativePosition> positions;

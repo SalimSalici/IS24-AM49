@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.PlayerBoard;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
  * @see ResourceCard
  * @see GoldCard
  */
-public abstract class ColouredCard extends PlaceableCard {
+public abstract class ColouredCard extends PlaceableCard implements Serializable {
     /**
      * The resource the card belongs to
      */

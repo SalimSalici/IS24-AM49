@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.model.decks;
 
 import it.polimi.ingsw.am49.model.cards.Card;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -11,7 +12,7 @@ import java.util.Collections;
  * allow the use of this list as if it were a Stack.
  * @param <T> tells the tipe of card that are in the list that is being handled.
  */
-public class CardStack<T extends Card>{
+public class CardStack<T extends Card> implements Serializable {
     private final ArrayList<T> stack;
 
     public CardStack() {

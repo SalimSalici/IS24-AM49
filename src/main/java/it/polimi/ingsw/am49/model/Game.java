@@ -10,10 +10,11 @@ import it.polimi.ingsw.am49.model.enumerations.GameState;
 import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.Player;
 
+import java.io.Serializable;
 import java.lang.reflect.Executable;
 import java.util.*;
 
-public class Game {
+public class Game implements Serializable {
     private final int gameId;
     private int numPlayers;
     private int turn; //TODO: si può togliere
@@ -80,12 +81,24 @@ public class Game {
         if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
         player.chooseStarterSide(flipped);
         if(player.equals(players.getLast())) this.gameState = GameState.CHOOSE_OBJECTIVE;
+        this.nextTurn();
     }
 
     public void chooseObjective(Player player, ObjectiveCard objective) throws Exception{
         if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
         currentPlayer.setPersonalObjective(objective);
-        if(player.equals(players.getLast())) this.gameState = GameState.PLACE_CARD;
+        if(player.equals(players.getLast())) {
+            this.gameState = GameState.PLACE_CARD;
+            for (Player p : this.players)
+                this.assignInitialHand(p);
+        }
+        this.nextTurn();
+    }
+
+    private void assignInitialHand(Player player) throws Exception {
+        player.drawCard(resourceGameDeck.draw());
+        player.drawCard(resourceGameDeck.draw());
+        player.drawCard(goldGameDeck.draw());
     }
 
     private void nextTurn() throws Exception {
@@ -137,10 +150,10 @@ public class Game {
         }
 
         this.gameState = GameState.PLACE_CARD;
-        nextTurn();
+        this.nextTurn();
     }
 
-    public void placeCard(Player player, PlaceableCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
+    public void placeCard(Player player, ColouredCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
         if (this.gameState != GameState.PLACE_CARD) throw new Exception("You can't place a card now");
         if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
 
@@ -196,6 +209,10 @@ public class Game {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public List<Player> getPlayers() {
+        return this.players;
     }
 
     public GameState getGameState() {

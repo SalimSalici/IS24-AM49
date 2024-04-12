@@ -3,10 +3,12 @@ package it.polimi.ingsw.am49.model.cards.placeables;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 
+import java.io.Serializable;
+
 /**
  * Are a type of {@link PlaceableCard} that can be placed in the board.
  */
-public class ResourceCard extends ColouredCard {
+public class ResourceCard extends ColouredCard implements Serializable {
 
     /**
      * Constructs a new {@link ResourceCard} object of the specified resource type,

@@ -3,6 +3,7 @@ package it.polimi.ingsw.am49.model.cards.placeables;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * Each player has only one of these cards and is the first card placed on the player board.
  */
-public class StarterCard extends PlaceableCard{
+public class StarterCard extends PlaceableCard implements Serializable {
 
     /**
      * The list of resources present in the center of the card's front.

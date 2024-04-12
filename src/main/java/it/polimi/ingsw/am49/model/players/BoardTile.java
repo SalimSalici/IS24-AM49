@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.util.Pair;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.Map;
 /**
  * This is the single tile of the playerboard
  */
-public class BoardTile {
+public class BoardTile implements Serializable {
     /**
      * The card placed in the tile
      */

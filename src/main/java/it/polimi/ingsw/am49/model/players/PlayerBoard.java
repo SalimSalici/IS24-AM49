@@ -7,12 +7,14 @@ import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.util.Pair;
 import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
+
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * The personal board of the player, where he places the cards
  */
-public class PlayerBoard {
+public class PlayerBoard implements Serializable {
 
     private final BoardTile[][] board;
     private final List<BoardTile> placementOrder;

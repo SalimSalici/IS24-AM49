@@ -5,9 +5,10 @@ import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.PlayerBoard;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class PatternObjectiveStrategy implements ObjectivePointsStrategy {
+public class PatternObjectiveStrategy implements ObjectivePointsStrategy, Serializable {
 
     Pattern pattern;
 

@@ -4,6 +4,7 @@ import it.polimi.ingsw.am49.model.cards.Card;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  * @see StarterCard
  * @see ColouredCard
  */
-public abstract class PlaceableCard extends Card {
+public abstract class PlaceableCard extends Card implements Serializable {
     /**
      * The symbol present in the top right corner of the card's front.
      */

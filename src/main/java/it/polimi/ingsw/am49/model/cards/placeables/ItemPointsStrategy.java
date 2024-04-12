@@ -4,13 +4,15 @@ import it.polimi.ingsw.am49.model.enumerations.Item;
 import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.PlayerBoard;
 
+import java.io.Serializable;
+
 /**
  * Is the strategy of {@link PlacementPointsStrategy} used to rapresent the
  * {@link ColouredCard}s that give to the player the amount of points
  * shown on the card multiplied by the number of times a specific
  * {@link Item} appears on the board.
  */
-public class ItemPointsStrategy implements PlacementPointsStrategy {
+public class ItemPointsStrategy implements PlacementPointsStrategy, Serializable {
 
     /**
      * Is the specific {@link Item} considered to calculate the points.

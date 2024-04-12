@@ -3,6 +3,8 @@ package it.polimi.ingsw.am49.model.cards;
 import com.google.gson.Gson;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 
+import java.io.Serializable;
+
 /**
  * Represents a base card with a unique identifier. This abstract class provides the
  * common structure for all cards in the system. Subclasses should define specific
@@ -11,7 +13,7 @@ import it.polimi.ingsw.am49.model.decks.DeckLoader;
  * @see it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard
  * @see it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard
  */
-public abstract class Card {
+public abstract class Card implements Serializable {
 
     /**
      * The unique identifier for this card. It is protected so that subclasses can access it

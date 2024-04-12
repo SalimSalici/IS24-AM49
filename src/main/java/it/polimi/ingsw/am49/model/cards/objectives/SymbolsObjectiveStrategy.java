@@ -4,9 +4,11 @@ import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.PlayerBoard;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SequencedCollection;
 
 /**
  * Is the strategy of {@link ObjectivePointsStrategy} used to rapresent the
@@ -14,7 +16,7 @@ import java.util.Map;
  * shown on the card multiplied by how many times a specific set of symbols appear
  * in the playing board.
  */
-public class SymbolsObjectiveStrategy implements ObjectivePointsStrategy {
+public class SymbolsObjectiveStrategy implements ObjectivePointsStrategy, Serializable {
 
     /**
      * Is the specific set of symbols that determines the amount of points

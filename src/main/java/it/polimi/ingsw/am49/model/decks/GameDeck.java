@@ -2,12 +2,14 @@ package it.polimi.ingsw.am49.model.decks;
 
 import it.polimi.ingsw.am49.model.cards.Card;
 
+import java.io.Serializable;
+
 /**
  * This class is used to create a stack for every deck, from witch the cards can be drawn.
  * The usage of a stack allows each card to be drawn only onece in a game.
  * @param <T> tells the type of cards that are in the deck that is being handled.
  */
-public class GameDeck<T extends Card> {
+public class GameDeck<T extends Card> implements Serializable {
     private final CardStack<T> deck;
 
     /**

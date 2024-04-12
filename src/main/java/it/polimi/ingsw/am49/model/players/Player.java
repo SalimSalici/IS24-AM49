@@ -8,9 +8,10 @@ import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Player {
+public class Player implements Serializable {
     private final String username;
     private Color color;
     private ObjectiveCard personalObjective;
@@ -29,20 +30,21 @@ public class Player {
         this.isOnline = false;
     }
 
-    public void  placeCard(PlaceableCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
+    public void  placeCard(ColouredCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
         if(hand.isEmpty()) throw new Exception("You don't have cards to place");
+        if (!hand.contains(card)) throw new Exception("You don't the card you're trying to place");
 
         // TODO: add method to PlaceableCard to check if the card can be placed (and avoid casting)
         if(card instanceof GoldCard && !card.isFlipped()){
             if(!board.isCardCostMet((GoldCard) card)) throw new Exception("There aren't enough resources to play this car");
         }
 
-        int parentX = boardTile.getCoords(corner.toRelativePosition()).first;
-        int parentY = boardTile.getCoords(corner.toRelativePosition()).second;
+        int parentX = boardTile.getRow();
+        int parentY = boardTile.getCol();
 
         board.placeTile(card, parentX, parentY, corner.toRelativePosition());
 
-        points += ((ColouredCard)card).calculatePoints(board, boardTile);
+        points += card.calculatePoints(board, boardTile);
 
         hand.remove(card);
     }
@@ -114,6 +116,13 @@ public class Player {
 
     public PlayerBoard getBoard() {
         return board;
+    }
+
+    @Override
+    public String toString() {
+        return "Player: " + this.username + "\n" +
+                "\tpoints: " + this.points;
+
     }
 }
 
