@@ -4,14 +4,11 @@ import it.polimi.ingsw.am49.model.cards.placeables.*;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
-import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
-import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
-import it.polimi.ingsw.am49.model.enumerations.GameState;
-import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.Player;
+import it.polimi.ingsw.am49.model.states.GameState;
+import it.polimi.ingsw.am49.model.states.PregameState;
 
 import java.io.Serializable;
-import java.lang.reflect.Executable;
 import java.util.*;
 
 public class Game implements Serializable {
@@ -19,7 +16,7 @@ public class Game implements Serializable {
     private int numPlayers;
     private int turn; //TODO: si può togliere
     private int round;
-    private List<Player> players;
+    private final List<Player> players;
     private Player currentPlayer;
     private Player winner;
     private boolean endGame;
@@ -31,16 +28,15 @@ public class Game implements Serializable {
     private GameDeck<ResourceCard> resourceGameDeck;
     private GameDeck<GoldCard> goldGameDeck;
 
-    public Game(int gameId) {
+    public Game(int gameId, int numPlayers) {
         this.gameId = gameId;
-        this.numPlayers = 0;
+        this.numPlayers = numPlayers;
         this.turn = 0;
         this.round = 0;
         this.players = new ArrayList<>();
         this.endGame = false;
         this.finalRound = false;
-        this.commonObjectives = new ObjectiveCard[2];
-        this.gameState = GameState.PREGAME;
+        this.commonObjectives = new ObjectiveCard[2]; // the common objectives are set in the relevant game state
         this.drawableResources = new ResourceCard[2];
         this.drawableGolds = new GoldCard[2];
         this.resourceGameDeck = DeckLoader.getInstance().getNewResourceDeck();
@@ -51,120 +47,62 @@ public class Game implements Serializable {
 
         for (int i = 0; i < drawableGolds.length; i++)
             drawableGolds[i] = goldGameDeck.draw();
+
+        this.gameState = new PregameState(this, this.numPlayers);
     }
 
     private boolean areDecksEmpty(){
         return resourceGameDeck.isEmpty() && goldGameDeck.isEmpty();
     }
 
-    public void addPlayer(Player player) throws Exception {
-        if (this.gameState != GameState.PREGAME) throw new Exception("Pregame is over");
-        if (numPlayers >= 4) throw new Exception("Max players reached");
-        this.players.add(player);
-        this.numPlayers++;
+    public void setGameState(GameState state) {
+        this.gameState = state;
     }
 
-    public void startGame() throws Exception {
-        if (numPlayers < 2) throw new Exception("Not enough players");
-        if (this.gameState != GameState.PREGAME) throw new Exception("Game already started");
-        Collections.shuffle(this.players);
-        this.currentPlayer = this.players.getFirst();
-
-        GameDeck<StarterCard> starterDeck = DeckLoader.getInstance().getNewStarterDeck();
+    public Player getPlayerByUsername(String username) {
         for (Player p : this.players)
-            p.setStarterCard(starterDeck.draw());
-
-        this.gameState = GameState.CHOOSE_STARTER_SIDE;
+            if (p.getUsername().equals(username)) return p;
+        return null;
     }
 
-    public void chooseStarterSide(Player player, boolean flipped) throws Exception {
-        if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
-        player.chooseStarterSide(flipped);
-        if(player.equals(players.getLast())) this.gameState = GameState.CHOOSE_OBJECTIVE;
-        this.nextTurn();
+    public GameDeck<ResourceCard> getResourceGameDeck() {
+        return this.resourceGameDeck;
     }
 
-    public void chooseObjective(Player player, ObjectiveCard objective) throws Exception{
-        if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
-        currentPlayer.setPersonalObjective(objective);
-        if(player.equals(players.getLast())) {
-            this.gameState = GameState.PLACE_CARD;
-            for (Player p : this.players)
-                this.assignInitialHand(p);
-        }
-        this.nextTurn();
+    public GameDeck<GoldCard> getGoldGameDeck() {
+        return this.goldGameDeck;
     }
 
-    private void assignInitialHand(Player player) throws Exception {
-        player.drawCard(resourceGameDeck.draw());
-        player.drawCard(resourceGameDeck.draw());
-        player.drawCard(goldGameDeck.draw());
+    public void incrementTurn() {
+        this.turn++;
     }
 
-    private void nextTurn() throws Exception {
-        if (endGame && finalRound && currentPlayer.equals(players.getLast())) {
-            this.gameState = GameState.END_GAME;
-            // TODO: calculateWinners should be called by the controller
-            calculateWinners();
-        }
+    public void incrementRound() {
+        this.round++;
+    }
 
-        if (this.gameState != GameState.END_GAME) {
-            if (endGame && currentPlayer.equals(players.getLast())) finalRound = true;
+    public void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
+    }
 
-            if (!endGame && (currentPlayer.getPoints() >= 20 || areDecksEmpty())) endGame = true;
+    public Player getNextPlayer() {
+        if (this.currentPlayer.equals(this.players.getLast()))
+            return this.players.getFirst();
+        return players.get(players.indexOf(currentPlayer) + 1);
+    }
 
-            if (currentPlayer.equals(players.getLast())) {
-                currentPlayer = players.getFirst();
-                round++;
-            } else currentPlayer = players.get(players.indexOf(currentPlayer) + 1);
+    public void assignInitialHand() throws Exception {
+        for (Player p : this.players) {
+            p.drawCard(resourceGameDeck.draw());
+            p.drawCard(resourceGameDeck.draw());
+            p.drawCard(goldGameDeck.draw());
         }
     }
 
-    // TODO: handle variable lenght of drawable revealed resource / gold cards
-    // TODO: handle case in which some revealed resources are missing
-    public void drawCard(Player player, DrawPosition fromWhere) throws Exception {
-        if (this.gameState != GameState.DRAW_CARD) throw new Exception("You can't draw a card now");
-        if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
-
-        if(!areDecksEmpty()){
-            switch (fromWhere) {
-                case RESOURCE_DECK -> player.drawCard(resourceGameDeck.draw());
-                case GOLD_DECK -> player.drawCard(goldGameDeck.draw());
-                case FIRST_RESOURCE -> {
-                    player.drawCard(drawableResources[0]);
-                    drawableResources[0] = resourceGameDeck.draw();
-                }
-                case SECOND_RESOURCE -> {
-                    player.drawCard(drawableResources[1]);
-                    drawableResources[1] = resourceGameDeck.draw();
-                }
-                case FIRST_GOLD -> {
-                    player.drawCard(drawableGolds[0]);
-                    drawableGolds[0] = goldGameDeck.draw();
-                }
-                case SECOND_GOLD -> {
-                    player.drawCard(drawableGolds[1]);
-                    drawableGolds[1] = goldGameDeck.draw();
-                }
-            }
-        }
-
-        this.gameState = GameState.PLACE_CARD;
-        this.nextTurn();
-    }
-
-    public void placeCard(Player player, ColouredCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
-        if (this.gameState != GameState.PLACE_CARD) throw new Exception("You can't place a card now");
-        if (!player.equals(currentPlayer)) throw new Exception("Not your turn");
-
-        player.placeCard(card, boardTile, corner);
-
-        this.gameState = GameState.DRAW_CARD;
-    }
-
+    /*
     private List<Player> calculateWinners() throws Exception{
         List<Player> winners = new ArrayList<>();
-        if(this.gameState != GameState.END_GAME) throw new Exception("The game is not over yet");
+        if(this.gameStateType != GameStateType.END_GAME) throw new Exception("The game is not over yet");
 
         Map<Player, Integer> objectivesAchievedByPlayers = new HashMap<>();
         for(Player p : this.players){
@@ -186,6 +124,7 @@ public class Game implements Serializable {
         } else
             return maxPointsPlayers;
     }
+    */
 
     public int getGameId() {
         return gameId;

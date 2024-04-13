@@ -3,7 +3,6 @@ package it.polimi.ingsw.am49.model.players;
 import it.polimi.ingsw.am49.model.cards.placeables.ColouredCard;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
-import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
@@ -30,28 +29,35 @@ public class Player implements Serializable {
         this.isOnline = false;
     }
 
-    public void  placeCard(ColouredCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
+    public void  placeCard(ColouredCard card, int parentRow, int parentCol, CornerPosition corner) throws Exception {
         if(hand.isEmpty()) throw new Exception("You don't have cards to place");
         if (!hand.contains(card)) throw new Exception("You don't the card you're trying to place");
 
-        // TODO: add method to PlaceableCard to check if the card can be placed (and avoid casting)
+        // TODO: add method to PlaceableCard to check if the card can be placed (and avoid casting)...
+        // TODO: ... and ColouredCard class can be deleted alltogether
         if(card instanceof GoldCard && !card.isFlipped()){
             if(!board.isCardCostMet((GoldCard) card)) throw new Exception("There aren't enough resources to play this car");
         }
 
-        int parentX = boardTile.getRow();
-        int parentY = boardTile.getCol();
+        BoardTile newTile = board.placeTile(card, parentRow, parentCol, corner.toRelativePosition());
 
-        board.placeTile(card, parentX, parentY, corner.toRelativePosition());
-
-        points += card.calculatePoints(board, boardTile);
+        points += card.calculatePoints(board, newTile);
 
         hand.remove(card);
     }
+
+    public void placeCard(ColouredCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
+        this.placeCard(card, boardTile.getRow(), boardTile.getCol(), corner);
+    }
+
     public void drawCard(ColouredCard card) throws Exception{
         if(hand.size() >= maxCards) throw new Exception("You have too many cards");
 
         hand.add(card);
+    }
+
+    public ColouredCard getHandCardById(int id) {
+        return this.hand.stream().filter(c -> c.getId() == id).findAny().orElse(null);
     }
 
     /**
