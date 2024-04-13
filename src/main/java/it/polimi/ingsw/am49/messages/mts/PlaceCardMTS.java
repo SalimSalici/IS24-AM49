@@ -9,6 +9,7 @@ public class PlaceCardMTS extends MessageToServer {
     private final int parentCol;
     private final CornerPosition cornerPosition;
     private final boolean flipped;
+
     public PlaceCardMTS(String username, int cardId, int parentRow, int parentCol, CornerPosition cornerPosition, boolean flipped) {
         super(MessageToServerType.PLACE_CARD, username);
         this.cardId = cardId;

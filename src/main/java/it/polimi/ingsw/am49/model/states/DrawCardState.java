@@ -20,6 +20,9 @@ public class DrawCardState extends GameState {
     }
 
     @Override
+    public void setUp() {}
+
+    @Override
     public void execute(MessageToServer msg) throws Exception {
         this.checkMsgValidity(msg);
         DrawCardMTS drawCardMsg = (DrawCardMTS) msg;

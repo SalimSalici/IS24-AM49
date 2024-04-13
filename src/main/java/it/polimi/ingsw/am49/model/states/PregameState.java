@@ -21,6 +21,9 @@ public class PregameState extends GameState {
     }
 
     @Override
+    public void setUp() {}
+
+    @Override
     public void execute(MessageToServer msg) throws Exception {
         this.checkMsgValidity(msg);
 
@@ -29,24 +32,13 @@ public class PregameState extends GameState {
         this.game.getPlayers().add(newPlayer);
 
         if (this.game.getPlayers().size() >= maxPlayers) {
-            this.startGame();
-            this.game.setGameState(new ChooseStarterSideState(this.game));
+            this.nextState = new ChooseStarterSideState(this.game);
+            this.goToNextState();
         }
-
-        // TODO: send broadcast message with list players who have joined so far
-        // TODO: if last player joined, send message that announces the start of the game (with starter cards)
     }
 
     @Override
     protected boolean isYourTurn(MessageToServer msg) {
         return true;
-    }
-
-    private void startGame() {
-        Collections.shuffle(this.game.getPlayers());
-        GameDeck<StarterCard> starterDeck = DeckLoader.getInstance().getNewStarterDeck();
-        for (Player p : this.game.getPlayers())
-            p.setStarterCard(starterDeck.draw());
-        this.game.setGameState(new ChooseStarterSideState(this.game));
     }
 }

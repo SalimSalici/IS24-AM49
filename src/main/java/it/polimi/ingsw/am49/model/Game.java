@@ -4,6 +4,11 @@ import it.polimi.ingsw.am49.model.cards.placeables.*;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
+import it.polimi.ingsw.am49.model.enumerations.GameEventType;
+import it.polimi.ingsw.am49.model.events.EventEmitter;
+import it.polimi.ingsw.am49.model.events.EventListener;
+import it.polimi.ingsw.am49.model.events.EventManager;
+import it.polimi.ingsw.am49.model.events.GameEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.model.states.GameState;
 import it.polimi.ingsw.am49.model.states.PregameState;
@@ -11,7 +16,7 @@ import it.polimi.ingsw.am49.model.states.PregameState;
 import java.io.Serializable;
 import java.util.*;
 
-public class Game implements Serializable {
+public class Game implements Serializable, EventEmitter {
     private final int gameId;
     private int numPlayers;
     private int turn; //TODO: si può togliere
@@ -21,16 +26,18 @@ public class Game implements Serializable {
     private Player winner;
     private boolean endGame;
     private boolean finalRound;
-    private ObjectiveCard[] commonObjectives;
+    private final EventManager eventManager;
+    private final ObjectiveCard[] commonObjectives;
     private GameState gameState;
     private ResourceCard[] drawableResources;
     private GoldCard[] drawableGolds;
-    private GameDeck<ResourceCard> resourceGameDeck;
-    private GameDeck<GoldCard> goldGameDeck;
+    private final GameDeck<ResourceCard> resourceGameDeck;
+    private final GameDeck<GoldCard> goldGameDeck;
 
     public Game(int gameId, int numPlayers) {
         this.gameId = gameId;
         this.numPlayers = numPlayers;
+        this.eventManager = new EventManager();
         this.turn = 0;
         this.round = 0;
         this.players = new ArrayList<>();
@@ -164,5 +171,20 @@ public class Game implements Serializable {
 
     public ObjectiveCard getSecondCommonObjective() {
         return commonObjectives[1];
+    }
+
+    @Override
+    public void addEventListener(GameEventType gameEventType, EventListener eventListener) {
+        this.eventManager.addEventListener(gameEventType, eventListener);
+    }
+
+    @Override
+    public void removeEventListener(GameEventType gameEventType, EventListener eventListener) {
+        this.eventManager.removeEventListener(gameEventType, eventListener);
+    }
+
+    @Override
+    public void triggerEvent(GameEventType gameEventType, GameEvent gameEvent) {
+        this.eventManager.triggerEvent(gameEventType, gameEvent);
     }
 }
