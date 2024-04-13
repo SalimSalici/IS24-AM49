@@ -46,8 +46,11 @@ public class PregameState extends GameState {
         return true;
     }
 
-    private void addPlayer(JoinGameMTS joinGameMsg) {
+    private void addPlayer(JoinGameMTS joinGameMsg) throws Exception {
         String username = joinGameMsg.getUsername();
+        if (this.game.getPlayerByUsername(username) != null)
+            throw new Exception("There already is a player with username '" + username + "'");
+
         Player newPlayer = new Player(username);
         this.game.getPlayers().add(newPlayer);
         this.game.triggerEvent(new PlayerJoinedEvent(this.game.getPlayers()));

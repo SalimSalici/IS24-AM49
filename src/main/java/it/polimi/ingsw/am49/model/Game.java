@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.model;
 
+import it.polimi.ingsw.am49.messages.mts.MessageToServer;
 import it.polimi.ingsw.am49.model.cards.placeables.*;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
@@ -72,6 +73,10 @@ public class Game implements Serializable, EventEmitter {
         return null;
     }
 
+    public void executeAction(MessageToServer msg) throws Exception {
+        this.gameState.execute(msg);
+    }
+
     public GameDeck<ResourceCard> getResourceGameDeck() {
         return this.resourceGameDeck;
     }
@@ -98,13 +103,7 @@ public class Game implements Serializable, EventEmitter {
         return players.get(players.indexOf(currentPlayer) + 1);
     }
 
-    public void assignInitialHand() throws Exception {
-        for (Player p : this.players) {
-            p.drawCard(resourceGameDeck.draw());
-            p.drawCard(resourceGameDeck.draw());
-            p.drawCard(goldGameDeck.draw());
-        }
-    }
+
 
     /*
     private List<Player> calculateWinners() throws Exception{

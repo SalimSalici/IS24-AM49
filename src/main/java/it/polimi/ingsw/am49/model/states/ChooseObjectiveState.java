@@ -7,9 +7,9 @@ import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
-import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.ChoosableObjectivesAssignedEvent;
+import it.polimi.ingsw.am49.model.events.PersonalObjectiveChosenEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.*;
@@ -35,10 +35,7 @@ public class ChooseObjectiveState extends GameState {
             this.playersToObjectives.put(p, drawnObjectives);
         }
 
-        this.game.triggerEvent(
-                GameEventType.CHOOSABLE_OBJECTIVES_ASSIGNED_EVENT,
-                new ChoosableObjectivesAssignedEvent(this.playersToObjectives)
-        );
+        this.game.triggerEvent(new ChoosableObjectivesAssignedEvent(this.playersToObjectives));
     }
 
     @Override
@@ -57,6 +54,7 @@ public class ChooseObjectiveState extends GameState {
 
         player.setPersonalObjective(chosenObjectiveCard);
         this.playersToObjectives.remove(player);
+        this.game.triggerEvent(new PersonalObjectiveChosenEvent(player, chosenObjectiveCard));
 
         if (this.playersToObjectives.isEmpty()) {
             this.nextState = new PlaceCardState(this.game);

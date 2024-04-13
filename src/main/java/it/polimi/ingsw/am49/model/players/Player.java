@@ -31,7 +31,7 @@ public class Player implements Serializable {
 
     public void  placeCard(ColouredCard card, int parentRow, int parentCol, CornerPosition corner) throws Exception {
         if(hand.isEmpty()) throw new Exception("You don't have cards to place");
-        if (!hand.contains(card)) throw new Exception("You don't the card you're trying to place");
+        if (!hand.contains(card)) throw new Exception("You don't have the card you're trying to place");
 
         // TODO: add method to PlaceableCard to check if the card can be placed (and avoid casting)...
         // TODO: ... and ColouredCard class can be deleted alltogether
