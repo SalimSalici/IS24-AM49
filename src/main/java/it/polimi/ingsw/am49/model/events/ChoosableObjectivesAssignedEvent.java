@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 public record ChoosableObjectivesAssignedEvent(
-        Map<Player, List<ObjectiveCard>> playersToObjectives) implements GameEvent {
+        Map<Player, List<ObjectiveCard>> playersToObjectives
+) implements GameEvent {
 
     public ChoosableObjectivesAssignedEvent(Map<Player, List<ObjectiveCard>> playersToObjectives) {
         this.playersToObjectives = new HashMap<>(playersToObjectives);

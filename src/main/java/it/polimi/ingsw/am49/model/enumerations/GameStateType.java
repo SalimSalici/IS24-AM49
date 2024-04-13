@@ -1,7 +1,7 @@
 package it.polimi.ingsw.am49.model.enumerations;
 
 public enum GameStateType {
-    SETUP,
+    PREGAME,
     CHOOSE_STARTER_SIDE,
     CHOOSE_OBJECTIVE,
     DRAW_CARD,
