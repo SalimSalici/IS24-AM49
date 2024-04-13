@@ -184,7 +184,7 @@ public class Game implements Serializable, EventEmitter {
     }
 
     @Override
-    public void triggerEvent(GameEventType gameEventType, GameEvent gameEvent) {
-        this.eventManager.triggerEvent(gameEventType, gameEvent);
+    public void triggerEvent(GameEvent gameEvent) {
+        this.eventManager.triggerEvent(gameEvent);
     }
 }

@@ -50,12 +50,12 @@ public class PregameState extends GameState {
         String username = joinGameMsg.getUsername();
         Player newPlayer = new Player(username);
         this.game.getPlayers().add(newPlayer);
-        this.game.triggerEvent(GameEventType.PLAYER_JOINED_EVENT, new PlayerJoinedEvent(this.game.getPlayers()));
+        this.game.triggerEvent(new PlayerJoinedEvent(this.game.getPlayers()));
     }
 
     private void removePlayer(LeaveGameMTS leaveGameMsg) {
         String username = leaveGameMsg.getUsername();
         this.game.getPlayers().remove(this.game.getPlayerByUsername(username));
-        this.game.triggerEvent(GameEventType.PLAYER_LEFT_EVENT, new PlayerLeftEvent(this.game.getPlayers()));
+        this.game.triggerEvent(new PlayerLeftEvent(this.game.getPlayers()));
     }
 }

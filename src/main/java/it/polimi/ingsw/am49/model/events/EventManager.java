@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 
 import java.util.HashMap;
@@ -20,12 +21,17 @@ public class EventManager implements EventEmitter {
         this.listeners.get(gameEventType).add(eventListener);
     }
 
+    public void addEventListener(List<GameEventType> gameEventTypes, EventListener eventListener) {
+        for (GameEventType type : gameEventTypes)
+            this.addEventListener(type, eventListener);
+    }
+
     public void removeEventListener(GameEventType gameEventType, EventListener eventListener) {
         this.listeners.get(gameEventType).remove(eventListener);
     }
 
-    public void triggerEvent(GameEventType gameEventType, GameEvent gameEvent) {
-        this.listeners.get(gameEventType).forEach(listener -> {
+    public void triggerEvent(GameEvent gameEvent) {
+        this.listeners.get(gameEvent.getType()).forEach(listener -> {
             try {
                 listener.onEventTrigger(gameEvent);
             } catch (Exception e) {
