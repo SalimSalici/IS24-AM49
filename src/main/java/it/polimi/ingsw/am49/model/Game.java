@@ -20,7 +20,7 @@ import java.util.*;
 public class Game implements Serializable, EventEmitter {
     private final int gameId;
     private int numPlayers;
-    private int turn; //TODO: si può togliere
+    private int turn;
     private int round;
     private final List<Player> players;
     private Player currentPlayer;
@@ -57,6 +57,7 @@ public class Game implements Serializable, EventEmitter {
             drawableGolds[i] = goldGameDeck.draw();
 
         this.gameState = new PregameState(this, this.numPlayers);
+        this.gameState.setUp();
     }
 
     private boolean areDecksEmpty(){
@@ -142,6 +143,9 @@ public class Game implements Serializable, EventEmitter {
 
     public int getRound() {
         return round;
+    }
+    public int getTurn() {
+        return turn;
     }
 
     public Player getStartingPlayer() {

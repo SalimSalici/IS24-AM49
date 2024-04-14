@@ -10,6 +10,7 @@ import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.CardPlacedEvent;
+import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
 import it.polimi.ingsw.am49.model.events.HandUpdateEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 
@@ -34,6 +35,8 @@ public class ChooseStarterSideState extends GameState {
         GameDeck<StarterCard> starterDeck = DeckLoader.getInstance().getNewStarterDeck();
         for (Player p : this.game.getPlayers())
             p.setStarterCard(starterDeck.draw());
+
+        this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound()));
     }
 
     @Override

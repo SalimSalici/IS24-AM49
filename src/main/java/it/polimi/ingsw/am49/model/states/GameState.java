@@ -4,6 +4,7 @@ import it.polimi.ingsw.am49.messages.mts.MessageToServer;
 import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
+import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +25,9 @@ public abstract class GameState {
         this.notYourTurnMessage = "You must wait for your turn";
     }
 
-    public abstract void setUp();
+    public void setUp() {
+        this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound()));
+    }
 
     public abstract void execute(MessageToServer msg) throws Exception;
 

@@ -20,9 +20,6 @@ public class PlaceCardState extends GameState {
     }
 
     @Override
-    public void setUp() {}
-
-    @Override
     public void execute(MessageToServer msg) throws Exception {
         this.checkMsgValidity(msg);
         PlaceCardMTS placeCardMsg = (PlaceCardMTS) msg;

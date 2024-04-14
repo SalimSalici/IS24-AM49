@@ -9,6 +9,7 @@ import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.ChoosableObjectivesAssignedEvent;
+import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
 import it.polimi.ingsw.am49.model.events.PersonalObjectiveChosenEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 
@@ -35,7 +36,9 @@ public class ChooseObjectiveState extends GameState {
             this.playersToObjectives.put(p, drawnObjectives);
         }
 
+        // TODO: change the ChoosableObjectivesAssignedEvent to be specific for each player, instead of aggretating them
         this.game.triggerEvent(new ChoosableObjectivesAssignedEvent(this.playersToObjectives));
+        this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound()));
     }
 
     @Override

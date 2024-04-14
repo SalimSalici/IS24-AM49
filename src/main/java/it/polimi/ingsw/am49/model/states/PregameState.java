@@ -5,7 +5,6 @@ import it.polimi.ingsw.am49.messages.mts.LeaveGameMTS;
 import it.polimi.ingsw.am49.messages.mts.MessageToServer;
 import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
 import it.polimi.ingsw.am49.model.Game;
-import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.PlayerJoinedEvent;
 import it.polimi.ingsw.am49.model.events.PlayerLeftEvent;
@@ -21,9 +20,6 @@ public class PregameState extends GameState {
         super(GameStateType.PREGAME, game, Set.of(MessageToServerType.JOIN_GAME, MessageToServerType.LEAVE_GAME));
         this.maxPlayers = maxPlayers;
     }
-
-    @Override
-    public void setUp() {}
 
     @Override
     public void execute(MessageToServer msg) throws Exception {

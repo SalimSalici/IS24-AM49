@@ -59,7 +59,8 @@ public class Main {
         game.executeAction(new ChooseStarterSideMTS("matteo", true));
         game.executeAction(new ChooseStarterSideMTS("niccolo", false));
 
-        ChoosableObjectivesAssignedEvent ev = (ChoosableObjectivesAssignedEvent)stubEventListener.getEvents().getLast();
+        ChoosableObjectivesAssignedEvent ev = (ChoosableObjectivesAssignedEvent)stubEventListener.getEvents().stream()
+                .filter(event -> event instanceof ChoosableObjectivesAssignedEvent).findFirst().get();
         ev.playersToObjectives().forEach((player, objectiveCards) -> {
             try {
                 game.executeAction(new ChooseObjectiveMTS(player.getUsername(), objectiveCards.getFirst().getId()));
