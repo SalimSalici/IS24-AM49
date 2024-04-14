@@ -81,19 +81,22 @@ public class Player implements Serializable {
     }
 
     /**
+     * Calculates the final points of a player summing their current points to the ones obtained
+     * with the objective cards (both common objectives and personal objective)
+     *
      * @param commonObjectives common objective of the game
      * @return the number of achieved objectives (one objective card is achieved only once)
      */
     public int calculateFinalPoints(List<ObjectiveCard> commonObjectives){
-        int achieved = 0;
+        int objectivesAchieved = 0;
         points += personalObjective.calculatePoints(board);
-        achieved = points > 0 ? 1 : 0;
+        objectivesAchieved = points > 0 ? 1 : 0;
         for (ObjectiveCard objectiveCard : commonObjectives) {
             int objPoints = objectiveCard.calculatePoints(board);
             points += objPoints;
-            if (objPoints > 0) achieved++;
+            if (objPoints > 0) objectivesAchieved++;
         }
-        return achieved;
+        return objectivesAchieved;
     }
 
     public String getUsername(){

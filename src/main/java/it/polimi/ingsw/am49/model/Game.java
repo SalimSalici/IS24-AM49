@@ -104,7 +104,9 @@ public class Game implements Serializable, EventEmitter {
         return players.get(players.indexOf(currentPlayer) + 1);
     }
 
-
+    public ObjectiveCard[] getCommonObjectives() {
+        return this.commonObjectives;
+    }
 
     /*
     private List<Player> calculateWinners() throws Exception{
@@ -189,5 +191,21 @@ public class Game implements Serializable, EventEmitter {
     @Override
     public void triggerEvent(GameEvent gameEvent) {
         this.eventManager.triggerEvent(gameEvent);
+    }
+
+    public boolean isEndGame() {
+        return endGame;
+    }
+
+    public void setEndGame(boolean endGame) {
+        this.endGame = endGame;
+    }
+
+    public boolean isFinalRound() {
+        return finalRound;
+    }
+
+    public void setFinalRound(boolean finalRound) {
+        this.finalRound = finalRound;
     }
 }

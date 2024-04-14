@@ -9,6 +9,7 @@ import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.ChoosableObjectivesAssignedEvent;
+import it.polimi.ingsw.am49.model.events.CommonObjectivesDrawn;
 import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
 import it.polimi.ingsw.am49.model.events.PersonalObjectiveChosenEvent;
 import it.polimi.ingsw.am49.model.players.Player;
@@ -29,6 +30,16 @@ public class ChooseObjectiveState extends GameState {
     @Override
     public void setUp() {
         GameDeck<ObjectiveCard> objectiveDeck = DeckLoader.getInstance().getNewObjectiveDeck();
+
+        // Draw common objectives
+
+        ObjectiveCard[] commonObjectives = this.game.getCommonObjectives();
+        for (int i = 0; i < commonObjectives.length; i++)
+            commonObjectives[i] = objectiveDeck.draw();
+        this.game.triggerEvent(new CommonObjectivesDrawn(List.of(commonObjectives)));
+
+        // Draw objectives for players to choose from
+
         for (Player p : this.game.getPlayers()) {
             List<ObjectiveCard> drawnObjectives = new LinkedList<>();
             for (int i = 0; i < 2; i++)
