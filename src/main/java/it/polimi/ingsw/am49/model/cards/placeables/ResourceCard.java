@@ -4,7 +4,7 @@ import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Are a type of {@link PlaceableCard} that can be placed in the board.
@@ -26,11 +26,9 @@ public class ResourceCard extends PlaceableCard implements Serializable {
      * @param resource an object of type {@link Resource}
      * @param points the amount of points given to the player assuming the condition shown on the card
      *               is accomplished a single time
-     * @param pointsStrategy indicates the strategy to use for calculating points
-     * @param price A map with the cost to play the card
      */
-    public ResourceCard(int id, Symbol tr, Symbol tl, Symbol br, Symbol bl, Resource resource, int points, PlacementPointsStrategy  pointsStrategy, Map<Symbol, Integer> price) {
-        super(id, tr, tl, br, bl, resource, points, new BasicPointsStrategy(), price);
+    public ResourceCard(int id, Symbol tr, Symbol tl, Symbol br, Symbol bl, Resource resource, int points) {
+        super(id, tr, tl, br, bl, resource, points, new BasicPointsStrategy(), new HashMap<>());
     }
 
     /**
@@ -39,7 +37,7 @@ public class ResourceCard extends PlaceableCard implements Serializable {
      * @param other the {@link PlaceableCard} that is being copied
      */
     public ResourceCard(ResourceCard other) {
-        super(other.id, other.tr, other.tl, other.br, other.bl, other.resource, other.points, new BasicPointsStrategy(), other.price);
+        super(other.id, other.tr, other.tl, other.br, other.bl, other.resource, other.points, new BasicPointsStrategy(), new HashMap<>());
     }
 
     @Override
