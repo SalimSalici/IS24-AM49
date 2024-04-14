@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 /**
  * Is the strategy of {@link PlacementPointsStrategy} used to rapresent the
- * {@link ColouredCard}s that give a fixed amount of points.
+ * {@link PlaceableCard}s that give a fixed amount of points.
  */
 public class BasicPointsStrategy implements PlacementPointsStrategy, Serializable {
 

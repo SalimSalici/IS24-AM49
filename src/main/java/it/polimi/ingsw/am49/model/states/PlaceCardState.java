@@ -4,7 +4,7 @@ import it.polimi.ingsw.am49.messages.mts.MessageToServer;
 import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
 import it.polimi.ingsw.am49.messages.mts.PlaceCardMTS;
 import it.polimi.ingsw.am49.model.Game;
-import it.polimi.ingsw.am49.model.cards.placeables.ColouredCard;
+import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.players.Player;
@@ -24,7 +24,7 @@ public class PlaceCardState extends GameState {
         this.checkMsgValidity(msg);
         PlaceCardMTS placeCardMsg = (PlaceCardMTS) msg;
 
-        ColouredCard card = this.currentPlayer.getHandCardById(placeCardMsg.getCardId());
+        PlaceableCard card = this.currentPlayer.getHandCardById(placeCardMsg.getCardId());
         if (card == null)
             throw new Exception("You are trying to place a card that is not in your hand");
 

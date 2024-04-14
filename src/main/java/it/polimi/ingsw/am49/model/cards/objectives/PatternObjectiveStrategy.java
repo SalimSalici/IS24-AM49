@@ -1,5 +1,5 @@
 package it.polimi.ingsw.am49.model.cards.objectives;
-import it.polimi.ingsw.am49.model.cards.placeables.ColouredCard;
+import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.players.BoardTile;
@@ -98,9 +98,9 @@ public class PatternObjectiveStrategy implements ObjectivePointsStrategy, Serial
      */
     private PivotGroup extractPivotGroup(BoardTile boardTile) {
         List<BoardTile> pivotGroup = new ArrayList<>();
-        ColouredCard card;
+        PlaceableCard card;
         try {
-            card = (ColouredCard) boardTile.getCard();
+            card = boardTile.getCard();
         } catch (ClassCastException ex) { // boardTile is not a ColouredCard and therefore cannot be a pivot
             return null;
         }
@@ -118,9 +118,9 @@ public class PatternObjectiveStrategy implements ObjectivePointsStrategy, Serial
             currentTile = currentTile.getNeighbourTile(nextRelativePositions.get(i));
             if (currentTile == null) return null;
 
-            ColouredCard currentCard;
+            PlaceableCard currentCard;
             try {
-                currentCard = (ColouredCard) currentTile.getCard();
+                currentCard = currentTile.getCard();
             } catch (ClassCastException ex) { // currentTile is not a ColouredCard and therefore cannot be part of a pattern
                 return null;
             }

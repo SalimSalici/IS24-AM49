@@ -5,7 +5,7 @@ import it.polimi.ingsw.am49.model.players.PlayerBoard;
 
 /**
  * It implements the Strategy Pattern, used to choose the right way of
- * calculating the points given by placing a specific {@link ColouredCard}.
+ * calculating the points given by placing a specific {@link PlaceableCard}.
  */
 public interface PlacementPointsStrategy {
 

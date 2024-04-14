@@ -4,8 +4,6 @@ import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -13,13 +11,9 @@ import java.util.Map;
  * If the player wants to put down this card facing upwords he needs to
  * make sure that the required resources are present in the play area.
  */
-public class GoldCard extends ColouredCard implements Serializable {
+public class GoldCard extends PlaceableCard implements Serializable {
 
-    /**
-     * Is rapresenting the required resources that must be on the player board
-     * if the player wants to place the card's face showing the price.
-     */
-    private final Map<Resource, Integer> price;
+
 
     /**
      * Constructs a new {@link GoldCard} object of the specified resource type,
@@ -39,11 +33,8 @@ public class GoldCard extends ColouredCard implements Serializable {
      */
     public GoldCard(int id, Symbol tr, Symbol tl, Symbol br, Symbol bl,
                     Resource resource, int points, PlacementPointsStrategy pointsStrategy,
-                    Map<Resource, Integer> price) {
-        super(id, tr, tl, br, bl, resource, points, pointsStrategy);
-        this.price = new HashMap<>(price);
-        for (Resource res : Resource.values())
-            this.price.putIfAbsent(res, 0);
+                    Map<Symbol, Integer> price) {
+        super(id, tr, tl, br, bl, resource, points, pointsStrategy, price);
     }
 
     /**
@@ -52,26 +43,7 @@ public class GoldCard extends ColouredCard implements Serializable {
      * @param other the {@link GoldCard} that is being copied
      */
     public GoldCard(GoldCard other) {
-        super(other.id, other.tr, other.tl, other.br, other.bl, other.resource, other.points, other.pointsStrategy);
-        this.price = new HashMap<>(other.price);
-    }
-
-    /**
-     *
-     * @return the required resources that must be on the player board
-     *         if the player wants to place the card's face showing the price
-     */
-    public Map<Resource, Integer> getPrice() {
-        return Collections.unmodifiableMap(price);
-    }
-
-    public Map<Symbol, Integer> getPriceAsSymbols() {
-        Map<Symbol, Integer> result = new HashMap<>();
-
-        for (Map.Entry<Resource, Integer> entry : price.entrySet()) {
-            result.put(entry.getKey().toSymbol(), entry.getValue());
-        }
-        return Collections.unmodifiableMap(result);
+        super(other.id, other.tr, other.tl, other.br, other.bl, other.resource, other.points, other.pointsStrategy, other.price);
     }
 
     @Override

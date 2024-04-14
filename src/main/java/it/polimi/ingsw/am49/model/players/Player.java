@@ -1,8 +1,7 @@
 package it.polimi.ingsw.am49.model.players;
 
-import it.polimi.ingsw.am49.model.cards.placeables.ColouredCard;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
-import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
+import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
@@ -16,7 +15,7 @@ public class Player implements Serializable {
     private ObjectiveCard personalObjective;
     private StarterCard starterCard;
     private int points;
-    private final Set<ColouredCard> hand;
+    private final Set<PlaceableCard> hand;
     private final int maxCards;
     private boolean isOnline;
     private PlayerBoard board;
@@ -29,14 +28,14 @@ public class Player implements Serializable {
         this.isOnline = false;
     }
 
-    public void  placeCard(ColouredCard card, int parentRow, int parentCol, CornerPosition corner) throws Exception {
+    public void  placeCard(PlaceableCard card, int parentRow, int parentCol, CornerPosition corner) throws Exception {
         if(hand.isEmpty()) throw new Exception("You don't have cards to place");
         if (!hand.contains(card)) throw new Exception("You don't have the card you're trying to place");
 
         // TODO: add method to PlaceableCard to check if the card can be placed (and avoid casting)...
         // TODO: ... and ColouredCard class can be deleted alltogether
-        if(card instanceof GoldCard && !card.isFlipped()){
-            if(!board.isCardCostMet((GoldCard) card)) throw new Exception("There aren't enough resources to play this car");
+        if(!card.isFlipped()){
+            if(!board.isCardCostMet( card )) throw new Exception("There aren't enough resources to play this car");
         }
 
         BoardTile newTile = board.placeTile(card, parentRow, parentCol, corner.toRelativePosition());
@@ -46,17 +45,17 @@ public class Player implements Serializable {
         hand.remove(card);
     }
 
-    public void placeCard(ColouredCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
+    public void placeCard(PlaceableCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
         this.placeCard(card, boardTile.getRow(), boardTile.getCol(), corner);
     }
 
-    public void drawCard(ColouredCard card) throws Exception{
+    public void drawCard(PlaceableCard card) throws Exception{
         if(hand.size() >= maxCards) throw new Exception("You have too many cards");
 
         hand.add(card);
     }
 
-    public ColouredCard getHandCardById(int id) {
+    public PlaceableCard getHandCardById(int id) {
         return this.hand.stream().filter(c -> c.getId() == id).findAny().orElse(null);
     }
 
@@ -115,7 +114,7 @@ public class Player implements Serializable {
         return personalObjective;
     }
 
-    public Set<ColouredCard> getHand() {
+    public Set<PlaceableCard> getHand() {
         return hand;
     }
 

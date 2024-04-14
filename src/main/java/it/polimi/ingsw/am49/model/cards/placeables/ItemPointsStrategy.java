@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * Is the strategy of {@link PlacementPointsStrategy} used to rapresent the
- * {@link ColouredCard}s that give to the player the amount of points
+ * {@link PlaceableCard}s that give to the player the amount of points
  * shown on the card multiplied by the number of times a specific
  * {@link Item} appears on the board.
  */

@@ -117,12 +117,17 @@ public class PlayerBoard implements Serializable {
         return true;
     }
 
-    public boolean isCardCostMet(GoldCard card){
-        Map<Symbol, Integer> cardCost = card.getPriceAsSymbols();
+    public boolean isCardCostMet(PlaceableCard card){
+        Map<Symbol, Integer> cardCost = card.getPrice();
 
         for(Map.Entry<Symbol, Integer> entry : cardCost.entrySet()){
             Symbol symbol = entry.getKey();
             Integer valueCardCost = entry.getValue();
+
+            if( valueCardCost == 0){
+                continue;
+            }
+
             if(availableResources.containsKey(symbol)){
                 Integer availableValue = availableResources.get(symbol);
 
