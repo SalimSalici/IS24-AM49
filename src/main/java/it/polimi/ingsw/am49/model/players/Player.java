@@ -166,7 +166,7 @@ public class Player implements Serializable {
      * @return returns a string.
      */
     public String getUsername(){
-        return username;
+        return this.username;
     }
 
     /**

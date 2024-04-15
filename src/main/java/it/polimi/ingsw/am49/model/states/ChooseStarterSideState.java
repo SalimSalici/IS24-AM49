@@ -11,9 +11,12 @@ import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.CardPlacedEvent;
 import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
 import it.polimi.ingsw.am49.model.events.HandUpdateEvent;
+import it.polimi.ingsw.am49.model.events.StarterCardAssignedEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class ChooseStarterSideState extends GameState {
@@ -42,9 +45,15 @@ public class ChooseStarterSideState extends GameState {
         // TODO: (maybe) set up drawable decks and revealed drawable cards here
 
         GameDeck<StarterCard> starterDeck = DeckLoader.getInstance().getNewStarterDeck();
-        for (Player p : this.game.getPlayers())
-            p.setStarterCard(starterDeck.draw());
+        Map<Player, StarterCard> playersToStartingCard = new HashMap<>();
 
+        for (Player p : this.game.getPlayers()) {
+            StarterCard card = starterDeck.draw();
+            p.setStarterCard(card);
+            playersToStartingCard.put(p, card);
+        }
+
+        this.game.triggerEvent(new StarterCardAssignedEvent(playersToStartingCard));
         this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound()));
     }
 

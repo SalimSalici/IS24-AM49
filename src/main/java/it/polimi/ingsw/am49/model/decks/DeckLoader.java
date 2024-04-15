@@ -143,8 +143,8 @@ public class DeckLoader {
      * See the following path for the resourcesCards JSON file: {@code src/main/resources/resourceCards.jason}.
      */
     private List<ResourceCard> loadResourcesFromJson() {
-        //String filePath = Objects.requireNonNull(DeckLoader.class.getResource("resourceCards.json")).getPath();
-        String filePath = "C:\\Users\\nicco\\Desktop\\Codex game\\IS24-AM49\\src\\main\\resources\\it\\polimi\\ingsw\\am49\\model\\decks\\resourceCards.json";
+        String filePath = Objects.requireNonNull(DeckLoader.class.getResource("resourceCards.json")).getPath();
+
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             return Arrays.stream(this.gson.fromJson(reader, ResourceCard[].class)).toList();
@@ -162,8 +162,7 @@ public class DeckLoader {
      * See the following path for the goldCards JSON file: {@code src/main/resources/goldCards.jason}.
      */
     private List<GoldCard> loadGoldsFromJson() {
-        //String filePath = Objects.requireNonNull(DeckLoader.class.getResource("goldCards.json")).getPath();
-        String filePath = "C:\\Users\\nicco\\Desktop\\Codex game\\IS24-AM49\\src\\main\\resources\\it\\polimi\\ingsw\\am49\\model\\decks\\goldCards.json";
+        String filePath = Objects.requireNonNull(DeckLoader.class.getResource("goldCards.json")).getPath();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             return Arrays.stream(this.gson.fromJson(reader, GoldCard[].class)).toList();
@@ -181,8 +180,7 @@ public class DeckLoader {
      * See the following path for the starterCards JSON file: {@code src/main/resources/starterCards.jason}.
      */
     private List<StarterCard> loadStartersFromJson() {
-        //String filePath = Objects.requireNonNull(DeckLoader.class.getResource("starterCards.json")).getPath();
-        String filePath = "C:\\Users\\nicco\\Desktop\\Codex game\\IS24-AM49\\src\\main\\resources\\it\\polimi\\ingsw\\am49\\model\\decks\\starterCards.json";
+        String filePath = Objects.requireNonNull(DeckLoader.class.getResource("starterCards.json")).getPath();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             return Arrays.stream(this.gson.fromJson(reader, StarterCard[].class)).toList();
@@ -200,9 +198,7 @@ public class DeckLoader {
      * See the following path for the objectiveCards JSON file: {@code src/main/resources/objectiveCards.jason}.
      */
     private List<ObjectiveCard> loadObjectivesFromJson() {
-
-        //String filePath = Objects.requireNonNull(DeckLoader.class.getResource("objectiveCards.json")).getPath();
-        String filePath = "C:\\Users\\nicco\\Desktop\\Codex game\\IS24-AM49\\src\\main\\resources\\it\\polimi\\ingsw\\am49\\model\\decks\\objectiveCards.json";
+        String filePath = Objects.requireNonNull(DeckLoader.class.getResource("objectiveCards.json")).getPath();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             return Arrays.stream(this.gson.fromJson(reader, ObjectiveCard[].class)).toList();

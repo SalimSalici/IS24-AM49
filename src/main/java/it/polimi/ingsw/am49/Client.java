@@ -92,7 +92,7 @@ public class Client {
 
 
     public String getUserName() {
-        return userName;
+        return this.userName;
     }
 
     public Server getServer() {
