@@ -17,6 +17,9 @@ import it.polimi.ingsw.am49.model.states.PregameState;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Main class of the game model.
+ */
 public class Game implements Serializable, EventEmitter {
     private final int gameId;
     private int numPlayers;
@@ -35,6 +38,11 @@ public class Game implements Serializable, EventEmitter {
     private final GameDeck<ResourceCard> resourceGameDeck;
     private final GameDeck<GoldCard> goldGameDeck;
 
+    /**
+     * Constructor of the Game class.
+     * @param gameId is unique to each game.
+     * @param numPlayers number of players that are playing the current game.
+     */
     public Game(int gameId, int numPlayers) {
         this.gameId = gameId;
         this.numPlayers = numPlayers;

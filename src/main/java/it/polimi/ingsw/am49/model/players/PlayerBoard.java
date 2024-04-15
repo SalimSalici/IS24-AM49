@@ -16,10 +16,31 @@ import java.util.*;
  */
 public class PlayerBoard implements Serializable {
 
+    /**
+     * The board of every player is saver in a matrix of boardtiles.
+     * @see BoardTile
+     */
     private final BoardTile[][] board;
+
+    /**
+     * Is used to save the order in witch the cards are placed on the board to facilitate handing of the cards.
+     */
     private final List<BoardTile> placementOrder;
+
+    /**
+     * Saves the starter tile for eatch player.
+     */
     private final BoardTile starterTile;
+
+    /**
+     * Is a map <{@link Symbol, Integer} used to keep track of the resources that are available on the board.
+     */
     private final Map<Symbol, Integer> availableResources;
+
+    /**
+     * Constructor for the PlayerBoard class.
+     * @param starterCard takes as parameter the starter card as it is the starting point to place other cards.
+     */
     public PlayerBoard(StarterCard starterCard) {
         this.placementOrder = new ArrayList<>();
         this.board = new BoardTile[50][50];
@@ -29,6 +50,9 @@ public class PlayerBoard implements Serializable {
         this.availableResources = new HashMap<>();
     }
 
+    /**
+     * Updates the availableResources Map every time that a card is added.
+     */
     private void updateAvailableResources() {
         Map<Symbol, Integer> tileSymbols;
         for(BoardTile tile : this.getPlacementOrder()){
@@ -43,14 +67,26 @@ public class PlayerBoard implements Serializable {
         }
     }
 
+    /**
+     * Getter for availableResources. At the moment is not used.
+     * @return the map that tracks the available resources.
+     */
     public Map<Symbol, Integer> getAvailableResources() {
         return Collections.unmodifiableMap(availableResources);
     }
 
+    /**
+     * Getter for the placementOrder list.
+     * @return the placementOrder.
+     */
     public List<BoardTile> getPlacementOrder() {
         return Collections.unmodifiableList(placementOrder);
     }
 
+    /**
+     * Getter for the starter tile.
+     * @return the starter tile.
+     */
     public BoardTile getStarterTile() {
         return starterTile;
     }
@@ -117,6 +153,12 @@ public class PlayerBoard implements Serializable {
         return true;
     }
 
+    /**
+     * This method checks if the player has enough resources in his player board to pay the cost of the card.
+     * For card with no cost the method returns true.
+     * @param card is a {@link PlaceableCard} containing all the inforamtion regarding cards that can be played.
+     * @return true if the cost is met false otherwise.
+     */
     public boolean isCardCostMet(PlaceableCard card){
         Map<Symbol, Integer> cardCost = card.getPrice();
 
