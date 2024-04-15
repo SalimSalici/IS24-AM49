@@ -23,7 +23,7 @@ public class ResourceCard extends PlaceableCard implements Serializable {
      * @param tl the symbol in the top left corner of the card's front
      * @param br the symbol in the bottom right corner of the card's front
      * @param bl the symbol in the bottom left corner of the card's front
-     * @param resource an object of type {@link Resource}
+     * @param resource the resource the card belongs to
      * @param points the amount of points given to the player assuming the condition shown on the card
      *               is accomplished a single time
      */

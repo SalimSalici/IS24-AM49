@@ -18,7 +18,10 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Main class of the game model.
+ * Main class for managing the state and flow of the game. This class encapsulates all the essential components
+ * like players, decks, game state, and other dynamic elements that change throughout the game. It implements
+ * Serializable for object serialization, supporting saving and loading game states, and EventEmitter for event
+ * handling to manage game-related events dynamically.
  */
 public class Game implements Serializable, EventEmitter {
     private final int gameId;
@@ -40,8 +43,8 @@ public class Game implements Serializable, EventEmitter {
 
     /**
      * Constructor of the Game class.
-     * @param gameId is unique to each game.
-     * @param numPlayers number of players that are playing the current game.
+     * @param gameId is unique to each game
+     * @param numPlayers number of players that are playing the current game
      */
     public Game(int gameId, int numPlayers) {
         this.gameId = gameId;
@@ -72,46 +75,84 @@ public class Game implements Serializable, EventEmitter {
         return resourceGameDeck.isEmpty() && goldGameDeck.isEmpty();
     }
 
+    /**
+     * @param state sets the new state of the game
+     */
     public void setGameState(GameState state) {
         this.gameState = state;
     }
 
+    /**
+     * Retrieves a player by their username.
+     *
+     * @param username the username of the player to retrieve.
+     * @return the player if found, null otherwise.
+     */
     public Player getPlayerByUsername(String username) {
         for (Player p : this.players)
             if (p.getUsername().equals(username)) return p;
         return null;
     }
 
+    /**
+     * Executes a game action based on the received message.
+     *
+     * @param msg the message received from a player, dictating the action to be performed.
+     * @throws Exception if the action cannot be executed.
+     */
     public void executeAction(MessageToServer msg) throws Exception {
         this.gameState.execute(msg);
     }
 
+    /**
+     * @return the game deck containing resource cards
+     */
     public GameDeck<ResourceCard> getResourceGameDeck() {
         return this.resourceGameDeck;
     }
 
+    /**
+     * @return the game deck containing gold cards
+     */
     public GameDeck<GoldCard> getGoldGameDeck() {
         return this.goldGameDeck;
     }
 
+    /**
+     * Increments the turn counter for the game.
+     */
     public void incrementTurn() {
         this.turn++;
     }
 
+    /**
+     * Increments the round counter for the game.
+     */
     public void incrementRound() {
         this.round++;
     }
 
+    /**
+     * @param player sets the player who is currently taking their turn
+     */
     public void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
     }
 
+    /**
+     * Determines and returns the next player to take a turn.
+     *
+     * @return the next player in the turn order
+     */
     public Player getNextPlayer() {
         if (this.currentPlayer.equals(this.players.getLast()))
             return this.players.getFirst();
         return players.get(players.indexOf(currentPlayer) + 1);
     }
 
+    /**
+     * @return the array of common objectives
+     */
     public ObjectiveCard[] getCommonObjectives() {
         return this.commonObjectives;
     }
@@ -143,45 +184,79 @@ public class Game implements Serializable, EventEmitter {
     }
     */
 
+    /**
+     * @return the unique identifier of the game
+     */
     public int getGameId() {
         return gameId;
     }
 
+    /**
+     * @return the number of players participating in the game
+     */
     public int getNumPlayers() {
         return numPlayers;
     }
 
+    /**
+     * @return the current round number of the game
+     */
     public int getRound() {
         return round;
     }
+
+    /**
+     * @return the current turn number within the current round
+     */
     public int getTurn() {
         return turn;
     }
 
+    /**
+     * @return the player that will play first in each round
+     */
     public Player getStartingPlayer() {
         return this.players.getFirst();
     }
 
+    /**
+     * @return the player that will play last in each round
+     */
     public Player getLastPlayer() {
         return this.players.getLast();
     }
 
+    /**
+     * @return the player who is currently taking their turn
+     */
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
+    /**
+     * @return the list of all players currently in the game
+     */
     public List<Player> getPlayers() {
         return this.players;
     }
 
+    /**
+     * @return the current state of the game
+     */
     public GameState getGameState() {
         return gameState;
     }
 
+    /**
+     * @return the first of the two common objectives set for the game
+     */
     public ObjectiveCard getFirstCommonObjective() {
         return commonObjectives[0];
     }
 
+    /**
+     * @return the second of the two common objectives set for the game
+     */
     public ObjectiveCard getSecondCommonObjective() {
         return commonObjectives[1];
     }
@@ -201,18 +276,30 @@ public class Game implements Serializable, EventEmitter {
         this.eventManager.triggerEvent(gameEvent);
     }
 
+    /**
+     * @return true if the game has ended, false otherwise
+     */
     public boolean isEndGame() {
         return endGame;
     }
 
+    /**
+     * @param endGame sets true to mark the game as finished, false otherwise
+     */
     public void setEndGame(boolean endGame) {
         this.endGame = endGame;
     }
 
+    /**
+     * @return true if the current round is the final round of the game, false otherwise
+     */
     public boolean isFinalRound() {
         return finalRound;
     }
 
+    /**
+     * @param finalRound sets true if this should be the final round, false otherwise
+     */
     public void setFinalRound(boolean finalRound) {
         this.finalRound = finalRound;
     }

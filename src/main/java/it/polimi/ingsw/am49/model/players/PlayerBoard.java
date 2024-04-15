@@ -156,8 +156,8 @@ public class PlayerBoard implements Serializable {
     /**
      * This method checks if the player has enough resources in his player board to pay the cost of the card.
      * For card with no cost the method returns true.
-     * @param card is a {@link PlaceableCard} containing all the inforamtion regarding cards that can be played.
-     * @return true if the cost is met false otherwise.
+     * @param card is a {@link PlaceableCard} containing all the inforamtion regarding cards that can be played
+     * @return true if the cost is met false otherwise
      */
     public boolean isCardCostMet(PlaceableCard card){
         Map<Symbol, Integer> cardCost = card.getPrice();
@@ -183,6 +183,14 @@ public class PlayerBoard implements Serializable {
         return true;
     }
 
+    /**
+     * Calculates and returns the coordinates of a card based on a specified relative position to another card's coordinates.
+     *
+     * @param relativePosition the relative position to the current card
+     * @param row the row index of the current card in the grid
+     * @param col the column index of the current card in the grid
+     * @return a Pair object containing the row and column indices of the card at the calculated relative position
+     */
     public Pair<Integer, Integer> getCoords(RelativePosition relativePosition, int row, int col) {
         switch (relativePosition) {
             case TOP -> {

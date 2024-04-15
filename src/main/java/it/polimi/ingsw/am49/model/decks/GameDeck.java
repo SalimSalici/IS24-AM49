@@ -37,6 +37,9 @@ public class GameDeck<T extends Card> implements Serializable {
         return this.deck.size();
     }
 
+    /**
+     * @return true if the deck is empty, false otherwise
+     */
     public boolean isEmpty(){
         return this.deck.isEmpty();
     }
