@@ -1,10 +1,7 @@
 package it.polimi.ingsw.am49.controller;
 
 import it.polimi.ingsw.am49.Client;
-import it.polimi.ingsw.am49.messages.mtc.ChooseObjectiveMTC;
-import it.polimi.ingsw.am49.messages.mtc.ChooseStarterSideMTC;
-import it.polimi.ingsw.am49.messages.mtc.CommonObjectivesMTC;
-import it.polimi.ingsw.am49.messages.mtc.MessageToClient;
+import it.polimi.ingsw.am49.messages.mtc.*;
 import it.polimi.ingsw.am49.messages.mts.GameActionMTS;
 import it.polimi.ingsw.am49.messages.mts.MessageToServer;
 import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
@@ -31,7 +28,7 @@ public class SingleGameController implements EventListener {
         this.clients = new ArrayList<>();
         this.game = new Game(id, numPlayers);
 
-        clients.add(client);
+        //clients.add(client);
 
         for(GameEventType eventType: GameEventType.values()){
             this.game.addEventListener(eventType, this);
@@ -79,15 +76,34 @@ public class SingleGameController implements EventListener {
                 handleChoosableObjectivesAssigned((ChoosableObjectivesAssignedEvent) event);
                 break;
             }
+            case GameEventType.PERSONAL_OBJECTIVE_CHOSEN_EVENT:{
+                handlePersonalObjectiveChosenEvent((PersonalObjectiveChosenEvent) event);
+                break;
+            }
+            case GameEventType.CARD_PLACED_EVENT:{
+                handleCardPlacedEvent((CardPlacedEvent) event);
+                break;
+            }
+            case GameEventType.CARD_DRAWN_EVENT:{
+                handleCardDrawnEvent((CardDrawnEvent) event);
+                break;
+            }
         }
     }
 
     private void handlePlayerJoinedEvent(PlayerJoinedEvent event){
-
+        event.players().forEach(player -> {
+            PlayerJoinedMTC mtc = new PlayerJoinedMTC(player.getUsername());
+            this.broadCast(mtc);
+        });
     }
 
     private void handlePlayerLeftEvent(PlayerLeftEvent event){
         clients.removeAll((event).players().stream().map(player -> getClientByUsername(player.getUsername())).toList());
+        event.players().forEach(player -> {
+            PlayerLeftMTC mtc = new PlayerLeftMTC(player.getUsername());
+            this.broadCast(mtc);
+        });
     }
 
     private void handleStarterCardAssigned(StarterCardAssignedEvent event){
@@ -121,6 +137,21 @@ public class SingleGameController implements EventListener {
             );
             this.getClientByUsername(player.getUsername()).sendMessage(mtc);
         });
+    }
+
+    private void handlePersonalObjectiveChosenEvent (PersonalObjectiveChosenEvent event){
+        PersonalObjectiveChosenMTC mtc = new PersonalObjectiveChosenMTC(event.objectiveCard().getId());
+        this.getClientByUsername(event.player().getUsername()).sendMessage(mtc);
+    }
+
+    private void handleCardPlacedEvent (CardPlacedEvent event){
+        CardPlacedMTC mtc = new CardPlacedMTC(event.boardTile().getCard().getId(), event.player().getUsername());
+        broadCast(mtc);
+    }
+
+    private void handleCardDrawnEvent (CardDrawnEvent event){
+        CardDrawnMTC mtc = new CardDrawnMTC(event.card().getId());
+        this.getClientByUsername(event.player().getUsername()).sendMessage(mtc);
     }
 
     private Client getClientByUsername(String username) {

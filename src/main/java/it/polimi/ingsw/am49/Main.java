@@ -38,43 +38,41 @@ public class Main {
         lori.chooseStarterSide(true);
 
 
-//        while (true) {
-//            Random random = new Random();
-//            int i = random.nextInt(200);
-//            try {
-//                nico.chooseObjective(i);
-//                break;
-//            } catch (Exception e) {
-//                System.out.println("nico-force");
-//            }
-//        }
-//        while (true) {
-//            Random random = new Random();
-//            int i = random.nextInt(200);
-//            try {
-//                salim.chooseObjective(i);
-//                break;
-//            } catch (Exception e) {
-//                System.err.println(e.getMessage());
-//                e.printStackTrace();
-//                System.out.println("salim-force");
-//            }
-//        }
-//
-//        while (true) {
-//            Random random = new Random();
-//            int i = random.nextInt(200);
-//            try {
-//                lori.chooseObjective(i);
-//                break;
-//            } catch (Exception e) {
-//                System.out.println("lori-force");
-//            }
-//        }
-//
-//        PlayerBoard playerBoard = new PlayerBoard(DeckLoader.getInstance().getNewStarterCardById(82));
-//        BoardTile starterTile = playerBoard.getStarterTile();
-//        nico.placeCard(34, starterTile.getRow(), starterTile.getCol(), CornerPosition.TOP_LEFT, false);
+        while (true) {
+            Random random = new Random();
+            int i = random.nextInt(200);
+            try {
+                nico.chooseObjective(i);
+                break;
+            } catch (Exception e) {
+                //System.out.println("nico-force");
+            }
+        }
+        while (true) {
+            Random random = new Random();
+            int i = random.nextInt(200);
+            try {
+                salim.chooseObjective(i);
+                break;
+            } catch (Exception e) {
+                //System.out.println("salim-force");
+            }
+        }
+
+        while (true) {
+            Random random = new Random();
+            int i = random.nextInt(200);
+            try {
+                lori.chooseObjective(i);
+                break;
+            } catch (Exception e) {
+                //System.out.println("lori-force");
+            }
+        }
+
+        PlayerBoard playerBoard = new PlayerBoard(DeckLoader.getInstance().getNewStarterCardById(82));
+        BoardTile starterTile = playerBoard.getStarterTile();
+        nico.placeCard(34, starterTile.getRow(), starterTile.getCol(), CornerPosition.TOP_LEFT, false);
 
         System.out.println("The end...");
 
