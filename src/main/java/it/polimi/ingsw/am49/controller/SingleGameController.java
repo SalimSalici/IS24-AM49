@@ -1,19 +1,22 @@
 package it.polimi.ingsw.am49.controller;
 
+import it.polimi.ingsw.am49.Client;
+import it.polimi.ingsw.am49.messages.mtc.ChooseObjectiveMTC;
 import it.polimi.ingsw.am49.messages.mtc.MessageToClient;
-import it.polimi.ingsw.am49.messages.mts.JoinGameMTS;
-import it.polimi.ingsw.am49.messages.mts.LeaveGameMTS;
+import it.polimi.ingsw.am49.messages.mts.GameActionMTS;
 import it.polimi.ingsw.am49.messages.mts.MessageToServer;
 import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
 import it.polimi.ingsw.am49.model.Game;
-import it.polimi.ingsw.am49.model.events.ClientJoinedEvent;
-import it.polimi.ingsw.am49.model.events.ClientLeftEvent;
-import it.polimi.ingsw.am49.model.events.EventListener;
-import it.polimi.ingsw.am49.model.events.GameEvent;
+import it.polimi.ingsw.am49.model.actions.JoinGameAction;
+import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
+import it.polimi.ingsw.am49.model.cards.Card;
+import it.polimi.ingsw.am49.model.events.*;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
+import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SingleGameController implements EventListener {
 
@@ -27,12 +30,17 @@ public class SingleGameController implements EventListener {
         this.game.addEventListener(GameEventType.PLAYER_JOINED_EVENT, this);
         this.game.addEventListener(GameEventType.PLAYER_LEFT_EVENT, this);
 
-        sendMessge(new JoinGameMTS(client));
+        sendMessge(new GameActionMTS(client, new JoinGameAction(client.getUserName())));
         clients.add(client);
     }
 
     public void sendMessge(MessageToServer msg) throws Exception {
-        this.game.executeAction(msg);
+        switch (msg.getType()) {
+            case MessageToServerType.GAME_ACTION: {
+                this.game.executeAction(((GameActionMTS)msg).getAction());
+                break;
+            }
+        }
     }
 
     public void broadCast(MessageToClient msg) {
@@ -45,13 +53,43 @@ public class SingleGameController implements EventListener {
     public void onEventTrigger(GameEvent event) {
         switch (event.getType()) {
             case GameEventType.PLAYER_JOINED_EVENT: {
-                clients.add(((ClientJoinedEvent) event).client());
+                handlePlayerJoinedEvent((PlayerJoinedEvent)event);
                 break;
             }
             case GameEventType.PLAYER_LEFT_EVENT: {
-                clients.remove(((ClientLeftEvent) event).client());
+                handlePlayerLeftEvent((PlayerLeftEvent)event);
                 break;
             }
         }
+    }
+
+    private void handlePlayerJoinedEvent(PlayerJoinedEvent event){
+        clients.addAll((event).players().stream().map(player -> getClientByUsername(player.getUsername())).toList());
+    }
+
+    private void handlePlayerLeftEvent(PlayerLeftEvent event){
+        clients.removeAll((event).players().stream().map(player -> getClientByUsername(player.getUsername())).toList());
+    }
+
+    private void handleChoosableObjectivesAssigned(ChoosableObjectivesAssignedEvent event) {
+        Map<Player, List<ObjectiveCard>> playersToObjectives = event.playersToObjectives();
+        Client client;
+
+        playersToObjectives.forEach((player, cards) -> {
+
+            ChooseObjectiveMTC mtc = new ChooseObjectiveMTC(
+                    cards.stream()
+                            .map(Card::getId)
+                            .toList()
+            );
+            this.getClientByUsername(player.getUsername()).sendMessage(mtc);
+        });
+    }
+
+    private Client getClientByUsername(String username) {
+        for (Client c : this.clients)
+            if (c.getUserName().equals(username))
+                return c;
+        return null;
     }
 }

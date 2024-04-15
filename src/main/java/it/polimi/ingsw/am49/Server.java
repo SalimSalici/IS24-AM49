@@ -1,6 +1,7 @@
-package it.polimi.ingsw.am49.controller;
+package it.polimi.ingsw.am49;
 
-import it.polimi.ingsw.am49.messages.mts.CreateGameMTS;
+import it.polimi.ingsw.am49.controller.SingleGameController;
+import it.polimi.ingsw.am49.messages.mts.CreateNewGameMTS;
 import it.polimi.ingsw.am49.messages.mts.MessageToServer;
 import it.polimi.ingsw.am49.model.Game;
 
@@ -37,7 +38,7 @@ public class Server {
     }
 
 
-    public SingleGameController createLobby(CreateGameMTS msg) throws Exception {
+    public SingleGameController createLobby(CreateNewGameMTS msg) throws Exception {
         int id = 0;//generateId();
         SingleGameController controller = new SingleGameController(id, msg.getClient(), msg.getNumOfPlayers());
         controllers.put(id, controller);

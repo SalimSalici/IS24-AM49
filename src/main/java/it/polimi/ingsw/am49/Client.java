@@ -1,9 +1,10 @@
-package it.polimi.ingsw.am49.controller;
+package it.polimi.ingsw.am49;
 
+import it.polimi.ingsw.am49.controller.SingleGameController;
 import it.polimi.ingsw.am49.messages.mtc.MessageToClient;
-import it.polimi.ingsw.am49.messages.mts.*;
-import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
-import it.polimi.ingsw.am49.model.decks.DeckLoader;
+import it.polimi.ingsw.am49.messages.mts.CreateNewGameMTS;
+import it.polimi.ingsw.am49.messages.mts.GameActionMTS;
+import it.polimi.ingsw.am49.model.actions.*;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 
 public class Client {
@@ -22,7 +23,7 @@ public class Client {
 
     public void createGame(int numOfPlayers){
         try {
-            this.controller = this.server.createLobby(new CreateGameMTS(this, numOfPlayers));
+            this.controller = this.server.createLobby(new CreateNewGameMTS(this, numOfPlayers));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -31,8 +32,8 @@ public class Client {
 
     public void joinGame(int id){
         try {
-            this.controller = this.server.joinLobby(new JoinGameMTS(this), id);
-            this.controller.sendMessge(new JoinGameMTS(this));
+            this.controller = this.server.joinLobby(new GameActionMTS(this, new JoinGameAction(this.userName)), id);
+            this.controller.sendMessge(new GameActionMTS(this, new JoinGameAction(this.userName)));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -43,7 +44,7 @@ public class Client {
         if(this.controller == null) throw new Exception("You must be in a game to leave it!");
 
         try {
-            this.controller.sendMessge(new LeaveGameMTS(this));
+            this.controller.sendMessge(new GameActionMTS(this, new LeaveGameAction(this.userName)));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -54,7 +55,7 @@ public class Client {
         if(this.controller == null) throw new Exception("You are not in the game");
 
         try {
-            this.controller.sendMessge(new ChooseStarterSideMTS(this.getUserName(), flipped));
+            this.controller.sendMessge(new GameActionMTS(this, new ChooseStarterSideAction(this.userName, flipped)));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -75,14 +76,14 @@ public class Client {
     public void chooseObjective(int objective) throws Exception{
         if(this.controller == null) throw new Exception("You are not in the game");
 
-        this.controller.sendMessge(new ChooseObjectiveMTS(this.getUserName(), objective));
+        this.controller.sendMessge(new GameActionMTS(this, new ChooseObjectiveAction(this.userName, objective)));
     }
 
     public void placeCard(int cardId, int parentRow, int parentCol, CornerPosition cornerPosition, boolean flipped) throws Exception{
         if(this.controller == null) throw new Exception("You are not in the game");
 
         try {
-            this.controller.sendMessge(new PlaceCardMTS(this.getUserName(),cardId, parentRow, parentCol, cornerPosition, flipped));
+            this.controller.sendMessge(new GameActionMTS(this, new PlaceCard(this.getUserName(),cardId, parentRow, parentCol, cornerPosition, flipped)));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
