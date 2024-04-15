@@ -24,7 +24,7 @@ public abstract class GameState {
     }
 
     public void setUp() {
-        this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound()));
+        this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound(), this.game.getCurrentPlayer()));
     }
 
     public abstract void execute(GameAction action) throws Exception;

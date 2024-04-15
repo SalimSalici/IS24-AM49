@@ -7,6 +7,7 @@ import it.polimi.ingsw.am49.model.actions.JoinGameAction;
 import it.polimi.ingsw.am49.model.actions.LeaveGameAction;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
+import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.events.ChoosableObjectivesAssignedEvent;
 import it.polimi.ingsw.am49.model.events.EventListener;
@@ -17,6 +18,7 @@ import it.polimi.ingsw.am49.model.players.PlayerBoard;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
     @SuppressWarnings("CallToPrintStackTrace")
@@ -72,7 +74,12 @@ public class Main {
 
         PlayerBoard playerBoard = new PlayerBoard(DeckLoader.getInstance().getNewStarterCardById(82));
         BoardTile starterTile = playerBoard.getStarterTile();
-        nico.placeCard(34, starterTile.getRow(), starterTile.getCol(), CornerPosition.TOP_LEFT, false);
+
+        Scanner scanner = new Scanner(System.in);
+        int value = scanner.nextInt();
+
+        nico.placeCard(value, starterTile.getRow(), starterTile.getCol(), CornerPosition.TOP_LEFT, false);
+        nico.drawCard(DrawPosition.GOLD_DECK, 0);
 
         System.out.println("The end...");
 

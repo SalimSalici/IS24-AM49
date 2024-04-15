@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.messages.mts.CreateNewGameMTS;
 import it.polimi.ingsw.am49.messages.mts.GameActionMTS;
 import it.polimi.ingsw.am49.model.actions.*;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
+import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 
 public class Client {
     private final String userName;
@@ -18,7 +19,7 @@ public class Client {
     }
 
     public void sendMessage(MessageToClient msg){
-        System.out.println(msg.getMessage());
+        System.out.println(this.userName + ": " + msg.getMessage());
     }
 
     public void createGame(int numOfPlayers){
@@ -84,6 +85,17 @@ public class Client {
 
         try {
             this.controller.sendMessge(new GameActionMTS(this, new PlaceCard(this.getUserName(),cardId, parentRow, parentCol, cornerPosition, flipped)));
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void drawCard(DrawPosition drawPosition, int idOfRevealedDrawn) throws Exception{
+        if(this.controller == null) throw new Exception("You are not in the game");
+
+        try {
+            this.controller.sendMessge(new GameActionMTS(this, new DrawCardAction(this.userName, drawPosition, idOfRevealedDrawn)));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();

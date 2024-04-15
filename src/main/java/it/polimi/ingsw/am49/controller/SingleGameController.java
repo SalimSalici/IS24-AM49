@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.controller;
 
 import it.polimi.ingsw.am49.Client;
+import it.polimi.ingsw.am49.Main;
 import it.polimi.ingsw.am49.messages.mtc.*;
 import it.polimi.ingsw.am49.messages.mts.GameActionMTS;
 import it.polimi.ingsw.am49.messages.mts.MessageToServer;
@@ -10,6 +11,7 @@ import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.actions.JoinGameAction;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.cards.Card;
+import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.events.*;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
@@ -18,6 +20,7 @@ import it.polimi.ingsw.am49.model.players.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SingleGameController implements EventListener {
 
@@ -80,12 +83,23 @@ public class SingleGameController implements EventListener {
                 handlePersonalObjectiveChosenEvent((PersonalObjectiveChosenEvent) event);
                 break;
             }
+            case GameEventType.PLAYERS_ORDER_SET_EVENT:{
+                handlePlayersOrderSetEvent((PlayersOrderSetEvent) event);
+            }
             case GameEventType.CARD_PLACED_EVENT:{
                 handleCardPlacedEvent((CardPlacedEvent) event);
                 break;
             }
             case GameEventType.CARD_DRAWN_EVENT:{
                 handleCardDrawnEvent((CardDrawnEvent) event);
+                break;
+            }
+            case GameEventType.HAND_UPDATE_EVENT:{
+                handleHandUpdateEvent((HandUpdateEvent) event);
+                break;
+            }
+            case GameEventType.GAME_STATE_CHANGED_EVENT:{
+                handleGameStateChangedEvent((GameStateChangedEvent) event);
                 break;
             }
         }
@@ -144,6 +158,11 @@ public class SingleGameController implements EventListener {
         this.getClientByUsername(event.player().getUsername()).sendMessage(mtc);
     }
 
+    private void handlePlayersOrderSetEvent (PlayersOrderSetEvent event){
+        PlayersOrderMTC mtc = new PlayersOrderMTC(event.playersOrder().stream().map(Player::getUsername).toList());
+        this.broadCast(mtc);
+    }
+
     private void handleCardPlacedEvent (CardPlacedEvent event){
         CardPlacedMTC mtc = new CardPlacedMTC(event.boardTile().getCard().getId(), event.player().getUsername());
         broadCast(mtc);
@@ -152,6 +171,16 @@ public class SingleGameController implements EventListener {
     private void handleCardDrawnEvent (CardDrawnEvent event){
         CardDrawnMTC mtc = new CardDrawnMTC(event.card().getId());
         this.getClientByUsername(event.player().getUsername()).sendMessage(mtc);
+    }
+
+    private void handleHandUpdateEvent (HandUpdateEvent event){
+        HandUpdateMTC mtc = new HandUpdateMTC(event.hand().stream().map(PlaceableCard::getId).collect(Collectors.toSet()));
+        this.getClientByUsername(event.player().getUsername()).sendMessage(mtc);
+    }
+
+    private void handleGameStateChangedEvent (GameStateChangedEvent event){
+        GameStateChangedMTC mtc = new GameStateChangedMTC(event.round(), event.turn(), event.currentPlayer().getUsername());
+        broadCast(mtc);
     }
 
     private Client getClientByUsername(String username) {
