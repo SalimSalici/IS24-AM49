@@ -17,8 +17,8 @@ public class GoldCardTypeAdapter implements JsonDeserializer<GoldCard> {
         JsonObject card = json.getAsJsonObject();
         JsonElement pointsStrategyJson = card.getAsJsonObject("pointsStrategy");
         Map<String, JsonElement> priceJson = card.getAsJsonObject("price").asMap();
-        Map<Resource, Integer> price = new HashMap<>();
-        priceJson.forEach((k, v) -> price.put(Resource.valueOf(k), v.getAsInt()));
+        Map<Symbol, Integer> price = new HashMap<>();
+        priceJson.forEach((k, v) -> price.put(Symbol.valueOf(k), v.getAsInt()));
         PlacementPointsStrategy pointsStrategy = context.deserialize(pointsStrategyJson, PlacementPointsStrategy.class);
         return new GoldCard(
                 card.get("id").getAsInt(),

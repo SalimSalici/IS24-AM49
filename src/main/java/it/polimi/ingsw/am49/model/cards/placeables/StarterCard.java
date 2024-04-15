@@ -4,10 +4,7 @@ import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Each player has only one of these cards and is the first card placed on the player board.
@@ -53,10 +50,11 @@ public class StarterCard extends PlaceableCard implements Serializable {
      * @param brb the symbol in the bottom right corner of the card's back
      * @param blb the symbol in the bottom left corner of the card's back
      */
-    public StarterCard(int id, Symbol tr, Symbol tl, Symbol br, Symbol bl, Resource resource, int points,
-                       PlacementPointsStrategy pointsStrategy, Map<Symbol, Integer> price, List<Resource> centerResources,
-                       Symbol trb, Symbol tlb, Symbol brb, Symbol blb) {
-        super(id, tr, tl, br, bl, resource, points, pointsStrategy, price);
+    public StarterCard(
+            int id, Symbol tr, Symbol tl, Symbol br, Symbol bl, Resource resource, int points,
+            List<Resource> centerResources, Symbol trb, Symbol tlb, Symbol brb, Symbol blb
+    ) {
+        super(id, tr, tl, br, bl, resource, points, new BasicPointsStrategy(), new HashMap<>());
         this.centerResources = new LinkedList<>(centerResources);
         this.trb = trb;
         this.tlb = tlb;
@@ -70,13 +68,22 @@ public class StarterCard extends PlaceableCard implements Serializable {
      * @param other the {@link StarterCard} that is being copied
      */
     public StarterCard(StarterCard other) {
-        super(other.id, other.tr, other.tl, other.br, other.bl, other.resource, other.points, other.pointsStrategy, other.price);
+        super(
+            other.id,
+            other.tr,
+            other.tl,
+            other.br,
+            other.bl,
+            other.resource,
+            other.points,
+            new BasicPointsStrategy(),
+            new HashMap<>()
+        );
         this.centerResources = new LinkedList<>(other.centerResources);
         this.trb = other.trb;
         this.tlb = other.tlb;
         this.brb = other.brb;
         this.blb = other.blb;
-
     }
 
     @Override
