@@ -1,25 +1,15 @@
 package it.polimi.ingsw.am49;
 
-import it.polimi.ingsw.am49.messages.mts.ChooseObjectiveMTS;
-import it.polimi.ingsw.am49.messages.mts.ChooseStarterSideMTS;
-import it.polimi.ingsw.am49.messages.mts.JoinGameMTS;
-import it.polimi.ingsw.am49.messages.mts.LeaveGameMTS;
 import it.polimi.ingsw.am49.model.Game;
-import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
-import it.polimi.ingsw.am49.model.cards.objectives.ObjectivePointsStrategy;
-import it.polimi.ingsw.am49.model.cards.placeables.*;
-import it.polimi.ingsw.am49.model.decks.DeckLoader;
-import it.polimi.ingsw.am49.model.decks.GameDeck;
+import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
+import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
+import it.polimi.ingsw.am49.model.actions.JoinGameAction;
+import it.polimi.ingsw.am49.model.actions.LeaveGameAction;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
-import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 import it.polimi.ingsw.am49.model.events.ChoosableObjectivesAssignedEvent;
 import it.polimi.ingsw.am49.model.events.EventListener;
 import it.polimi.ingsw.am49.model.events.GameEvent;
-import it.polimi.ingsw.am49.model.players.BoardTile;
-import it.polimi.ingsw.am49.model.players.Player;
-import it.polimi.ingsw.am49.model.players.PlayerBoard;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +24,7 @@ public class Main {
         List<String> playerUsernames = List.of("salim", "lorenzo");
 
         playerUsernames.forEach(username -> {
-            JoinGameMTS joinMsg = new JoinGameMTS(username);
+            JoinGameAction joinMsg = new JoinGameAction(username);
             try {
                 game.executeAction(joinMsg);
             } catch (Exception e) {
@@ -44,26 +34,26 @@ public class Main {
         });
 
         try {
-            game.executeAction(new LeaveGameMTS("lorenzo"));
+            game.executeAction(new LeaveGameAction("lorenzo"));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
 
-        game.executeAction(new JoinGameMTS("niccolo"));
-        game.executeAction(new JoinGameMTS("matteo"));
+        game.executeAction(new JoinGameAction("niccolo"));
+        game.executeAction(new JoinGameAction("matteo"));
 
         List<String> playersInGame = List.of("salim", "niccolo", "matteo");
 
-        game.executeAction(new ChooseStarterSideMTS("salim", true));
-        game.executeAction(new ChooseStarterSideMTS("matteo", true));
-        game.executeAction(new ChooseStarterSideMTS("niccolo", false));
+        game.executeAction(new ChooseStarterSideAction("salim", true));
+        game.executeAction(new ChooseStarterSideAction("matteo", true));
+        game.executeAction(new ChooseStarterSideAction("niccolo", false));
 
         ChoosableObjectivesAssignedEvent ev = (ChoosableObjectivesAssignedEvent)stubEventListener.getEvents().stream()
                 .filter(event -> event instanceof ChoosableObjectivesAssignedEvent).findFirst().get();
         ev.playersToObjectives().forEach((player, objectiveCards) -> {
             try {
-                game.executeAction(new ChooseObjectiveMTS(player.getUsername(), objectiveCards.getFirst().getId()));
+                game.executeAction(new ChooseObjectiveAction(player.getUsername(), objectiveCards.getFirst().getId()));
             } catch (Exception e) {
                 System.err.println(e.getMessage());
                 e.printStackTrace();

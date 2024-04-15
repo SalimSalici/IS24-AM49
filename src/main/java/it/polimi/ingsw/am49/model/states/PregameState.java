@@ -1,9 +1,9 @@
 package it.polimi.ingsw.am49.model.states;
 
-import it.polimi.ingsw.am49.messages.mts.JoinGameMTS;
-import it.polimi.ingsw.am49.messages.mts.LeaveGameMTS;
-import it.polimi.ingsw.am49.messages.mts.MessageToServer;
-import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
+import it.polimi.ingsw.am49.model.actions.JoinGameAction;
+import it.polimi.ingsw.am49.model.actions.LeaveGameAction;
+import it.polimi.ingsw.am49.model.actions.GameAction;
+import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
@@ -19,17 +19,17 @@ public class PregameState extends GameState {
     private final int maxPlayers;
 
     public PregameState(Game game, int maxPlayers) {
-        super(GameStateType.PREGAME, game, Set.of(MessageToServerType.JOIN_GAME, MessageToServerType.LEAVE_GAME));
+        super(GameStateType.PREGAME, game, Set.of(GameActionType.JOIN_GAME, GameActionType.LEAVE_GAME));
         this.maxPlayers = maxPlayers;
     }
 
     @Override
-    public void execute(MessageToServer msg) throws Exception {
-        this.checkMsgValidity(msg);
+    public void execute(GameAction action) throws Exception {
+        this.checkActionValidity(action);
 
-        switch (msg.getType()) {
-            case JOIN_GAME -> this.addPlayer((JoinGameMTS) msg);
-            case LEAVE_GAME -> this.removePlayer((LeaveGameMTS) msg);
+        switch (action.getType()) {
+            case JOIN_GAME -> this.addPlayer((JoinGameAction) action);
+            case LEAVE_GAME -> this.removePlayer((LeaveGameAction) action);
             default -> throw new Exception("Malformed message");
         }
 
@@ -41,12 +41,12 @@ public class PregameState extends GameState {
     }
 
     @Override
-    protected boolean isYourTurn(MessageToServer msg) {
+    protected boolean isYourTurn(GameAction action) {
         return true;
     }
 
-    private void addPlayer(JoinGameMTS joinGameMsg) throws Exception {
-        String username = joinGameMsg.getUsername();
+    private void addPlayer(JoinGameAction joinGameAction) throws Exception {
+        String username = joinGameAction.getUsername();
         if (this.game.getPlayerByUsername(username) != null)
             throw new Exception("There already is a player with username '" + username + "'");
 
@@ -55,8 +55,8 @@ public class PregameState extends GameState {
         this.game.triggerEvent(new PlayerJoinedEvent(this.game.getPlayers()));
     }
 
-    private void removePlayer(LeaveGameMTS leaveGameMsg) {
-        String username = leaveGameMsg.getUsername();
+    private void removePlayer(LeaveGameAction leaveGameAction) {
+        String username = leaveGameAction.getUsername();
         this.game.getPlayers().remove(this.game.getPlayerByUsername(username));
         this.game.triggerEvent(new PlayerLeftEvent(this.game.getPlayers()));
     }

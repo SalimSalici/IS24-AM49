@@ -1,6 +1,6 @@
 package it.polimi.ingsw.am49.model.states;
 
-import it.polimi.ingsw.am49.messages.mts.MessageToServer;
+import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.EndgameEvent;
@@ -33,10 +33,10 @@ public class EndGameState extends GameState {
     }
 
     @Override
-    public void execute(MessageToServer msg) throws Exception {}
+    public void execute(GameAction action) throws Exception {}
 
     @Override
-    protected boolean isYourTurn(MessageToServer msg) {
+    protected boolean isYourTurn(GameAction action) {
         return false;
     }
 }

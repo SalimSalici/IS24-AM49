@@ -1,10 +1,9 @@
 package it.polimi.ingsw.am49.model.states;
 
-import it.polimi.ingsw.am49.messages.mts.DrawCardMTS;
-import it.polimi.ingsw.am49.messages.mts.MessageToServer;
-import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
+import it.polimi.ingsw.am49.model.actions.DrawCardAction;
+import it.polimi.ingsw.am49.model.actions.GameAction;
+import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.Game;
-import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.HandUpdateEvent;
@@ -17,15 +16,15 @@ public class DrawCardState extends GameState {
     private final Player currentPlayer;
 
     protected DrawCardState(Game game) {
-        super(GameStateType.DRAW_CARD, game, Set.of(MessageToServerType.DRAW_CARD));
+        super(GameStateType.DRAW_CARD, game, Set.of(GameActionType.DRAW_CARD));
         this.currentPlayer = game.getCurrentPlayer();
     }
 
     @Override
-    public void execute(MessageToServer msg) throws Exception {
-        this.checkMsgValidity(msg);
-        DrawCardMTS drawCardMsg = (DrawCardMTS) msg;
-        DrawPosition drawPosition = drawCardMsg.getDrawPosition();
+    public void execute(GameAction action) throws Exception {
+        this.checkActionValidity(action);
+        DrawCardAction drawCardAction = (DrawCardAction) action;
+        DrawPosition drawPosition = drawCardAction.getDrawPosition();
         switch (drawPosition) {
             case RESOURCE_DECK -> this.currentPlayer.drawCard(this.game.getResourceGameDeck().draw());
             case GOLD_DECK -> this.currentPlayer.drawCard(this.game.getGoldGameDeck().draw());
@@ -49,8 +48,8 @@ public class DrawCardState extends GameState {
     }
 
     @Override
-    protected boolean isYourTurn(MessageToServer msg) {
-        return this.currentPlayer.getUsername().equals(msg.getUsername());
+    protected boolean isYourTurn(GameAction action) {
+        return this.currentPlayer.getUsername().equals(action.getUsername());
     }
 
     private void handleSwitchToNextTurn() {

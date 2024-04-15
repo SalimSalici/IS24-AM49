@@ -1,6 +1,6 @@
 package it.polimi.ingsw.am49.model;
 
-import it.polimi.ingsw.am49.messages.mts.MessageToServer;
+import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.cards.placeables.*;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
@@ -97,11 +97,11 @@ public class Game implements Serializable, EventEmitter {
     /**
      * Executes a game action based on the received message.
      *
-     * @param msg the message received from a player, dictating the action to be performed.
+     * @param action the action received from a player.
      * @throws Exception if the action cannot be executed.
      */
-    public void executeAction(MessageToServer msg) throws Exception {
-        this.gameState.execute(msg);
+    public void executeAction(GameAction action) throws Exception {
+        this.gameState.execute(action);
     }
 
     /**
@@ -245,20 +245,6 @@ public class Game implements Serializable, EventEmitter {
      */
     public GameState getGameState() {
         return gameState;
-    }
-
-    /**
-     * @return the first of the two common objectives set for the game
-     */
-    public ObjectiveCard getFirstCommonObjective() {
-        return commonObjectives[0];
-    }
-
-    /**
-     * @return the second of the two common objectives set for the game
-     */
-    public ObjectiveCard getSecondCommonObjective() {
-        return commonObjectives[1];
     }
 
     @Override

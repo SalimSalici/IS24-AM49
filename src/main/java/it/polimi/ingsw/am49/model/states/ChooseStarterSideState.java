@@ -1,10 +1,9 @@
 package it.polimi.ingsw.am49.model.states;
 
-import it.polimi.ingsw.am49.messages.mts.ChooseStarterSideMTS;
-import it.polimi.ingsw.am49.messages.mts.MessageToServer;
-import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
+import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
+import it.polimi.ingsw.am49.model.actions.GameAction;
+import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.Game;
-import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
@@ -32,7 +31,7 @@ public class ChooseStarterSideState extends GameState {
     private final int starterHandGolds = 1;
 
     protected ChooseStarterSideState(Game game) {
-        super(GameStateType.CHOOSE_STARTER_SIDE, game, Set.of(MessageToServerType.CHOOSE_STARTER_SIDE));
+        super(GameStateType.CHOOSE_STARTER_SIDE, game, Set.of(GameActionType.CHOOSE_STARTER_SIDE));
         this.playersChoosing = new HashSet<>(game.getPlayers());
         this.notYourTurnMessage =
                 "You have already choosen the side of your starter card. You must wait for the other players.";
@@ -50,11 +49,11 @@ public class ChooseStarterSideState extends GameState {
     }
 
     @Override
-    public void execute(MessageToServer msg) throws Exception {
-        this.checkMsgValidity(msg);
+    public void execute(GameAction action) throws Exception {
+        this.checkActionValidity(action);
 
-        Player player = this.game.getPlayerByUsername(msg.getUsername());
-        boolean flipped = ((ChooseStarterSideMTS)msg).getFlipped();
+        Player player = this.game.getPlayerByUsername(action.getUsername());
+        boolean flipped = ((ChooseStarterSideAction)action).getFlipped();
         player.chooseStarterSide(flipped);
         this.game.triggerEvent(new CardPlacedEvent(player, player.getBoard().getStarterTile()));
 
@@ -66,8 +65,8 @@ public class ChooseStarterSideState extends GameState {
     }
 
     @Override
-    protected boolean isYourTurn(MessageToServer msg) {
-        return playersChoosing.contains(this.game.getPlayerByUsername(msg.getUsername()));
+    protected boolean isYourTurn(GameAction action) {
+        return playersChoosing.contains(this.game.getPlayerByUsername(action.getUsername()));
     }
 
     private void assignInitialHand() throws Exception {

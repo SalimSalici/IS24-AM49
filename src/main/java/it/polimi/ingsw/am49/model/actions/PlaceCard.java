@@ -1,8 +1,8 @@
-package it.polimi.ingsw.am49.messages.mts;
+package it.polimi.ingsw.am49.model.actions;
 
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 
-public class PlaceCardMTS extends MessageToServer {
+public class PlaceCard extends GameAction {
 
     private final int cardId;
     private final int parentRow;
@@ -10,8 +10,8 @@ public class PlaceCardMTS extends MessageToServer {
     private final CornerPosition cornerPosition;
     private final boolean flipped;
 
-    public PlaceCardMTS(String username, int cardId, int parentRow, int parentCol, CornerPosition cornerPosition, boolean flipped) {
-        super(MessageToServerType.PLACE_CARD, username);
+    public PlaceCard(String username, int cardId, int parentRow, int parentCol, CornerPosition cornerPosition, boolean flipped) {
+        super(GameActionType.PLACE_CARD, username);
         this.cardId = cardId;
         this.parentRow = parentRow;
         this.parentCol = parentCol;

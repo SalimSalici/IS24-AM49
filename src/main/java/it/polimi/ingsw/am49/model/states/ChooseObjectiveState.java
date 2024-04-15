@@ -1,8 +1,8 @@
 package it.polimi.ingsw.am49.model.states;
 
-import it.polimi.ingsw.am49.messages.mts.ChooseObjectiveMTS;
-import it.polimi.ingsw.am49.messages.mts.MessageToServer;
-import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
+import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
+import it.polimi.ingsw.am49.model.actions.GameAction;
+import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
@@ -21,7 +21,7 @@ public class ChooseObjectiveState extends GameState {
     private final Map<Player, List<ObjectiveCard>> playersToObjectives;
 
     protected ChooseObjectiveState(Game game) {
-        super(GameStateType.CHOOSE_OBJECTIVE, game, Set.of(MessageToServerType.CHOOSE_OBJECTIVE));
+        super(GameStateType.CHOOSE_OBJECTIVE, game, Set.of(GameActionType.CHOOSE_OBJECTIVE));
         this.playersToObjectives = new HashMap<>();
         this.notYourTurnMessage =
                 "You have already choosen your personal objective. You must wait for the other players.";
@@ -53,12 +53,12 @@ public class ChooseObjectiveState extends GameState {
     }
 
     @Override
-    public void execute(MessageToServer msg) throws Exception {
-        this.checkMsgValidity(msg);
-        ChooseObjectiveMTS chooseObjectiveMsg = (ChooseObjectiveMTS) msg;
+    public void execute(GameAction action) throws Exception {
+        this.checkActionValidity(action);
+        ChooseObjectiveAction chooseObjectiveAction = (ChooseObjectiveAction) action;
 
-        Player player = this.game.getPlayerByUsername(msg.getUsername());
-        int objectiveId = chooseObjectiveMsg.getObjectiveId();
+        Player player = this.game.getPlayerByUsername(action.getUsername());
+        int objectiveId = chooseObjectiveAction.getObjectiveId();
         List<ObjectiveCard> playerObjectives = this.playersToObjectives.get(player);
         ObjectiveCard chosenObjectiveCard = this.getObjectiveById(objectiveId, playerObjectives);
 
@@ -75,8 +75,8 @@ public class ChooseObjectiveState extends GameState {
     }
 
     @Override
-    protected boolean isYourTurn(MessageToServer msg) {
-        return this.playersToObjectives.containsKey(this.game.getPlayerByUsername(msg.getUsername()));
+    protected boolean isYourTurn(GameAction action) {
+        return this.playersToObjectives.containsKey(this.game.getPlayerByUsername(action.getUsername()));
     }
 
     private ObjectiveCard getObjectiveById(int id, List<ObjectiveCard> objectiveCards) {
