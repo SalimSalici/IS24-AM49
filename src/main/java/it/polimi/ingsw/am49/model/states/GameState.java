@@ -14,8 +14,6 @@ public abstract class GameState {
     protected final GameStateType type;
     protected final Game game;
     protected final Set<MessageToServerType> acceptableMessageTypes;
-    protected GameState nextState;
-
     protected String notYourTurnMessage;
 
     protected GameState(GameStateType type, Game game, Set<MessageToServerType> acceptableMessageTypes) {
@@ -31,8 +29,7 @@ public abstract class GameState {
 
     public abstract void execute(MessageToServer msg) throws Exception;
 
-    public void goToNextState() throws Exception {
-        GameState nextState = this.nextState;
+    public void goToNextState(GameState nextState) throws Exception {
         this.game.setGameState(nextState);
         try {
             nextState.setUp();

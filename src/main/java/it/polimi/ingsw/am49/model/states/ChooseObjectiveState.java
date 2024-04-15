@@ -70,10 +70,8 @@ public class ChooseObjectiveState extends GameState {
         this.playersToObjectives.remove(player);
         this.game.triggerEvent(new PersonalObjectiveChosenEvent(player, chosenObjectiveCard));
 
-        if (this.playersToObjectives.isEmpty()) {
-            this.nextState = new PlaceCardState(this.game);
-            this.goToNextState();
-        }
+        if (this.playersToObjectives.isEmpty())
+            this.goToNextState(new PlaceCardState(this.game));
     }
 
     @Override

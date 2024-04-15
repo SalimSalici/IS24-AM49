@@ -32,23 +32,20 @@ public class DrawCardState extends GameState {
             // TODO: handle draw from revealed cards
         }
 
-        // TODO: player.hand should become a list of PlaceableCards
         this.game.triggerEvent(
-                new HandUpdateEvent(currentPlayer, currentPlayer.getHand().stream().map(c -> (PlaceableCard)c).toList())
+                new HandUpdateEvent(currentPlayer, currentPlayer.getHand().stream().toList())
         );
 
         // Check if game is over
         if (this.game.isFinalRound() && this.currentPlayer.equals(this.game.getLastPlayer())) {
-            this.nextState = new EndGameState(this.game);
-            this.goToNextState();
+            this.goToNextState(new EndGameState(this.game));
             return;
         }
 
         // Game is not over, move on to the next turn
         this.handleSwitchToNextTurn();
 
-        this.nextState = new PlaceCardState(this.game);
-        this.goToNextState();
+        this.goToNextState(new PlaceCardState(this.game));
     }
 
     @Override

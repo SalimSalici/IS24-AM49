@@ -39,8 +39,7 @@ public class PlaceCardState extends GameState {
             throw new Exception("Could not place tile");
         }
 
-        this.nextState = new DrawCardState(this.game);
-        this.goToNextState();
+        this.goToNextState(new DrawCardState(this.game));
     }
 
     @Override

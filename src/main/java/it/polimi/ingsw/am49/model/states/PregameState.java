@@ -18,16 +18,6 @@ public class PregameState extends GameState {
 
     private final int maxPlayers;
 
-    /**
-     * The number of {@link it.polimi.ingsw.am49.model.cards.placeables.ResourceCard}'s in the starter card;
-     */
-    private final int starterHandResources = 2;
-
-    /**
-     * The number of {@link it.polimi.ingsw.am49.model.cards.placeables.GoldCard}'s in the starter card;
-     */
-    private final int starterHandGolds = 1;
-
     public PregameState(Game game, int maxPlayers) {
         super(GameStateType.PREGAME, game, Set.of(MessageToServerType.JOIN_GAME, MessageToServerType.LEAVE_GAME));
         this.maxPlayers = maxPlayers;
@@ -44,9 +34,9 @@ public class PregameState extends GameState {
         }
 
         if (this.game.getPlayers().size() >= this.maxPlayers) {
-            assignColor(this.game.getPlayers());
-            this.nextState = new ChooseStarterSideState(this.game);
-            this.goToNextState();
+            this.assignColor(this.game.getPlayers());
+            Collections.shuffle(this.game.getPlayers());
+            this.goToNextState(new ChooseStarterSideState(this.game));
         }
     }
 
@@ -84,23 +74,6 @@ public class PregameState extends GameState {
 
         for(int i = 0; i < players.size(); i++){
             players.get(i).setColor(colorsList.get(i));
-        }
-    }
-
-    /**
-     * This method assigns the starting card to every palayer.
-     * @param players a list of all the players, is stored in {@link Game}.
-     * @throws Exception if you have to many cards, see {@link Player}.
-     */
-    private void assignHand(List<Player> players) throws Exception {
-        for (Player player : players) {
-            for (int i = 0; i < starterHandResources; i++) {
-                player.drawCard(this.game.getResourceGameDeck().draw());
-            }
-
-            for (int i = 0; i < starterHandGolds; i++) {
-                player.drawCard(this.game.getGoldGameDeck().draw());
-            }
         }
     }
 }

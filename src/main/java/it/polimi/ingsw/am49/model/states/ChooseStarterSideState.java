@@ -21,6 +21,16 @@ public class ChooseStarterSideState extends GameState {
 
     private final Set<Player> playersChoosing;
 
+    /**
+     * The number of {@link it.polimi.ingsw.am49.model.cards.placeables.ResourceCard}'s in the starter card;
+     */
+    private final int starterHandResources = 2;
+
+    /**
+     * The number of {@link it.polimi.ingsw.am49.model.cards.placeables.GoldCard}'s in the starter card;
+     */
+    private final int starterHandGolds = 1;
+
     protected ChooseStarterSideState(Game game) {
         super(GameStateType.CHOOSE_STARTER_SIDE, game, Set.of(MessageToServerType.CHOOSE_STARTER_SIDE));
         this.playersChoosing = new HashSet<>(game.getPlayers());
@@ -51,8 +61,7 @@ public class ChooseStarterSideState extends GameState {
         this.playersChoosing.remove(player);
         if (this.playersChoosing.isEmpty()) {
             this.assignInitialHand();
-            this.nextState = new ChooseObjectiveState(this.game);
-            this.goToNextState();
+            this.goToNextState(new ChooseObjectiveState(this.game));
         }
     }
 
@@ -63,13 +72,14 @@ public class ChooseStarterSideState extends GameState {
 
     private void assignInitialHand() throws Exception {
         for (Player p : this.game.getPlayers()) {
-            p.drawCard(this.game.getResourceGameDeck().draw());
-            p.drawCard(this.game.getResourceGameDeck().draw());
-            p.drawCard(this.game.getGoldGameDeck().draw());
+            for (int i = 0; i < this.starterHandResources; i++)
+                p.drawCard(this.game.getResourceGameDeck().draw());
 
-            // TODO: ColouredCard must be deleted. StartedCard, ResourceCard and GoldCard must all extend PlaceableCard directly
+            for (int i = 0; i < this.starterHandGolds; i++)
+                p.drawCard(this.game.getGoldGameDeck().draw());
+
             this.game.triggerEvent(
-                    new HandUpdateEvent(p, p.getHand().stream().map(c -> (PlaceableCard)c).toList())
+                    new HandUpdateEvent(p, p.getHand().stream().toList())
             );
         }
     }
