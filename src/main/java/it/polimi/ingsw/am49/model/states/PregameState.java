@@ -7,8 +7,8 @@ import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
-import it.polimi.ingsw.am49.model.events.PlayerJoinedEvent;
-import it.polimi.ingsw.am49.model.events.PlayerLeftEvent;
+import it.polimi.ingsw.am49.model.events.ClientLeftEvent;
+import it.polimi.ingsw.am49.model.events.ClientJoinedEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 import java.util.*;
 
@@ -52,13 +52,13 @@ public class PregameState extends GameState {
 
         Player newPlayer = new Player(username);
         this.game.getPlayers().add(newPlayer);
-        this.game.triggerEvent(new PlayerJoinedEvent(this.game.getPlayers()));
+        this.game.triggerEvent(new ClientJoinedEvent((joinGameMsg.getClient())));
     }
 
     private void removePlayer(LeaveGameAction leaveGameAction) {
         String username = leaveGameAction.getUsername();
         this.game.getPlayers().remove(this.game.getPlayerByUsername(username));
-        this.game.triggerEvent(new PlayerLeftEvent(this.game.getPlayers()));
+        this.game.triggerEvent(new ClientLeftEvent(leaveGameMsg.getClient()));
     }
 
     /**

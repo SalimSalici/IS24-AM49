@@ -1,15 +1,16 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.Client;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public record PlayerLeftEvent(List<Player> players) implements GameEvent {
+public record ClientLeftEvent(Client client) implements GameEvent {
 
-    public PlayerLeftEvent(List<Player> players) {
-        this.players = new LinkedList<>(players);
+    public ClientLeftEvent(Client client) {
+        this.client = client;
     }
 
     @Override
