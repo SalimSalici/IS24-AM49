@@ -1,0 +1,16 @@
+package it.polimi.ingsw.am49.messages.mtc;
+
+public enum MessageToClientType {
+    CHOOSE_LOBBY,
+    PLAYER_JOINED,
+    PLAYER_LEFT,
+    CHOOSE_STARTER_SIDE,
+    COMMON_OBJECTIVES,
+    CHOOSE_OBJECTIVE,
+    CHOOSEN_PERSONAL_OBJECTIVE,
+    PLAYERS_ORDER,
+    CARD_PLACED,
+    CARD_DRAWN,
+    HAND_UPDATE,
+    GAME_STATE_CHANGED,
+}

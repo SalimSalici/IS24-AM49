@@ -70,7 +70,7 @@ public class ChooseObjectiveState extends GameState {
 
         // TODO: change the ChoosableObjectivesAssignedEvent to be specific for each player, instead of aggretating them
         this.game.triggerEvent(new ChoosableObjectivesAssignedEvent(this.playersToObjectives));
-        this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound()));
+        this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound(), this.game.getCurrentPlayer()));
     }
 
     /**

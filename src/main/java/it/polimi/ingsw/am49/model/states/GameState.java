@@ -49,7 +49,7 @@ public abstract class GameState {
      * Is used to handle some tasks needed for the proprer functioning of the state (es. drowing the common objectives).
      */
     public void setUp() {
-        this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound()));
+        this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound(), this.game.getCurrentPlayer()));
     }
 
     /**

@@ -5,60 +5,81 @@ import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.model.actions.JoinGameAction;
 import it.polimi.ingsw.am49.model.actions.LeaveGameAction;
+import it.polimi.ingsw.am49.model.decks.DeckLoader;
+import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
+import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.events.ChoosableObjectivesAssignedEvent;
 import it.polimi.ingsw.am49.model.events.EventListener;
 import it.polimi.ingsw.am49.model.events.GameEvent;
+import it.polimi.ingsw.am49.model.players.BoardTile;
+import it.polimi.ingsw.am49.model.players.PlayerBoard;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
-
     @SuppressWarnings("CallToPrintStackTrace")
     public static void main(String[] args) throws Exception {
+        Server server = new Server();
 
-        Game game = new Game(42, 3);
-        StubEventListener stubEventListener = new StubEventListener(game);
+        Client nico = new Client("niccolo", server);
+        Client lori = new Client("lorenzo", server);
+        Client salim = new Client("salim", server);
+        Client matte = new Client("matteo", server);
 
-        List<String> playerUsernames = List.of("salim", "lorenzo");
 
-        playerUsernames.forEach(username -> {
-            JoinGameAction joinMsg = new JoinGameAction(username);
+        nico.createGame(3);
+        salim.joinGame(0);
+        lori.joinGame(0);
+
+        nico.chooseStarterSide(true);
+        salim.chooseStarterSide(false);
+        lori.chooseStarterSide(true);
+
+
+        while (true) {
+            Random random = new Random();
+            int i = random.nextInt(200);
             try {
-                game.executeAction(joinMsg);
+                nico.chooseObjective(i);
+                break;
             } catch (Exception e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace();
+                //System.out.println("nico-force");
             }
-        });
-
-        try {
-            game.executeAction(new LeaveGameAction("lorenzo"));
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+        }
+        while (true) {
+            Random random = new Random();
+            int i = random.nextInt(200);
+            try {
+                salim.chooseObjective(i);
+                break;
+            } catch (Exception e) {
+                //System.out.println("salim-force");
+            }
         }
 
-        game.executeAction(new JoinGameAction("niccolo"));
-        game.executeAction(new JoinGameAction("matteo"));
-
-        List<String> playersInGame = List.of("salim", "niccolo", "matteo");
-
-        game.executeAction(new ChooseStarterSideAction("salim", true));
-        game.executeAction(new ChooseStarterSideAction("matteo", true));
-        game.executeAction(new ChooseStarterSideAction("niccolo", false));
-
-        ChoosableObjectivesAssignedEvent ev = (ChoosableObjectivesAssignedEvent)stubEventListener.getEvents().stream()
-                .filter(event -> event instanceof ChoosableObjectivesAssignedEvent).findFirst().get();
-        ev.playersToObjectives().forEach((player, objectiveCards) -> {
+        while (true) {
+            Random random = new Random();
+            int i = random.nextInt(200);
             try {
-                game.executeAction(new ChooseObjectiveAction(player.getUsername(), objectiveCards.getFirst().getId()));
+                lori.chooseObjective(i);
+                break;
             } catch (Exception e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace();
+                //System.out.println("lori-force");
             }
-        });
+        }
+
+        PlayerBoard playerBoard = new PlayerBoard(DeckLoader.getInstance().getNewStarterCardById(82));
+        BoardTile starterTile = playerBoard.getStarterTile();
+
+        Scanner scanner = new Scanner(System.in);
+        int value = scanner.nextInt();
+
+        nico.placeCard(value, starterTile.getRow(), starterTile.getCol(), CornerPosition.TOP_LEFT, false);
+        nico.drawCard(DrawPosition.GOLD_DECK, 0);
 
         System.out.println("The end...");
 

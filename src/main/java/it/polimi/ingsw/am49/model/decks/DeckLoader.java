@@ -145,6 +145,7 @@ public class DeckLoader {
     private List<ResourceCard> loadResourcesFromJson() {
         String filePath = Objects.requireNonNull(DeckLoader.class.getResource("resourceCards.json")).getPath();
 
+
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             return Arrays.stream(this.gson.fromJson(reader, ResourceCard[].class)).toList();
         } catch (IOException ex) {
@@ -197,7 +198,6 @@ public class DeckLoader {
      * See the following path for the objectiveCards JSON file: {@code src/main/resources/objectiveCards.jason}.
      */
     private List<ObjectiveCard> loadObjectivesFromJson() {
-
         String filePath = Objects.requireNonNull(DeckLoader.class.getResource("objectiveCards.json")).getPath();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {

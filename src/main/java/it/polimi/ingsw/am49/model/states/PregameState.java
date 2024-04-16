@@ -9,6 +9,7 @@ import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.PlayerJoinedEvent;
 import it.polimi.ingsw.am49.model.events.PlayerLeftEvent;
+import it.polimi.ingsw.am49.model.events.PlayersOrderSetEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 import java.util.*;
 
@@ -57,6 +58,8 @@ public class PregameState extends GameState {
         if (this.game.getPlayers().size() >= this.maxPlayers) {
             this.assignColor(this.game.getPlayers());
             Collections.shuffle(this.game.getPlayers());
+            this.game.setCurrentPlayer(this.game.getStartingPlayer());
+            this.game.triggerEvent(new PlayersOrderSetEvent(this.game.getPlayers()));
             this.goToNextState(new ChooseStarterSideState(this.game));
         }
     }

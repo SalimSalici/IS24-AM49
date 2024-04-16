@@ -4,8 +4,13 @@ import it.polimi.ingsw.am49.model.actions.DrawCardAction;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.Game;
+import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
+import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
+import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
 import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
+import it.polimi.ingsw.am49.model.events.CardDrawnEvent;
 import it.polimi.ingsw.am49.model.events.HandUpdateEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 
@@ -40,12 +45,20 @@ public class DrawCardState extends GameState {
         this.checkActionValidity(action);
         DrawCardAction drawCardAction = (DrawCardAction) action;
         DrawPosition drawPosition = drawCardAction.getDrawPosition();
+        PlaceableCard drawnCard = null;
         switch (drawPosition) {
-            case RESOURCE_DECK -> this.currentPlayer.drawCard(this.game.getResourceGameDeck().draw());
-            case GOLD_DECK -> this.currentPlayer.drawCard(this.game.getGoldGameDeck().draw());
+            case RESOURCE_DECK: {
+                drawnCard = this.game.getResourceGameDeck().draw();
+                this.currentPlayer.drawCard(drawnCard);
+            }
+            case GOLD_DECK : {
+                drawnCard = this.game.getGoldGameDeck().draw();
+                this.currentPlayer.drawCard(drawnCard);
+            }
             // TODO: handle draw from revealed cards
         }
 
+        this.game.triggerEvent(new CardDrawnEvent(currentPlayer, drawnCard));
         this.game.triggerEvent(
                 new HandUpdateEvent(currentPlayer, currentPlayer.getHand().stream().toList())
         );
