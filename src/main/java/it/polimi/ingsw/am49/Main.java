@@ -84,11 +84,17 @@ public class Main {
             };
 
             System.out.print("choose id card to place: " );
-            int value = scanner.nextInt();
+            int cardId = scanner.nextInt();
+            scanner.nextLine();
+            System.out.print("choose row where to place the card: " );
+            int row = scanner.nextInt();
+            scanner.nextLine();
+            System.out.print("choose col where to place the card: " );
+            int col = scanner.nextInt();
             scanner.nextLine();
 
             if (currentClient != null) {
-                currentClient.placeCard(value, starterTile.getRow(), starterTile.getCol(), CornerPosition.TOP_LEFT, false);
+                currentClient.placeCard(cardId, row, col, CornerPosition.TOP_LEFT, false);
                 currentClient.drawCard(DrawPosition.RESOURCE_DECK, 0);
             } else {
                 System.err.println("currentClient is null");

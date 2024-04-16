@@ -76,7 +76,7 @@ public class Player implements Serializable {
      * @param corner represents the corner on witch the card tries to be placed see {@link CornerPosition}.
      * @throws Exception signals that there aren't enough cards in the hand or that card cost is not met.
      */
-    public void  placeCard(PlaceableCard card, int parentRow, int parentCol, CornerPosition corner) throws Exception {
+    public BoardTile  placeCard(PlaceableCard card, int parentRow, int parentCol, CornerPosition corner) throws Exception {
         if(hand.isEmpty()) throw new Exception("You don't have cards to place");
         if (!hand.contains(card)) throw new Exception("You don't have the card you're trying to place");
 
@@ -91,10 +91,12 @@ public class Player implements Serializable {
         points += card.calculatePoints(board, newTile);
 
         hand.remove(card);
+
+        return newTile;
     }
 
-    public void placeCard(PlaceableCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
-        this.placeCard(card, boardTile.getRow(), boardTile.getCol(), corner);
+    public BoardTile placeCard(PlaceableCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
+        return this.placeCard(card, boardTile.getRow(), boardTile.getCol(), corner);
     }
 
     /**

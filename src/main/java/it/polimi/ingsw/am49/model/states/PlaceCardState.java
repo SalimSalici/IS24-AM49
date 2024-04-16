@@ -7,6 +7,8 @@ import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
+import it.polimi.ingsw.am49.model.events.CardPlacedEvent;
+import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.Set;
@@ -48,12 +50,14 @@ public class PlaceCardState extends GameState {
         int parentCol = placeCardAction.getParentCol();
         CornerPosition cornerPosition = placeCardAction.getCornerPosition();
 
+        BoardTile newTile;
         try {
-            this.currentPlayer.placeCard(card, parentRow, parentCol, cornerPosition);
+            newTile = this.currentPlayer.placeCard(card, parentRow, parentCol, cornerPosition);
         } catch (Exception ex) {
             throw new Exception("Could not place tile");
         }
 
+        this.game.triggerEvent(new CardPlacedEvent(currentPlayer, newTile));
         this.goToNextState(new DrawCardState(this.game));
     }
 

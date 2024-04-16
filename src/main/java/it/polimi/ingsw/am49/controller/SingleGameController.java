@@ -14,6 +14,7 @@ import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.events.*;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
+import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.ArrayList;
@@ -157,7 +158,13 @@ public class SingleGameController implements EventListener {
     }
 
     private void handleCardPlacedEvent (CardPlacedEvent event){
-        CardPlacedMTC mtc = new CardPlacedMTC(event.boardTile().getCard().getId(), event.player().getUsername());
+        BoardTile boardTile = event.boardTile();
+        CardPlacedMTC mtc = new CardPlacedMTC(
+                boardTile.getCard().getId(),
+                boardTile.getRow(),
+                boardTile.getCol(),
+                event.player().getUsername()
+        );
         broadCast(mtc);
     }
 
