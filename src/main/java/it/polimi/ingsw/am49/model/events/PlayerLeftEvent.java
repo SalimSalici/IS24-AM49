@@ -10,12 +10,14 @@ import java.util.List;
  * Represents an event that occurs when a player leaves the game session.
  * This event is triggered to update all connected clients about the players currently in the session.
  *
- * @param players a list of {@link Player} instances representing all players currently in the game
+ * @param remainingPlayers a list of {@link Player}s representing all players still in the game
+ * @param playerWhoLeft the {@link Player} who just left the game
  */
-public record PlayerLeftEvent(List<Player> players) implements GameEvent {
+public record PlayerLeftEvent(List<Player> remainingPlayers, Player playerWhoLeft) implements GameEvent {
 
-    public PlayerLeftEvent(List<Player> players) {
-        this.players = new LinkedList<>(players);
+    public PlayerLeftEvent(List<Player> remainingPlayers, Player playerWhoLeft) {
+        this.remainingPlayers = new LinkedList<>(remainingPlayers);
+        this.playerWhoLeft = playerWhoLeft;
     }
 
     @Override

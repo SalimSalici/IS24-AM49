@@ -20,4 +20,20 @@ public class GameStateChangedMTC extends MessageToClient{
     public String getMessage() {
         return super.getMessage() + this.state + " | " + this.round + " | " + this.turn + " | " + this.currentPlayer;
     }
+
+    public GameStateType getState() {
+        return state;
+    }
+
+    public int getRound() {
+        return round;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public String getCurrentPlayer() {
+        return currentPlayer;
+    }
 }

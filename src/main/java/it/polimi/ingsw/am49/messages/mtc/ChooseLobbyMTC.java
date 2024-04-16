@@ -15,4 +15,8 @@ public class ChooseLobbyMTC extends MessageToClient{
     public String getMessage() {
         return super.getMessage() + this.gamesIds.toString();
     }
+
+    public List<Integer> getGamesIds() {
+        return gamesIds;
+    }
 }

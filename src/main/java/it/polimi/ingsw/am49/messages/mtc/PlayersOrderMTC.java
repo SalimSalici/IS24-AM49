@@ -15,4 +15,8 @@ public class PlayersOrderMTC extends MessageToClient{
     public String getMessage() {
         return super.getMessage() + this.playersOrder.toString();
     }
+
+    public List<String> getPlayersOrder() {
+        return playersOrder;
+    }
 }

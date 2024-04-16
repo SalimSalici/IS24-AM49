@@ -1,8 +1,6 @@
 package it.polimi.ingsw.am49.messages.mtc;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class FinalResultsMTC extends MessageToClient{
@@ -16,5 +14,9 @@ public class FinalResultsMTC extends MessageToClient{
     @Override
     public String getMessage() {
         return super.getMessage() + this.playersToPoints.toString();
+    }
+
+    public Map<String, Integer> getPlayersToPoints() {
+        return playersToPoints;
     }
 }

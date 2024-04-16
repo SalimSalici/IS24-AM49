@@ -90,8 +90,9 @@ public class PregameState extends GameState {
      */
     private void removePlayer(LeaveGameAction leaveGameAction) {
         String username = leaveGameAction.getUsername();
-        this.game.getPlayers().remove(this.game.getPlayerByUsername(username));
-        this.game.triggerEvent(new PlayerLeftEvent(this.game.getPlayers()));
+        Player playerToRemove = this.game.getPlayerByUsername(username);
+        this.game.getPlayers().remove(playerToRemove);
+        this.game.triggerEvent(new PlayerLeftEvent(this.game.getPlayers(), playerToRemove));
     }
 
     /**

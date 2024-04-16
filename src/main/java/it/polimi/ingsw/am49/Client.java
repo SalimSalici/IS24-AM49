@@ -9,17 +9,17 @@ import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 
 public class Client {
-    private final String userName;
+    private final String username;
     Server server;
     SingleGameController controller;
 
-    public Client(String userName, Server server){
-        this.userName = userName;
+    public Client(String username, Server server){
+        this.username = username;
         this.server = server;
     }
 
     public void sendMessage(MessageToClient msg){
-        System.out.println(this.userName + ": " + msg.getMessage());
+        System.out.println(this.username + ": " + msg.getMessage());
     }
 
     public void createGame(int numOfPlayers){
@@ -33,8 +33,8 @@ public class Client {
 
     public void joinGame(int id){
         try {
-            this.controller = this.server.joinLobby(new GameActionMTS(this, new JoinGameAction(this.userName)), id);
-            this.controller.sendMessge(new GameActionMTS(this, new JoinGameAction(this.userName)));
+            this.controller = this.server.joinLobby(new GameActionMTS(this, new JoinGameAction(this.username)), id);
+            this.controller.sendMessge(new GameActionMTS(this, new JoinGameAction(this.username)));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -45,7 +45,7 @@ public class Client {
         if(this.controller == null) throw new Exception("You must be in a game to leave it!");
 
         try {
-            this.controller.sendMessge(new GameActionMTS(this, new LeaveGameAction(this.userName)));
+            this.controller.sendMessge(new GameActionMTS(this, new LeaveGameAction(this.username)));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class Client {
         if(this.controller == null) throw new Exception("You are not in the game");
 
         try {
-            this.controller.sendMessge(new GameActionMTS(this, new ChooseStarterSideAction(this.userName, flipped)));
+            this.controller.sendMessge(new GameActionMTS(this, new ChooseStarterSideAction(this.username, flipped)));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -67,7 +67,7 @@ public class Client {
 //        if(this.controller == null) throw new Exception("You are not in the game");
 //
 //        try {
-//            this.controller.sendMessge(new ChooseObjectiveMTS(this.getUserName(), objective));
+//            this.controller.sendMessge(new ChooseObjectiveMTS(this.getUsername(), objective));
 //        } catch (Exception e) {
 //            System.err.println(e.getMessage());
 //            e.printStackTrace();
@@ -77,14 +77,14 @@ public class Client {
     public void chooseObjective(int objective) throws Exception{
         if(this.controller == null) throw new Exception("You are not in the game");
 
-        this.controller.sendMessge(new GameActionMTS(this, new ChooseObjectiveAction(this.userName, objective)));
+        this.controller.sendMessge(new GameActionMTS(this, new ChooseObjectiveAction(this.username, objective)));
     }
 
     public void placeCard(int cardId, int parentRow, int parentCol, CornerPosition cornerPosition, boolean flipped) throws Exception{
         if(this.controller == null) throw new Exception("You are not in the game");
 
 //        try {
-        this.controller.sendMessge(new GameActionMTS(this, new PlaceCard(this.getUserName(),cardId, parentRow, parentCol, cornerPosition, flipped)));
+        this.controller.sendMessge(new GameActionMTS(this, new PlaceCard(this.getUsername(),cardId, parentRow, parentCol, cornerPosition, flipped)));
 //        } catch (Exception e) {
 //            System.err.println(e.getMessage());
 //            e.printStackTrace();
@@ -95,7 +95,7 @@ public class Client {
         if(this.controller == null) throw new Exception("You are not in the game");
 
         try {
-            this.controller.sendMessge(new GameActionMTS(this, new DrawCardAction(this.userName, drawPosition, idOfRevealedDrawn)));
+            this.controller.sendMessge(new GameActionMTS(this, new DrawCardAction(this.username, drawPosition, idOfRevealedDrawn)));
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -103,8 +103,8 @@ public class Client {
     }
 
 
-    public String getUserName() {
-        return this.userName;
+    public String getUsername() {
+        return this.username;
     }
 
     public Server getServer() {

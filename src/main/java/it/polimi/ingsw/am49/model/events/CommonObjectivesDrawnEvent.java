@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @param commonObjectives a list of {@link ObjectiveCard} objects representing the common objectives drawn
  */
-public record CommonObjectivesDrawn(List<ObjectiveCard> commonObjectives) implements GameEvent {
+public record CommonObjectivesDrawnEvent(List<ObjectiveCard> commonObjectives) implements GameEvent {
     @Override
     public GameEventType getType() {
         return GameEventType.COMMON_OBJECTIVES_DRAWN;

@@ -35,13 +35,14 @@ public class SingleGameController implements EventListener {
             this.game.addEventListener(eventType, this);
         }
 
-        sendMessge(new GameActionMTS(client, new JoinGameAction(client.getUserName())));
+        sendMessge(new GameActionMTS(client, new JoinGameAction(client.getUsername())));
     }
 
     public void sendMessge(MessageToServer msg) throws Exception {
         switch (msg.getType()) {
             case MessageToServerType.GAME_ACTION: {
-                if((((GameActionMTS)msg).getAction().getType()).equals(GameActionType.JOIN_GAME)) clients.add(msg.getClient());
+                if ((((GameActionMTS)msg).getAction().getType()).equals(GameActionType.JOIN_GAME))
+                    clients.add(msg.getClient());
                 this.game.executeAction(((GameActionMTS)msg).getAction());
                 break;
             }
@@ -70,7 +71,7 @@ public class SingleGameController implements EventListener {
                 break;
             }
             case GameEventType.COMMON_OBJECTIVES_DRAWN: {
-                handleCommonObjectivesDrawn((CommonObjectivesDrawn) event);
+                handleCommonObjectivesDrawn((CommonObjectivesDrawnEvent) event);
                 break;
             }
             case GameEventType.CHOOSABLE_OBJECTIVES_ASSIGNED_EVENT: {
@@ -89,8 +90,8 @@ public class SingleGameController implements EventListener {
                 handleCardPlacedEvent((CardPlacedEvent) event);
                 break;
             }
-            case GameEventType.CARD_DRAWN_EVENT:{
-                handleCardDrawnEvent((CardDrawnEvent) event);
+            case GameEventType.DRAW_AREA_UPDATE:{
+                handleDrawAreaUpdateEvent((DrawAreaUpdateEvent) event);
                 break;
             }
             case GameEventType.HAND_UPDATE_EVENT:{
@@ -110,23 +111,23 @@ public class SingleGameController implements EventListener {
     }
 
     private void handlePlayerLeftEvent(PlayerLeftEvent event){
-        clients.removeAll((event).players().stream().map(player -> getClientByUsername(player.getUsername())).toList());
-        event.players().forEach(player -> {
-            PlayerLeftMTC mtc = new PlayerLeftMTC(player.getUsername());
-            this.broadCast(mtc);
-        });
+        clients.remove(this.getClientByUsername(event.playerWhoLeft().getUsername()));
+        this.broadCast(new PlayerLeftMTC(
+                event.remainingPlayers().stream().map(Player::getUsername).toList(),
+                event.playerWhoLeft().getUsername()
+        ));
     }
 
     private void handleStarterCardAssigned(StarterCardAssignedEvent event){
         Map<Player, StarterCard> playersToStarterCard = event.playersToStarterCard();
 
         playersToStarterCard.forEach((player, card) -> {
-            ChooseStarterSideMTC mtc = new ChooseStarterSideMTC(card.getId());
+            StarterCardAssignedMTC mtc = new StarterCardAssignedMTC(card.getId());
             this.getClientByUsername(player.getUsername()).sendMessage(mtc);
         });
     }
 
-    private void handleCommonObjectivesDrawn(CommonObjectivesDrawn event){
+    private void handleCommonObjectivesDrawn(CommonObjectivesDrawnEvent event){
         List<ObjectiveCard> commonObjectives = event.commonObjectives();
 
         CommonObjectivesMTC mtc = new CommonObjectivesMTC(commonObjectives.stream().map(Card::getId).toList());
@@ -138,7 +139,7 @@ public class SingleGameController implements EventListener {
 
         playersToObjectives.forEach((player, cards) -> {
 
-            ChooseObjectiveMTC mtc = new ChooseObjectiveMTC(
+            ChoosableObjectiveAssignedMTC mtc = new ChoosableObjectiveAssignedMTC(
                     cards.stream()
                             .map(Card::getId)
                             .toList()
@@ -160,17 +161,24 @@ public class SingleGameController implements EventListener {
     private void handleCardPlacedEvent (CardPlacedEvent event){
         BoardTile boardTile = event.boardTile();
         CardPlacedMTC mtc = new CardPlacedMTC(
+                event.player().getUsername(),
                 boardTile.getCard().getId(),
                 boardTile.getRow(),
                 boardTile.getCol(),
-                event.player().getUsername()
+                boardTile.getCard().isFlipped(),
+                event.points()
         );
         broadCast(mtc);
     }
 
-    private void handleCardDrawnEvent (CardDrawnEvent event){
-        CardDrawnMTC mtc = new CardDrawnMTC(event.card().getId());
-        this.getClientByUsername(event.player().getUsername()).sendMessage(mtc);
+    private void handleDrawAreaUpdateEvent (DrawAreaUpdateEvent event){
+        DrawAreaUpdateMTC mtc = new DrawAreaUpdateMTC(
+                event.remainingResources(),
+                event.remainingGolds(),
+                event.revealedResources().stream().map(Card::getId).toList(),
+                event.revealedGolds().stream().map(Card::getId).toList()
+        );
+        this.broadCast(mtc);
     }
 
     private void handleHandUpdateEvent (HandUpdateEvent event){
@@ -185,7 +193,7 @@ public class SingleGameController implements EventListener {
 
     private Client getClientByUsername(String username) {
         for (Client c : this.clients)
-            if (c.getUserName().equals(username))
+            if (c.getUsername().equals(username))
                 return c;
         return null;
     }

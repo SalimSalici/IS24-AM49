@@ -9,7 +9,7 @@ import it.polimi.ingsw.am49.model.players.Player;
  * @param player the player that placed the card
  * @param boardTile the boardTile in whitch the card gets placed
  */
-public record CardPlacedEvent(Player player, BoardTile boardTile) implements GameEvent {
+public record CardPlacedEvent(Player player, BoardTile boardTile, int points) implements GameEvent {
     @Override
     public GameEventType getType() {
         return GameEventType.CARD_PLACED_EVENT;

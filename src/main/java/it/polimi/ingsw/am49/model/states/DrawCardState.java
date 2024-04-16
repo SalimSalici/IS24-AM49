@@ -4,13 +4,17 @@ import it.polimi.ingsw.am49.model.actions.DrawCardAction;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.Game;
+import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
 import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
+import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
+import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
-import it.polimi.ingsw.am49.model.events.CardDrawnEvent;
+import it.polimi.ingsw.am49.model.events.DrawAreaUpdateEvent;
 import it.polimi.ingsw.am49.model.events.HandUpdateEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,6 +24,10 @@ import java.util.Set;
 public class DrawCardState extends GameState {
 
     private final Player currentPlayer;
+    private final GameDeck<ResourceCard> resourceGameDeck;
+    private final GameDeck<GoldCard> goldGameDeck;
+    private final ResourceCard[] revealedResources;
+    private final GoldCard[] revealedGolds;
 
     /**
      * Constructs the DrawCardState.
@@ -28,6 +36,10 @@ public class DrawCardState extends GameState {
     protected DrawCardState(Game game) {
         super(GameStateType.DRAW_CARD, game, Set.of(GameActionType.DRAW_CARD));
         this.currentPlayer = game.getCurrentPlayer();
+        this.resourceGameDeck = this.game.getResourceGameDeck();
+        this.goldGameDeck = this.game.getGoldGameDeck();
+        this.revealedResources = this.game.getRevealedResources();
+        this.revealedGolds = this.game.getRevealedGolds();
     }
 
     /**
@@ -45,19 +57,26 @@ public class DrawCardState extends GameState {
         PlaceableCard drawnCard = null;
         switch (drawPosition) {
             case RESOURCE_DECK: {
-                drawnCard = this.game.getResourceGameDeck().draw();
+                drawnCard = this.resourceGameDeck.draw();
                 this.currentPlayer.drawCard(drawnCard);
                 break;
             }
             case GOLD_DECK: {
-                drawnCard = this.game.getGoldGameDeck().draw();
+                drawnCard = this.goldGameDeck.draw();
                 this.currentPlayer.drawCard(drawnCard);
                 break;
             }
             // TODO: handle draw from revealed cards
         }
 
-        this.game.triggerEvent(new CardDrawnEvent(currentPlayer, drawnCard));
+        this.game.triggerEvent(
+                new DrawAreaUpdateEvent(
+                        this.resourceGameDeck.size(),
+                        this.goldGameDeck.size(),
+                        List.of(this.game.getRevealedResources()),
+                        List.of(this.game.getRevealedGolds())
+                )
+        );
         this.game.triggerEvent(
                 new HandUpdateEvent(currentPlayer, currentPlayer.getHand().stream().toList())
         );

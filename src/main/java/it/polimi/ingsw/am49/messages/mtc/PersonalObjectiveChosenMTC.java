@@ -12,4 +12,8 @@ public class PersonalObjectiveChosenMTC extends MessageToClient{
     public String getMessage() {
         return super.getMessage() + this.objectiveCardId;
     }
+
+    public int getObjectiveCardId() {
+        return objectiveCardId;
+    }
 }

@@ -79,7 +79,7 @@ public class ChooseStarterSideState extends GameState {
         Player player = this.game.getPlayerByUsername(action.getUsername());
         boolean flipped = ((ChooseStarterSideAction)action).getFlipped();
         player.chooseStarterSide(flipped);
-        this.game.triggerEvent(new CardPlacedEvent(player, player.getBoard().getStarterTile()));
+        this.game.triggerEvent(new CardPlacedEvent(player, player.getBoard().getStarterTile(), player.getPoints()));
 
         this.playersChoosing.remove(player);
         if (this.playersChoosing.isEmpty()) {

@@ -15,4 +15,8 @@ public class CommonObjectivesMTC extends MessageToClient{
     public String getMessage() {
         return super.getMessage() + this.objectivesIds.toString();
     }
+
+    public List<Integer> getObjectivesIds() {
+        return objectivesIds;
+    }
 }

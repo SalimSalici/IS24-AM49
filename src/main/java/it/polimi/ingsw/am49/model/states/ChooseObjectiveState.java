@@ -9,7 +9,7 @@ import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.ChoosableObjectivesAssignedEvent;
-import it.polimi.ingsw.am49.model.events.CommonObjectivesDrawn;
+import it.polimi.ingsw.am49.model.events.CommonObjectivesDrawnEvent;
 import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
 import it.polimi.ingsw.am49.model.events.PersonalObjectiveChosenEvent;
 import it.polimi.ingsw.am49.model.players.Player;
@@ -24,7 +24,7 @@ import java.util.*;
  * handling the chosing process.
  *
  * This class extends {@link GameState} and utilizes events such as {@link ChoosableObjectivesAssignedEvent},
- * {@link CommonObjectivesDrawn}, and {@link PersonalObjectiveChosenEvent} to manage the flow of the game state
+ * {@link CommonObjectivesDrawnEvent}, and {@link PersonalObjectiveChosenEvent} to manage the flow of the game state
  * and communicate state changes.
  */
 public class ChooseObjectiveState extends GameState {
@@ -57,7 +57,7 @@ public class ChooseObjectiveState extends GameState {
         ObjectiveCard[] commonObjectives = this.game.getCommonObjectives();
         for (int i = 0; i < commonObjectives.length; i++)
             commonObjectives[i] = objectiveDeck.draw();
-        this.game.triggerEvent(new CommonObjectivesDrawn(List.of(commonObjectives)));
+        this.game.triggerEvent(new CommonObjectivesDrawnEvent(List.of(commonObjectives)));
 
         // Draw objectives for players to choose from
 

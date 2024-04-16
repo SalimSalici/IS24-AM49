@@ -25,7 +25,7 @@ import java.util.*;
  */
 public class Game implements Serializable, EventEmitter {
     private final int gameId;
-    private int numPlayers;
+    private final int numPlayers;
     private int turn;
     private int round;
     private final List<Player> players;
@@ -36,8 +36,8 @@ public class Game implements Serializable, EventEmitter {
     private final EventManager eventManager;
     private final ObjectiveCard[] commonObjectives;
     private GameState gameState;
-    private ResourceCard[] drawableResources;
-    private GoldCard[] drawableGolds;
+    private final ResourceCard[] revealedResources;
+    private final GoldCard[] revealedGolds;
     private final GameDeck<ResourceCard> resourceGameDeck;
     private final GameDeck<GoldCard> goldGameDeck;
 
@@ -56,16 +56,16 @@ public class Game implements Serializable, EventEmitter {
         this.endGame = false;
         this.finalRound = false;
         this.commonObjectives = new ObjectiveCard[2]; // the common objectives are set in the relevant game state
-        this.drawableResources = new ResourceCard[2];
-        this.drawableGolds = new GoldCard[2];
+        this.revealedResources = new ResourceCard[2];
+        this.revealedGolds = new GoldCard[2];
         this.resourceGameDeck = DeckLoader.getInstance().getNewResourceDeck();
         this.goldGameDeck = DeckLoader.getInstance().getNewGoldDeck();
 
-        for (int i = 0; i < drawableResources.length; i++)
-            drawableResources[i] = resourceGameDeck.draw();
+        for (int i = 0; i < revealedResources.length; i++)
+            revealedResources[i] = resourceGameDeck.draw();
 
-        for (int i = 0; i < drawableGolds.length; i++)
-            drawableGolds[i] = goldGameDeck.draw();
+        for (int i = 0; i < revealedGolds.length; i++)
+            revealedGolds[i] = goldGameDeck.draw();
 
         this.gameState = new PregameState(this, this.numPlayers);
         this.gameState.setUp();
@@ -288,5 +288,13 @@ public class Game implements Serializable, EventEmitter {
      */
     public void setFinalRound(boolean finalRound) {
         this.finalRound = finalRound;
+    }
+
+    public ResourceCard[] getRevealedResources() {
+        return revealedResources;
+    }
+
+    public GoldCard[] getRevealedGolds() {
+        return revealedGolds;
     }
 }
