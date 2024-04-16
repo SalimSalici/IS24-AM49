@@ -5,6 +5,12 @@ import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 
 import java.util.List;
 
+/**
+ * Represents an event that notifies when common objectives are drawn for the game.
+ * These objectives are visible and applicable to all players.
+ *
+ * @param commonObjectives a list of {@link ObjectiveCard} objects representing the common objectives drawn
+ */
 public record CommonObjectivesDrawn(List<ObjectiveCard> commonObjectives) implements GameEvent {
     @Override
     public GameEventType getType() {

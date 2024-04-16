@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Implements the event that notifies whitch are the personal objectives from whitch the player can choos.
- * @param playersToObjectives
+ * Represents an event that notifies players about the personal objectives from which they can choose.
+ * Each player is associated with a list of potential ObjectiveCards to select from.
+ *
+ * @param playersToObjectives a map linking each player to a list of {@link ObjectiveCard} objects they can select as their personal objectives
  */
 public record ChoosableObjectivesAssignedEvent(
         Map<Player, List<ObjectiveCard>> playersToObjectives

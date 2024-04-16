@@ -7,7 +7,11 @@ import it.polimi.ingsw.am49.model.players.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Represents an event that occurs when starter cards are assigned to players at the beginning of the game.
+ *
+ * @param playersToStarterCard a map linking each player to their assigned {@link StarterCard}
+ */
 public record StarterCardAssignedEvent(
         Map<Player, StarterCard> playersToStarterCard
 ) implements GameEvent {
