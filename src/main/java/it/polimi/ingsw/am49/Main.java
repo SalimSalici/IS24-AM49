@@ -1,15 +1,10 @@
 package it.polimi.ingsw.am49;
 
 import it.polimi.ingsw.am49.model.Game;
-import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
-import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
-import it.polimi.ingsw.am49.model.actions.JoinGameAction;
-import it.polimi.ingsw.am49.model.actions.LeaveGameAction;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
-import it.polimi.ingsw.am49.model.events.ChoosableObjectivesAssignedEvent;
 import it.polimi.ingsw.am49.model.events.EventListener;
 import it.polimi.ingsw.am49.model.events.GameEvent;
 import it.polimi.ingsw.am49.model.players.BoardTile;
@@ -25,11 +20,10 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Server server = new Server();
 
-        Client nico = new Client("niccolo", server);
-        Client lori = new Client("lorenzo", server);
+        Client nico = new Client("nico", server);
+        Client lori = new Client("lori", server);
         Client salim = new Client("salim", server);
         Client matte = new Client("matteo", server);
-
 
         nico.createGame(3);
         salim.joinGame(0);
@@ -38,7 +32,6 @@ public class Main {
         nico.chooseStarterSide(true);
         salim.chooseStarterSide(false);
         lori.chooseStarterSide(true);
-
 
         while (true) {
             Random random = new Random();
@@ -76,11 +69,31 @@ public class Main {
         BoardTile starterTile = playerBoard.getStarterTile();
 
         Scanner scanner = new Scanner(System.in);
-        int value = scanner.nextInt();
 
-        nico.placeCard(value, starterTile.getRow(), starterTile.getCol(), CornerPosition.TOP_LEFT, false);
-        nico.drawCard(DrawPosition.GOLD_DECK, 0);
+        Client currentClient = null;
 
+        do {
+            System.out.print("choose client: " );
+            String currentUsername = scanner.nextLine();
+
+            currentClient = switch (currentUsername) {
+                case "nico" -> nico;
+                case "salim" -> salim;
+                case "lori" -> lori;
+                default -> null;
+            };
+
+            System.out.print("choose id card to place: " );
+            int value = scanner.nextInt();
+            scanner.nextLine();
+
+            if (currentClient != null) {
+                currentClient.placeCard(value, starterTile.getRow(), starterTile.getCol(), CornerPosition.TOP_LEFT, false);
+                currentClient.drawCard(DrawPosition.RESOURCE_DECK, 0);
+            } else {
+                System.err.println("currentClient is null");
+            }
+        } while (currentClient != null);
         System.out.println("The end...");
 
 //        GameDeck<ResourceCard> resourceGameDeck = DeckLoader.getInstance().getNewResourceDeck();

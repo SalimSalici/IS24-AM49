@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.controller;
 
 import it.polimi.ingsw.am49.Client;
-import it.polimi.ingsw.am49.Main;
 import it.polimi.ingsw.am49.messages.mtc.*;
 import it.polimi.ingsw.am49.messages.mts.GameActionMTS;
 import it.polimi.ingsw.am49.messages.mts.MessageToServer;
@@ -30,8 +29,6 @@ public class SingleGameController implements EventListener {
     public SingleGameController(int id, Client client, int numPlayers) throws Exception {
         this.clients = new ArrayList<>();
         this.game = new Game(id, numPlayers);
-
-        //clients.add(client);
 
         for(GameEventType eventType: GameEventType.values()){
             this.game.addEventListener(eventType, this);
@@ -85,6 +82,7 @@ public class SingleGameController implements EventListener {
             }
             case GameEventType.PLAYERS_ORDER_SET_EVENT:{
                 handlePlayersOrderSetEvent((PlayersOrderSetEvent) event);
+                break;
             }
             case GameEventType.CARD_PLACED_EVENT:{
                 handleCardPlacedEvent((CardPlacedEvent) event);
@@ -106,10 +104,8 @@ public class SingleGameController implements EventListener {
     }
 
     private void handlePlayerJoinedEvent(PlayerJoinedEvent event){
-        event.players().forEach(player -> {
-            PlayerJoinedMTC mtc = new PlayerJoinedMTC(player.getUsername());
-            this.broadCast(mtc);
-        });
+        PlayerJoinedMTC mtc = new PlayerJoinedMTC(event.players().stream().map(Player::getUsername).toList());
+        this.broadCast(mtc);
     }
 
     private void handlePlayerLeftEvent(PlayerLeftEvent event){
@@ -122,7 +118,6 @@ public class SingleGameController implements EventListener {
 
     private void handleStarterCardAssigned(StarterCardAssignedEvent event){
         Map<Player, StarterCard> playersToStarterCard = event.playersToStarterCard();
-        Client client;
 
         playersToStarterCard.forEach((player, card) -> {
             ChooseStarterSideMTC mtc = new ChooseStarterSideMTC(card.getId());
@@ -132,7 +127,6 @@ public class SingleGameController implements EventListener {
 
     private void handleCommonObjectivesDrawn(CommonObjectivesDrawn event){
         List<ObjectiveCard> commonObjectives = event.commonObjectives();
-        Client client;
 
         CommonObjectivesMTC mtc = new CommonObjectivesMTC(commonObjectives.stream().map(Card::getId).toList());
         this.broadCast(mtc);
@@ -140,7 +134,6 @@ public class SingleGameController implements EventListener {
 
     private void handleChoosableObjectivesAssigned(ChoosableObjectivesAssignedEvent event) {
         Map<Player, List<ObjectiveCard>> playersToObjectives = event.playersToObjectives();
-        Client client;
 
         playersToObjectives.forEach((player, cards) -> {
 
@@ -179,7 +172,7 @@ public class SingleGameController implements EventListener {
     }
 
     private void handleGameStateChangedEvent (GameStateChangedEvent event){
-        GameStateChangedMTC mtc = new GameStateChangedMTC(event.round(), event.turn(), event.currentPlayer().getUsername());
+        GameStateChangedMTC mtc = new GameStateChangedMTC(event.gameStateType(), event.round(), event.turn(), event.currentPlayer().getUsername());
         broadCast(mtc);
     }
 

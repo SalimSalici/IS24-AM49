@@ -1,15 +1,16 @@
 package it.polimi.ingsw.am49.messages.mtc;
 
-import java.util.ArrayList;
-import java.util.List;
+import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 
 public class GameStateChangedMTC extends MessageToClient{
+    private final GameStateType state;
     private final int round;
     private final int turn;
     private final String currentPlayer;
 
-    public GameStateChangedMTC(int round, int turn, String currentPlayer){
-        super(MessageToClientType.COMMON_OBJECTIVES, "ROUND | TURN | CURRENT_PLAYER : ");
+    public GameStateChangedMTC(GameStateType state, int round, int turn, String currentPlayer){
+        super(MessageToClientType.COMMON_OBJECTIVES, "STATE | ROUND | TURN | CURRENT_PLAYER : ");
+        this.state = state;
         this.round = round;
         this.turn = turn;
         this.currentPlayer = currentPlayer;
@@ -17,6 +18,6 @@ public class GameStateChangedMTC extends MessageToClient{
 
     @Override
     public String getMessage() {
-        return super.getMessage() + this.round + " | " + this.turn + " | " + this.currentPlayer;
+        return super.getMessage() + this.state + " | " + this.round + " | " + this.turn + " | " + this.currentPlayer;
     }
 }
