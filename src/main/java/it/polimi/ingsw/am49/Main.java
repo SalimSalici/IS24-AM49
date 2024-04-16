@@ -72,35 +72,53 @@ public class Main {
 
         Client currentClient = null;
 
-        do {
-            System.out.print("choose client: " );
-            String currentUsername = scanner.nextLine();
+        while (true) {
 
-            currentClient = switch (currentUsername) {
-                case "nico" -> nico;
-                case "salim" -> salim;
-                case "lori" -> lori;
-                default -> null;
-            };
+            while (true) {
+                System.out.print("choose client: " );
+                String currentUsername = scanner.nextLine();
 
-            System.out.print("choose id card to place: " );
-            int cardId = scanner.nextInt();
-            scanner.nextLine();
-            System.out.print("choose row where to place the card: " );
-            int row = scanner.nextInt();
-            scanner.nextLine();
-            System.out.print("choose col where to place the card: " );
-            int col = scanner.nextInt();
-            scanner.nextLine();
+                if (currentUsername.equals("exit")) {
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                }
 
-            if (currentClient != null) {
-                currentClient.placeCard(cardId, row, col, CornerPosition.TOP_LEFT, false);
-                currentClient.drawCard(DrawPosition.RESOURCE_DECK, 0);
-            } else {
-                System.err.println("currentClient is null");
+                currentClient = switch (currentUsername) {
+                    case "nico" -> nico;
+                    case "salim" -> salim;
+                    case "lori" -> lori;
+                    default -> null;
+                };
+
+                if (currentClient == null) {
+                    System.out.println("Wrong client chosen... chose again");
+                } else
+                    break;
+
             }
-        } while (currentClient != null);
-        System.out.println("The end...");
+
+            while (true) {
+                System.out.print("choose id card to place: " );
+                int cardId = scanner.nextInt();
+                scanner.nextLine();
+                System.out.print("choose row where to place the card: " );
+                int row = scanner.nextInt();
+                scanner.nextLine();
+                System.out.print("choose col where to place the card: " );
+                int col = scanner.nextInt();
+                scanner.nextLine();
+
+                try {
+                    currentClient.placeCard(cardId, row, col, CornerPosition.TOP_LEFT, false);
+                    break;
+                } catch (Exception ex) {
+                    System.out.println("Problem placing card... try again");
+                }
+            }
+            currentClient.drawCard(DrawPosition.RESOURCE_DECK, 0);
+        }
+
+//        System.out.println("The end...");
 
 //        GameDeck<ResourceCard> resourceGameDeck = DeckLoader.getInstance().getNewResourceDeck();
 //        GameDeck<GoldCard> goldGameDeck = DeckLoader.getInstance().getNewGoldDeck();

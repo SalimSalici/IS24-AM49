@@ -83,12 +83,12 @@ public class Client {
     public void placeCard(int cardId, int parentRow, int parentCol, CornerPosition cornerPosition, boolean flipped) throws Exception{
         if(this.controller == null) throw new Exception("You are not in the game");
 
-        try {
-            this.controller.sendMessge(new GameActionMTS(this, new PlaceCard(this.getUserName(),cardId, parentRow, parentCol, cornerPosition, flipped)));
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
+//        try {
+        this.controller.sendMessge(new GameActionMTS(this, new PlaceCard(this.getUserName(),cardId, parentRow, parentCol, cornerPosition, flipped)));
+//        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+//            e.printStackTrace();
+//        }
     }
 
     public void drawCard(DrawPosition drawPosition, int idOfRevealedDrawn) throws Exception{
