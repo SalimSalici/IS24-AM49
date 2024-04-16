@@ -8,6 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implements the event that notifies whitch are the personal objectives from whitch the player can choos.
+ * @param playersToObjectives
+ */
 public record ChoosableObjectivesAssignedEvent(
         Map<Player, List<ObjectiveCard>> playersToObjectives
 ) implements GameEvent {

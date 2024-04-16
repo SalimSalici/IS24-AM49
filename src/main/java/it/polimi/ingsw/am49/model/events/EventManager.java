@@ -8,9 +8,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Is the event manager class for the observer design pattern.
+ * @see EventEmitter
+ */
 public class EventManager implements EventEmitter {
+
+    /**
+     * Keeps track of all the listeners for every GameEventType.
+     */
     private final Map<GameEventType, List<EventListener>> listeners;
 
+    /**
+     * Constructor for the EventManager class.
+     */
     public EventManager() {
         this.listeners = new HashMap<>();
         for (GameEventType gameEventType : GameEventType.values())

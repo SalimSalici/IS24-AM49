@@ -11,15 +11,30 @@ import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.Set;
 
+/**
+ * Rapresents the game state for drawing cards from a soecific {@link it.polimi.ingsw.am49.model.decks.GameDeck} choosen by the player.
+ * This state handles the drawing logic and updates their hand accordingly.
+ */
 public class DrawCardState extends GameState {
 
     private final Player currentPlayer;
 
+    /**
+     * Constructs the DrawCardState.
+     * @param game istance of the {@link Game} class.
+     */
     protected DrawCardState(Game game) {
         super(GameStateType.DRAW_CARD, game, Set.of(GameActionType.DRAW_CARD));
         this.currentPlayer = game.getCurrentPlayer();
     }
 
+    /**
+     * Handles the drawing process from the choosen {@link DrawPosition}. After drawing the hand is updated and am event
+     * is triggered.
+     * The method also checks if the game is over, if not it mooves to the next turn.
+     * @param action tells witch type of {@link GameAction} neds to be handled.
+     * @throws Exception
+     */
     @Override
     public void execute(GameAction action) throws Exception {
         this.checkActionValidity(action);
@@ -52,6 +67,9 @@ public class DrawCardState extends GameState {
         return this.currentPlayer.getUsername().equals(action.getUsername());
     }
 
+    /**
+     * Handles the switch to next turn logic by also checking if the EndGame or FinalRound has to start.
+     */
     private void handleSwitchToNextTurn() {
         this.game.incrementTurn();
 

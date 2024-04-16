@@ -14,15 +14,36 @@ import java.util.*;
 
 import java.util.Set;
 
+/**
+ * Rapresents the phase of the game in witch players are waiting for everybody to join the lobby and is still
+ * allowed to leave the lobby without permanently occupying one of the limited player spots. Here is also asigned
+ * to every player a random color from the {@link Color} enum.
+ */
 public class PregameState extends GameState {
 
+    /**
+     * Is the max number of players that this lobby is setup for, ass soon as it's reached the game starts automatically.
+     * It has to be a number between 0 and the maximum number of players allowed by the game rules.
+     * See the {//TODO: add link to config file where the maxAllowedNumber will be defined }.
+     */
     private final int maxPlayers;
 
+    /**
+     * Constructor of the PregameState.
+     * @param game istance of the {@link Game} class.
+     * @param maxPlayers number of player expected in this game.
+     */
     public PregameState(Game game, int maxPlayers) {
         super(GameStateType.PREGAME, game, Set.of(GameActionType.JOIN_GAME, GameActionType.LEAVE_GAME));
         this.maxPlayers = maxPlayers;
     }
 
+    /**
+     * Handles the main logic for the PregameState (joining and leaving of players and start of the game when
+     * the desider number of participants is reached.
+     * @param action tells witch type of {@link GameAction} neds to be handled.
+     * @throws Exception if there are issues with the handling of joining and leaving of players.
+     */
     @Override
     public void execute(GameAction action) throws Exception {
         this.checkActionValidity(action);
@@ -45,6 +66,11 @@ public class PregameState extends GameState {
         return true;
     }
 
+    /**
+     * Handles the logic for adding players to the game while in the lobby stage.
+     * @param joinGameAction specifies the action tipe and the username of the player to add.
+     * @throws Exception if there already is a player with that username in the lobby
+     */
     private void addPlayer(JoinGameAction joinGameAction) throws Exception {
         String username = joinGameAction.getUsername();
         if (this.game.getPlayerByUsername(username) != null)
@@ -55,6 +81,10 @@ public class PregameState extends GameState {
         this.game.triggerEvent(new PlayerJoinedEvent(this.game.getPlayers()));
     }
 
+    /**
+     * Handles the logic to remove a player from the game while in the lobby stage.
+     * @param leaveGameAction specifies the action tipe and the username of the player to add.
+     */
     private void removePlayer(LeaveGameAction leaveGameAction) {
         String username = leaveGameAction.getUsername();
         this.game.getPlayers().remove(this.game.getPlayerByUsername(username));

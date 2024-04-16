@@ -11,11 +11,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Rapresents the game after the final round has been played.
+ */
 public class EndGameState extends GameState {
 
     List<Player> players;
+
+    /**
+     * Stores how many objectives every player has completed.
+     */
     Map<Player, Integer> playersToAchievedObjevtives;
 
+    /**
+     * Constructs the EndGameState.
+     * @param game istance of the {@link Game} class.
+     */
     protected EndGameState(Game game) {
         super(GameStateType.END_GAME, game, Set.of());
         this.players = game.getPlayers();
@@ -23,6 +34,9 @@ public class EndGameState extends GameState {
                 "The game is over. If you want to keep playing you must create a new game.";
     }
 
+    /**
+     * Calculates how many objectives every player has achived.
+     */
     @Override
     public void setUp() {
         for (Player player : this.players) {

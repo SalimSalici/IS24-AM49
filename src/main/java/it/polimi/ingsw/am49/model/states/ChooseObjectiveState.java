@@ -16,10 +16,28 @@ import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.*;
 
+/**
+ * Rapresents the game state in witch every player selects his personal objective from a set of options.
+ * The choosen objective will be the secret personal objective of the player for ste rest of the match.
+ *
+ * This class is resposible for dealing the personal {@link ObjectiveCard} options to eatch {@link Player} and
+ * handling the chosing process.
+ *
+ * This class extends {@link GameState} and utilizes events such as {@link ChoosableObjectivesAssignedEvent},
+ * {@link CommonObjectivesDrawn}, and {@link PersonalObjectiveChosenEvent} to manage the flow of the game state
+ * and communicate state changes.
+ */
 public class ChooseObjectiveState extends GameState {
 
+    /**
+     * Mapps every player to a list of the possible objective cards from witch che can choose.
+     */
     private final Map<Player, List<ObjectiveCard>> playersToObjectives;
 
+    /**
+     * Constructs a new ChooseObjectiveState for a given game.
+     * @param game the game this state is associated with.
+     */
     protected ChooseObjectiveState(Game game) {
         super(GameStateType.CHOOSE_OBJECTIVE, game, Set.of(GameActionType.CHOOSE_OBJECTIVE));
         this.playersToObjectives = new HashMap<>();
@@ -27,6 +45,9 @@ public class ChooseObjectiveState extends GameState {
                 "You have already choosen your personal objective. You must wait for the other players.";
     }
 
+    /**
+     * Draws the common objective to all the players and the personal objective options that are distinct for every player.
+     */
     @Override
     public void setUp() {
         GameDeck<ObjectiveCard> objectiveDeck = DeckLoader.getInstance().getNewObjectiveDeck();
@@ -52,6 +73,11 @@ public class ChooseObjectiveState extends GameState {
         this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound()));
     }
 
+    /**
+     * Handles the logic to choose witch prsonal objective to pick from the options presented.
+     * @param action tells witch type of {@link GameAction} neds to be handled.
+     * @throws Exception if the player didn't choose an objetive of the ones dealt to him.
+     */
     @Override
     public void execute(GameAction action) throws Exception {
         this.checkActionValidity(action);
@@ -79,6 +105,12 @@ public class ChooseObjectiveState extends GameState {
         return this.playersToObjectives.containsKey(this.game.getPlayerByUsername(action.getUsername()));
     }
 
+    /**
+     * Given the id of an ObjectiveCard provides the {@link ObjectiveCard}.
+     * @param id identifies the card.
+     * @param objectiveCards list of the {@link ObjectiveCard}s from witch to extract the one with the provided id.
+     * @return the {@link ObjectiveCard} with the provided id.
+     */
     private ObjectiveCard getObjectiveById(int id, List<ObjectiveCard> objectiveCards) {
         for (ObjectiveCard objCard : objectiveCards)
             if (objCard.getId() == id)

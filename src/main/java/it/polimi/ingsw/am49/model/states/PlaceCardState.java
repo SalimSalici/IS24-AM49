@@ -11,14 +11,29 @@ import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.Set;
 
+/**
+ * Represents the game state where a player places a card on the game board.
+ * This state handles the placement of a card with the corresponding exeptions oraginating if the card can not be
+ * placad in the desired spot or there aren't enough resources.
+ */
 public class PlaceCardState extends GameState {
 
     private final Player currentPlayer;
+
+    /**
+     * Constructor for the PlaceCardState.
+     * @param game istance of the {@link Game} class.
+     */
     protected PlaceCardState(Game game) {
         super(GameStateType.PLACE_CARD, game, Set.of(GameActionType.PLACE_CARD));
         this.currentPlayer = game.getCurrentPlayer();
     }
 
+    /**
+     * Handles the placement of a card.
+     * @param action tells witch type of {@link GameAction} neds to be handled.
+     * @throws Exception if the card can not be placed.
+     */
     @Override
     public void execute(GameAction action) throws Exception {
         this.checkActionValidity(action);
