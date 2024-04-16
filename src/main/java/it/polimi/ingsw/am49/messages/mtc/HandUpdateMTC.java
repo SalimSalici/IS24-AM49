@@ -7,15 +7,17 @@ import java.util.Set;
 
 public class HandUpdateMTC extends MessageToClient{
     private final Set<Integer> cardsIds;
+    private final String userName;
 
-    public HandUpdateMTC(Set<Integer> cardsIds){
-        super(MessageToClientType.HAND_UPDATE, "You have the following cards in your hand: ");
+    public HandUpdateMTC(String userName, Set<Integer> cardsIds){
+        super(MessageToClientType.HAND_UPDATE, " has the following cards in his hand: ");
+        this.userName = userName;
         this.cardsIds = new HashSet<>(cardsIds);
     }
 
     @Override
     public String getMessage() {
-        return super.getMessage() + this.cardsIds.toString();
+        return this.userName + super.getMessage() + this.cardsIds.toString();
     }
 }
 

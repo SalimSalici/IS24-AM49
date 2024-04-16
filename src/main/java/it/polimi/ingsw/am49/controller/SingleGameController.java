@@ -174,8 +174,8 @@ public class SingleGameController implements EventListener {
     }
 
     private void handleHandUpdateEvent (HandUpdateEvent event){
-        HandUpdateMTC mtc = new HandUpdateMTC(event.hand().stream().map(PlaceableCard::getId).collect(Collectors.toSet()));
-        this.getClientByUsername(event.player().getUsername()).sendMessage(mtc);
+        HandUpdateMTC mtc = new HandUpdateMTC(event.player().getUsername(), event.hand().stream().map(PlaceableCard::getId).collect(Collectors.toSet()));
+        broadCast(mtc);
     }
 
     private void handleGameStateChangedEvent (GameStateChangedEvent event){

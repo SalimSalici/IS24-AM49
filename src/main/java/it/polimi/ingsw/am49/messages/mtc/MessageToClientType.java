@@ -13,4 +13,7 @@ public enum MessageToClientType {
     CARD_DRAWN,
     HAND_UPDATE,
     GAME_STATE_CHANGED,
+    FINAL_RESULTS,
+    WINNER,
+    MULTIPLE_WINNERS,
 }
