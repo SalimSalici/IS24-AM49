@@ -71,10 +71,6 @@ public class Game implements Serializable, EventEmitter {
         this.gameState.setUp();
     }
 
-    private boolean areDecksEmpty(){
-        return resourceGameDeck.isEmpty() && goldGameDeck.isEmpty();
-    }
-
     /**
      * @param state sets the new state of the game
      */
@@ -156,33 +152,6 @@ public class Game implements Serializable, EventEmitter {
     public ObjectiveCard[] getCommonObjectives() {
         return this.commonObjectives;
     }
-
-    /*
-    private List<Player> calculateWinners() throws Exception{
-        List<Player> winners = new ArrayList<>();
-        if(this.gameStateType != GameStateType.END_GAME) throw new Exception("The game is not over yet");
-
-        Map<Player, Integer> objectivesAchievedByPlayers = new HashMap<>();
-        for(Player p : this.players){
-            objectivesAchievedByPlayers.put(p, p.calculateFinalPoints(Arrays.asList(commonObjectives)));
-        }
-
-        int maxPoints = this.players.stream().mapToInt(Player::getPoints).max().orElse(0);
-        List<Player> maxPointsPlayers = this.players.stream().filter(player -> player.getPoints() == maxPoints).toList();
-
-        if (maxPointsPlayers.size() > 1) {
-            for (Player player : this.players) {
-                if (!maxPointsPlayers.contains(player)) objectivesAchievedByPlayers.remove(player);
-            }
-            int maxAchieved = maxPointsPlayers.stream()
-                    .mapToInt(objectivesAchievedByPlayers::get)
-                    .max()
-                    .orElse(0);
-            return maxPointsPlayers.stream().filter(player -> player.getPoints() == maxAchieved).toList();
-        } else
-            return maxPointsPlayers;
-    }
-    */
 
     /**
      * @return the unique identifier of the game

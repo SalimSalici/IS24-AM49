@@ -104,7 +104,7 @@ public class DrawCardState extends GameState {
     private void handleSwitchToNextTurn() {
         this.game.incrementTurn();
 
-        if (this.currentPlayer.getPoints() > 20)
+        if (this.currentPlayer.getPoints() > 20 || (this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty()))
             this.game.setEndGame(true);
 
         if (this.currentPlayer.equals(this.game.getLastPlayer())) {

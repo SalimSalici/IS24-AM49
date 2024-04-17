@@ -65,11 +65,15 @@ public abstract class GameState {
      * @throws Exception if the destination state is not found or can not access it.
      */
     public void goToNextState(GameState nextState) throws Exception {
+        if (nextState == null)
+            throw new Exception("Server error. nextState was not set");
+
         this.game.setGameState(nextState);
         try {
             nextState.setUp();
-        } catch (NullPointerException ex) {
-            throw new Exception("Server error. nextState was not set");
+        } catch (Exception ex) {
+            System.err.println("Server error when going to next state...");
+            ex.printStackTrace();
         }
     }
 

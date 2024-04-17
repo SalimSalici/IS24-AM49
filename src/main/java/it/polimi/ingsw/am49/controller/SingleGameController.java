@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.messages.mts.GameActionMTS;
 import it.polimi.ingsw.am49.messages.mts.MessageToServer;
 import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
 import it.polimi.ingsw.am49.model.Game;
+import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.actions.JoinGameAction;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
@@ -35,15 +36,16 @@ public class SingleGameController implements EventListener {
             this.game.addEventListener(eventType, this);
         }
 
-        sendMessge(new GameActionMTS(client, new JoinGameAction(client.getUsername())));
+        sendMessage(new GameActionMTS(client, new JoinGameAction(client.getUsername())));
     }
 
-    public void sendMessge(MessageToServer msg) throws Exception {
+    public void sendMessage(MessageToServer msg) throws Exception {
         switch (msg.getType()) {
             case MessageToServerType.GAME_ACTION: {
-                if ((((GameActionMTS)msg).getAction().getType()).equals(GameActionType.JOIN_GAME))
+                GameAction gameAction = ((GameActionMTS)msg).getAction();
+                if (gameAction.getType().equals(GameActionType.JOIN_GAME))
                     clients.add(msg.getClient());
-                this.game.executeAction(((GameActionMTS)msg).getAction());
+                this.game.executeAction(gameAction);
                 break;
             }
         }
@@ -148,7 +150,7 @@ public class SingleGameController implements EventListener {
         });
     }
 
-    private void handlePersonalObjectiveChosenEvent (PersonalObjectiveChosenEvent event){
+    private void handlePersonalObjectiveChosenEvent(PersonalObjectiveChosenEvent event){
         PersonalObjectiveChosenMTC mtc = new PersonalObjectiveChosenMTC(event.objectiveCard().getId());
         this.getClientByUsername(event.player().getUsername()).sendMessage(mtc);
     }
