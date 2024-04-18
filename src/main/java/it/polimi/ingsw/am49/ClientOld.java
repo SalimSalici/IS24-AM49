@@ -8,12 +8,12 @@ import it.polimi.ingsw.am49.model.actions.*;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 
-public class Client {
+public class ClientOld {
     private final String username;
     Server server;
     SingleGameController controller;
 
-    public Client(String username, Server server){
+    public ClientOld(String username, Server server){
         this.username = username;
         this.server = server;
     }

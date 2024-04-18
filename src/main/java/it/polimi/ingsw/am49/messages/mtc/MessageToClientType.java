@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.messages.mtc;
 
 public enum MessageToClientType {
+    LOGIN_OUTCOME,
     CHOOSE_LOBBY,
     PLAYER_JOINED,
     PLAYER_LEFT,

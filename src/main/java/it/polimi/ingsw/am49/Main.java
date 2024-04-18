@@ -20,10 +20,10 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Server server = new Server();
 
-        Client nico = new Client("nico", server);
-        Client lori = new Client("lori", server);
-        Client salim = new Client("salim", server);
-        Client matte = new Client("matteo", server);
+        ClientOld nico = new ClientOld("nico", server);
+        ClientOld lori = new ClientOld("lori", server);
+        ClientOld salim = new ClientOld("salim", server);
+        ClientOld matte = new ClientOld("matteo", server);
 
         nico.createGame(3);
         salim.joinGame(0);
@@ -70,7 +70,7 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        Client currentClient = null;
+        ClientOld currentClient = null;
 
         while (true) {
 

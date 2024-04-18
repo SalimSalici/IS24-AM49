@@ -1,11 +1,10 @@
 package it.polimi.ingsw.am49.messages.mts;
 
-import it.polimi.ingsw.am49.Client;
-import it.polimi.ingsw.am49.model.actions.GameAction;
+import it.polimi.ingsw.am49.ClientOld;
 
 public class CreateNewGameMTS extends MessageToServer {
     int numOfPlayers;
-    public CreateNewGameMTS(Client client, int numOfPlayers) {
+    public CreateNewGameMTS(ClientOld client, int numOfPlayers) {
         super(MessageToServerType.CREATE_NEW_GAME, client);
         this.numOfPlayers = numOfPlayers;
     }

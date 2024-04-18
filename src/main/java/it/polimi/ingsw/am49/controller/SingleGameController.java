@@ -1,6 +1,6 @@
 package it.polimi.ingsw.am49.controller;
 
-import it.polimi.ingsw.am49.Client;
+import it.polimi.ingsw.am49.ClientOld;
 import it.polimi.ingsw.am49.messages.mtc.*;
 import it.polimi.ingsw.am49.messages.mts.GameActionMTS;
 import it.polimi.ingsw.am49.messages.mts.MessageToServer;
@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 public class SingleGameController implements EventListener {
 
     private final Game game;
-    private final List<Client> clients;
+    private final List<ClientOld> clients;
 
-    public SingleGameController(int id, Client client, int numPlayers) throws Exception {
+    public SingleGameController(int id, ClientOld client, int numPlayers) throws Exception {
         this.clients = new ArrayList<>();
         this.game = new Game(id, numPlayers);
 
@@ -52,7 +52,7 @@ public class SingleGameController implements EventListener {
     }
 
     public void broadCast(MessageToClient msg) {
-        for (Client client : clients) {
+        for (ClientOld client : clients) {
             client.sendMessage(msg);
         }
     }
@@ -193,8 +193,8 @@ public class SingleGameController implements EventListener {
         broadCast(mtc);
     }
 
-    private Client getClientByUsername(String username) {
-        for (Client c : this.clients)
+    private ClientOld getClientByUsername(String username) {
+        for (ClientOld c : this.clients)
             if (c.getUsername().equals(username))
                 return c;
         return null;
