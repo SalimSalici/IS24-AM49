@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.client;
 
 import it.polimi.ingsw.am49.messages.mtc.MessageToClient;
 import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.server.exceptions.InvalidUsernameException;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -17,22 +18,6 @@ public class ClientApp extends UnicastRemoteObject implements Client {
     private String username = "default";
 
     public ClientApp() throws RemoteException {}
-
-    @Override
-    public void loginOutcome(boolean outcome) {
-        if (outcome) System.out.println("Logged in successfully");
-        else System.out.println("Login failed");
-    }
-
-    @Override
-    public void lobbyList(List<String> lobbies) {
-
-    }
-
-    @Override
-    public void joinGame(MessageToClient msg) {
-
-    }
 
     @Override
     public void receiveGameUpdate(MessageToClient msg) {
@@ -66,10 +51,22 @@ public class ClientApp extends UnicastRemoteObject implements Client {
 
         System.out.println("Connected to the " + serverType + " server");
 
-        System.out.print("Choose username: ");
-        String username = scanner.nextLine();
+        String username = null;
+        while (true) {
+            System.out.print("Choose username: ");
+            username = scanner.nextLine();
 
-        server.login(client, username);
+            try {
+                if (server.login(client, username)) {
+                    System.out.println("Logged in successfully!");
+                    break;
+                }
+                else
+                    System.out.println("Username already taken... could not log in.");
+            } catch (InvalidUsernameException e) {
+                System.out.println(e.getMessage());
+            }
+        }
 
         while (true) {
             String command = scanner.nextLine();

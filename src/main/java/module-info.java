@@ -11,6 +11,7 @@ module it.polimi.ingsw.am49 {
     exports it.polimi.ingsw.am49;
     exports it.polimi.ingsw.am49.model.enumerations to com.google.gson;
     exports it.polimi.ingsw.am49.server to java.rmi;
+    exports it.polimi.ingsw.am49.server.exceptions to java.rmi;
     exports it.polimi.ingsw.am49.client to java.rmi;
     exports it.polimi.ingsw.am49.model.actions to java.rmi;
 }

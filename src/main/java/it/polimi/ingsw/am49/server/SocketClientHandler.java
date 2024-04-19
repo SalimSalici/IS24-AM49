@@ -1,17 +1,16 @@
 package it.polimi.ingsw.am49.server;
 
 import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.messages.mtc.LoginOutcomeMTC;
+import it.polimi.ingsw.am49.messages.ReturnMessage;
+import it.polimi.ingsw.am49.messages.SocketMessage;
 import it.polimi.ingsw.am49.messages.mtc.MessageToClient;
-import it.polimi.ingsw.am49.messages.mts.LoginMTS;
-import it.polimi.ingsw.am49.messages.mts.LogoutMTS;
-import it.polimi.ingsw.am49.messages.mts.MessageToServerNew;
+import it.polimi.ingsw.am49.messages.LoginMTS;
+import it.polimi.ingsw.am49.server.exceptions.InvalidUsernameException;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.rmi.RemoteException;
-import java.util.List;
 
 public class SocketClientHandler implements Client {
 
@@ -45,23 +44,29 @@ public class SocketClientHandler implements Client {
                 this.disconnect();
                 break;
             }
-            if (msg instanceof MessageToServerNew)
-                this.handleMessage((MessageToServerNew) msg);
+            if (msg instanceof SocketMessage)
+                this.handleMessage((SocketMessage) msg);
         }
 
         objectInputStream.close();
     }
 
-    private void handleMessage(MessageToServerNew msg) throws RemoteException {
-        switch (msg.getType()) {
-            case LOGIN -> {
-                this.server.login(this, ((LoginMTS) msg).username());
+    private void handleMessage(SocketMessage msg) throws IOException {
+        switch (msg) {
+            case LoginMTS loginMTS -> {
+                Object returnValue;
+                try {
+                    returnValue = this.server.login(this, loginMTS.username());
+                } catch (InvalidUsernameException | RemoteException e) {
+                    returnValue = e;
+                }
+                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
             }
-            case LOGOUT -> {
-                this.server.logout(this, ((LogoutMTS) msg).username());
-
-            }
-            default -> System.err.println("Received unknown type of message: " + msg.getType());
+//            case LOGOUT_MTS -> {
+//                this.server.logout(this, ((LogoutMTS) msg).username());
+//
+//            }
+            default -> System.err.println("Received unknown type of message: " + msg.getClass().getSimpleName());
         }
     }
 
@@ -70,26 +75,6 @@ public class SocketClientHandler implements Client {
         this.objectOutputStream.close();
         this.clientSocket.close();
         System.out.println("(Socket client disconnected)");
-    }
-
-    @Override
-    public void loginOutcome(boolean outcome) throws RemoteException {
-        LoginOutcomeMTC mtc = new LoginOutcomeMTC(outcome);
-        try {
-            this.objectOutputStream.writeObject(mtc);
-        } catch (IOException e) {
-            throw new RemoteException("Could not send login outcome to client through sockets");
-        }
-    }
-
-    @Override
-    public void lobbyList(List<String> lobbies) throws RemoteException {
-
-    }
-
-    @Override
-    public void joinGame(MessageToClient msg) throws RemoteException {
-
     }
 
     @Override

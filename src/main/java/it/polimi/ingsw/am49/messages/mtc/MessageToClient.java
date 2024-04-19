@@ -1,7 +1,5 @@
 package it.polimi.ingsw.am49.messages.mtc;
 
-import it.polimi.ingsw.am49.messages.mts.MessageToServerType;
-
 public abstract class MessageToClient {
     protected final MessageToClientType type;
     protected final String message;

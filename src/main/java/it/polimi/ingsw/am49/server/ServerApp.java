@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.server;
 
 import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.model.actions.GameAction;
+import it.polimi.ingsw.am49.server.exceptions.InvalidUsernameException;
 
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
@@ -22,17 +23,20 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public void login(Client client, String username) throws RemoteException {
+    public boolean login(Client client, String username) throws RemoteException, InvalidUsernameException {
+
+        if (username.length() < 2 || username.length() > 15)
+            throw new InvalidUsernameException("Invalid username. Choose a username between 2 and 15 characters.");
+
         if (usernamesTaken.contains(username)) {
-            client.loginOutcome(false);
             System.out.println("Client with username '" + username + "' tried to join, but the username was not available");
-            return;
+            return false;
         }
 
         this.clientsToRooms.put(client, null);
         this.usernamesTaken.add(username);
-        client.loginOutcome(true);
         System.out.println("Client with username '" + username + "' joined");
+        return true;
     }
 
     @Override
