@@ -41,7 +41,7 @@ public class PregameState extends GameState {
 
     /**
      * Handles the main logic for the PregameState (joining and leaving of players and start of the game when
-     * the desider number of participants is reached.
+     * the desider number of participants is reached).
      * @param action tells witch type of {@link GameAction} neds to be handled.
      * @throws Exception if there are issues with the handling of joining and leaving of players.
      */

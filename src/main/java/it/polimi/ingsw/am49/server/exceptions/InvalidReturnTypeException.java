@@ -8,7 +8,25 @@ package it.polimi.ingsw.am49.server.exceptions;
  * things, an InvalidReturnTypeException is thrown.
  */
 public class InvalidReturnTypeException extends RuntimeException {
-    public InvalidReturnTypeException(String message) {
+
+    /**
+     * Object that was returned which has an unexpected type (class)
+     */
+    private final Object returnedObject;
+
+    /**
+     * @param message message of the exception
+     * @param returnedObject object with unexpected type (class)
+     */
+    public InvalidReturnTypeException(String message, Object returnedObject) {
         super(message);
+        this.returnedObject = returnedObject;
+    }
+
+    /**
+     * @return getter for returnedObject
+     */
+    public Object getReturnedObject() {
+        return returnedObject;
     }
 }

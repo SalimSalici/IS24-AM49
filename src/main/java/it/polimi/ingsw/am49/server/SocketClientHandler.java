@@ -1,11 +1,11 @@
 package it.polimi.ingsw.am49.server;
 
 import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.messages.ReturnMessage;
-import it.polimi.ingsw.am49.messages.SocketMessage;
+import it.polimi.ingsw.am49.messages.*;
 import it.polimi.ingsw.am49.messages.mtc.MessageToClient;
-import it.polimi.ingsw.am49.messages.LoginMTS;
+import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.InvalidUsernameException;
+import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 
 import java.io.*;
 import java.net.Socket;
@@ -53,19 +53,42 @@ public class SocketClientHandler implements Client {
 
     private void handleMessage(SocketMessage msg) throws IOException {
         switch (msg) {
-            case LoginMTS loginMTS -> {
+            case LoginMTS params -> {
                 Object returnValue;
                 try {
-                    returnValue = this.server.login(this, loginMTS.username());
+                    returnValue = this.server.login(this, params.username());
                 } catch (InvalidUsernameException | RemoteException e) {
                     returnValue = e;
                 }
                 this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
             }
-//            case LOGOUT_MTS -> {
-//                this.server.logout(this, ((LogoutMTS) msg).username());
-//
-//            }
+            case CreateRoomMTS params -> {
+                Object returnValue;
+                try {
+                    returnValue = this.server.createRoom(
+                            this,
+                            params.roomName(),
+                            params.numPlayers(),
+                            params.creatorUsername()
+                    );
+                } catch (AlreadyInRoomException | RemoteException | IllegalArgumentException e) {
+                    returnValue = e;
+                }
+                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+            }
+            case JoinRoomMTS params -> {
+                Object returnValue;
+                try {
+                    returnValue = this.server.joinRoom(
+                            this,
+                            params.roomName(),
+                            params.username()
+                    );
+                } catch (JoinRoomException | RemoteException | AlreadyInRoomException | IllegalArgumentException e) {
+                    returnValue = e;
+                }
+                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+            }
             default -> System.err.println("Received unknown type of message: " + msg.getClass().getSimpleName());
         }
     }
@@ -79,6 +102,11 @@ public class SocketClientHandler implements Client {
 
     @Override
     public void receiveGameUpdate(MessageToClient msg) throws RemoteException {
+
+    }
+
+    @Override
+    public void playerDisconnected(String username) throws RemoteException {
 
     }
 

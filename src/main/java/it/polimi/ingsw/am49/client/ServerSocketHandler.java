@@ -1,12 +1,17 @@
 package it.polimi.ingsw.am49.client;
 
+import it.polimi.ingsw.am49.controller.RoomInfo;
+import it.polimi.ingsw.am49.messages.CreateRoomMTS;
+import it.polimi.ingsw.am49.messages.JoinRoomMTS;
 import it.polimi.ingsw.am49.messages.ReturnMessage;
 import it.polimi.ingsw.am49.messages.mtc.MessageToClientNew;
 import it.polimi.ingsw.am49.messages.LoginMTS;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.InvalidReturnTypeException;
 import it.polimi.ingsw.am49.server.exceptions.InvalidUsernameException;
+import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -98,7 +103,7 @@ public class ServerSocketHandler implements Server {
             case Boolean outcome -> outcome;
             case InvalidUsernameException e -> throw e;
             case Exception e -> throw new RemoteException(e.getMessage());
-            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::login method");
+            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::login method", returnValue);
         };
     }
 
@@ -117,13 +122,52 @@ public class ServerSocketHandler implements Server {
     }
 
     @Override
-    public void createGame(Client client, String gameName, int numPlayers) throws RemoteException {
+    public boolean createRoom(Client client, String roomName, int numPlayers, String creatorUsername)
+            throws RemoteException, AlreadyInRoomException, IllegalArgumentException {
 
+        int uniqueMessageId = this.getUniqueId();
+        try {
+            this.objectOutputStream.writeObject(
+                    new CreateRoomMTS(uniqueMessageId, roomName, numPlayers, creatorUsername)
+            );
+        } catch (IOException e) {
+            throw new RemoteException("SOCKETS: Could not send login request to server through sockets (Server::createGame)");
+        }
+
+        Object returnValue = this.waitForReturnValue(uniqueMessageId);
+
+        return switch (returnValue) {
+            case Boolean outcome -> outcome;
+            case IllegalArgumentException e -> throw e;
+            case AlreadyInRoomException e -> throw e;
+            case Exception e -> throw new RemoteException(e.getMessage());
+            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::createGame method", returnValue);
+        };
     }
 
     @Override
-    public void joinGame(Client client, String gameName) throws RemoteException {
+    public RoomInfo joinRoom(Client client, String roomName, String username)
+            throws RemoteException, AlreadyInRoomException, JoinRoomException, IllegalArgumentException {
 
+        int uniqueMessageId = this.getUniqueId();
+        try {
+            this.objectOutputStream.writeObject(
+                    new JoinRoomMTS(uniqueMessageId, roomName, username)
+            );
+        } catch (IOException e) {
+            throw new RemoteException("SOCKETS: Could not send login request to server through sockets (Server::createGame)");
+        }
+
+        Object returnValue = this.waitForReturnValue(uniqueMessageId);
+
+        return switch (returnValue) {
+            case RoomInfo roomInfo -> roomInfo;
+            case JoinRoomException e -> throw e;
+            case AlreadyInRoomException e -> throw e;
+            case IllegalArgumentException e -> throw e;
+            case Exception e -> throw new RemoteException(e.getMessage());
+            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::createGame method", returnValue);
+        };
     }
 
     @Override
@@ -141,16 +185,22 @@ public class ServerSocketHandler implements Server {
 
     }
 
+    /**
+     * Returns a unique id for socket message identification.
+     * The unique id is obtained by continuously incrementing an integer value. At some point
+     * this value may reach Integer.MAX_INT, in which case, after being incremented again,
+     * it will loop back to negative integers and keep going from there. This is not a problem, since the
+     * client will (hopefully) never be waiting for billions of messages at the same time.
+     * @return the uniquied id
+     */
     private int getUniqueId() {
-        if (this.uniqueId.get() > Integer.MAX_VALUE - 10)
-            this.uniqueId.set(0);
         return this.uniqueId.getAndIncrement();
     }
 
     private Object waitForReturnValue(int uniqueMessageId) throws RemoteException {
         CompletableFuture<Object> future = null;
-        synchronized (returnValues) {
-            future = returnValues.computeIfAbsent(
+        synchronized (this.returnValues) {
+            future = this.returnValues.computeIfAbsent(
                     uniqueMessageId,
                     k -> new CompletableFuture<>()
             );
@@ -163,6 +213,8 @@ public class ServerSocketHandler implements Server {
             returnValue = future.get(3, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw new RemoteException("SOCKETS: Did not receive return value from server", e);
+        } finally {
+            this.returnValues.remove(uniqueMessageId);
         }
         return returnValue;
     }

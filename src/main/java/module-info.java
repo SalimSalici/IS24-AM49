@@ -14,4 +14,5 @@ module it.polimi.ingsw.am49 {
     exports it.polimi.ingsw.am49.server.exceptions to java.rmi;
     exports it.polimi.ingsw.am49.client to java.rmi;
     exports it.polimi.ingsw.am49.model.actions to java.rmi;
+    exports it.polimi.ingsw.am49.controller to java.rmi;
 }

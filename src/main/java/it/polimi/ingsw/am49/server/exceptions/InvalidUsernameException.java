@@ -1,8 +1,7 @@
 package it.polimi.ingsw.am49.server.exceptions;
 
 /**
- * This exception is thrown when a client trying to make a new login into the server chooses a username that
- * is already taken by another already logged in client.
+ * This exception is a client chooses an invalid username
  */
 public class InvalidUsernameException extends Exception {
 

@@ -1,7 +1,9 @@
 package it.polimi.ingsw.am49.client;
 
+import it.polimi.ingsw.am49.controller.RoomInfo;
 import it.polimi.ingsw.am49.messages.mtc.MessageToClient;
 import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.InvalidUsernameException;
 
 import java.io.IOException;
@@ -25,6 +27,11 @@ public class ClientApp extends UnicastRemoteObject implements Client {
     }
 
     @Override
+    public void playerDisconnected(String username) throws RemoteException {
+
+    }
+
+    @Override
     public void ping() {
 
     }
@@ -33,7 +40,7 @@ public class ClientApp extends UnicastRemoteObject implements Client {
         this.username = username;
     }
 
-    public static void main(String[] args) throws IOException, NotBoundException {
+    public static void main(String[] args) throws IOException, NotBoundException, AlreadyInRoomException {
         Client client = new ClientApp();
 
         int serverPort = 8458;
@@ -68,11 +75,46 @@ public class ClientApp extends UnicastRemoteObject implements Client {
             }
         }
 
-        while (true) {
+        boolean disconnect = false;
+        while (!disconnect) {
+            System.out.print("Command: ");
             String command = scanner.nextLine();
-            if (command.equals("disconnect")) {
-                server.logout(client, username);
-                break;
+            switch (command) {
+                case "create" -> {
+                    System.out.print("Choose room name: ");
+                    String roomName = scanner.nextLine();
+
+                    try {
+                        if (server.createRoom(client, roomName, 3, username))
+                            System.out.println("Created room " + roomName + " successfully");
+                        else
+                            System.out.println("Failed creating room " + roomName);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                case "join" -> {
+                    System.out.print("Choose room name: ");
+                    String roomName = scanner.nextLine();
+
+                    try {
+                        RoomInfo roomInfo = server.joinRoom(client, roomName, username);
+                        if (roomInfo != null) {
+                            System.out.println(
+                                    "Joined room " + roomInfo.roomName() + " successfully "
+                                    + " | maxPlayers: " + roomInfo.maxPlayers()
+                                    + " | playerInRoom: " + roomInfo.playersInRoom()
+                            );
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+                case "disconnect" -> {
+                    server.logout(client, username);
+                    disconnect = true;
+                }
+                default -> System.out.println("Unknown command");
             }
         }
 
