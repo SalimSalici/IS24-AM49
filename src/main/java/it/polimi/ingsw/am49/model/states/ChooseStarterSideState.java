@@ -10,13 +10,11 @@ import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.CardPlacedEvent;
 import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
-import it.polimi.ingsw.am49.model.events.HandUpdateEvent;
+import it.polimi.ingsw.am49.model.events.HandEvent;
 import it.polimi.ingsw.am49.model.events.StarterCardAssignedEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class ChooseStarterSideState extends GameState {
@@ -55,15 +53,16 @@ public class ChooseStarterSideState extends GameState {
         // TODO: (maybe) set up drawable decks and revealed drawable cards here
 
         GameDeck<StarterCard> starterDeck = DeckLoader.getInstance().getNewStarterDeck();
-        Map<Player, StarterCard> playersToStartingCard = new HashMap<>();
+//        Map<Player, StarterCard> playersToStartingCard = new HashMap<>();
 
         for (Player p : this.game.getPlayers()) {
             StarterCard card = starterDeck.draw();
             p.setStarterCard(card);
-            playersToStartingCard.put(p, card);
+            this.game.triggerEvent(new StarterCardAssignedEvent(p, card));
+//            playersToStartingCard.put(p, card);
         }
 
-        this.game.triggerEvent(new StarterCardAssignedEvent(playersToStartingCard));
+//        this.game.triggerEvent(new StarterCardAssignedEvent(playersToStartingCard));
         this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound(), this.game.getCurrentPlayer()));
     }
 
@@ -79,7 +78,7 @@ public class ChooseStarterSideState extends GameState {
         Player player = this.game.getPlayerByUsername(action.getUsername());
         boolean flipped = ((ChooseStarterSideAction)action).getFlipped();
         player.chooseStarterSide(flipped);
-        this.game.triggerEvent(new CardPlacedEvent(player, player.getBoard().getStarterTile(), player.getPoints()));
+        this.game.triggerEvent(new CardPlacedEvent(player, player.getBoard().getStarterTile()));
 
         this.playersChoosing.remove(player);
         if (this.playersChoosing.isEmpty()) {
@@ -106,7 +105,7 @@ public class ChooseStarterSideState extends GameState {
                 p.drawCard(this.game.getGoldGameDeck().draw());
 
             this.game.triggerEvent(
-                    new HandUpdateEvent(p, p.getHand().stream().toList())
+                    new HandEvent(p, p.getHand().stream().toList())
             );
         }
     }

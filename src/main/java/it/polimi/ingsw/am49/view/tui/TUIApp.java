@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.view.tui;
 
 import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.RoomInfo;
+import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.model.actions.JoinGameAction;
 import it.polimi.ingsw.am49.model.actions.LeaveGameAction;
 import it.polimi.ingsw.am49.server.Server;
@@ -159,6 +160,10 @@ public class TUIApp {
                     this.mainMenuScene();
                     done = true;
                 }
+                case "dbg_next" -> {
+                    this.starterCardScene();
+                    done = true;
+                }
                 case "disconnect" -> {
                     if (isReady) {
                         LeaveGameAction action = new LeaveGameAction(this.username);
@@ -170,5 +175,24 @@ public class TUIApp {
                 }
              }
         }
+    }
+
+    public void starterCardScene() {
+        boolean done = false;
+        while (!done) {
+            System.out.print("Do you want to flip starter side (true|false)> ");
+            boolean flipped = this.scanner.nextBoolean();
+            this.scanner.nextLine();
+            try {
+                this.server.executeAction(this.client, new ChooseStarterSideAction(this.username, flipped));
+                done = true;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+                System.out.println();
+            }
+        }
+        System.out.println("Starter side chosen.");
+        this.scanner.nextLine();
     }
 }

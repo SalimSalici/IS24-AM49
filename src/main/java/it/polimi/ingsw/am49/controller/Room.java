@@ -120,10 +120,33 @@ public class Room {
         // TODO: communicate to controller in both cases when a game has already started or when a game is starting
     }
 
+    // TODO: handle exception
+    public void notifyGameUpdateTo(String username, GameUpdate gameUpdate) {
+        try {
+            this.usernamesToClients.getValue(username).receiveGameUpdate(gameUpdate);
+        } catch (RemoteException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // TODO: handle exception
     public void broadcastGameUpdate(GameUpdate gameUpdate) {
         this.usernamesToClients.values().forEach(c -> {
             try {
                 c.receiveGameUpdate(gameUpdate);
+            } catch (RemoteException e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void broadcastGameUpdateExcept(GameUpdate gameUpdate, String except) {
+        this.usernamesToClients.values().forEach(c -> {
+            try {
+                if (!getUsernameByClient(c).equals(except))
+                    c.receiveGameUpdate(gameUpdate);
             } catch (RemoteException e) {
                 System.err.println(e.getMessage());
                 e.printStackTrace();

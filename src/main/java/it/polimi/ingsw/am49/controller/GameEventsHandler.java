@@ -1,9 +1,5 @@
 package it.polimi.ingsw.am49.controller;
 
-import it.polimi.ingsw.am49.controller.gameupdates.GameStateChangedUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.PlayerJoinedUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.PlayerLeftUpdate;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.events.*;
@@ -23,28 +19,22 @@ public class GameEventsHandler implements EventListener {
     @Override
     public void onEventTrigger(GameEvent event) {
         System.out.println("Event received: " + event);
-        this.room.broadcastGameUpdate(event.toGameUpdate());
-//        switch (event.getType()) {
-//            case PLAYER_JOINED_EVENT -> {
-//                PlayerJoinedEvent playerJoinedEvent = (PlayerJoinedEvent) event;
-//                GameUpdate update = new PlayerJoinedUpdate(playerJoinedEvent.playerWhoJoined().getUsername());
-//                this.room.broadcastGameUpdate(update);
-//            }
-//            case PLAYER_LEFT_EVENT -> {
-//                PlayerLeftEvent playerLeftEvent = (PlayerLeftEvent) event;
-//                GameUpdate update = new PlayerLeftUpdate(playerLeftEvent.playerWhoLeft().getUsername());
-//                this.room.broadcastGameUpdate(update);
-//            }
-//            case GAME_STATE_CHANGED_EVENT -> {
-////                GameStateChangedEvent gameStateChangedEvent = (GameStateChangedEvent) event;
-////                GameUpdate update = new GameStateChangedUpdate(
-////                        gameStateChangedEvent.gameStateType(),
-////                        gameStateChangedEvent.turn(),
-////                        gameStateChangedEvent.round(),
-////                        gameStateChangedEvent.currentPlayer().getUsername()
-////                );
-//                this.room.broadcastGameUpdate(event.toGameUpdate());
-//            }
-//        }
+//        this.room.broadcastGameUpdate(event.toGameUpdate());
+        switch (event.getType()) {
+            case STARTER_CARD_ASSIGNED_EVENT -> {
+                StarterCardAssignedEvent evt = (StarterCardAssignedEvent) event;
+                this.room.notifyGameUpdateTo(evt.player().getUsername(), evt.toGameUpdate());
+            }
+            case CHOOSABLE_OBJECTIVES_EVENT -> {
+                ChoosableObjectivesEvent evt = (ChoosableObjectivesEvent) event;
+                this.room.notifyGameUpdateTo(evt.player().getUsername(), evt.toGameUpdate());
+            }
+            case HAND_UPDATE_EVENT -> {
+                HandEvent evt = (HandEvent) event;
+                this.room.notifyGameUpdateTo(evt.player().getUsername(), evt.toGameUpdate());
+                this.room.broadcastGameUpdateExcept(evt.toHiddenHandUpdate(), evt.player().getUsername());
+            }
+            default -> this.room.broadcastGameUpdate(event.toGameUpdate());
+        }
     }
 }

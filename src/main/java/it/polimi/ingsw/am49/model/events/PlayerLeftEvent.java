@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.model.events;
 
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.PlayerJoinedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.PlayerLeftUpdate;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.Player;
@@ -29,6 +30,9 @@ public record PlayerLeftEvent(Player playerWhoLeft, List<Player> remainingPlayer
 
     @Override
     public PlayerLeftUpdate toGameUpdate() {
-        return null;
+        return new PlayerLeftUpdate(
+                playerWhoLeft().getUsername(),
+                remainingPlayers.stream().map(Player::getUsername).toList()
+        );
     }
 }

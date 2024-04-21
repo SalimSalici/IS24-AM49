@@ -29,6 +29,9 @@ public record PlayerJoinedEvent(Player playerWhoJoined, List<Player> playersInGa
 
     @Override
     public PlayerJoinedUpdate toGameUpdate() {
-        return new PlayerJoinedUpdate(playerWhoJoined().getUsername());
+        return new PlayerJoinedUpdate(
+                playerWhoJoined().getUsername(),
+                playersInGame.stream().map(Player::getUsername).toList()
+        );
     }
 }

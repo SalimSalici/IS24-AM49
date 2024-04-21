@@ -72,6 +72,7 @@ public class EventManager implements EventEmitter {
             } catch (Exception e) {
                 // TODO: Log the exception or handle it as needed
                 System.err.println("Error processing event: " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }

@@ -57,7 +57,7 @@ public class PlaceCardState extends GameState {
             throw new Exception("Could not place tile");
         }
 
-        this.game.triggerEvent(new CardPlacedEvent(currentPlayer, newTile, currentPlayer.getPoints()));
+        this.game.triggerEvent(new CardPlacedEvent(currentPlayer, newTile));
         this.goToNextState(new DrawCardState(this.game));
     }
 

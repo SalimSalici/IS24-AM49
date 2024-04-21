@@ -11,7 +11,7 @@ import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.DrawAreaUpdateEvent;
-import it.polimi.ingsw.am49.model.events.HandUpdateEvent;
+import it.polimi.ingsw.am49.model.events.HandEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.List;
@@ -78,7 +78,7 @@ public class DrawCardState extends GameState {
                 )
         );
         this.game.triggerEvent(
-                new HandUpdateEvent(currentPlayer, currentPlayer.getHand().stream().toList())
+                new HandEvent(currentPlayer, currentPlayer.getHand().stream().toList())
         );
 
         // Check if game is over

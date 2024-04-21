@@ -8,7 +8,7 @@ import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
-import it.polimi.ingsw.am49.model.events.ChoosableObjectivesAssignedEvent;
+import it.polimi.ingsw.am49.model.events.ChoosableObjectivesEvent;
 import it.polimi.ingsw.am49.model.events.CommonObjectivesDrawnEvent;
 import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
 import it.polimi.ingsw.am49.model.events.PersonalObjectiveChosenEvent;
@@ -23,7 +23,7 @@ import java.util.*;
  * This class is resposible for dealing the personal {@link ObjectiveCard} options to eatch {@link Player} and
  * handling the chosing process.
  *
- * This class extends {@link GameState} and utilizes events such as {@link ChoosableObjectivesAssignedEvent},
+ * This class extends {@link GameState} and utilizes events such as {@link ChoosableObjectivesEvent},
  * {@link CommonObjectivesDrawnEvent}, and {@link PersonalObjectiveChosenEvent} to manage the flow of the game state
  * and communicate state changes.
  */
@@ -66,10 +66,9 @@ public class ChooseObjectiveState extends GameState {
             for (int i = 0; i < 2; i++)
                 drawnObjectives.add(objectiveDeck.draw());
             this.playersToObjectives.put(p, drawnObjectives);
+            this.game.triggerEvent(new ChoosableObjectivesEvent(p, drawnObjectives));
         }
 
-        // TODO: change the ChoosableObjectivesAssignedEvent to be specific for each player, instead of aggretating them
-        this.game.triggerEvent(new ChoosableObjectivesAssignedEvent(this.playersToObjectives));
         this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound(), this.game.getCurrentPlayer()));
     }
 
