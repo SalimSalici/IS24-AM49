@@ -1,9 +1,6 @@
 package it.polimi.ingsw.am49.util;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 // TODO: test the hell out of this class
 public class BiMap<K, V> {
@@ -22,6 +19,12 @@ public class BiMap<K, V> {
 
         if (value != null)
             valueToKey.put(value, key);
+    }
+
+    public Map.Entry<K, V> removeKey(K key) {
+        K k = this.valueToKey.remove(this.keyToValue.get(key));
+        V v = this.keyToValue.remove(key);
+        return new AbstractMap.SimpleEntry<>(k, v);
     }
 
     public V getValue(K key) {

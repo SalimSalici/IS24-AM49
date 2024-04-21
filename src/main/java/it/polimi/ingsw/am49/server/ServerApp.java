@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.controller.Room;
 import it.polimi.ingsw.am49.controller.RoomInfo;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
+import it.polimi.ingsw.am49.server.exceptions.CreateRoomException;
 import it.polimi.ingsw.am49.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 
@@ -31,28 +32,8 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public boolean login(Client client, String username) throws RemoteException, InvalidUsernameException {
+    public void disconnectClient(Client client) {
 
-        if (username.length() < 2 || username.length() > 15)
-            throw new InvalidUsernameException("Invalid username. Choose a username between 2 and 15 characters.");
-
-        if (usernamesTaken.contains(username)) {
-            System.out.println("Client with username '" + username + "' tried to join, but the username was not available");
-            return false;
-        }
-
-        this.clientsToRooms.put(new ClientHandler(client, username), null);
-        this.usernamesTaken.add(username);
-        System.out.println("Client with username '" + username + "' joined");
-        return true;
-    }
-
-    @Override
-    public void logout(Client client, String username) {
-        // TODO: if in a room, notify room that a client disconnected
-        this.clientsToRooms.remove(client);
-        this.usernamesTaken.remove(username);
-        System.out.println("Client with username " + username + " disconnected");
     }
 
     @Override
@@ -61,8 +42,8 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public boolean createRoom(Client client, String roomName, int numPlayers, String creatorUsername)
-            throws RemoteException, AlreadyInRoomException, IllegalArgumentException {
+    public RoomInfo createRoom(Client client, String roomName, int numPlayers, String creatorUsername)
+            throws RemoteException, AlreadyInRoomException, CreateRoomException {
 
         if (roomName.length() < 2 || roomName.length() > 15)
             throw new IllegalArgumentException("Invalid room name. Room name should be between 2 and 15 charactes.");
@@ -74,12 +55,13 @@ public class ServerApp implements Server {
             throw new AlreadyInRoomException(this.clientsToRooms.get(client).getRoomName());
 
         if (this.getRoomByName(roomName) != null)
-            return false;
+            throw new CreateRoomException("The name of the room you are trying to create is not available,please " +
+                    "choose a new room name.");
 
         Room room = new Room(roomName, numPlayers, client, creatorUsername);
         this.rooms.add(room);
         this.clientsToRooms.put(client, room);
-        return true;
+        return room.getRoomInfo();
     }
 
     @Override
@@ -101,17 +83,31 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public void executeAction(Client c, GameAction action) {
+    public boolean leaveRoom(Client client) throws RemoteException {
+        Room room = this.clientsToRooms.get(client);
+        if (room == null) return false;
+
+        return room.removePlayer(client);
+    }
+
+    @Override
+    public void executeAction(Client client, GameAction action) {
+        Room room = this.clientsToRooms.get(client);
+        try {
+            if (room != null) room.executeGameAction(client, action);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void reconnect(Client client, String gameName) {
 
     }
 
     @Override
-    public void reconnect(Client c, String gameName) {
-
-    }
-
-    @Override
-    public void ping(Client c) {
+    public void ping(Client client) {
 
     }
 

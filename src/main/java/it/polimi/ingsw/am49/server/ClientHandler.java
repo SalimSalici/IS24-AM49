@@ -1,7 +1,8 @@
 package it.polimi.ingsw.am49.server;
 
 import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.messages.mtc.MessageToClient;
+import it.polimi.ingsw.am49.controller.RoomInfo;
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 
 import java.rmi.RemoteException;
 
@@ -19,8 +20,18 @@ public class ClientHandler implements Client {
     }
 
     @Override
-    public void receiveGameUpdate(MessageToClient msg) throws RemoteException {
-        this.client.receiveGameUpdate(msg);
+    public void playerJoinedYourRoom(RoomInfo room, String username) throws RemoteException {
+
+    }
+
+    @Override
+    public void playerLeftYourRoom(RoomInfo room, String username) throws RemoteException {
+
+    }
+
+    @Override
+    public void receiveGameUpdate(GameUpdate gameUpdate) throws RemoteException {
+        this.client.receiveGameUpdate(gameUpdate);
     }
 
     @Override

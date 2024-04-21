@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.Player;
@@ -13,5 +14,10 @@ public record CardPlacedEvent(Player player, BoardTile boardTile, int points) im
     @Override
     public GameEventType getType() {
         return GameEventType.CARD_PLACED_EVENT;
+    }
+
+    @Override
+    public GameUpdate toGameUpdate() {
+        return null;
     }
 }

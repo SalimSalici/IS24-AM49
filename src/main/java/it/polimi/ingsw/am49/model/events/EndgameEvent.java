@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.Player;
 
@@ -10,5 +11,10 @@ public record EndgameEvent(Map<Player, Integer> playersToAchievedObjectives) imp
     @Override
     public GameEventType getType() {
         return GameEventType.END_GAME;
+    }
+
+    @Override
+    public GameUpdate toGameUpdate() {
+        return null;
     }
 }

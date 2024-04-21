@@ -1,17 +1,11 @@
 package it.polimi.ingsw.am49.client;
 
 import it.polimi.ingsw.am49.controller.RoomInfo;
-import it.polimi.ingsw.am49.messages.CreateRoomMTS;
-import it.polimi.ingsw.am49.messages.JoinRoomMTS;
-import it.polimi.ingsw.am49.messages.ReturnMessage;
+import it.polimi.ingsw.am49.messages.*;
 import it.polimi.ingsw.am49.messages.mtc.MessageToClientNew;
-import it.polimi.ingsw.am49.messages.LoginMTS;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.server.Server;
-import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
-import it.polimi.ingsw.am49.server.exceptions.InvalidReturnTypeException;
-import it.polimi.ingsw.am49.server.exceptions.InvalidUsernameException;
-import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
+import it.polimi.ingsw.am49.server.exceptions.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -54,7 +48,7 @@ public class ServerSocketHandler implements Server {
             Object msg = objectInputStream.readObject();
             if (msg instanceof ReturnMessage returnMsg) {
 
-                System.out.println("MESSAGE WITH ID RECEIVED: " + returnMsg.id());
+//                System.out.println("MESSAGE WITH ID RECEIVED: " + returnMsg.id());
 
                 synchronized (returnValues) {
                     CompletableFuture<Object> future = returnValues.get(returnMsg.id());
@@ -66,8 +60,8 @@ public class ServerSocketHandler implements Server {
                     }
                 }
 
-            } else if (msg instanceof MessageToClientNew mtcMessage) {
-                this.handleMessage(mtcMessage);
+            } else if (msg instanceof SocketMessage pushMsg) {
+                this.handleMessage(pushMsg);
             }
         }
 
@@ -80,35 +74,22 @@ public class ServerSocketHandler implements Server {
         this.socket.close();
     }
 
-    // TODO: will be probably needed just to handle async messages (for example game updates)
-    private void handleMessage(MessageToClientNew msg) throws RemoteException {
-//        switch (msg.getType()) {
-//            case LOGIN_OUTCOME -> this.client.loginOutcome(((LoginOutcomeMTC)msg).outcome());
-//        }
-//        System.out.println("Received message from the server of type: " + msg.getType());
-    }
-
-    @Override
-    public boolean login(Client client, String username) throws RemoteException, InvalidUsernameException {
-        int uniqueMessageId = this.getUniqueId();
-        try {
-            this.objectOutputStream.writeObject(new LoginMTS(uniqueMessageId, username));
-        } catch (IOException e) {
-            throw new RemoteException("SOCKETS: Could not send login request to server through sockets (Server::login)");
+    private void handleMessage(SocketMessage msg) throws RemoteException {
+        // TODO: handle default better (?)
+        switch (msg) {
+            case PlayerJoinedYourRoomMTC params ->
+                    this.client.playerJoinedYourRoom(params.roomInfo(), params.username());
+            case PlayerLeftYourRoomMTC params ->
+                    this.client.playerLeftYourRoom(params.roomInfo(), params.username());
+            case ReceiveGameUpdateMTC params ->
+                    this.client.receiveGameUpdate(params.gameUpdate());
+            default -> throw new IllegalStateException("Unexpected message received: " + msg);
         }
-
-        Object returnValue = this.waitForReturnValue(uniqueMessageId);
-
-        return switch (returnValue) {
-            case Boolean outcome -> outcome;
-            case InvalidUsernameException e -> throw e;
-            case Exception e -> throw new RemoteException(e.getMessage());
-            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::login method", returnValue);
-        };
+//        System.out.println("Received message from the server of type: " + msg.getClass().getSimpleName());
     }
 
     @Override
-    public void logout(Client client, String username) throws RemoteException {
+    public void disconnectClient(Client client) throws RemoteException {
 //        try {
 //            this.objectOutputStream.writeObject(new LogoutMTS(username));
 //        } catch (IOException e) {
@@ -122,8 +103,8 @@ public class ServerSocketHandler implements Server {
     }
 
     @Override
-    public boolean createRoom(Client client, String roomName, int numPlayers, String creatorUsername)
-            throws RemoteException, AlreadyInRoomException, IllegalArgumentException {
+    public RoomInfo createRoom(Client client, String roomName, int numPlayers, String creatorUsername)
+            throws RemoteException, AlreadyInRoomException, CreateRoomException {
 
         int uniqueMessageId = this.getUniqueId();
         try {
@@ -131,14 +112,14 @@ public class ServerSocketHandler implements Server {
                     new CreateRoomMTS(uniqueMessageId, roomName, numPlayers, creatorUsername)
             );
         } catch (IOException e) {
-            throw new RemoteException("SOCKETS: Could not send login request to server through sockets (Server::createGame)");
+            throw new RemoteException("SOCKETS: Could not send message to server through sockets (Server::createGame)");
         }
 
         Object returnValue = this.waitForReturnValue(uniqueMessageId);
 
         return switch (returnValue) {
-            case Boolean outcome -> outcome;
-            case IllegalArgumentException e -> throw e;
+            case RoomInfo roomInfo -> roomInfo;
+            case CreateRoomException e -> throw e;
             case AlreadyInRoomException e -> throw e;
             case Exception e -> throw new RemoteException(e.getMessage());
             default -> throw new InvalidReturnTypeException("Invalid return value type for Server::createGame method", returnValue);
@@ -155,7 +136,7 @@ public class ServerSocketHandler implements Server {
                     new JoinRoomMTS(uniqueMessageId, roomName, username)
             );
         } catch (IOException e) {
-            throw new RemoteException("SOCKETS: Could not send login request to server through sockets (Server::createGame)");
+            throw new RemoteException("SOCKETS: Could not send message to server through sockets (Server::joinRoom)");
         }
 
         Object returnValue = this.waitForReturnValue(uniqueMessageId);
@@ -166,13 +147,37 @@ public class ServerSocketHandler implements Server {
             case AlreadyInRoomException e -> throw e;
             case IllegalArgumentException e -> throw e;
             case Exception e -> throw new RemoteException(e.getMessage());
-            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::createGame method", returnValue);
+            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::joinRoom method", returnValue);
+        };
+    }
+
+    @Override
+    public boolean leaveRoom(Client client) throws RemoteException {
+        int uniqueMessageId = this.getUniqueId();
+        try {
+            this.objectOutputStream.writeObject(
+                    new LeaveRoomMTS(uniqueMessageId)
+            );
+        } catch (IOException e) {
+            throw new RemoteException("SOCKETS: Could not send message to server through sockets (Server::leaveRoom)");
+        }
+
+        Object returnValue = this.waitForReturnValue(uniqueMessageId);
+
+        return switch (returnValue) {
+            case Boolean outcome -> outcome;
+            case Exception e -> throw new RemoteException(e.getMessage());
+            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::leaveRoom method", returnValue);
         };
     }
 
     @Override
     public void executeAction(Client c, GameAction action) throws RemoteException {
-
+        try {
+            this.objectOutputStream.writeObject(new ExecuteActionMTS(0, action));
+        } catch (IOException e) {
+            throw new RemoteException("SOCKETS: Could not send message to server through sockets (Server::executeAction)");
+        }
     }
 
     @Override

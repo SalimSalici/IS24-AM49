@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.Player;
@@ -16,5 +17,10 @@ public record HandUpdateEvent(Player player, List<PlaceableCard> hand) implement
     @Override
     public GameEventType getType() {
         return GameEventType.HAND_UPDATE_EVENT;
+    }
+
+    @Override
+    public GameUpdate toGameUpdate() {
+        return null;
     }
 }

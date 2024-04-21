@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 
@@ -15,5 +16,10 @@ public record CommonObjectivesDrawnEvent(List<ObjectiveCard> commonObjectives) i
     @Override
     public GameEventType getType() {
         return GameEventType.COMMON_OBJECTIVES_DRAWN;
+    }
+
+    @Override
+    public GameUpdate toGameUpdate() {
+        return null;
     }
 }

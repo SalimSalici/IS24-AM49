@@ -81,7 +81,7 @@ public class PregameState extends GameState {
 
         Player newPlayer = new Player(username);
         this.game.getPlayers().add(newPlayer);
-        this.game.triggerEvent(new PlayerJoinedEvent(this.game.getPlayers()));
+        this.game.triggerEvent(new PlayerJoinedEvent(newPlayer, this.game.getPlayers()));
     }
 
     /**
@@ -92,7 +92,7 @@ public class PregameState extends GameState {
         String username = leaveGameAction.getUsername();
         Player playerToRemove = this.game.getPlayerByUsername(username);
         this.game.getPlayers().remove(playerToRemove);
-        this.game.triggerEvent(new PlayerLeftEvent(this.game.getPlayers(), playerToRemove));
+        this.game.triggerEvent(new PlayerLeftEvent(playerToRemove, this.game.getPlayers()));
     }
 
     /**

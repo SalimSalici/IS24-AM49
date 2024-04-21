@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
 import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
@@ -23,5 +24,10 @@ public record DrawAreaUpdateEvent(
     @Override
     public GameEventType getType() {
         return GameEventType.DRAW_AREA_UPDATE;
+    }
+
+    @Override
+    public GameUpdate toGameUpdate() {
+        return null;
     }
 }

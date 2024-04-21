@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.Player;
@@ -26,5 +27,10 @@ public record ChoosableObjectivesAssignedEvent(
     @Override
     public GameEventType getType() {
         return GameEventType.CHOOSABLE_OBJECTIVES_ASSIGNED_EVENT;
+    }
+
+    @Override
+    public GameUpdate toGameUpdate() {
+        return null;
     }
 }

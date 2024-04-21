@@ -1,5 +1,7 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.gameupdates.GameStateChangedUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.players.Player;
@@ -17,5 +19,10 @@ public record GameStateChangedEvent(GameStateType gameStateType, int turn, int r
     @Override
     public GameEventType getType() {
         return GameEventType.GAME_STATE_CHANGED_EVENT;
+    }
+
+    @Override
+    public GameStateChangedUpdate toGameUpdate() {
+        return new GameStateChangedUpdate(gameStateType, turn, round, currentPlayer().getUsername());
     }
 }

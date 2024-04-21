@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.Player;
 
@@ -14,6 +15,11 @@ public record PlayersOrderSetEvent(List<Player> playersOrder) implements GameEve
     @Override
     public GameEventType getType() {
         return GameEventType.PLAYERS_ORDER_SET_EVENT;
+    }
+
+    @Override
+    public GameUpdate toGameUpdate() {
+        return null;
     }
 }
 

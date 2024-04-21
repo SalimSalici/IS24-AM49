@@ -1,6 +1,8 @@
 package it.polimi.ingsw.am49.model.actions;
 
-public abstract class GameAction {
+import java.io.Serializable;
+
+public abstract class GameAction implements Serializable {
 
     protected final GameActionType type;
     protected final String username;

@@ -1,11 +1,13 @@
 package it.polimi.ingsw.am49.controller;
 
 import it.polimi.ingsw.am49.client.Client;
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.util.BiMap;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class Room {
@@ -26,6 +28,8 @@ public class Room {
     private final Game game;
     private boolean gameStarted;
 
+    private final GameEventsHandler gameEventsHandler;
+
     public Room(String roomName, int maxPlayers, Client creatorClient, String creatorUsername) {
         this.roomName = roomName;
         this.maxPlayers = maxPlayers;
@@ -34,6 +38,8 @@ public class Room {
         // TODO: remove gameId (?) (maybe substitute with gameName for resilience to server crash?)
         this.game = new Game(0, maxPlayers);
         this.gameStarted = false;
+        this.gameEventsHandler = new GameEventsHandler(this, game);
+
         this.usernamesToClients.put(creatorUsername, creatorClient);
         this.onlinePlayers = 1;
         this.currentPlayers = 1;
@@ -43,11 +49,8 @@ public class Room {
     }
 
     public void addNewPlayer(Client playerClient, String playerUsername) throws JoinRoomException {
-        if (this.gameStarted)
-            throw new JoinRoomException("Game already started");
 
-        if (this.currentPlayers >= this.maxPlayers)
-            throw new JoinRoomException("Max player amount for this room reached");
+        this.checkIfNewPlayerCanJoin(playerClient, playerUsername); // If not, JoinRoomException is thrown
 
         this.usernamesToClients.put(playerUsername, playerClient);
 
@@ -57,6 +60,18 @@ public class Room {
         if (this.currentPlayers >= this.maxPlayers)
             this.gameStarted = true;
 
+        this.usernamesToClients.values().stream()
+                .filter(c -> c != playerClient)
+                .forEach(c -> {
+                    try {
+                        c.playerJoinedYourRoom(this.getRoomInfo(), playerUsername);
+                    } catch (RemoteException e) {
+                        // TODO: Handle this exception
+                        System.err.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+
         System.out.println("User '" + playerUsername + "' joined room '" + this.roomName
                 + "' | currentPlayers: " + this.currentPlayers
                 + " | onlinePlayers: " + this.onlinePlayers
@@ -64,10 +79,37 @@ public class Room {
         );
     }
 
+    // TODO: maybe think more about this method (?)
+    public boolean removePlayer(Client client) {
+        Map.Entry<String, Client> entry = this.usernamesToClients.removeKey(this.getUsernameByClient(client));
+        if (entry.getKey() != null && entry.getValue() != null) {
+            this.currentPlayers--;
+            this.onlinePlayers--;
+
+            this.usernamesToClients.values().stream()
+                    .filter(c -> c != client)
+                    .forEach(c -> {
+                        try {
+                            c.playerLeftYourRoom(this.getRoomInfo(), entry.getKey());
+                        } catch (RemoteException e) {
+                            // TODO: Handle this exception
+                            System.err.println(e.getMessage());
+                            e.printStackTrace();
+                        }
+                    });
+
+            return true;
+        }
+        return false;
+    }
+
     public void executeGameAction(Client client, GameAction action) throws Exception {
         if (!this.usernameCorrespondsToClient(action.getUsername(), client))
-            throw new Exception("Username of action does not correspond to associated client");
+            throw new Exception("Username of action does not correspond to associated client."
+                    + "\nExpected: " + this.getUsernameByClient(client)
+                    + " - Received: " + action.getUsername());
 
+        System.out.println("Player '" + action.getUsername() + "' executed action " + action.toString());
         this.game.executeAction(action);
     }
 
@@ -76,6 +118,38 @@ public class Room {
             throw new Exception("Username of action does not correspond to associated client");
 
         // TODO: communicate to controller in both cases when a game has already started or when a game is starting
+    }
+
+    public void broadcastGameUpdate(GameUpdate gameUpdate) {
+        this.usernamesToClients.values().forEach(c -> {
+            try {
+                c.receiveGameUpdate(gameUpdate);
+            } catch (RemoteException e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+            }
+        });
+    }
+
+    /**
+     * Checks if a client attempting to join the room is allowed to do so. Throws a {@link JoinRoomException} if not
+     * This method is mainly used by {@link Room#addNewPlayer(Client, String)}
+     * @param playerClient the client trying to join.
+     * @param playerUsername the username that the client chose.
+     * @throws JoinRoomException if the client cannot join the room
+     */
+    private void checkIfNewPlayerCanJoin(Client playerClient, String playerUsername) throws JoinRoomException {
+        if (!this.isUsernameAvailable(playerUsername))
+            throw new JoinRoomException("Username already taken. Please choose another username.");
+
+        if (this.usernamesToClients.containsValue(playerClient))
+            throw new JoinRoomException("Client is already in the room.");
+
+        if (this.gameStarted)
+            throw new JoinRoomException("Game already started");
+
+        if (this.currentPlayers >= this.maxPlayers)
+            throw new JoinRoomException("Max player amount for this room reached.");
     }
 
     private Client getClientByUsername(String username) {
@@ -91,7 +165,8 @@ public class Room {
     }
 
     private boolean usernameCorrespondsToClient(String username, Client client) {
-        return client != null && client == this.usernamesToClients.getValue(username);
+        // Important to use .equals() when comparing remote objects
+        return client != null && client.equals(this.usernamesToClients.getValue(username));
     }
 
     public String getRoomName() {
