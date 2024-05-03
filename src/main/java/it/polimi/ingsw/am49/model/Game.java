@@ -11,8 +11,8 @@ import it.polimi.ingsw.am49.model.events.EventListener;
 import it.polimi.ingsw.am49.model.events.EventManager;
 import it.polimi.ingsw.am49.model.events.GameEvent;
 import it.polimi.ingsw.am49.model.players.Player;
+import it.polimi.ingsw.am49.model.states.ChooseStarterSideState;
 import it.polimi.ingsw.am49.model.states.GameState;
-import it.polimi.ingsw.am49.model.states.PregameState;
 
 import java.io.Serializable;
 import java.util.*;
@@ -66,8 +66,10 @@ public class Game implements Serializable, EventEmitter {
 
         for (int i = 0; i < revealedGolds.length; i++)
             revealedGolds[i] = goldGameDeck.draw();
+    }
 
-        this.gameState = new PregameState(this, this.numPlayers);
+    public void startGame(){
+        this.gameState = new ChooseStarterSideState(this);
         this.gameState.setUp();
     }
 

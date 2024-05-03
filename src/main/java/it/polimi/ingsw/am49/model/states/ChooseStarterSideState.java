@@ -13,7 +13,9 @@ import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
 import it.polimi.ingsw.am49.model.events.HandEvent;
 import it.polimi.ingsw.am49.model.events.StarterCardAssignedEvent;
 import it.polimi.ingsw.am49.model.players.Player;
+import it.polimi.ingsw.am49.model.events.PlayersOrderEvent;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,7 +40,7 @@ public class ChooseStarterSideState extends GameState {
      * Constructor for ChoseStarterSideState.
      * @param game istance of the {@link Game} class.
      */
-    protected ChooseStarterSideState(Game game) {
+    public ChooseStarterSideState(Game game) {
         super(GameStateType.CHOOSE_STARTER_SIDE, game, Set.of(GameActionType.CHOOSE_STARTER_SIDE));
         this.playersChoosing = new HashSet<>(game.getPlayers());
         this.notYourTurnMessage =
@@ -50,6 +52,9 @@ public class ChooseStarterSideState extends GameState {
      */
     @Override
     public void setUp() {
+        Collections.shuffle(this.game.getPlayers());
+        this.game.setCurrentPlayer(this.game.getStartingPlayer());
+        this.game.triggerEvent(new PlayersOrderEvent(this.game.getPlayers()));
         // TODO: (maybe) set up drawable decks and revealed drawable cards here
 
         GameDeck<StarterCard> starterDeck = DeckLoader.getInstance().getNewStarterDeck();
@@ -89,7 +94,7 @@ public class ChooseStarterSideState extends GameState {
 
     @Override
     protected boolean isYourTurn(GameAction action) {
-        return playersChoosing.contains(this.game.getPlayerByUsername(action.getUsername()));
+        return true;
     }
 
     /**

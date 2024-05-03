@@ -19,7 +19,7 @@ public class Player implements Serializable {
     private final String username;
 
     /**
-     * Stores the color assigned randomly to the player in the {@link it.polimi.ingsw.am49.model.states.PregameState}.
+     * Stores the color choosen by the player.
      */
     private Color color;
 
@@ -130,7 +130,7 @@ public class Player implements Serializable {
 
     /**
      * Setter for the color attribute of the player.
-     * @param color the color is chosen randomly in {@link it.polimi.ingsw.am49.model.states.PregameState}.
+     * @param color the color choosen by the player.
      */
     public void setColor(Color color){this.color = color;}
 

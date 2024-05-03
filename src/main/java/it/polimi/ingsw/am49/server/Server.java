@@ -3,6 +3,7 @@ package it.polimi.ingsw.am49.server;
 import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.RoomInfo;
 import it.polimi.ingsw.am49.model.actions.GameAction;
+import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.exceptions.*;
 
 import java.rmi.Remote;
@@ -42,6 +43,8 @@ public interface Server extends Remote {
      */
     public RoomInfo joinRoom(Client client, String roomName, String username)
             throws RemoteException, AlreadyInRoomException, JoinRoomException, IllegalArgumentException;
+
+    public void chooseColor(Client client, Color color) throws RemoteException;
 
     /**
      * This method is used by clients to leave the room they are in

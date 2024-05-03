@@ -83,8 +83,6 @@ public abstract class GameState {
      * @throws Exception indicates why the desired action is not possible.
      */
     protected void checkActionValidity(GameAction action) throws Exception {
-        if (action.getType() == GameActionType.JOIN_GAME && this.type != GameStateType.PREGAME)
-            throw new Exception("The game you are trying to join has already started");
         if (!this.acceptableActionTypes.contains(action.getType()))
             throw new Exception("You cannot do that now");
         if (!this.isYourTurn(action))

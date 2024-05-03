@@ -4,6 +4,7 @@ import it.polimi.ingsw.am49.controller.RoomInfo;
 import it.polimi.ingsw.am49.messages.*;
 import it.polimi.ingsw.am49.messages.mtc.MessageToClientNew;
 import it.polimi.ingsw.am49.model.actions.GameAction;
+import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.*;
 
@@ -149,6 +150,11 @@ public class ServerSocketHandler implements Server {
             case Exception e -> throw new RemoteException(e.getMessage());
             default -> throw new InvalidReturnTypeException("Invalid return value type for Server::joinRoom method", returnValue);
         };
+    }
+
+    @Override
+    public void chooseColor(Client client, Color color) throws RemoteException {
+        // TODO : implement
     }
 
     @Override

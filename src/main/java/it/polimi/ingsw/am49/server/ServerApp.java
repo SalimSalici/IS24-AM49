@@ -4,10 +4,8 @@ import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.Room;
 import it.polimi.ingsw.am49.controller.RoomInfo;
 import it.polimi.ingsw.am49.model.actions.GameAction;
-import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
-import it.polimi.ingsw.am49.server.exceptions.CreateRoomException;
-import it.polimi.ingsw.am49.server.exceptions.InvalidUsernameException;
-import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
+import it.polimi.ingsw.am49.model.enumerations.Color;
+import it.polimi.ingsw.am49.server.exceptions.*;
 
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
@@ -80,6 +78,17 @@ public class ServerApp implements Server {
         room.addNewPlayer(client, username);
         this.clientsToRooms.put(client, room);
         return room.getRoomInfo();
+    }
+
+    @Override
+    public void chooseColor(Client client, Color color) throws RemoteException {
+        Room room = this.clientsToRooms.get(client);
+        try {
+            room.chosenColor(client, color);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override

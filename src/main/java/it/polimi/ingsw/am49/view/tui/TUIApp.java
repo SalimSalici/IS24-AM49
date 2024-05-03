@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.controller.RoomInfo;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.model.actions.JoinGameAction;
 import it.polimi.ingsw.am49.model.actions.LeaveGameAction;
+import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.CreateRoomException;
@@ -16,6 +17,7 @@ import java.util.Scanner;
 
 public class TUIApp {
     private String username;
+    private String color;
     private final Client client;
     private final Server server;
     private final Scanner scanner;
@@ -121,31 +123,17 @@ public class TUIApp {
     public void roomScene() throws NotInGameException, RemoteException {
         System.out.println("You joined a room - " + this.roomInfo.toString());
         boolean done = false;
-        boolean isReady = false;
         while (!done) {
-            System.out.print("Room[isReady="+ isReady + "] (ready|unready|leave|disconnect)> ");
+            System.out.print("Room[color="+ color + "] (color|leave|disconnect)> ");
             String input = this.scanner.nextLine();
 
             // TODO: handle NotInGameException (should never happen at this stage,
             //       but if it happens tell the user to restart)
             switch (input) {
-                case "ready" -> {
-                    if (isReady)
-                        System.out.println("You are already ready. Wait for other players to ready up.");
-                    else {
-                        JoinGameAction action = new JoinGameAction(this.username);
-                        this.server.executeAction(this.client, action);
-                        isReady = true;
-                    }
-                }
-                case "unready" -> {
-                    if (!isReady)
-                        System.out.println("You are already not ready.");
-                    else {
-                        LeaveGameAction action = new LeaveGameAction(this.username);
-                        this.server.executeAction(this.client, action);
-                        isReady = false;
-                    }
+                case "color" -> {
+                    JoinGameAction action = new JoinGameAction(this.username);
+                    this.color = this.scanner.nextLine();
+                    this.server.chooseColor(client, Color.valueOf(color));
                 }
                 case "leave" -> {
                     LeaveGameAction action = new LeaveGameAction(this.username);
@@ -165,10 +153,6 @@ public class TUIApp {
                     done = true;
                 }
                 case "disconnect" -> {
-                    if (isReady) {
-                        LeaveGameAction action = new LeaveGameAction(this.username);
-                        this.server.executeAction(this.client, action);
-                    }
                     this.server.leaveRoom(this.client);
                     System.out.println("Closing application. Bye!");
                     System.exit(0);

@@ -101,7 +101,7 @@ public class ChooseObjectiveState extends GameState {
 
     @Override
     protected boolean isYourTurn(GameAction action) {
-        return this.playersToObjectives.containsKey(this.game.getPlayerByUsername(action.getUsername()));
+        return true;
     }
 
     /**

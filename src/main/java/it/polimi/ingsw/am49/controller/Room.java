@@ -4,6 +4,9 @@ import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.actions.GameAction;
+import it.polimi.ingsw.am49.model.enumerations.Color;
+import it.polimi.ingsw.am49.model.events.PlayerJoinedEvent;
+import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.util.BiMap;
 
@@ -25,20 +28,19 @@ public class Room {
     private int onlinePlayers;
     private int currentPlayers;
     private final BiMap<String, Client> usernamesToClients;
-    private final Game game;
+    private final BiMap<Client, Color> clientsToColors;
+    private Game game;
     private boolean gameStarted;
 
-    private final GameEventsHandler gameEventsHandler;
+    private GameEventsHandler gameEventsHandler;
 
     public Room(String roomName, int maxPlayers, Client creatorClient, String creatorUsername) {
         this.roomName = roomName;
         this.maxPlayers = maxPlayers;
         this.usernamesToClients = new BiMap<>();
+        this.clientsToColors = new BiMap<>();
 
-        // TODO: remove gameId (?) (maybe substitute with gameName for resilience to server crash?)
-        this.game = new Game(0, maxPlayers);
         this.gameStarted = false;
-        this.gameEventsHandler = new GameEventsHandler(this, game);
 
         this.usernamesToClients.put(creatorUsername, creatorClient);
         this.onlinePlayers = 1;
@@ -101,6 +103,44 @@ public class Room {
             return true;
         }
         return false;
+    }
+
+    public void chosenColor(Client client, Color color) throws Exception{
+        if(clientsToColors.containsValue(color)){
+            if(clientsToColors.getKey(color).equals(client))
+                throw new Exception(color + "is alredy your choise");
+            throw new Exception("Color " + color + "is not available");
+        }
+
+        //TODO : put returns the value that has been replaced, so it's possible to implemen a messge to notify that a color is available again
+        this.clientsToColors.put( client, color);
+
+        if(this.clientsToColors.keySet().size() == maxPlayers){
+            this.startGame();
+
+
+        }
+    }
+
+    private void startGame(){
+        // TODO: remove gameId (?) (maybe substitute with gameName for resilience to server crash?) //
+        this.game = new Game(0, maxPlayers);
+        this.gameEventsHandler = new GameEventsHandler(this, game);
+        this.gameStarted = true;
+
+        for(Client c : clientsToColors.keySet()){
+            this.joinGame(getUsernameByClient(c), clientsToColors.getValue(c));
+        }
+
+        this.game.startGame();
+
+    }
+
+    private void joinGame(String username, Color color){
+        Player newPlayer = new Player(username);
+        newPlayer.setColor(color);
+        this.game.getPlayers().add(newPlayer);
+        this.game.triggerEvent(new PlayerJoinedEvent(newPlayer, this.game.getPlayers()));
     }
 
     public void executeGameAction(Client client, GameAction action) throws Exception {
