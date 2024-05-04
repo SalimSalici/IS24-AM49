@@ -78,7 +78,7 @@ public class ChooseStarterSideState extends GameState {
      */
     @Override
     public void execute(GameAction action) throws Exception {
-        this.checkActionValidity(action);
+        this.checkActionValidity(action); //if this check fails the rest of the code won't be executed
 
         Player player = this.game.getPlayerByUsername(action.getUsername());
         boolean flipped = ((ChooseStarterSideAction)action).getFlipped();
@@ -94,7 +94,7 @@ public class ChooseStarterSideState extends GameState {
 
     @Override
     protected boolean isYourTurn(GameAction action) {
-        return true;
+        return playersChoosing.contains(this.game.getPlayerByUsername(action.getUsername()));
     }
 
     /**

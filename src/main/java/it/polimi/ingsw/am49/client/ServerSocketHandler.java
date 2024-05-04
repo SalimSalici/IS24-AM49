@@ -155,6 +155,11 @@ public class ServerSocketHandler implements Server {
     @Override
     public void chooseColor(Client client, Color color) throws RemoteException {
         // TODO : implement
+        try {
+            this.objectOutputStream.writeObject(new ChooseColorMTS(0, color));
+        } catch (IOException e) {
+            throw new RemoteException("SOCKETS: Could not send message to server through sockets (Server::chooseColor)");
+        }
     }
 
     @Override
