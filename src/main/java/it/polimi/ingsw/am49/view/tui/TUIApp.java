@@ -1,7 +1,7 @@
 package it.polimi.ingsw.am49.view.tui;
 
 import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.controller.RoomInfo;
+import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.model.actions.JoinGameAction;
 import it.polimi.ingsw.am49.model.actions.LeaveGameAction;
@@ -131,9 +131,9 @@ public class TUIApp {
             //       but if it happens tell the user to restart)
             switch (input) {
                 case "color" -> {
-                    JoinGameAction action = new JoinGameAction(this.username);
+                    System.out.print("Choose a new color (red, blue, yellow, green)> ");
                     this.color = this.scanner.nextLine();
-                    this.server.chooseColor(client, Color.valueOf(color));
+                    this.server.readyUp(client, Color.valueOf(color.toUpperCase()));
                 }
                 case "leave" -> {
                     LeaveGameAction action = new LeaveGameAction(this.username);

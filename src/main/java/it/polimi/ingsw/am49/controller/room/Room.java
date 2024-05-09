@@ -1,6 +1,8 @@
-package it.polimi.ingsw.am49.controller;
+package it.polimi.ingsw.am49.controller.room;
 
 import it.polimi.ingsw.am49.client.Client;
+import it.polimi.ingsw.am49.controller.GameEventsHandler;
+import it.polimi.ingsw.am49.controller.VirtualView;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.actions.GameAction;
@@ -12,6 +14,7 @@ import it.polimi.ingsw.am49.util.BiMap;
 
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Room {
 
@@ -25,26 +28,21 @@ public class Room {
      * connected clients (some clients may have crashed)
      */
     private final int maxPlayers;
-    private int onlinePlayers;
     private int currentPlayers;
-    private final BiMap<String, Client> usernamesToClients;
-    private final BiMap<Client, Color> clientsToColors;
+    private final HashMap<String, PlayerInfo> usernamesToPlayers;
     private Game game;
     private boolean gameStarted;
 
-    private GameEventsHandler gameEventsHandler;
+//    private GameEventsHandler gameEventsHandler;
 
     public Room(String roomName, int maxPlayers, Client creatorClient, String creatorUsername) {
         this.roomName = roomName;
         this.maxPlayers = maxPlayers;
-        this.usernamesToClients = new BiMap<>();
-        this.clientsToColors = new BiMap<>();
+        this.usernamesToPlayers = new HashMap<>();
+        this.usernamesToPlayers.put(creatorUsername, new PlayerInfo(creatorUsername, creatorClient));
 
-        this.gameStarted = false;
-
-        this.usernamesToClients.put(creatorUsername, creatorClient);
-        this.onlinePlayers = 1;
         this.currentPlayers = 1;
+        this.gameStarted = false;
 
         System.out.println("User '" + creatorUsername + "' created room '" + this.roomName
                 + "' | maxPlayers: " + this.maxPlayers);
@@ -54,19 +52,14 @@ public class Room {
 
         this.checkIfNewPlayerCanJoin(playerClient, playerUsername); // If not, JoinRoomException is thrown
 
-        this.usernamesToClients.put(playerUsername, playerClient);
-
+        this.usernamesToPlayers.put(playerUsername, new PlayerInfo(playerUsername, playerClient));
         this.currentPlayers++;
-        this.onlinePlayers++;
 
-        if (this.currentPlayers >= this.maxPlayers)
-            this.gameStarted = true;
-
-        this.usernamesToClients.values().stream()
-                .filter(c -> c != playerClient)
+        this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
+                .filter(c -> !c.equals(playerClient))
                 .forEach(c -> {
                     try {
-                        c.playerJoinedYourRoom(this.getRoomInfo(), playerUsername);
+                        c.roomUpdate(this.getRoomInfo(), "Player '" + playerUsername + "' joined your room.");
                     } catch (RemoteException e) {
                         // TODO: Handle this exception
                         System.err.println(e.getMessage());
@@ -76,23 +69,22 @@ public class Room {
 
         System.out.println("User '" + playerUsername + "' joined room '" + this.roomName
                 + "' | currentPlayers: " + this.currentPlayers
-                + " | onlinePlayers: " + this.onlinePlayers
                 + " | maxPlayers: " + this.maxPlayers
         );
     }
 
     // TODO: maybe think more about this method (?)
     public boolean removePlayer(Client client) {
-        Map.Entry<String, Client> entry = this.usernamesToClients.removeKey(this.getUsernameByClient(client));
-        if (entry.getKey() != null && entry.getValue() != null) {
+        String username = this.getUsernameByClient(client);
+        PlayerInfo pInfo = this.usernamesToPlayers.remove(username);
+        if (pInfo != null) {
             this.currentPlayers--;
-            this.onlinePlayers--;
 
-            this.usernamesToClients.values().stream()
-                    .filter(c -> c != client)
+            this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
+                    .filter(c -> !c.equals(client) )
                     .forEach(c -> {
                         try {
-                            c.playerLeftYourRoom(this.getRoomInfo(), entry.getKey());
+                            c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' left your room.");
                         } catch (RemoteException e) {
                             // TODO: Handle this exception
                             System.err.println(e.getMessage());
@@ -105,42 +97,61 @@ public class Room {
         return false;
     }
 
-    public void chosenColor(Client client, Color color) throws Exception{
-        if(clientsToColors.containsValue(color)){
-            if(clientsToColors.getKey(color).equals(client))
-                throw new Exception(color + "is alredy your choise");
-            throw new Exception("Color " + color + "is not available");
-        }
+    /**
+     * The Server will call this method to communicate the room that the specified client is ready to play the game
+     * with the chosen color
+     * @param client the client readying up
+     * @param color the chosen color of the client
+     * @throws Exception
+     */
+    public void clientReady(Client client, Color color) throws Exception{
 
-        //TODO : put returns the value that has been replaced, so it's possible to implemen a messge to notify that a color is available again
-        this.clientsToColors.put( client, color);
+        String username = this.getUsernameByClient(client);
+        if (username == null)
+            throw new Exception("Client is not in the room.");
 
-        if(this.clientsToColors.keySet().size() == maxPlayers){
+        if(!this.isColorAvailale(color))
+            throw new Exception("Color " + color + "is not available.");
+
+        this.usernamesToPlayers.get(username).setColor(color);
+        this.usernamesToPlayers.get(username).setReadyToPlay(true);
+
+        this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
+                .filter(c -> !c.equals(client))
+                .forEach(c -> {
+                    try {
+                        c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is ready.");
+                    } catch (RemoteException e) {
+                        // TODO: Handle this exception
+                        System.err.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+
+        if (this.usernamesToPlayers.keySet().size() == maxPlayers && this.allPlayersReady()){
             this.startGame();
-
-
         }
+    }
+
+    private boolean allPlayersReady() {
+        for (PlayerInfo pInfo : this.usernamesToPlayers.values())
+            if (!pInfo.isReadyToPlay()) return false;
+        return true;
     }
 
     private void startGame(){
         // TODO: remove gameId (?) (maybe substitute with gameName for resilience to server crash?) //
         this.game = new Game(0, maxPlayers);
-        this.gameEventsHandler = new GameEventsHandler(this, game);
         this.gameStarted = true;
 
-        for(Client c : clientsToColors.keySet()){
-            this.joinGame(getUsernameByClient(c), clientsToColors.getValue(c));
-        }
+        this.usernamesToPlayers.forEach((username, pInfo) -> {
+            pInfo.setVirtualView(new VirtualView(this.game, pInfo.getClient(), username));
+            Player newPlayer = new Player(username);
+            newPlayer.setColor(pInfo.getColor());
+            this.game.getPlayers().add(newPlayer);
+        });
 
         this.game.startGame();
-
-    }
-
-    private void joinGame(String username, Color color){
-        Player newPlayer = new Player(username);
-        newPlayer.setColor(color);
-        this.game.getPlayers().add(newPlayer);
-        this.game.triggerEvent(new PlayerJoinedEvent(newPlayer, this.game.getPlayers()));
     }
 
     public void executeGameAction(Client client, GameAction action) throws Exception {
@@ -160,40 +171,6 @@ public class Room {
         // TODO: communicate to controller in both cases when a game has already started or when a game is starting
     }
 
-    // TODO: handle exception
-    public void notifyGameUpdateTo(String username, GameUpdate gameUpdate) {
-        try {
-            this.usernamesToClients.getValue(username).receiveGameUpdate(gameUpdate);
-        } catch (RemoteException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    // TODO: handle exception
-    public void broadcastGameUpdate(GameUpdate gameUpdate) {
-        this.usernamesToClients.values().forEach(c -> {
-            try {
-                c.receiveGameUpdate(gameUpdate);
-            } catch (RemoteException e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public void broadcastGameUpdateExcept(GameUpdate gameUpdate, String except) {
-        this.usernamesToClients.values().forEach(c -> {
-            try {
-                if (!getUsernameByClient(c).equals(except))
-                    c.receiveGameUpdate(gameUpdate);
-            } catch (RemoteException e) {
-                System.err.println(e.getMessage());
-                e.printStackTrace();
-            }
-        });
-    }
-
     /**
      * Checks if a client attempting to join the room is allowed to do so. Throws a {@link JoinRoomException} if not
      * This method is mainly used by {@link Room#addNewPlayer(Client, String)}
@@ -205,7 +182,7 @@ public class Room {
         if (!this.isUsernameAvailable(playerUsername))
             throw new JoinRoomException("Username already taken. Please choose another username.");
 
-        if (this.usernamesToClients.containsValue(playerClient))
+        if (this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient).anyMatch(c -> c.equals(playerClient)))
             throw new JoinRoomException("Client is already in the room.");
 
         if (this.gameStarted)
@@ -216,20 +193,32 @@ public class Room {
     }
 
     private Client getClientByUsername(String username) {
-        return this.usernamesToClients.getValue(username);
+        PlayerInfo pInfo = this.usernamesToPlayers.get(username);
+        if (pInfo != null) return pInfo.getClient();
+        return null;
     }
 
     private String getUsernameByClient(Client client) {
-        return this.usernamesToClients.getKey(client);
+        for (Map.Entry<String, PlayerInfo> entry : this.usernamesToPlayers.entrySet()) {
+            if (entry.getValue().getClient().equals(client)) return entry.getKey();
+        }
+        return null;
     }
 
     private boolean isUsernameAvailable(String username) {
-        return !this.usernamesToClients.containsKey(username);
+        return !this.usernamesToPlayers.containsKey(username);
     }
 
+    private boolean isColorAvailale(Color color) {
+        for (PlayerInfo pInfo : this.usernamesToPlayers.values())
+            if (pInfo.getColor() != null && pInfo.getColor().equals(color)) return false;
+        return true;
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean usernameCorrespondsToClient(String username, Client client) {
         // Important to use .equals() when comparing remote objects
-        return client != null && client.equals(this.usernamesToClients.getValue(username));
+        return client != null && client.equals(this.getClientByUsername(username));
     }
 
     public String getRoomName() {
@@ -237,6 +226,10 @@ public class Room {
     }
 
     public RoomInfo getRoomInfo() {
-        return new RoomInfo(this.roomName, this.maxPlayers, this.usernamesToClients.keySet().stream().toList());
+        Map<String, Color> playersToColors = new HashMap<>();
+        this.usernamesToPlayers.forEach((username, pInfo) -> {
+            playersToColors.put(username, pInfo.getColor());
+        });
+        return new RoomInfo(this.roomName, this.maxPlayers, playersToColors);
     }
 }

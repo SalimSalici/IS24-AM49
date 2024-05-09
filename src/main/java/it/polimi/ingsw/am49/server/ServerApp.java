@@ -1,8 +1,8 @@
 package it.polimi.ingsw.am49.server;
 
 import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.controller.Room;
-import it.polimi.ingsw.am49.controller.RoomInfo;
+import it.polimi.ingsw.am49.controller.room.Room;
+import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.exceptions.*;
@@ -65,8 +65,12 @@ public class ServerApp implements Server {
     @Override
     public RoomInfo joinRoom(Client client, String roomName, String username)
             throws RemoteException, AlreadyInRoomException, JoinRoomException {
+
+        if (username == null)
+            throw new JoinRoomException("Username is null.");
+
         if (username.length() < 2 || username.length() > 15)
-            throw new IllegalArgumentException("Invalid username. Your username should be between 2 and 15 charactes.");
+            throw new JoinRoomException("Invalid username. Your username should be between 2 and 15 charactes.");
 
         if (this.clientsToRooms.containsKey(client))
             throw new AlreadyInRoomException(this.clientsToRooms.get(client).getRoomName());
@@ -81,14 +85,16 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public void chooseColor(Client client, Color color) throws RemoteException {
+    public RoomInfo readyUp(Client client, Color color) throws RemoteException {
         Room room = this.clientsToRooms.get(client);
         try {
-            room.chosenColor(client, color);
+            room.clientReady(client, color);
         } catch (Exception e) {
+            // TODO: create appropriate exceptions
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
+        return room.getRoomInfo();
     }
 
     @Override

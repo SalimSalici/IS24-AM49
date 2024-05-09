@@ -15,7 +15,7 @@ import java.util.List;
  * @param revealedResources the list of reveald resource cards that can be drawn
  * @param revealedGolds the list of reveald gold cards that can be drawn
  */
-public record DrawAreaUpdateEvent(
+public record DrawAreaEvent(
         int remainingResources,
         int remainingGolds,
         List<ResourceCard> revealedResources,

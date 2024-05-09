@@ -1,5 +1,7 @@
 package it.polimi.ingsw.am49.view.tui.textures;
 
+import java.util.Random;
+
 /**
  * This class will handle loading textures from disk for the CLI version of the game
  */
@@ -13,6 +15,9 @@ public class TuiTextureManager {
     }
 
     public TuiTexture getTexture(int id) {
-        return new TuiTexture(AnsiColor.ANSI_YELLOW);
+        Random random = new Random();
+        AnsiColor c = AnsiColor.values()[random.nextInt(AnsiColor.values().length)];
+        return new TuiTexture(c);
+//        return new TuiTexture(AnsiColor.ANSI_BRIGHT_MAGENTA);
     };
 }

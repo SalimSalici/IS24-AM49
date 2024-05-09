@@ -18,9 +18,9 @@ public class TuiBoard {
         this.boardRenderer = new TuiBoardRenderer(140, 30);
     }
 
-    public void drawNeighbourhood(int row, int col, int depth) {
+    public void drawNeighbourhood(int row, int col) {
         List<VirtualTile> neighbourhood = new ArrayList<>();
-        this.addToNeighbourhood(neighbourhood, this.virtualBoard.getTile(row, col), depth);
+        this.addToNeighbourhood(neighbourhood, this.virtualBoard.getTile(row, col));
 
         int centerDisplayRow = this.boardRenderer.getHeight() / 2;
         int centerDisplayCol = this.boardRenderer.getWidth() / 2;
@@ -46,14 +46,13 @@ public class TuiBoard {
         this.boardRenderer.printBoard();
     }
 
-    private void addToNeighbourhood(List<VirtualTile> neighbourhood, VirtualTile tile, int depth) {
-        if (depth == 0 || tile == null || neighbourhood.contains(tile)) return;
+    private void addToNeighbourhood(List<VirtualTile> neighbourhood, VirtualTile tile) {
+        if (tile == null || neighbourhood.contains(tile)) return;
         neighbourhood.add(tile);
-        depth -= 1;
-        this.addToNeighbourhood(neighbourhood, tile.getNeighbourTile(RelativePosition.TOP_LEFT), depth);
-        this.addToNeighbourhood(neighbourhood, tile.getNeighbourTile(RelativePosition.TOP_RIGHT), depth);
-        this.addToNeighbourhood(neighbourhood, tile.getNeighbourTile(RelativePosition.BOTTOM_LEFT), depth);
-        this.addToNeighbourhood(neighbourhood, tile.getNeighbourTile(RelativePosition.BOTTOM_RIGHT), depth);
+        this.addToNeighbourhood(neighbourhood, tile.getNeighbourTile(RelativePosition.TOP_LEFT));
+        this.addToNeighbourhood(neighbourhood, tile.getNeighbourTile(RelativePosition.TOP_RIGHT));
+        this.addToNeighbourhood(neighbourhood, tile.getNeighbourTile(RelativePosition.BOTTOM_LEFT));
+        this.addToNeighbourhood(neighbourhood, tile.getNeighbourTile(RelativePosition.BOTTOM_RIGHT));
     }
 
 }

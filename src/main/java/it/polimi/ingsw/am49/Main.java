@@ -15,9 +15,11 @@ public class Main {
         vb.placeCard(new VirtualCard(1, false), 26, 24);
         vb.placeCard(new VirtualCard(1, false), 26, 26);
         vb.placeCard(new VirtualCard(1, false), 25, 27);
+        vb.placeCard(new VirtualCard(1, false), 26, 27);
+        vb.placeCard(new VirtualCard(1, false), 27, 28);
 
         TuiBoard tuiBoard = new TuiBoard(vb);
-        tuiBoard.drawNeighbourhood(25, 25, 3);
+        tuiBoard.drawNeighbourhood(25, 25);
         tuiBoard.printBoard();
     }
 

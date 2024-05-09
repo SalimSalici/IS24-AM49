@@ -13,9 +13,9 @@ public class TuiTexture {
         AnsiColor emptySpaceColor = AnsiColor.ANSI_GREEN;
         String[] borders = {
                 "+-------------+",
-                "|      H      |",
-                "|   E     E   |",
-                "|      L      |",
+                "| W    3    '-|",
+                "|      W      |",
+                "| L  WWWWW  ,-|",
                 "+-------------+"
         };
 

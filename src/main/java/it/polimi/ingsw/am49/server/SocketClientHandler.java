@@ -1,7 +1,7 @@
 package it.polimi.ingsw.am49.server;
 
 import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.controller.RoomInfo;
+import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.messages.*;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
@@ -70,7 +70,6 @@ public class SocketClientHandler implements Client {
                 }
                 this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
             }
-
             case JoinRoomMTS params -> {
                 Object returnValue;
                 try {
@@ -80,6 +79,18 @@ public class SocketClientHandler implements Client {
                             params.username()
                     );
                 } catch (JoinRoomException | RemoteException | AlreadyInRoomException | IllegalArgumentException e) {
+                    returnValue = e;
+                }
+                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+            }
+            case ReadyUpMTS params -> {
+                Object returnValue;
+                try {
+                    returnValue = this.server.readyUp(
+                            this,
+                            params.color()
+                    );
+                } catch (RemoteException | IllegalArgumentException e) {
                     returnValue = e;
                 }
                 this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
@@ -104,23 +115,10 @@ public class SocketClientHandler implements Client {
     }
 
     @Override
-    public void playerJoinedYourRoom(RoomInfo room, String username) throws RemoteException {
+    public void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException {
         try {
             this.objectOutputStream.writeObject(
-                    new PlayerJoinedYourRoomMTC(0, room, username)
-            );
-        } catch (IOException e) {
-            throw new RemoteException(
-                    "SOCKETS: Could not send message to client through sockets (SocketClientHandler::playerJoinedYourRoom)"
-            );
-        }
-    }
-
-    @Override
-    public void playerLeftYourRoom(RoomInfo room, String username) throws RemoteException {
-        try {
-            this.objectOutputStream.writeObject(
-                    new PlayerLeftYourRoomMTC(0, room, username)
+                    new RoomUpdateMTC(0, roomInfo, message)
             );
         } catch (IOException e) {
             throw new RemoteException(

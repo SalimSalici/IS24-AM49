@@ -16,4 +16,5 @@ module it.polimi.ingsw.am49 {
     exports it.polimi.ingsw.am49.model.actions to java.rmi;
     exports it.polimi.ingsw.am49.controller to java.rmi;
     exports it.polimi.ingsw.am49.controller.gameupdates to java.rmi;
+    exports it.polimi.ingsw.am49.controller.room to java.rmi;
 }

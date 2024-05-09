@@ -1,6 +1,6 @@
 package it.polimi.ingsw.am49.client;
 
-import it.polimi.ingsw.am49.controller.RoomInfo;
+import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
@@ -22,15 +22,8 @@ public class ClientApp extends UnicastRemoteObject implements Client {
     public ClientApp() throws RemoteException {}
 
     @Override
-    public void playerJoinedYourRoom(RoomInfo room, String username) throws RemoteException {
-        System.out.println("\rA new player (" + username + ") joined your room - " + room.toString());
-        System.out.print("> ");
-    }
-
-    @Override
-    public void playerLeftYourRoom(RoomInfo room, String username) throws RemoteException {
-        System.out.println("\rA player (" + username + ") left your room - " + room.toString());
-        System.out.print("> ");
+    public void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException {
+        System.out.println("\rReceived room updated - " + "Message: " + message + " - " + roomInfo.toString());
     }
 
     @Override

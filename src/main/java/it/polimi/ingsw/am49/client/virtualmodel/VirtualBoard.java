@@ -23,7 +23,6 @@ public class VirtualBoard {
         return tile;
     }
 
-
     public VirtualTile getStarterTile() {
         return this.starterTile;
     }

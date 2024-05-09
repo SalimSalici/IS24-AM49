@@ -1,8 +1,7 @@
 package it.polimi.ingsw.am49.client;
 
-import it.polimi.ingsw.am49.controller.RoomInfo;
+import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.messages.*;
-import it.polimi.ingsw.am49.messages.mtc.MessageToClientNew;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.Server;
@@ -78,10 +77,8 @@ public class ServerSocketHandler implements Server {
     private void handleMessage(SocketMessage msg) throws RemoteException {
         // TODO: handle default better (?)
         switch (msg) {
-            case PlayerJoinedYourRoomMTC params ->
-                    this.client.playerJoinedYourRoom(params.roomInfo(), params.username());
-            case PlayerLeftYourRoomMTC params ->
-                    this.client.playerLeftYourRoom(params.roomInfo(), params.username());
+            case RoomUpdateMTC params ->
+                    this.client.roomUpdate(params.roomInfo(), params.message());
             case ReceiveGameUpdateMTC params ->
                     this.client.receiveGameUpdate(params.gameUpdate());
             default -> throw new IllegalStateException("Unexpected message received: " + msg);
@@ -153,13 +150,24 @@ public class ServerSocketHandler implements Server {
     }
 
     @Override
-    public void chooseColor(Client client, Color color) throws RemoteException {
-        // TODO : implement
+    public RoomInfo readyUp(Client client, Color color) throws RemoteException {
+        int uniqueMessageId = this.getUniqueId();
         try {
-            this.objectOutputStream.writeObject(new ChooseColorMTS(0, color));
+            this.objectOutputStream.writeObject(
+                    new ReadyUpMTS(uniqueMessageId, color)
+            );
         } catch (IOException e) {
-            throw new RemoteException("SOCKETS: Could not send message to server through sockets (Server::chooseColor)");
+            throw new RemoteException("SOCKETS: Could not send message to server through sockets (Server::joinRoom)");
         }
+
+        Object returnValue = this.waitForReturnValue(uniqueMessageId);
+
+        return switch (returnValue) {
+            case RoomInfo roomInfo -> roomInfo;
+            case IllegalArgumentException e -> throw e;
+            case Exception e -> throw new RemoteException(e.getMessage());
+            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::joinRoom method", returnValue);
+        };
     }
 
     @Override

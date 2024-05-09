@@ -10,7 +10,7 @@ import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
-import it.polimi.ingsw.am49.model.events.DrawAreaUpdateEvent;
+import it.polimi.ingsw.am49.model.events.DrawAreaEvent;
 import it.polimi.ingsw.am49.model.events.HandEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 
@@ -70,7 +70,7 @@ public class DrawCardState extends GameState {
         }
 
         this.game.triggerEvent(
-                new DrawAreaUpdateEvent(
+                new DrawAreaEvent(
                         this.resourceGameDeck.size(),
                         this.goldGameDeck.size(),
                         List.of(this.game.getRevealedResources()),

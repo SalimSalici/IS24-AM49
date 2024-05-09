@@ -109,9 +109,7 @@ public class ChooseStarterSideState extends GameState {
             for (int i = 0; i < this.starterHandGolds; i++)
                 p.drawCard(this.game.getGoldGameDeck().draw());
 
-            this.game.triggerEvent(
-                    new HandEvent(p, p.getHand().stream().toList())
-            );
+            this.game.triggerEvent(new HandEvent(p, p.getHand().stream().toList()));
         }
     }
 }
