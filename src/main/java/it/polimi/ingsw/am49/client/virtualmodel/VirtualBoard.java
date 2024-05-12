@@ -6,13 +6,10 @@ import it.polimi.ingsw.am49.util.Pair;
 public class VirtualBoard {
 
     private final VirtualTile[][] board;
-    private final VirtualTile starterTile;
-
     private int lastZIndex;
 
-    public VirtualBoard(VirtualCard starterCard) {
+    public VirtualBoard() {
         this.board = new VirtualTile[50][50];
-        this.starterTile = this.placeCard(starterCard, 25, 25);
         this.lastZIndex = 0;
     }
 
@@ -21,10 +18,6 @@ public class VirtualBoard {
         VirtualTile tile = new VirtualTile(card, row, col, this.lastZIndex, this);
         this.board[row][col] = tile;
         return tile;
-    }
-
-    public VirtualTile getStarterTile() {
-        return this.starterTile;
     }
 
     public VirtualTile getTile(int row, int col) {

@@ -1,9 +1,8 @@
 package it.polimi.ingsw.am49.client.virtualmodel;
 
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.*;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
-import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,6 @@ public class VirtualGame {
     private int turn;
     private GameStateType gameState;
     private VirtualPlayer currentPlayer;
-    private static VirtualGame instance;
 
     private VirtualGame() {
         this.players = new ArrayList<>();
@@ -41,8 +39,57 @@ public class VirtualGame {
     }
 
     public void processGameUpdate(GameUpdate gameUpdate) {
-//        switch (gameUpdate.getType()) {
-//            case GAME_STARTED_UPDATE ->
-//        }
+        switch (gameUpdate.getType()) {
+            case GAME_STARTED_UPDATE -> this.handleGameStartedUpdate((GameStartedUpdate) gameUpdate);
+            case GAME_STATE_UPDATE -> this.handleGameStateUpdate((GameStateChangedUpdate) gameUpdate);
+            case CARD_PLACED_UPDATE -> this.handleCardPlacedUpdate((CardPlacedUpdate) gameUpdate);
+            case HAND_UPDATE -> this.handleHandUpdate((HandUpdate) gameUpdate);
+            case HIDDEN_HAND_UPDATE -> this.handleHiddenHandUpdate((HiddenHandUpdate) gameUpdate);
+        }
+    }
+
+    private void handleGameStateUpdate(GameStateChangedUpdate update) {
+        this.gameState = update.gameStateType();
+        this.turn = update.turn();
+        this.round = update.round();
+        this.currentPlayer = this.getPlayerByUsername(update.currentPlayer());
+    }
+
+    public void handleCardPlacedUpdate(CardPlacedUpdate update) {
+        VirtualPlayer player = this.getPlayerByUsername(update.username());
+        VirtualCard card = new VirtualCard(update.cardId(), update.flipped());
+        player.getBoard().placeCard(card, update.row(), update.col());
+        player.setPoints(update.points());
+        player.setActiveSymbols(update.activeSymbols());
+    }
+
+    private void handleHandUpdate(HandUpdate update) {
+        VirtualPlayer player = this.getPlayerByUsername(update.username());
+        player.setHand(update.handIds());
+    }
+
+    private void handleHiddenHandUpdate(HiddenHandUpdate update) {
+        VirtualPlayer player = this.getPlayerByUsername(update.username());
+        player.setHiddenHand(update.hiddenHand());
+    }
+
+    private void handleGameStartedUpdate(GameStartedUpdate update) {
+
+    }
+
+    public int getRound() {
+        return round;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public GameStateType getGameState() {
+        return gameState;
+    }
+
+    public VirtualPlayer getCurrentPlayer() {
+        return currentPlayer;
     }
 }
