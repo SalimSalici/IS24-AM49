@@ -18,7 +18,7 @@ import java.util.*;
 public class ServerApp implements Server {
 
     List<Room> rooms;
-    Map<Client, Room> clientsToRooms;
+    Map<ClientHandler, Room> clientsToRooms;
 
     //TODO: remove this so that at the same username can be used for different rooms
     Set<String> usernamesTaken;
@@ -44,10 +44,10 @@ public class ServerApp implements Server {
             throws RemoteException, AlreadyInRoomException, CreateRoomException {
 
         if (roomName.length() < 2 || roomName.length() > 15)
-            throw new IllegalArgumentException("Invalid room name. Room name should be between 2 and 15 charactes.");
+            throw new CreateRoomException("Invalid room name. Room name should be between 2 and 15 charactes.");
 
         if (creatorUsername.length() < 2 || creatorUsername.length() > 15)
-            throw new IllegalArgumentException("Invalid username. Your username should be between 2 and 15 charactes.");
+            throw new CreateRoomException("Invalid username. Your username should be between 2 and 15 charactes.");
 
         if (this.clientsToRooms.containsKey(client))
             throw new AlreadyInRoomException(this.clientsToRooms.get(client).getRoomName());
@@ -56,9 +56,10 @@ public class ServerApp implements Server {
             throw new CreateRoomException("The name of the room you are trying to create is not available,please " +
                     "choose a new room name.");
 
-        Room room = new Room(roomName, numPlayers, client, creatorUsername);
+        ClientHandler clientHandler = new ClientHandler(client);
+        Room room = new Room(roomName, numPlayers, clientHandler, creatorUsername);
         this.rooms.add(room);
-        this.clientsToRooms.put(client, room);
+        this.clientsToRooms.put(clientHandler, room);
         return room.getRoomInfo();
     }
 
@@ -72,23 +73,27 @@ public class ServerApp implements Server {
         if (username.length() < 2 || username.length() > 15)
             throw new JoinRoomException("Invalid username. Your username should be between 2 and 15 charactes.");
 
-        if (this.clientsToRooms.containsKey(client))
-            throw new AlreadyInRoomException(this.clientsToRooms.get(client).getRoomName());
+        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+
+        if (clientHandler != null)
+            throw new AlreadyInRoomException(this.clientsToRooms.get(clientHandler).getRoomName());
 
         Room room = this.getRoomByName(roomName);
         if (room == null)
             throw new JoinRoomException("The room you tried to join doesn't exist.");
 
-        room.addNewPlayer(client, username);
-        this.clientsToRooms.put(client, room);
+        clientHandler = new ClientHandler(client);
+        room.addNewPlayer(clientHandler, username);
+        this.clientsToRooms.put(clientHandler, room);
         return room.getRoomInfo();
     }
 
     @Override
     public RoomInfo readyUp(Client client, Color color) throws RemoteException {
-        Room room = this.clientsToRooms.get(client);
+        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+        Room room = this.clientsToRooms.get(clientHandler);
         try {
-            room.clientReady(client, color);
+            room.clientReady(clientHandler, color);
         } catch (Exception e) {
             // TODO: create appropriate exceptions
             System.err.println(e.getMessage());
@@ -99,17 +104,19 @@ public class ServerApp implements Server {
 
     @Override
     public boolean leaveRoom(Client client) throws RemoteException {
-        Room room = this.clientsToRooms.get(client);
+        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+        Room room = this.clientsToRooms.get(clientHandler);
         if (room == null) return false;
 
-        return room.removePlayer(client);
+        return room.removePlayer(clientHandler);
     }
 
     @Override
     public void executeAction(Client client, GameAction action) {
-        Room room = this.clientsToRooms.get(client);
+        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+        Room room = this.clientsToRooms.get(clientHandler);
         try {
-            if (room != null) room.executeGameAction(client, action);
+            if (room != null) room.executeGameAction(clientHandler, action);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -130,6 +137,14 @@ public class ServerApp implements Server {
         for (Room room : this.rooms)
             if (room.getRoomName().equals(roomName))
                 return room;
+        return null;
+    }
+
+    private ClientHandler getClientHandlerByClient(Client client) {
+        for (ClientHandler clientHandler : this.clientsToRooms.keySet()) {
+            if (clientHandler.getClient().equals(client))
+                return clientHandler;
+        }
         return null;
     }
 

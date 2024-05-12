@@ -1,20 +1,14 @@
 package it.polimi.ingsw.am49.controller.room;
 
 import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.controller.GameEventsHandler;
 import it.polimi.ingsw.am49.controller.VirtualView;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.enumerations.Color;
-import it.polimi.ingsw.am49.model.events.PlayerJoinedEvent;
 import it.polimi.ingsw.am49.model.players.Player;
+import it.polimi.ingsw.am49.server.ClientHandler;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
-import it.polimi.ingsw.am49.util.BiMap;
-
-import java.rmi.RemoteException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Room {
 
@@ -35,7 +29,7 @@ public class Room {
 
 //    private GameEventsHandler gameEventsHandler;
 
-    public Room(String roomName, int maxPlayers, Client creatorClient, String creatorUsername) {
+    public Room(String roomName, int maxPlayers, ClientHandler creatorClient, String creatorUsername) {
         this.roomName = roomName;
         this.maxPlayers = maxPlayers;
         this.usernamesToPlayers = new HashMap<>();
@@ -48,7 +42,7 @@ public class Room {
                 + "' | maxPlayers: " + this.maxPlayers);
     }
 
-    public void addNewPlayer(Client playerClient, String playerUsername) throws JoinRoomException {
+    public void addNewPlayer(ClientHandler playerClient, String playerUsername) throws JoinRoomException {
 
         this.checkIfNewPlayerCanJoin(playerClient, playerUsername); // If not, JoinRoomException is thrown
 
@@ -58,13 +52,7 @@ public class Room {
         this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                 .filter(c -> !c.equals(playerClient))
                 .forEach(c -> {
-                    try {
-                        c.roomUpdate(this.getRoomInfo(), "Player '" + playerUsername + "' joined your room.");
-                    } catch (RemoteException e) {
-                        // TODO: Handle this exception
-                        System.err.println(e.getMessage());
-                        e.printStackTrace();
-                    }
+                    c.roomUpdate(this.getRoomInfo(), "Player '" + playerUsername + "' joined your room.");
                 });
 
         System.out.println("User '" + playerUsername + "' joined room '" + this.roomName
@@ -83,13 +71,7 @@ public class Room {
             this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                     .filter(c -> !c.equals(client) )
                     .forEach(c -> {
-                        try {
-                            c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' left your room.");
-                        } catch (RemoteException e) {
-                            // TODO: Handle this exception
-                            System.err.println(e.getMessage());
-                            e.printStackTrace();
-                        }
+                        c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' left your room.");
                     });
 
             return true;
@@ -119,13 +101,7 @@ public class Room {
         this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                 .filter(c -> !c.equals(client))
                 .forEach(c -> {
-                    try {
-                        c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is ready.");
-                    } catch (RemoteException e) {
-                        // TODO: Handle this exception
-                        System.err.println(e.getMessage());
-                        e.printStackTrace();
-                    }
+                    c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is ready.");
                 });
 
         if (this.usernamesToPlayers.keySet().size() == maxPlayers && this.allPlayersReady()){
@@ -173,7 +149,7 @@ public class Room {
 
     /**
      * Checks if a client attempting to join the room is allowed to do so. Throws a {@link JoinRoomException} if not
-     * This method is mainly used by {@link Room#addNewPlayer(Client, String)}
+     * This method is mainly used by {@link Room#addNewPlayer(ClientHandler, String)}
      * @param playerClient the client trying to join.
      * @param playerUsername the username that the client chose.
      * @throws JoinRoomException if the client cannot join the room

@@ -8,8 +8,9 @@ public class Main {
 
     public static void main(String[] args) {
         VirtualCard starterCard = new VirtualCard(86, false);
-        VirtualBoard vb = new VirtualBoard(starterCard);
+        VirtualBoard vb = new VirtualBoard();
 
+        vb.placeCard(new VirtualCard(1, false), 25, 25);
         vb.placeCard(new VirtualCard(1, false), 25, 26);
         vb.placeCard(new VirtualCard(1, false), 25, 24);
         vb.placeCard(new VirtualCard(1, false), 26, 24);

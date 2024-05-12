@@ -1,18 +1,17 @@
 package it.polimi.ingsw.am49.controller.room;
 
-import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.controller.VirtualView;
 import it.polimi.ingsw.am49.model.enumerations.Color;
+import it.polimi.ingsw.am49.server.ClientHandler;
 
 public class PlayerInfo {
     private final String username;
-    private final Client client;
+    private final ClientHandler client;
     private Color color;
     private boolean readyToPlay;
     private VirtualView virtualView;
 
-    public PlayerInfo(String username, Client client) {
+    public PlayerInfo(String username, ClientHandler client) {
         this.username = username;
         this.client = client;
         this.color = null;
@@ -36,7 +35,7 @@ public class PlayerInfo {
         this.color = color;
     }
 
-    public Client getClient() {
+    public ClientHandler getClient() {
         return client;
     }
 
