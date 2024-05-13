@@ -1,0 +1,10 @@
++-------------+
+|-'    3      |
+|             |
+| Q   LLL     |
++-------------+
+GGGGGGGGGGGGGGG
+G      Y      G
+G             G
+G Y   GGG     G
+GGGGGGGGGGGGGGG

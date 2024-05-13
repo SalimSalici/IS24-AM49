@@ -1,10 +1,10 @@
 +-------------+
-| M         '-|
+|-'    3      |
 |             |
-| M           |
+| I   MMM     |
 +-------------+
 RRRRRRRRRRRRRRR
-R R           R
+R      Y      R
 R             R
-R R           R
+R Y   RRR     R
 RRRRRRRRRRRRRRR

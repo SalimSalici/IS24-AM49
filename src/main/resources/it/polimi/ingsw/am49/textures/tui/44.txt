@@ -1,10 +1,10 @@
 +-------------+
-| M         '-|
+|-'   2 A   '-|
 |             |
-| M           |
+|    MM MW  ,-|
 +-------------+
 RRRRRRRRRRRRRRR
-R R           R
+R     Y Y     R
 R             R
-R R           R
+R    RR RB    R
 RRRRRRRRRRRRRRR

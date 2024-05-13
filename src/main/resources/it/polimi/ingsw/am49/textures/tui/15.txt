@@ -1,0 +1,10 @@
++-------------+
+|           B |
+|             |
+| Q         L |
++-------------+
+GGGGGGGGGGGGGGG
+G           M G
+G             G
+G Y         G G
+GGGGGGGGGGGGGGG

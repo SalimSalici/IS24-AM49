@@ -1,0 +1,10 @@
++-------------+
+|      2      |
+|             |
+|     WWW     |
++-------------+
+YYYYYYYYYYYYYYY
+Y      Y      Y
+Y             Y
+Y     BBB     Y
+YYYYYYYYYYYYYYY

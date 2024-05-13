@@ -1,0 +1,10 @@
++-------------+
+|      2      |
+|             |
+|     LLL     |
++-------------+
+YYYYYYYYYYYYYYY
+Y      Y      Y
+Y             Y
+Y     GGG     Y
+YYYYYYYYYYYYYYY

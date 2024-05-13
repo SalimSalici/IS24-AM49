@@ -1,0 +1,10 @@
++-------------+
+|      W      |
+|         B   |
+|  3      B   |
++-------------+
+YYYYYYYYYYYYYYY
+Y      B      Y
+Y         M   Y
+Y  Y      M   Y
+YYYYYYYYYYYYYYY

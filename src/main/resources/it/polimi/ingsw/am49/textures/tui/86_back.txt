@@ -1,0 +1,10 @@
++-------------+
+| M  , - ,  W |
+|   -| o |-   |
+| L  ' _ '  B |
++-------------+
+TTTTTTTTTTTTTTT
+T R         B T
+T             T
+T G         M T
+TTTTTTTTTTTTTTT

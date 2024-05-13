@@ -1,0 +1,10 @@
++-------------+
+|  2      M   |
+|      M      |
+|   M         |
++-------------+
+YYYYYYYYYYYYYYY
+Y  Y      R   Y
+Y      R      Y
+Y   R         Y
+YYYYYYYYYYYYYYY
