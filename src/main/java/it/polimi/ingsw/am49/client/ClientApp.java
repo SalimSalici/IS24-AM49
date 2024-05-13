@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client;
 
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.server.Server;
@@ -15,24 +16,22 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
-public class ClientApp extends UnicastRemoteObject implements Client {
+public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
-    private String username = "default";
+    protected VirtualGame game;
+    protected Server server;
+    protected String username;
 
     public ClientApp() throws RemoteException {}
 
     @Override
     public void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException {
-        System.out.println("\rReceived room updated - " + "Message: " + message + " - " + roomInfo.toString());
+
     }
 
     @Override
     public void receiveGameUpdate(GameUpdate gameUpdate) {
-        if (gameUpdate != null)
-            System.out.println("\rReceived game updated - " + gameUpdate.toString());
-        else
-            System.out.println("\rReceived yet unsupported game update.");
-        System.out.print("> ");
+        this.game.processGameUpdate(gameUpdate);
     }
 
     @Override
@@ -49,13 +48,31 @@ public class ClientApp extends UnicastRemoteObject implements Client {
         this.username = username;
     }
 
+    public String getUsername() {
+        return this.username;
+    }
+
+    private void setServer(Server server) {
+        this.server = server;
+    }
+
+    public Server getServer() {
+        return this.server;
+    }
+
+    public VirtualGame getVirtualGame() {
+        return this.game;
+    }
+
+    protected abstract void initialize();
+
     public static void main(String[] args) throws IOException, NotBoundException, AlreadyInRoomException, NotInGameException {
-        Client client = new ClientApp();
+        ClientApp client = new TuiApp();
 
         String host = "127.0.0.1";
         int serverPort = 8458;
 
-        Server server;
+        Server server = null;
         String serverType;
         if (List.of(args).contains("--socket")) {
             server = ClientApp.getSocketServer(host, serverPort + 1, client);
@@ -65,9 +82,14 @@ public class ClientApp extends UnicastRemoteObject implements Client {
             serverType = "RMI";
         }
 
-        System.out.println("Connected to the " + serverType + " server");
+        if (List.of(args).contains("--tui-old")) {
+            new TUIApp(client, server).startTUI();
+        } else {
+            client.setServer(server);
+            client.initialize();
+        }
 
-        new TUIApp(client, server).startTUI();
+        System.out.println("Connected to the " + serverType + " server");
 
         System.exit(0);
     }

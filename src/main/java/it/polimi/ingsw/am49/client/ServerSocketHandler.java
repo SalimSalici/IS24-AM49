@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -96,8 +97,29 @@ public class ServerSocketHandler implements Server {
     }
 
     @Override
-    public void fetchLobbies(Client client) throws RemoteException {
+    public List<RoomInfo> fetchRooms(Client client) throws RemoteException {
+        int uniqueMessageId = this.getUniqueId();
+        try {
+            this.objectOutputStream.writeObject(
+                    new FetchRoomsMTS(uniqueMessageId)
+            );
+        } catch (IOException e) {
+            throw new RemoteException("SOCKETS: Could not send message to server through sockets (Server::fetchRooms)");
+        }
 
+        Object returnValue = this.waitForReturnValue(uniqueMessageId);
+
+        return switch (returnValue) {
+            case List<?> rooms -> {
+                if (rooms.isEmpty() || rooms.getFirst() instanceof RoomInfo) {
+                    yield (List<RoomInfo>) rooms;
+                } else {
+                    throw new InvalidReturnTypeException("Invalid return value type for Server::fetchRooms method", returnValue);
+                }
+            }
+            case Exception e -> throw new RemoteException(e.getMessage());
+            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::fetchRooms method", returnValue);
+        };
     }
 
     @Override

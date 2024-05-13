@@ -103,6 +103,9 @@ public class SocketClientHandler implements Client {
                     e.printStackTrace();
                 }
             }
+            case FetchRoomsMTS params -> {
+                this.server.fetchRooms(this);
+            }
             default -> System.err.println("Received unknown type of message: " + msg.getClass().getSimpleName());
         }
     }

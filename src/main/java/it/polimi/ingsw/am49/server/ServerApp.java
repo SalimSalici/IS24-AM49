@@ -35,8 +35,12 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public void fetchLobbies(Client client) {
-
+    public List<RoomInfo> fetchRooms(Client client) {
+        List<RoomInfo> roomInfos = new LinkedList<>();
+        for (Room room : this.rooms) {
+            roomInfos.add(room.getRoomInfo());
+        }
+        return roomInfos;
     }
 
     @Override
@@ -45,6 +49,9 @@ public class ServerApp implements Server {
 
         if (roomName.length() < 2 || roomName.length() > 15)
             throw new CreateRoomException("Invalid room name. Room name should be between 2 and 15 charactes.");
+
+        if (numPlayers < 2 || numPlayers > 4)
+            throw new CreateRoomException("Invalid number of players. Must be between 2 and 4.");
 
         if (creatorUsername.length() < 2 || creatorUsername.length() > 15)
             throw new CreateRoomException("Invalid username. Your username should be between 2 and 15 charactes.");
