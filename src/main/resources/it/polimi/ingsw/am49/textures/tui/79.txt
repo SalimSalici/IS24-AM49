@@ -1,10 +1,10 @@
 +-------------+
-| B         L |
+|      3      |
 |             |
-| I           |
+| Q   BBB   ,-|
 +-------------+
 MMMMMMMMMMMMMMM
-M M         G M
+M      Y      M
 M             M
-M Y           M
+M Y   MMM     M
 MMMMMMMMMMMMMMM

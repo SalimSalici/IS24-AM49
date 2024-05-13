@@ -1,0 +1,10 @@
++-------------+
+|      5    '-|
+|             |
+|    WWWWW  ,-|
++-------------+
+BBBBBBBBBBBBBBB
+B      Y      B
+B             B
+B    BBBBB    B
+BBBBBBBBBBBBBBB

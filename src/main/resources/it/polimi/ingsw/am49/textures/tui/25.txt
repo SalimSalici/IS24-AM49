@@ -1,0 +1,10 @@
++-------------+
+|           B |
+|             |
+| I         W |
++-------------+
+BBBBBBBBBBBBBBB
+B           M B
+B             B
+B Y         B B
+BBBBBBBBBBBBBBB

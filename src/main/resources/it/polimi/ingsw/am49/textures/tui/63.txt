@@ -1,0 +1,10 @@
++-------------+
+|-'   1 Q     |
+|             |
+| Q   WWM   ,-|
++-------------+
+BBBBBBBBBBBBBBB
+B     Y Y     B
+B             B
+B Y   BBR     B
+BBBBBBBBBBBBBBB

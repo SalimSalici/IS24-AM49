@@ -1,10 +1,10 @@
 +-------------+
-| B         L |
+|-'   1 S     |
 |             |
-| I           |
+| S   BBW   ,-|
 +-------------+
 MMMMMMMMMMMMMMM
-M M         G M
+M     Y Y     M
 M             M
-M Y           M
+M Y   MMB     M
 MMMMMMMMMMMMMMM

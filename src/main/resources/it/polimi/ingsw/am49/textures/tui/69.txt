@@ -1,0 +1,10 @@
++-------------+
+|      3    '-|
+|             |
+|     WWW   Q |
++-------------+
+BBBBBBBBBBBBBBB
+B      Y      B
+B             B
+B     BBB   Y B
+BBBBBBBBBBBBBBB
