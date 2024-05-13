@@ -56,7 +56,7 @@ public interface Server extends Remote {
     public boolean leaveRoom(Client client) throws RemoteException;
 
     public void executeAction(Client c, GameAction action)
-            throws RemoteException, NotInGameException;
+            throws RemoteException, NotInGameException, NotYourTurnException;
 
     public void reconnect(Client c, String gameName) throws RemoteException;
 

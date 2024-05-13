@@ -3,12 +3,13 @@ package it.polimi.ingsw.am49.client.virtualmodel;
 import it.polimi.ingsw.am49.controller.gameupdates.*;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
+import it.polimi.ingsw.am49.util.Observable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class VirtualGame {
+public class VirtualGame extends Observable {
     private final List<VirtualPlayer> players;
     private int round;
     private int turn;
@@ -19,7 +20,7 @@ public class VirtualGame {
         this.players = new ArrayList<>();
     }
 
-    public VirtualGame newGame(Map<String, Color> players) {
+    public static VirtualGame newGame(Map<String, Color> players) {
         VirtualGame game = new VirtualGame();
         players.forEach((username, color) -> game.players.add(new VirtualPlayer(username, color)));
         return game;
@@ -40,7 +41,6 @@ public class VirtualGame {
 
     public void processGameUpdate(GameUpdate gameUpdate) {
         switch (gameUpdate.getType()) {
-            case GAME_STARTED_UPDATE -> this.handleGameStartedUpdate((GameStartedUpdate) gameUpdate);
             case GAME_STATE_UPDATE -> this.handleGameStateUpdate((GameStateChangedUpdate) gameUpdate);
             case CARD_PLACED_UPDATE -> this.handleCardPlacedUpdate((CardPlacedUpdate) gameUpdate);
             case HAND_UPDATE -> this.handleHandUpdate((HandUpdate) gameUpdate);
@@ -53,28 +53,30 @@ public class VirtualGame {
         this.turn = update.turn();
         this.round = update.round();
         this.currentPlayer = this.getPlayerByUsername(update.currentPlayer());
+        this.notifyObservers();
     }
 
     public void handleCardPlacedUpdate(CardPlacedUpdate update) {
         VirtualPlayer player = this.getPlayerByUsername(update.username());
         VirtualCard card = new VirtualCard(update.cardId(), update.flipped());
-        player.getBoard().placeCard(card, update.row(), update.col());
+        VirtualBoard board = player.getBoard();
+        board.placeCard(card, update.row(), update.col());
         player.setPoints(update.points());
         player.setActiveSymbols(update.activeSymbols());
+        player.notifyObservers();
+        board.notifyObservers();
     }
 
     private void handleHandUpdate(HandUpdate update) {
         VirtualPlayer player = this.getPlayerByUsername(update.username());
         player.setHand(update.handIds());
+        player.notifyObservers();
     }
 
     private void handleHiddenHandUpdate(HiddenHandUpdate update) {
         VirtualPlayer player = this.getPlayerByUsername(update.username());
         player.setHiddenHand(update.hiddenHand());
-    }
-
-    private void handleGameStartedUpdate(GameStartedUpdate update) {
-
+        player.notifyObservers();
     }
 
     public int getRound() {

@@ -16,13 +16,9 @@ public abstract class Scene {
 
     public abstract void play();
 
-    public void roomUpdate(RoomInfo roomInfo, String message) throws InvalidSceneException {
-        throw new InvalidSceneException();
-    }
+    public void roomUpdate(RoomInfo roomInfo, String message) throws InvalidSceneException {}
 
-    public void gameUpdate(GameUpdate gameUpdate) throws InvalidSceneException {
-        throw new InvalidSceneException();
-    }
+    public void gameUpdate(GameUpdate gameUpdate) throws InvalidSceneException {}
 
     protected void clearScreen() {
         System.out.println("-".repeat(150));

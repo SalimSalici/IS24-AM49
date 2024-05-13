@@ -7,10 +7,7 @@ import it.polimi.ingsw.am49.model.actions.JoinGameAction;
 import it.polimi.ingsw.am49.model.actions.LeaveGameAction;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.Server;
-import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
-import it.polimi.ingsw.am49.server.exceptions.CreateRoomException;
-import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
-import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
+import it.polimi.ingsw.am49.server.exceptions.*;
 
 import java.rmi.RemoteException;
 import java.util.Scanner;
@@ -74,6 +71,8 @@ public class TUIApp {
                     } catch (RemoteException e) {
                         System.out.println("Network error.");
                         System.out.println(e.getMessage());
+                    } catch (NotYourTurnException e) {
+                        throw new RuntimeException(e);
                     }
                 }
                 case "join" -> {
@@ -88,6 +87,8 @@ public class TUIApp {
                     } catch (RemoteException e) {
                         System.out.println("Network error.");
                         System.out.println(e.getMessage());
+                    } catch (NotYourTurnException e) {
+                        throw new RuntimeException(e);
                     }
                 }
                 case "disconnect" -> {
@@ -120,7 +121,7 @@ public class TUIApp {
      * The user can choose to ready up (or unready up) or to leave the room.
      * The user is also notified of other players joining / leaving and readying up / unreadying up.
      */
-    public void roomScene() throws NotInGameException, RemoteException {
+    public void roomScene() throws NotInGameException, RemoteException, NotYourTurnException {
         System.out.println("You joined a room - " + this.roomInfo.toString());
         boolean done = false;
         while (!done) {

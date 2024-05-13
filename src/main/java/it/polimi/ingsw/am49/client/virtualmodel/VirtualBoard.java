@@ -1,22 +1,30 @@
 package it.polimi.ingsw.am49.client.virtualmodel;
 
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
+import it.polimi.ingsw.am49.util.Observable;
 import it.polimi.ingsw.am49.util.Pair;
 
-public class VirtualBoard {
+public class VirtualBoard extends Observable {
 
     private final VirtualTile[][] board;
     private int lastZIndex;
+    private int lastPlacedRow;
+    private int lastPlacedCol;
 
     public VirtualBoard() {
         this.board = new VirtualTile[50][50];
         this.lastZIndex = 0;
+        this.lastPlacedRow = -1;
+        this.lastPlacedCol = -1;
     }
 
     public VirtualTile placeCard(VirtualCard card, int row, int col) {
         this.lastZIndex++;
         VirtualTile tile = new VirtualTile(card, row, col, this.lastZIndex, this);
         this.board[row][col] = tile;
+        this.lastPlacedRow = row;
+        this.lastPlacedCol = col;
+        this.notifyObservers();
         return tile;
     }
 

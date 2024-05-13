@@ -3,12 +3,13 @@ package it.polimi.ingsw.am49.client.virtualmodel;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
+import it.polimi.ingsw.am49.util.Observable;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class VirtualPlayer {
+public class VirtualPlayer extends Observable {
     private final String username;
     private int points;
     private final VirtualBoard board;

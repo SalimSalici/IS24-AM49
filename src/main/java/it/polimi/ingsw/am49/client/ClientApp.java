@@ -1,6 +1,8 @@
 package it.polimi.ingsw.am49.client;
 
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
+import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.server.Server;
@@ -31,7 +33,10 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
     @Override
     public void receiveGameUpdate(GameUpdate gameUpdate) {
-        this.game.processGameUpdate(gameUpdate);
+        if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
+            this.game = VirtualGame.newGame(((GameStartedUpdate)gameUpdate).playersToColors());
+        } else
+            this.game.processGameUpdate(gameUpdate);
     }
 
     @Override

@@ -4,10 +4,7 @@ import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.messages.*;
-import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
-import it.polimi.ingsw.am49.server.exceptions.CreateRoomException;
-import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
-import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
+import it.polimi.ingsw.am49.server.exceptions.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -96,12 +93,13 @@ public class SocketClientHandler implements Client {
                 this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
             }
             case ExecuteActionMTS params -> {
+                Object returnValue = null;
                 try {
                     this.server.executeAction(this, params.gameAction());
-                } catch (NotInGameException e) {
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
+                } catch (NotInGameException | NotYourTurnException e) {
+                    returnValue = e;
                 }
+                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
             }
             case FetchRoomsMTS params -> {
                 this.server.fetchRooms(this);

@@ -1,7 +1,9 @@
 package it.polimi.ingsw.am49.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.Server;
@@ -12,10 +14,9 @@ import java.util.Map;
 
 public class RoomScene extends Scene {
     private final TuiApp tuiApp;
-    private final boolean running = true;
+    private Boolean running = true;
     private final Server server;
     private RoomInfo roomInfo;
-
     private boolean isUserReady;
 
     public RoomScene(SceneManager sceneManager, TuiApp tuiApp, RoomInfo roomInfo) {
@@ -52,19 +53,29 @@ public class RoomScene extends Scene {
                         System.out.println("Invalid command, please try again.");
                 }
             } else {
-                this.promptReadyCommand();
-                String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
-                if (parts.length == 0) {
-                    System.out.println("Invalid command, please try again.");
-                    continue;
+                System.out.println("Waiting for other players...");
+                synchronized (this) {
+                    while (this.running) {
+                        try {
+                            this.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
-
-                String command = parts[0];
-                if (command.equals("1")) {
-                    // TODO: handle player leaving
-                } else {
-                    System.out.println("Invalid command, please try again.");
-                }
+//                this.promptReadyCommand();
+//                String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
+//                if (parts.length == 0) {
+//                    System.out.println("Invalid command, please try again.");
+//                    continue;
+//                }
+//
+//                String command = parts[0];
+//                if (command.equals("1")) {
+//                    // TODO: handle player leaving
+//                } else {
+//                    System.out.println("Invalid command, please try again.");
+//                }
             }
         }
     }
@@ -168,11 +179,23 @@ public class RoomScene extends Scene {
         this.roomInfo = roomInfo;
         this.printHeader();
         this.printRoomInfo();
-        this.promptCommand();
+        if (!this.isUserReady)
+            this.promptCommand();
+        synchronized (this) {
+            this.notifyAll();
+        }
     }
 
     @Override
     public void gameUpdate(GameUpdate gameUpdate) {
-
+        if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
+            GameStartedUpdate update = (GameStartedUpdate) gameUpdate;
+            int starterCardId = update.starterCardId();
+            this.sceneManager.setScene(new StarterCardScene(this.sceneManager, this.tuiApp, starterCardId));
+            synchronized (this) {
+                this.running = false;
+                this.notifyAll();
+            }
+        }
     }
 }
