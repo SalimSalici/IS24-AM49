@@ -9,6 +9,7 @@ import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -53,6 +54,7 @@ public class RoomScene extends Scene {
                         this.handleReady(parts);
                         break;
                     case "2":
+                        this.handleLeave();
                         break;
                     default:
                         System.out.println("Invalid command, please try again.");
@@ -181,6 +183,18 @@ public class RoomScene extends Scene {
 
         this.printHeader();
         this.printRoomInfo();
+    }
+    //TODO: fix room leaving process (at server-model level), currently not possible to rejoin room
+    private void handleLeave() {
+        try{
+            this.server.leaveRoom( this.tuiApp );
+            this.sceneManager.setScene( new MainMenuScene( this.sceneManager, this.tuiApp));
+            this.running = false;
+            System.out.println("You have left the room.");
+        } catch (RemoteException e) {
+            System.out.println("Failed to leave the room");
+            e.printStackTrace();
+        }
     }
 
     @Override

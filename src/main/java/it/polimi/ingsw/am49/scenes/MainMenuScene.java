@@ -196,7 +196,7 @@ public class MainMenuScene extends Scene {
 
     private void handleJoinRoom(String[] args) {
         if (args.length < 2) {
-            System.out.println("Missing parameters, please try again. Type '2 --help' for more information about this command. ");
+            System.out.println("Missing parameters, please try again. Type '3 --help' for more information about this command. ");
             linesToClear = 3;
             return;
         }
