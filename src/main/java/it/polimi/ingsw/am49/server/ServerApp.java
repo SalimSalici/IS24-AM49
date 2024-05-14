@@ -115,7 +115,15 @@ public class ServerApp implements Server {
         Room room = this.clientsToRooms.get(clientHandler);
         if (room == null) return false;
 
-        return room.removePlayer(clientHandler);
+        boolean roomLeft = room.removePlayer(clientHandler);
+        if (roomLeft) {
+            this.clientsToRooms.remove(clientHandler);
+        }
+
+        if (room.getCurrentPlayers() == 0)
+            this.rooms.remove(room);
+
+        return roomLeft;
     }
 
     @Override

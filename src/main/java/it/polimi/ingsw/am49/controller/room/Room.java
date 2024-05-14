@@ -62,7 +62,7 @@ public class Room {
     }
 
     // TODO: maybe think more about this method (?)
-    public boolean removePlayer(Client client) {
+    public boolean removePlayer(ClientHandler client) {
         String username = this.getUsernameByClient(client);
         PlayerInfo pInfo = this.usernamesToPlayers.remove(username);
         if (pInfo != null) {
@@ -86,7 +86,7 @@ public class Room {
      * @param color the chosen color of the client
      * @throws Exception
      */
-    public void clientReady(Client client, Color color) throws Exception{
+    public void clientReady(ClientHandler client, Color color) throws Exception{
 
         String username = this.getUsernameByClient(client);
         if (username == null)
@@ -130,7 +130,7 @@ public class Room {
         this.game.startGame();
     }
 
-    public void executeGameAction(Client client, GameAction action) throws Exception {
+    public void executeGameAction(ClientHandler client, GameAction action) throws Exception {
         if (!this.usernameCorrespondsToClient(action.getUsername(), client))
             throw new Exception("Username of action does not correspond to associated client."
                     + "\nExpected: " + this.getUsernameByClient(client)
@@ -140,7 +140,7 @@ public class Room {
         this.game.executeAction(action);
     }
 
-    public void onClientDisconnect(Client client, String username) throws Exception {
+    public void onClientDisconnect(ClientHandler client, String username) throws Exception {
         if (!this.usernameCorrespondsToClient(username, client))
             throw new Exception("Username of action does not correspond to associated client");
 
@@ -154,7 +154,7 @@ public class Room {
      * @param playerUsername the username that the client chose.
      * @throws JoinRoomException if the client cannot join the room
      */
-    private void checkIfNewPlayerCanJoin(Client playerClient, String playerUsername) throws JoinRoomException {
+    private void checkIfNewPlayerCanJoin(ClientHandler playerClient, String playerUsername) throws JoinRoomException {
         if (!this.isUsernameAvailable(playerUsername))
             throw new JoinRoomException("Username already taken. Please choose another username.");
 
@@ -168,13 +168,13 @@ public class Room {
             throw new JoinRoomException("Max player amount for this room reached.");
     }
 
-    private Client getClientByUsername(String username) {
+    private ClientHandler getClientByUsername(String username) {
         PlayerInfo pInfo = this.usernamesToPlayers.get(username);
         if (pInfo != null) return pInfo.getClient();
         return null;
     }
 
-    private String getUsernameByClient(Client client) {
+    private String getUsernameByClient(ClientHandler client) {
         for (Map.Entry<String, PlayerInfo> entry : this.usernamesToPlayers.entrySet()) {
             if (entry.getValue().getClient().equals(client)) return entry.getKey();
         }
@@ -192,7 +192,7 @@ public class Room {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean usernameCorrespondsToClient(String username, Client client) {
+    private boolean usernameCorrespondsToClient(String username, ClientHandler client) {
         // Important to use .equals() when comparing remote objects
         return client != null && client.equals(this.getClientByUsername(username));
     }
@@ -207,5 +207,9 @@ public class Room {
             playersToColors.put(username, pInfo.getColor());
         });
         return new RoomInfo(this.roomName, this.maxPlayers, playersToColors);
+    }
+
+    public int getCurrentPlayers() {
+        return currentPlayers;
     }
 }

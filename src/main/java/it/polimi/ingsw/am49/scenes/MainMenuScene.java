@@ -119,7 +119,6 @@ public class MainMenuScene extends Scene {
         System.out.println("--------------------------\n");
         if (this.rooms.isEmpty()) {
             System.out.println("There are no rooms.");
-            return;
         } else {
             for (RoomInfo roomInfo : this.rooms) {
                 System.out.println(roomInfo);
