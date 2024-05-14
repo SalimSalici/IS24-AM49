@@ -9,6 +9,8 @@ public abstract class Scene {
     protected SceneManager sceneManager;
     protected final Scanner scanner;
 
+    protected int linesToClear;
+
     public Scene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
         this.scanner = new Scanner(System.in);
@@ -25,5 +27,10 @@ public abstract class Scene {
         System.out.println("\033[H\033[2J");
 //        for (int i = 0; i < 60; i++)
 //            System.out.println();
+    }
+
+    protected void clearLastLine() {
+        System.out.print("\033[1A"); // Move cursor up by one line
+        System.out.print("\033[2K"); // Erase the line content
     }
 }

@@ -10,6 +10,7 @@ import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class MainMenuScene extends Scene {
 
@@ -40,14 +41,19 @@ public class MainMenuScene extends Scene {
 
         this.printHeader();
         this.printRooms();
+        linesToClear = 2;
 
         while (this.running) {
             this.promptCommand();
             String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
             if (parts.length == 0) {
-                System.out.println("Invalid command, please try again.");
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                System.out.println("Empty, please try again.");
+                linesToClear = 1;
                 continue;
             }
+
+            IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
 
             String command = parts[0];
             switch (command) {
@@ -61,8 +67,10 @@ public class MainMenuScene extends Scene {
                     this.handleJoinRoom(parts);
                     break;
                 case "4":
+                    linesToClear = 2;
                     break;
                 case "5":
+                    linesToClear = 2;
                     break;
                 case "6":
                     try {
@@ -78,6 +86,7 @@ public class MainMenuScene extends Scene {
                     System.exit(0);
                 default:
                     System.out.println("Invalid command, please try again.");
+                    linesToClear = 3;
             }
         }
 
@@ -122,17 +131,20 @@ public class MainMenuScene extends Scene {
     private void handleUsername(String[] args) {
         if (args.length < 2) {
             System.out.println("Username missing, please try again. Type '1 --help' for more information about this command. ");
+            linesToClear = 3;
             return;
         }
         if (args[1].equals("--help")) {
             System.out.println("The 'username' command is used to change your username. The username must be between 2 and 20 and characters long");
             System.out.println("Example usage:");
             System.out.println("1 [username]");
+            linesToClear = 5;
             return;
         }
         String username = args[1];
         if (!this.isUsernameValid(username)) {
             System.out.println("Username must be between 2 and 20 characters, please try again.");
+            linesToClear = 3;
             return;
         }
         this.tuiApp.setUsername(username);
@@ -141,14 +153,16 @@ public class MainMenuScene extends Scene {
     }
 
     private void handleCreateRoom(String[] args) {
-        if (args.length < 3) {
-            System.out.println("Missing parameters, please try again. Type '2 --help' for more information about this command. ");
-            return;
-        }
-        if (args[1].equals("--help")) {
+        if (args.length > 1 && args[1].equals("--help")) {
             System.out.println("The 'create' command is used to craete a new room. When creating a room, you must specify its name and amount of players.");
             System.out.println("Example usage:");
             System.out.println("2 [room name] [number of players]");
+            linesToClear = 5;
+            return;
+        }
+        if (args.length < 3) {
+            System.out.println("Missing parameters, please try again. Type '2 --help' for more information about this command. ");
+            linesToClear = 3;
             return;
         }
         String roomName = args[1];
@@ -157,6 +171,7 @@ public class MainMenuScene extends Scene {
             numPlayers = Integer.parseInt(args[2]);
         } catch (NumberFormatException e) {
             System.out.println("Invalid room number. It must be an integer.");
+            linesToClear = 3;
             return;
         }
 
@@ -168,6 +183,7 @@ public class MainMenuScene extends Scene {
         } catch (CreateRoomException e) {
             // TODO: Handle exception
             System.out.println(e.getMessage());
+            linesToClear = 4;
             return;
         } catch (AlreadyInRoomException e) {
             // TODO: Handle exception
@@ -181,12 +197,14 @@ public class MainMenuScene extends Scene {
     private void handleJoinRoom(String[] args) {
         if (args.length < 2) {
             System.out.println("Missing parameters, please try again. Type '2 --help' for more information about this command. ");
+            linesToClear = 3;
             return;
         }
         if (args[1].equals("--help")) {
             System.out.println("The 'join' command is used to join an existing room. When joining a room, you must specify its name.");
             System.out.println("Example usage:");
             System.out.println("3 [room name]");
+            linesToClear = 5;
             return;
         }
         String roomName = args[1];

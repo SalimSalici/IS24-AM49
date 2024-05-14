@@ -12,6 +12,7 @@ import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.util.Observer;
 
 import java.rmi.RemoteException;
+import java.util.stream.IntStream;
 
 public class GameOverviewScene extends Scene implements Observer {
     private final TuiApp tuiApp;
@@ -30,9 +31,11 @@ public class GameOverviewScene extends Scene implements Observer {
         while (this.running) {
             this.printHeader();
             this.promptCommand();
+            linesToClear = 2;
             String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
             if (parts.length == 0) {
                 System.out.println("Invalid command, please try again.");
+                linesToClear = 3;
                 continue;
             }
 
@@ -49,6 +52,7 @@ public class GameOverviewScene extends Scene implements Observer {
                         this.placeCard();
                     } else {
                         System.out.println("It's not your turn.");
+                        linesToClear = 3;
                     }
                     break;
                 case "exit":
@@ -56,6 +60,7 @@ public class GameOverviewScene extends Scene implements Observer {
                     break;
                 default:
                     System.out.println("Invalid command, please try again.");
+                    linesToClear = 3;
             }
         }
     }
@@ -132,50 +137,76 @@ public class GameOverviewScene extends Scene implements Observer {
 
         System.out.println("Your hand: " + player.getHand());
         int cardId = -1;
+        linesToClear = 1;
         while (true) {
             System.out.print("Enter the card ID to place: ");
             try {
                 cardId = Integer.parseInt(scanner.nextLine().trim());
                 if (player.getHand().contains(cardId)) {
+                    IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                    System.out.println("You chose the card number " + cardId);
+                    linesToClear = 1;
                     break;
                 } else {
+                    IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
                     System.out.println("Invalid card ID. The card is not in your hand.");
+                    linesToClear = 2;
                 }
             } catch (NumberFormatException e) {
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
                 System.out.println("Invalid input. Please enter a valid card ID.");
+                linesToClear = 2;
             }
         }
 
         int row = -1;
+        linesToClear = 1;
         while (true) {
             System.out.print("Enter the row: ");
             try {
                 row = Integer.parseInt(scanner.nextLine().trim());
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                System.out.println("You chose the row number: " + row);
+                linesToClear = 1;
                 break;
             } catch (NumberFormatException e) {
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
                 System.out.println("Invalid input. Please enter a valid row number.");
+                linesToClear = 2;
             }
         }
 
         int col = -1;
+        linesToClear = 1;
         while (true) {
             System.out.print("Enter the column: ");
             try {
                 col = Integer.parseInt(scanner.nextLine().trim());
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                System.out.println("You chose the column number: " + col);
+                linesToClear = 1;
                 break;
             } catch (NumberFormatException e) {
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
                 System.out.println("Invalid input. Please enter a valid column number.");
+                linesToClear = 2;
             }
         }
 
         CornerPosition cornerPosition = null;
+        linesToClear = 1;
         while (true) {
             System.out.print("Enter the corner position (TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT): ");
             try {
                 cornerPosition = CornerPosition.valueOf(scanner.nextLine().trim().toUpperCase());
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                System.out.println("You chose the corner: " + cornerPosition.toString());
+                linesToClear = 1;
                 break;
             } catch (IllegalArgumentException e) {
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
                 System.out.println("Invalid input. Please enter a valid corner position.");
+                linesToClear = 2;
             }
         }
 

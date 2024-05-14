@@ -13,6 +13,7 @@ import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class ChooseObjectiveCardScene extends Scene {
     private final TuiApp tuiApp;
@@ -33,14 +34,18 @@ public class ChooseObjectiveCardScene extends Scene {
     @Override
     public void play() {
         this.printHeader();
+        linesToClear = 3;
 
         while (!this.objectiveChosen) {
             this.promptCommand();
             String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
             if (parts.length == 0) {
-                System.out.println("Invalid command, please try again.");
+                System.out.println("Empty command, please try again.");
+                linesToClear = 3;
                 continue;
             }
+
+            IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
 
             String command = parts[0];
             try {
@@ -49,9 +54,11 @@ public class ChooseObjectiveCardScene extends Scene {
                     this.handleObjectiveChosen(this.objectiveCardIds.get(choice - 1));
                 } else {
                     System.out.println("Invalid command, please try again.");
+                    linesToClear = 3;
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid command, please try again.");
+                linesToClear = 3;
             }
         }
 

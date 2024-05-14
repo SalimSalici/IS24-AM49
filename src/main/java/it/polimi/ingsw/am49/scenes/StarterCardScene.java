@@ -10,6 +10,7 @@ import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
 import java.rmi.RemoteException;
+import java.util.stream.IntStream;
 import java.util.List;
 
 public class StarterCardScene extends Scene {
@@ -32,14 +33,18 @@ public class StarterCardScene extends Scene {
     @Override
     public void play() {
         this.printHeader();
+        linesToClear = 2;
 
         while (!this.sideChosen) {
             this.promptCommand();
             String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
             if (parts.length == 0) {
-                System.out.println("Invalid command, please try again.");
+                System.out.println("Empty command, please try again.");
+                linesToClear = 2;
                 continue;
             }
+
+            IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
 
             String command = parts[0];
             switch (command) {
@@ -51,6 +56,7 @@ public class StarterCardScene extends Scene {
                     break;
                 default:
                     System.out.println("Invalid command, please try again.");
+                    linesToClear = 5;
             }
         }
 

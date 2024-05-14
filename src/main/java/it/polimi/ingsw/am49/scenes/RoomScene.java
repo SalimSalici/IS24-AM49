@@ -11,6 +11,7 @@ import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
 import java.rmi.RemoteException;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class RoomScene extends Scene {
     private final TuiApp tuiApp;
@@ -31,6 +32,7 @@ public class RoomScene extends Scene {
     public void play() {
         this.printHeader();
         this.printRoomInfo();
+        linesToClear = 4;
 
         while (this.running) {
 
@@ -38,9 +40,12 @@ public class RoomScene extends Scene {
                 this.promptCommand();
                 String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
                 if (parts.length == 0) {
-                    System.out.println("Invalid command, please try again.");
+                    System.out.println("Empty command, please try again.");
+                    linesToClear = 2;
                     continue;
                 }
+
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
 
                 String command = parts[0];
                 switch (command) {
@@ -51,6 +56,7 @@ public class RoomScene extends Scene {
                         break;
                     default:
                         System.out.println("Invalid command, please try again.");
+                        linesToClear = 3;
                 }
             } else {
                 System.out.println("Waiting for other players...");
@@ -149,12 +155,14 @@ public class RoomScene extends Scene {
     private void handleReady(String[] args) {
         if (args.length < 2) {
             System.out.println("Color missing, please try again. Type '1 --help' for more information about this command. ");
+            linesToClear = 3;
             return;
         }
         if (args[1].equals("--help")) {
             System.out.println("The 'ready' command is to notify that you are ready to play. When readying up, you must specify the color of your game token.");
             System.out.println("Example usage:");
             System.out.println("1 [red|blue|green|yellow]");
+            linesToClear = 7;
             return;
         }
         String colorString = args[1];
@@ -164,6 +172,7 @@ public class RoomScene extends Scene {
             this.isUserReady = true;
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid color. Please try again.");
+            linesToClear = 3;
             return;
         } catch (RemoteException e) {
             // TODO: Handle exception
