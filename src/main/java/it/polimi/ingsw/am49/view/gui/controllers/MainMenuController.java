@@ -33,6 +33,7 @@ public class MainMenuController extends GuiController {
 
     private List<RoomInfo> rooms;
 
+    @Override
     public void init(){
         this.server = this.app.getServer();
         refreshRooms();
@@ -52,6 +53,14 @@ public class MainMenuController extends GuiController {
 
         joinroomButton.setOnAction(e -> {
             joinRoom();
+        });
+
+        usernameButton.setOnAction(e -> {
+           changeUsername();
+        });
+
+        createroomButton.setOnAction(e -> {
+            createRoom();
         });
     }
 
@@ -84,5 +93,13 @@ public class MainMenuController extends GuiController {
             // TODO: Handle exception
             throw new RuntimeException(e);
         }
+    }
+
+    private void changeUsername(){
+        this.manager.changeScene(SceneTitle.CHANGE_USERNAME);
+    }
+
+    private void createRoom(){
+        this.manager.changeScene(SceneTitle.CREATE_ROOM);
     }
 }

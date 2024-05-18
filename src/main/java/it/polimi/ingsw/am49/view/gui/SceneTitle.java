@@ -4,7 +4,9 @@ package it.polimi.ingsw.am49.view.gui;
 public enum SceneTitle {
     WELCOME,
     MAIN_MENU,
-    ROOM;
+    ROOM,
+    CREATE_ROOM,
+    CHANGE_USERNAME;
 //    OVERVIEW,
 //    CHOOSE_STARTER,
 //    CHOOSE_OBJECTIVE,
@@ -17,6 +19,8 @@ public enum SceneTitle {
             case WELCOME -> fileName = "welcome.fxml";
             case MAIN_MENU -> fileName = "mainMenu.fxml";
             case ROOM -> fileName = "room.fxml";
+            case CHANGE_USERNAME -> fileName = "changeUsername.fxml";
+            case CREATE_ROOM -> fileName = "createRoom.fxml";
         }
 
         return fileName;
