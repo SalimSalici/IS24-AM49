@@ -5,10 +5,12 @@ public enum SceneTitle {
     WELCOME,
     MAIN_MENU,
     ROOM,
+    STARTER_CARD,
+    OBJECTIVE_CARDS,
+    WAITING,
     CREATE_ROOM,
     CHANGE_USERNAME;
 //    OVERVIEW,
-//    CHOOSE_STARTER,
 //    CHOOSE_OBJECTIVE,
 //    GAME_OVER;
 
@@ -19,6 +21,9 @@ public enum SceneTitle {
             case WELCOME -> fileName = "welcome.fxml";
             case MAIN_MENU -> fileName = "mainMenu.fxml";
             case ROOM -> fileName = "room.fxml";
+            case STARTER_CARD -> fileName= "starterCard.fxml";
+            case WAITING -> fileName = "waitForOther.fxml";
+            case OBJECTIVE_CARDS -> fileName = "objectiveCards.fxml";
             case CHANGE_USERNAME -> fileName = "changeUsername.fxml";
             case CREATE_ROOM -> fileName = "createRoom.fxml";
         }

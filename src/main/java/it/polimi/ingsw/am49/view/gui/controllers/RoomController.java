@@ -83,8 +83,8 @@ public class RoomController extends GuiController {
     public void gameUpdate(GameUpdate gameUpdate) {
         if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
             GameStartedUpdate update = (GameStartedUpdate) gameUpdate;
-            int starterCardId = update.starterCardId(); //TODO: CAPIRE COME PASSARE INFO TRA UNA SCENA E L'ALTRA
-            //this.manager.changeScene();
+            this.manager.setStarterCardId(update.starterCardId()); //TODO: CAPIRE COME PASSARE INFO TRA UNA SCENA E L'ALTRA
+            this.manager.changeScene(SceneTitle.STARTER_CARD);
         }
     }
 
