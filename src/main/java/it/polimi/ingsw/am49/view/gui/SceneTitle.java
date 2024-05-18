@@ -4,9 +4,11 @@ package it.polimi.ingsw.am49.view.gui;
 public enum SceneTitle {
     WELCOME,
     MAIN_MENU,
-    ROOM;
+    ROOM,
+    STARTER_CARD,
+    OBJECTIVE_CARDS,
+    WAITING;
 //    OVERVIEW,
-//    CHOOSE_STARTER,
 //    CHOOSE_OBJECTIVE,
 //    GAME_OVER;
 
@@ -17,6 +19,9 @@ public enum SceneTitle {
             case WELCOME -> fileName = "welcome.fxml";
             case MAIN_MENU -> fileName = "mainMenu.fxml";
             case ROOM -> fileName = "room.fxml";
+            case STARTER_CARD -> fileName= "starterCard.fxml";
+            case WAITING -> fileName = "waitForOther.fxml";
+            case OBJECTIVE_CARDS -> fileName = "objectiveCards.fxml";
         }
 
         return fileName;

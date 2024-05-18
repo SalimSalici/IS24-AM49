@@ -3,12 +3,14 @@ package it.polimi.ingsw.am49.view.gui;
 import it.polimi.ingsw.am49.client.GuiApp;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.util.BiMap;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import com.google.gson.Gson;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
 import java.io.*;
+import java.util.List;
 
 import it.polimi.ingsw.am49.view.gui.controllers.GuiController;
 
@@ -20,6 +22,8 @@ public class GuiManager {
     private final BiMap<SceneTitle, Scene> titleToScene = new BiMap<>();
     private final BiMap<SceneTitle, GuiController> titleToController = new BiMap<>();
     private RoomInfo roomInfo;
+    private int starterCardId;
+    private List<Integer> objectiveCardsIds;
     private final Gson gson;
     private GuiApp app;
   
@@ -55,9 +59,12 @@ public class GuiManager {
 
         currentScene = titleToScene.getValue(newSceneTitle);
         titleToController.getValue(titleToScene.getKey(currentScene)).init();
-        stage.setScene(currentScene);
-        stage.sizeToScene();
-        stage.show();
+
+        Platform.runLater(() -> {
+            stage.setScene(currentScene);
+            stage.sizeToScene();
+            stage.show();
+        });
 
         switch (newSceneTitle) {
             case WELCOME -> {
@@ -92,6 +99,7 @@ public class GuiManager {
             stop();
         }
         currentScene = titleToScene.getValue(SceneTitle.WELCOME);
+        titleToController.getValue(titleToScene.getKey(currentScene)).init();
     }
 
     private void run() {
@@ -130,9 +138,25 @@ public class GuiManager {
         return roomInfo;
     }
 
+    public int getStarterCardId() {
+        return starterCardId;
+    }
+
+    public List<Integer> getObjectiveCardsIds() {
+        return objectiveCardsIds;
+    }
+
     //SETTERS
 
     public void setRoomInfo(RoomInfo roomInfo) {
         this.roomInfo = roomInfo;
+    }
+
+    public void setStarterCardId(int starterCardId) {
+        this.starterCardId = starterCardId;
+    }
+
+    public void setObjectiveCardsIds(List<Integer> objectiveCardsIds) {
+        this.objectiveCardsIds = objectiveCardsIds;
     }
 }
