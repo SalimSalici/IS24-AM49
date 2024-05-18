@@ -72,7 +72,13 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
     protected abstract void initialize();
 
     public static void main(String[] args) throws IOException, NotBoundException, AlreadyInRoomException, NotInGameException {
-        ClientApp client = new TuiApp();
+        ClientApp client;
+        if(List.of(args).contains("--gui")) {
+            client = new GuiApp(args);
+        }
+        else {
+            client = new TuiApp();
+        }
 
         String host = "127.0.0.1";
         int serverPort = 8458;

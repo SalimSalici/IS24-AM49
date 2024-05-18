@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="49.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="49.0" prefWidth="600.0">
+         <children>
+            <Region prefHeight="49.0" prefWidth="40.0" HBox.hgrow="NEVER" />
+            <Label text="Roomname" />
+            <Region prefHeight="49.0" prefWidth="96.0" HBox.hgrow="ALWAYS" />
+            <Label text="?/max" />
+            <Region prefHeight="200.0" prefWidth="40.0" HBox.hgrow="NEVER" />
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
