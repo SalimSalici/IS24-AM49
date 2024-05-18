@@ -184,7 +184,7 @@ public class RoomScene extends Scene {
         this.printHeader();
         this.printRoomInfo();
     }
-    //TODO: fix room leaving process (at server-model level), currently not possible to rejoin room
+
     private void handleLeave() {
         try{
             this.server.leaveRoom( this.tuiApp );

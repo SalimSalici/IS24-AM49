@@ -1,5 +1,8 @@
 package it.polimi.ingsw.am49.view.tui.textures;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum AnsiColor {
     ANSI_RESET("\u001B[0m"),
     ANSI_RED("\u001B[31m"),
@@ -10,6 +13,7 @@ public enum AnsiColor {
     ANSI_MAGENTA("\u001B[35m"),
     ANSI_BRIGHT_MAGENTA("\u001B[95m"),
     ANSI_CYAN("\u001B[36m"),
+    ANSI_WHITE("\u001B[37m"),
     ANSI_BRIGHT_CYAN("\u001B[96m");
 
     private final String value;
@@ -22,5 +26,24 @@ public enum AnsiColor {
     public String toString() {
         return this.value;
     }
+
+    /**
+     * Creates the binding letter color for the reading of the .txt file rappresenting the cards
+     */
+    private static final Map<Character, AnsiColor> colorMap = new HashMap<>();
+
+    static {
+        colorMap.put('R', ANSI_RED);
+        colorMap.put('Y', ANSI_YELLOW);
+        colorMap.put('G', ANSI_GREEN);
+        colorMap.put('B', ANSI_BLUE);
+        colorMap.put('M', ANSI_MAGENTA);
+        colorMap.put('T', ANSI_WHITE);
+    }
+
+    public static AnsiColor getColorForChar(char c) {
+        return colorMap.getOrDefault(c, ANSI_RESET); // Default: reset color
+    }
+
 }
 

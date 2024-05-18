@@ -4,7 +4,7 @@
 | M  ' _ '  B |
 +-------------+
 TTTTTTTTTTTTTTT
-T G         B T
-T             T
-T R         M T
+T G  T T T  B T
+T   TT T TT   T
+T R  T T T  M T
 TTTTTTTTTTTTTTT

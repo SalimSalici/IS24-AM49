@@ -2,7 +2,6 @@ package it.polimi.ingsw.am49.view.tui;
 
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 import it.polimi.ingsw.am49.view.tui.textures.ColoredChar;
-import it.polimi.ingsw.am49.view.tui.textures.TuiTexture;
 
 public class TuiBoardRenderer {
     private final ColoredChar[][] buffer;
@@ -26,10 +25,9 @@ public class TuiBoardRenderer {
     }
 
     // Draw a card on the board at specific coordinates
-    public void draw(TuiTexture texture, int x, int y) {
-        ColoredChar[][] textureBuffer = texture.getBuffer();
-        int textureHeight = textureBuffer.length;
-        int textureWidth = textureBuffer[0].length;
+    public void draw(ColoredChar[][] texture, int x, int y) {
+        int textureHeight = texture.length;
+        int textureWidth = texture[0].length;
 
         x -= 7;
         y -= 2;
@@ -46,7 +44,7 @@ public class TuiBoardRenderer {
                     continue; // Skip columns outside the board
                 }
 
-                buffer[boardRow][boardCol] = textureBuffer[i][j];
+                buffer[boardRow][boardCol] = texture[i][j];
             }
         }
     }

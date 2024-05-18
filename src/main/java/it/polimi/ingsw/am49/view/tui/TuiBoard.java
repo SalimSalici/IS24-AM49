@@ -35,7 +35,7 @@ public class TuiBoard {
             int colOffset = currExpandedCol - expandedCol;
 
             this.boardRenderer.draw(
-                    TuiTextureManager.getInstance().getTexture(1),
+                    TuiTextureManager.getInstance().getTexture(this.virtualBoard.getTile(row, col).getCard()),
                     centerDisplayCol + colOffset * 12,
                     centerDisplayRow + rowOffset * 3
             );

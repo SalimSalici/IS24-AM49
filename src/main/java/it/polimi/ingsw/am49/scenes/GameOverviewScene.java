@@ -90,26 +90,8 @@ public class GameOverviewScene extends Scene implements Observer {
     }
 
     private void showBoard() {
-        this.clearScreen();
-        System.out.println("Game Board:");
-        // Mock-up board display (to be replaced with actual board rendering logic)
-        for (VirtualPlayer player : this.game.getPlayers()) {
-            System.out.println("Player: " + player.getUsername());
-            for (int i = 0; i < 50; i++) {
-                for (int j = 0; j < 50; j++) {
-                    VirtualTile tile = player.getBoard().getTile(i, j);
-                    if (tile != null) {
-                        System.out.print("[C]"); // Represents a card
-                    } else {
-                        System.out.print("[ ]"); // Represents an empty space
-                    }
-                }
-                System.out.println();
-            }
-        }
-        System.out.println("\n\n");
-        System.out.println("Press enter to continue...");
-        this.scanner.nextLine();
+        this.sceneManager.setScene( new ViewBoardScene( this.sceneManager, this.tuiApp, this.isClientTurn(), this.game.getPlayerByUsername(this.tuiApp.getUsername()).getBoard()));
+        this.running = false;
     }
 
     private void showPlayersStatus() {
