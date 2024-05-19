@@ -82,15 +82,12 @@ public class GameOverviewScene extends Scene implements Observer {
         System.out.println("Available commands: ");
         System.out.println("(1) Show board");
         System.out.println("(2) Show players' status");
-//        if (this.isClientTurn()) {
-//            System.out.println("(3) Place a card");
-//        }
         System.out.println("Type 'exit' to go back to the main menu.");
         System.out.print(">>> ");
     }
 
     private void showBoard() {
-        this.sceneManager.setScene( new ViewBoardScene( this.sceneManager, this.tuiApp, this.isClientTurn(), this.game.getPlayerByUsername(this.tuiApp.getUsername()).getBoard()));
+        this.sceneManager.setScene( new ViewBoardScene( this.sceneManager, this.tuiApp, this.game.getPlayerByUsername(this.tuiApp.getUsername()).getBoard()));
         this.running = false;
     }
 
@@ -215,9 +212,5 @@ public class GameOverviewScene extends Scene implements Observer {
         System.out.println("\n\n");
         System.out.println("Press enter to continue...");
         this.scanner.nextLine();
-    }
-
-    private boolean isClientTurn() {
-        return this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername());
     }
 }

@@ -28,19 +28,16 @@ public class ViewBoardScene extends Scene implements Observer {
     private final VirtualGame game;
     private final VirtualBoard virtualBoard;
     private final TuiBoard tuiBoard;
-    private boolean canPlaceCard = false;
-    private int toPlaceIndex;
     private int row;
     private int col;
 
-    public ViewBoardScene(SceneManager sceneManager, TuiApp tuiApp, Boolean canPlaceCard, VirtualBoard virtualBoard) {
+    public ViewBoardScene(SceneManager sceneManager, TuiApp tuiApp, VirtualBoard virtualBoard) {
         super(sceneManager);
         this.tuiApp = tuiApp;
         this.server = this.tuiApp.getServer();
         this.game = tuiApp.getVirtualGame();
         this.virtualBoard = virtualBoard;
         this.tuiBoard = new TuiBoard(virtualBoard);
-        this.canPlaceCard = canPlaceCard; //must be calculated before switching to the scene.
         this.row = 25;
         this.col = 25;
     }
@@ -108,7 +105,7 @@ public class ViewBoardScene extends Scene implements Observer {
         System.out.println("(E) Move Top Right");
         System.out.println("(A) Move Bottom Left");
         System.out.println("(D) Move Bottom Right");
-        if (this.canPlaceCard) {
+        if (this.isClientTurn()) {
             System.out.println("(P) Place a card");
         }
         System.out.println("Type 'exit' to go back to the Game Overview.");
@@ -168,7 +165,7 @@ public class ViewBoardScene extends Scene implements Observer {
         boolean flipped = scanner.nextLine().trim().startsWith("y");
 
         try {
-            this.tuiApp.getServer().executeAction(this.tuiApp, new PlaceCard(username, cardId, this.row, this.col, cornerPosition, flipped));
+            this.server.executeAction(this.tuiApp, new PlaceCard(username, cardId, this.row, this.col, cornerPosition, flipped));
             System.out.println("Card placed successfully.");
         } catch (NotYourTurnException e) {
             System.out.println("You must wait for your turn.");
@@ -193,7 +190,10 @@ public class ViewBoardScene extends Scene implements Observer {
 
     @Override
     public void update() {
-        this.canPlaceCard = this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername());
         this.printBoard();
+    }
+
+    private boolean isClientTurn() {
+        return this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername());
     }
 }

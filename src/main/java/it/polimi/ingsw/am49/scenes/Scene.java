@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.scenes;
 
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
+import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
 import java.util.Scanner;
 
@@ -32,5 +33,49 @@ public abstract class Scene {
     protected void clearLastLine() {
         System.out.print("\033[1A"); // Move cursor up by one line
         System.out.print("\033[2K"); // Erase the line content
+
+    }
+
+    protected void clearLine() {
+        System.out.print("\033[2K"); // Erase the line content
+    }
+
+    protected void moveCursorUp(int n) {
+        for (int i = 0; i < n; i++)
+            System.out.print("\033[1A"); // Move cursor up by one line
+    }
+
+    protected void moveCursorUp() {
+        System.out.print("\033[1A"); // Move cursor up by one line
+    }
+
+    protected void clearLines(int n) {
+        if (n <= 0) return;
+        this.clearLine();
+        n--;
+        while (n > 0) {
+            this.moveCursorUp();
+            this.clearLine();
+            n--;
+        }
+    }
+
+    protected void showHelp(String message, String example) {
+        showHelp(message, example, 5);
+    }
+
+    protected void showHelp(String message, String example, int linesToClear) {
+        System.out.println(message);
+        System.out.println("Example usage: " + example);
+        this.linesToClear = linesToClear;
+    }
+
+    protected void showError(String message) {
+        this.showError(message, 4);
+    }
+
+    protected void showError(String message, int linesToClear) {
+        System.out.println(AnsiColor.ANSI_RED + message + AnsiColor.ANSI_RESET);
+        this.linesToClear = linesToClear;
     }
 }

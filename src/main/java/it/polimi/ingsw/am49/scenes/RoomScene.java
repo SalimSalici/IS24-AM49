@@ -21,6 +21,8 @@ public class RoomScene extends Scene {
     private RoomInfo roomInfo;
     private boolean isUserReady;
 
+    private Thread inputThread;
+
     public RoomScene(SceneManager sceneManager, TuiApp tuiApp, RoomInfo roomInfo) {
         super(sceneManager);
         this.tuiApp = tuiApp;
@@ -33,7 +35,7 @@ public class RoomScene extends Scene {
     public void play() {
         this.printHeader();
         this.printRoomInfo();
-        linesToClear = 4;
+        this.linesToClear = 3;
 
         while (this.running) {
 
@@ -41,12 +43,11 @@ public class RoomScene extends Scene {
                 this.promptCommand();
                 String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
                 if (parts.length == 0) {
-                    System.out.println("Empty command, please try again.");
-                    linesToClear = 2;
+                    this.showError("Invalid command, please try again.");
                     continue;
                 }
 
-                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                this.clearLines(this.linesToClear);
 
                 String command = parts[0];
                 switch (command) {
@@ -57,35 +58,26 @@ public class RoomScene extends Scene {
                         this.handleLeave();
                         break;
                     default:
-                        System.out.println("Invalid command, please try again.");
-                        linesToClear = 3;
+                        this.showError("Invalid command, please try again.");
                 }
             } else {
-                System.out.println("Waiting for other players...");
-                synchronized (this) {
-                    while (this.running) {
-                        try {
-                            this.wait();
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
+                this.promptReadyCommand();
+                String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
+                if (parts.length == 0) {
+                    this.showError("Invalid command, please try again.");
+                    continue;
                 }
-//                this.promptReadyCommand();
-//                String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
-//                if (parts.length == 0) {
-//                    System.out.println("Invalid command, please try again.");
-//                    continue;
-//                }
-//
-//                String command = parts[0];
-//                if (command.equals("1")) {
-//                    // TODO: handle player leaving
-//                } else {
-//                    System.out.println("Invalid command, please try again.");
-//                }
+
+                String command = parts[0];
+                if (command.equals("1")) {
+                    this.handleLeave();
+                } else {
+                    this.showError("Invalid command, please try again.");
+                }
             }
         }
+
+
     }
 
     private void printHeader() {
@@ -109,7 +101,6 @@ public class RoomScene extends Scene {
     }
 
     private void promptReadyCommand() {
-        System.out.println("You are ready. Please wait for other players.");
         System.out.println("Available commands: (1) leave ");
         System.out.print(">>> ");
     }
@@ -156,25 +147,21 @@ public class RoomScene extends Scene {
 
     private void handleReady(String[] args) {
         if (args.length < 2) {
-            System.out.println("Color missing, please try again. Type '1 --help' for more information about this command. ");
-            linesToClear = 3;
+            this.showError("Color missing, please try again. Type '1 --help' for more information about this command.");
             return;
         }
         if (args[1].equals("--help")) {
-            System.out.println("The 'ready' command is to notify that you are ready to play. When readying up, you must specify the color of your game token.");
-            System.out.println("Example usage:");
-            System.out.println("1 [red|blue|green|yellow]");
-            linesToClear = 7;
+            this.showHelp("The 'ready' command is to notify that you are ready to play. When readying up, you must specify the color of your game token.", "1 [red|blue|green|yellow]");
             return;
         }
+
         String colorString = args[1];
         try {
             Color color = Color.valueOf(colorString.toUpperCase());
             this.roomInfo = this.server.readyUp(this.tuiApp, color);
             this.isUserReady = true;
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid color. Please try again.");
-            linesToClear = 3;
+            this.showError("Invalid color. Please try again.");
             return;
         } catch (RemoteException e) {
             // TODO: Handle exception
@@ -187,10 +174,9 @@ public class RoomScene extends Scene {
 
     private void handleLeave() {
         try{
-            this.server.leaveRoom( this.tuiApp );
-            this.sceneManager.setScene( new MainMenuScene( this.sceneManager, this.tuiApp));
+            this.server.leaveRoom(this.tuiApp);
+            this.sceneManager.setScene(new MainMenuScene( this.sceneManager, this.tuiApp));
             this.running = false;
-            System.out.println("You have left the room.");
         } catch (RemoteException e) {
             System.out.println("Failed to leave the room");
             e.printStackTrace();
@@ -202,11 +188,8 @@ public class RoomScene extends Scene {
         this.roomInfo = roomInfo;
         this.printHeader();
         this.printRoomInfo();
-        if (!this.isUserReady)
-            this.promptCommand();
-        synchronized (this) {
-            this.notifyAll();
-        }
+        this.promptCommand();
+        this.linesToClear = 3;
     }
 
     @Override
@@ -215,10 +198,9 @@ public class RoomScene extends Scene {
             GameStartedUpdate update = (GameStartedUpdate) gameUpdate;
             int starterCardId = update.starterCardId();
             this.sceneManager.setScene(new StarterCardScene(this.sceneManager, this.tuiApp, starterCardId));
-            synchronized (this) {
-                this.running = false;
-                this.notifyAll();
-            }
+            this.running = false;
+            this.clearLines(this.linesToClear - 1);
+            System.out.println(AnsiColor.ANSI_GREEN + "\rAll players are ready! Press ENTER to continue.");
         }
     }
 }
