@@ -47,14 +47,14 @@ public class GameOverviewScene extends Scene implements Observer {
                 case "2":
                     this.showPlayersStatus();
                     break;
-                case "3":
-                    if (this.isClientTurn()) {
-                        this.placeCard();
-                    } else {
-                        System.out.println("It's not your turn.");
-                        linesToClear = 3;
-                    }
-                    break;
+//                case "3":
+//                    if (this.isClientTurn()) {
+//                        this.placeCard();
+//                    } else {
+//                        System.out.println("It's not your turn.");
+//                        linesToClear = 3;
+//                    }
+//                    break;
                 case "exit":
                     this.running = false;
                     break;
@@ -82,9 +82,9 @@ public class GameOverviewScene extends Scene implements Observer {
         System.out.println("Available commands: ");
         System.out.println("(1) Show board");
         System.out.println("(2) Show players' status");
-        if (this.isClientTurn()) {
-            System.out.println("(3) Place a card");
-        }
+//        if (this.isClientTurn()) {
+//            System.out.println("(3) Place a card");
+//        }
         System.out.println("Type 'exit' to go back to the main menu.");
         System.out.print(">>> ");
     }
@@ -109,104 +109,104 @@ public class GameOverviewScene extends Scene implements Observer {
         this.scanner.nextLine();
     }
 
-    private void placeCard() {
-        String username = this.tuiApp.getUsername();
-        VirtualPlayer player = this.game.getPlayerByUsername(username);
-        if (player == null) {
-            System.out.println("Player not found.");
-            return;
-        }
-
-        System.out.println("Your hand: " + player.getHand());
-        int cardId = -1;
-        linesToClear = 1;
-        while (true) {
-            System.out.print("Enter the card ID to place: ");
-            try {
-                cardId = Integer.parseInt(scanner.nextLine().trim());
-                if (player.getHand().contains(cardId)) {
-                    IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-                    System.out.println("You chose the card number " + cardId);
-                    linesToClear = 1;
-                    break;
-                } else {
-                    IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-                    System.out.println("Invalid card ID. The card is not in your hand.");
-                    linesToClear = 2;
-                }
-            } catch (NumberFormatException e) {
-                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-                System.out.println("Invalid input. Please enter a valid card ID.");
-                linesToClear = 2;
-            }
-        }
-
-        int row = -1;
-        linesToClear = 1;
-        while (true) {
-            System.out.print("Enter the row: ");
-            try {
-                row = Integer.parseInt(scanner.nextLine().trim());
-                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-                System.out.println("You chose the row number: " + row);
-                linesToClear = 1;
-                break;
-            } catch (NumberFormatException e) {
-                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-                System.out.println("Invalid input. Please enter a valid row number.");
-                linesToClear = 2;
-            }
-        }
-
-        int col = -1;
-        linesToClear = 1;
-        while (true) {
-            System.out.print("Enter the column: ");
-            try {
-                col = Integer.parseInt(scanner.nextLine().trim());
-                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-                System.out.println("You chose the column number: " + col);
-                linesToClear = 1;
-                break;
-            } catch (NumberFormatException e) {
-                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-                System.out.println("Invalid input. Please enter a valid column number.");
-                linesToClear = 2;
-            }
-        }
-
-        CornerPosition cornerPosition = null;
-        linesToClear = 1;
-        while (true) {
-            System.out.print("Enter the corner position (TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT): ");
-            try {
-                cornerPosition = CornerPosition.valueOf(scanner.nextLine().trim().toUpperCase());
-                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-                System.out.println("You chose the corner: " + cornerPosition.toString());
-                linesToClear = 1;
-                break;
-            } catch (IllegalArgumentException e) {
-                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-                System.out.println("Invalid input. Please enter a valid corner position.");
-                linesToClear = 2;
-            }
-        }
-
-        System.out.print("Flip the card? (yes/no): ");
-        boolean flipped = scanner.nextLine().trim().equalsIgnoreCase("yes");
-
-        try {
-            this.tuiApp.getServer().executeAction(this.tuiApp, new PlaceCard(username, cardId, row, col, cornerPosition, flipped));
-            System.out.println("Card placed successfully.");
-        } catch (NotYourTurnException e) {
-            System.out.println("You must wait for your turn.");
-        } catch (NotInGameException e) {
-            System.out.println("Failed to place the card. Please try again. (NotInGameException)");
-        } catch (RemoteException e) {
-            System.out.println("Failed to place the card. Please try again.");
-            e.printStackTrace();
-        }
-    }
+//    private void placeCard() {
+//        String username = this.tuiApp.getUsername();
+//        VirtualPlayer player = this.game.getPlayerByUsername(username);
+//        if (player == null) {
+//            System.out.println("Player not found.");
+//            return;
+//        }
+//
+//        System.out.println("Your hand: " + player.getHand());
+//        int cardId = -1;
+//        linesToClear = 1;
+//        while (true) {
+//            System.out.print("Enter the card ID to place: ");
+//            try {
+//                cardId = Integer.parseInt(scanner.nextLine().trim());
+//                if (player.getHand().contains(cardId)) {
+//                    IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+//                    System.out.println("You chose the card number " + cardId);
+//                    linesToClear = 1;
+//                    break;
+//                } else {
+//                    IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+//                    System.out.println("Invalid card ID. The card is not in your hand.");
+//                    linesToClear = 2;
+//                }
+//            } catch (NumberFormatException e) {
+//                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+//                System.out.println("Invalid input. Please enter a valid card ID.");
+//                linesToClear = 2;
+//            }
+//        }
+//
+//        int row = -1;
+//        linesToClear = 1;
+//        while (true) {
+//            System.out.print("Enter the row: ");
+//            try {
+//                row = Integer.parseInt(scanner.nextLine().trim());
+//                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+//                System.out.println("You chose the row number: " + row);
+//                linesToClear = 1;
+//                break;
+//            } catch (NumberFormatException e) {
+//                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+//                System.out.println("Invalid input. Please enter a valid row number.");
+//                linesToClear = 2;
+//            }
+//        }
+//
+//        int col = -1;
+//        linesToClear = 1;
+//        while (true) {
+//            System.out.print("Enter the column: ");
+//            try {
+//                col = Integer.parseInt(scanner.nextLine().trim());
+//                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+//                System.out.println("You chose the column number: " + col);
+//                linesToClear = 1;
+//                break;
+//            } catch (NumberFormatException e) {
+//                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+//                System.out.println("Invalid input. Please enter a valid column number.");
+//                linesToClear = 2;
+//            }
+//        }
+//
+//        CornerPosition cornerPosition = null;
+//        linesToClear = 1;
+//        while (true) {
+//            System.out.print("Enter the corner position (TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT): ");
+//            try {
+//                cornerPosition = CornerPosition.valueOf(scanner.nextLine().trim().toUpperCase());
+//                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+//                System.out.println("You chose the corner: " + cornerPosition.toString());
+//                linesToClear = 1;
+//                break;
+//            } catch (IllegalArgumentException e) {
+//                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+//                System.out.println("Invalid input. Please enter a valid corner position.");
+//                linesToClear = 2;
+//            }
+//        }
+//
+//        System.out.print("Flip the card? (yes/no): ");
+//        boolean flipped = scanner.nextLine().trim().equalsIgnoreCase("yes");
+//
+//        try {
+//            this.tuiApp.getServer().executeAction(this.tuiApp, new PlaceCard(username, cardId, row, col, cornerPosition, flipped));
+//            System.out.println("Card placed successfully.");
+//        } catch (NotYourTurnException e) {
+//            System.out.println("You must wait for your turn.");
+//        } catch (NotInGameException e) {
+//            System.out.println("Failed to place the card. Please try again. (NotInGameException)");
+//        } catch (RemoteException e) {
+//            System.out.println("Failed to place the card. Please try again.");
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
     public void update() {

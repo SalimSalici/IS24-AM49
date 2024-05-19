@@ -19,23 +19,28 @@ public class TuiBoard {
     }
 
     public void drawNeighbourhood(int row, int col) {
+        this.boardRenderer.clearBoard();
+
         List<VirtualTile> neighbourhood = new ArrayList<>();
-        this.addToNeighbourhood(neighbourhood, this.virtualBoard.getTile(row, col));
+        VirtualTile centerTile = this.virtualBoard.getTile(row, col);
+        if (centerTile == null) return;
+
+        this.addToNeighbourhood(neighbourhood, centerTile);
 
         int centerDisplayRow = this.boardRenderer.getHeight() / 2;
         int centerDisplayCol = this.boardRenderer.getWidth() / 2;
-        int expandedRow = col % 2 == 0 ? 2 * row : 2 * row + 1;
-        int expandedCol = col;
+        int expandedRow = centerTile.getExpandedRow();
+        int expandedCol = centerTile.getExpandedCol();
         neighbourhood.stream().sorted().forEach((virtualTile) -> {
             int r = virtualTile.getRow();
             int c = virtualTile.getCol();
-            int currExpandedRow = c % 2 == 0 ? 2 * r : 2 * r + 1;
-            int currExpandedCol = c;
+            int currExpandedRow = virtualTile.getExpandedRow();
+            int currExpandedCol = virtualTile.getExpandedCol();
             int rowOffset = currExpandedRow - expandedRow;
             int colOffset = currExpandedCol - expandedCol;
 
             this.boardRenderer.draw(
-                    TuiTextureManager.getInstance().getTexture(this.virtualBoard.getTile(row, col).getCard()),
+                    TuiTextureManager.getTexture(this.virtualBoard.getTile(r, c).getCard()),
                     centerDisplayCol + colOffset * 12,
                     centerDisplayRow + rowOffset * 3
             );

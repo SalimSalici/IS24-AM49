@@ -2,19 +2,30 @@ package it.polimi.ingsw.am49.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
-import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
+import it.polimi.ingsw.am49.model.actions.PlaceCard;
+import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
+import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
+import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.util.Observer;
 import it.polimi.ingsw.am49.view.tui.TuiBoard;
-import it.polimi.ingsw.am49.client.ClientManager;
+import it.polimi.ingsw.am49.util.Pair;
+
+import java.rmi.RemoteException;
+import java.util.stream.IntStream;
 
 /**
  * This class handles the display of the player board scene and the card placement action
  */
-public class ViewBoardScene extends Scene {
+public class ViewBoardScene extends Scene implements Observer {
 
     private final TuiApp tuiApp;
     private boolean running = true;
     private final Server server;
+    private final VirtualGame game;
     private final VirtualBoard virtualBoard;
     private final TuiBoard tuiBoard;
     private boolean canPlaceCard = false;
@@ -26,6 +37,7 @@ public class ViewBoardScene extends Scene {
         super(sceneManager);
         this.tuiApp = tuiApp;
         this.server = this.tuiApp.getServer();
+        this.game = tuiApp.getVirtualGame();
         this.virtualBoard = virtualBoard;
         this.tuiBoard = new TuiBoard(virtualBoard);
         this.canPlaceCard = canPlaceCard; //must be calculated before switching to the scene.
@@ -48,22 +60,20 @@ public class ViewBoardScene extends Scene {
 
             String command = parts[0];
             switch (command) {
-                case "1":   //TODO: move board currently shows no effect on the displayed board
-                    this.moveBoardUp();
+                case "q":
+                    this.moveBoard(RelativePosition.TOP_LEFT);
                     break;
-                case "2":
-                    this.moveBoardDown();
+                case "e":
+                    this.moveBoard(RelativePosition.TOP_RIGHT);
                     break;
-                case "3":
-                    this.moveBoardRight();
+                case "a":
+                    this.moveBoard(RelativePosition.BOTTOM_LEFT);
                     break;
-                case "4":
-                    this.moveBoardLeft();
+                case "d":
+                    this.moveBoard(RelativePosition.BOTTOM_RIGHT);
                     break;
-                case "5":   //TODO: implement place card, currently not working
-                    if(this.canPlaceCard){
-                        placeCard(Integer.parseInt(parts[1]));
-                    }
+                case "p":
+                    this.placeCard(parts);
                 case "exit":
                     this.sceneManager.setScene( new GameOverviewScene( this.sceneManager, this.tuiApp));
                     this.running = false;
@@ -94,37 +104,96 @@ public class ViewBoardScene extends Scene {
      */
     private void promptCommand() {
         System.out.println("Available commands: ");
-        System.out.println("(1) Move Up");
-        System.out.println("(2) Move Down");
-        System.out.println("(3) Move Right");
-        System.out.println("(4) Move Left");
+        System.out.println("(Q) Move Top Left");
+        System.out.println("(E) Move Top Right");
+        System.out.println("(A) Move Bottom Left");
+        System.out.println("(D) Move Bottom Right");
         if (this.canPlaceCard) {
-            System.out.println("(5) Place a card");
+            System.out.println("(P) Place a card");
         }
         System.out.println("Type 'exit' to go back to the Game Overview.");
         System.out.print(">>> ");
     }
 
-    private void placeCard(int id) {}
+    private void placeCard(String[] args) {
+        String username = this.tuiApp.getUsername();
+        VirtualPlayer player = this.game.getPlayerByUsername(username);
+        if (player == null) {
+            System.out.println("Player not found.");
+            return;
+        }
 
-    private void moveBoardUp() {
-        row--;
+        System.out.println("Your hand: " + player.getHand());
+        int cardId = -1;
+        linesToClear = 1;
+        while (true) {
+            System.out.print("Enter the card ID to place: ");
+            try {
+                cardId = Integer.parseInt(scanner.nextLine().trim());
+                if (player.getHand().contains(cardId)) {
+                    IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                    System.out.println("You chose the card number " + cardId);
+                    linesToClear = 1;
+                    break;
+                } else {
+                    IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                    System.out.println("Invalid card ID. The card is not in your hand.");
+                    linesToClear = 2;
+                }
+            } catch (NumberFormatException e) {
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                System.out.println("Invalid input. Please enter a valid card ID.");
+                linesToClear = 2;
+            }
+        }
+
+        CornerPosition cornerPosition = null;
+        linesToClear = 1;
+        while (true) {
+            System.out.print("Enter the corner position (TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT): ");
+            try {
+                cornerPosition = CornerPosition.valueOf(scanner.nextLine().trim().toUpperCase());
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                System.out.println("You chose the corner: " + cornerPosition.toString());
+                linesToClear = 1;
+                break;
+            } catch (IllegalArgumentException e) {
+                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
+                System.out.println("Invalid input. Please enter a valid corner position.");
+                linesToClear = 2;
+            }
+        }
+
+        System.out.print("Flip the card? (yes/no): ");
+        boolean flipped = scanner.nextLine().trim().startsWith("y");
+
+        try {
+            this.tuiApp.getServer().executeAction(this.tuiApp, new PlaceCard(username, cardId, this.row, this.col, cornerPosition, flipped));
+            System.out.println("Card placed successfully.");
+        } catch (NotYourTurnException e) {
+            System.out.println("You must wait for your turn.");
+        } catch (NotInGameException e) {
+            System.out.println("Failed to place the card. Please try again. (NotInGameException)");
+        } catch (RemoteException e) {
+            System.out.println("Failed to place the card. Please try again.");
+            e.printStackTrace();
+        }
+
+        this.printBoard();
+    }
+
+    private void moveBoard(RelativePosition relativePosition) {
+        Pair<Integer, Integer> newCoords = VirtualBoard.getCoords(relativePosition, this.row, this.col);
+        if (this.virtualBoard.getTile(newCoords.first, newCoords.second) != null) {
+            this.row = newCoords.first;
+            this.col = newCoords.second;
+        }
         printBoard();
     }
 
-    private void moveBoardDown() {
-        row++;
-        printBoard();
+    @Override
+    public void update() {
+        this.canPlaceCard = this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername());
+        this.printBoard();
     }
-
-    private void moveBoardRight() {
-        col++;
-        printBoard();
-    }
-
-    private void moveBoardLeft() {
-        col--;
-        printBoard();
-    }
-
 }

@@ -33,7 +33,7 @@ public class VirtualBoard extends Observable {
     }
 
     // TODO: instead of code duplication, consider making this method static in PlayerBoard.java
-    public Pair<Integer, Integer> getCoords(RelativePosition relativePosition, int row, int col) {
+    public static Pair<Integer, Integer> getCoords(RelativePosition relativePosition, int row, int col) {
         switch (relativePosition) {
             case TOP -> {
                 return new Pair<>(row - 1, col);

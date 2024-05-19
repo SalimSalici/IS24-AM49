@@ -12,11 +12,11 @@ public class TuiTextureManager {
     /**
      * Rapresents the texture of a card where every character has the correct color
      */
-    private static ColoredChar[][] buffer;
+//    private static ColoredChar[][] buffer;
     private static TuiTextureManager instance;
 
-    public TuiTextureManager() {
-        buffer = new ColoredChar[5][15];
+    private TuiTextureManager() {
+//        buffer = new ColoredChar[5][15];
     }
 
     public static TuiTextureManager getInstance() {
@@ -26,6 +26,8 @@ public class TuiTextureManager {
     }
 
     public static ColoredChar[][] getTexture(VirtualCard card) {
+
+        ColoredChar[][] buffer = new ColoredChar[5][15];
 
         String fileName = "/it/polimi/ingsw/am49/textures/tui/" + card.id() + ".txt";
 

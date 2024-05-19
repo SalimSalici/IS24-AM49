@@ -10,17 +10,17 @@ public class Main {
         VirtualCard starterCard = new VirtualCard(86, false);
         VirtualBoard vb = new VirtualBoard();
 
-        vb.placeCard(new VirtualCard(1, false), 25, 25);
-        vb.placeCard(new VirtualCard(1, false), 25, 26);
-        vb.placeCard(new VirtualCard(1, false), 25, 24);
-        vb.placeCard(new VirtualCard(1, false), 26, 24);
+        vb.placeCard(new VirtualCard(86, false), 25, 25);
+        vb.placeCard(new VirtualCard(43, false), 25, 26);
+        vb.placeCard(new VirtualCard(65, false), 25, 24);
+        vb.placeCard(new VirtualCard(32, false), 26, 24);
         vb.placeCard(new VirtualCard(1, false), 26, 26);
         vb.placeCard(new VirtualCard(1, false), 25, 27);
         vb.placeCard(new VirtualCard(1, false), 26, 27);
         vb.placeCard(new VirtualCard(1, false), 27, 28);
 
         TuiBoard tuiBoard = new TuiBoard(vb);
-        tuiBoard.drawNeighbourhood(25, 25);
+        tuiBoard.drawNeighbourhood(4, 4);
         tuiBoard.printBoard();
     }
 

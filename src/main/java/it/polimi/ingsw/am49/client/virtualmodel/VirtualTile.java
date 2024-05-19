@@ -34,6 +34,14 @@ public class VirtualTile implements Comparable<VirtualTile> {
         return col;
     }
 
+    public int getExpandedRow() {
+        return col % 2 == 0 ? 2 * row : 2 * row + 1;
+    }
+
+    public int getExpandedCol() {
+        return col;
+    }
+
     public Pair<Integer, Integer> getCoords(RelativePosition relativePosition) {
         return this.board.getCoords(relativePosition, this.row, this.col);
     }
