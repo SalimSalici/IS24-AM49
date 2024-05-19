@@ -30,6 +30,10 @@ public class GameDeck<T extends Card> implements Serializable {
         return deck.pop();
     }
 
+    public T peek(){
+        return deck.peek();
+    }
+
     /**
      * @return the number of cards still present in the deck.
      */

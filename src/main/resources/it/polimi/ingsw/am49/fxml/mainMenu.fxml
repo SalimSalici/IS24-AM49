@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: E6E0A8;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.am49.view.gui.controllers.MainMenuController">
+   <top>
+      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+         <image>
+            <Image url="@../images/elements/codex_naturalis_logo_1.png" />
+         </image>
+         <BorderPane.margin>
+            <Insets top="20.0" />
+         </BorderPane.margin>
+      </ImageView>
+   </top>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="usernameLabel" maxWidth="1.7976931348623157E308" prefHeight="18.0" text="Username: Nico" />
+            <ListView fx:id="roomsListview" prefHeight="200.0" prefWidth="200.0">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </ListView>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+               <children>
+                  <Button fx:id="joinroomButton" mnemonicParsing="false" text="Join Room" />
+                  <Button fx:id="createroomButton" mnemonicParsing="false" text="Create Room" />
+                  <Button fx:id="usernameButton" mnemonicParsing="false" text="Change username" />
+                  <Button fx:id="refreshButton" mnemonicParsing="false" text="Refresh" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets left="40.0" right="40.0" top="20.0" />
+         </padding>
+      </VBox>
+   </center>
+</BorderPane>

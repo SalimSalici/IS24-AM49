@@ -110,6 +110,20 @@ public class ServerApp implements Server {
     }
 
     @Override
+    public RoomInfo readyDown(Client client) throws RemoteException {
+        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+        Room room = this.clientsToRooms.get(clientHandler);
+        try{
+            room.clientNoMoreReady(clientHandler);
+        }catch (Exception e) {
+            //TODO: create appropriate exeption
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return room.getRoomInfo();
+    }
+
+    @Override
     public boolean leaveRoom(Client client) throws RemoteException {
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
         Room room = this.clientsToRooms.get(clientHandler);

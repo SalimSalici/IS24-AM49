@@ -191,6 +191,25 @@ public class ServerSocketHandler implements Server {
             default -> throw new InvalidReturnTypeException("Invalid return value type for Server::joinRoom method", returnValue);
         };
     }
+    @Override
+    public RoomInfo readyDown(Client client) throws RemoteException {
+        int uniqueMessageId = this.getUniqueId();
+        try {
+            this.objectOutputStream.writeObject(
+                    new ReadyDownMTS(uniqueMessageId)
+            );
+        } catch (IOException e) {
+            throw new RemoteException("SOCKETS: Could not send message to server through sockets (Server::joinRoom)");
+        }
+        Object returnValue = this.waitForReturnValue(uniqueMessageId);
+
+        return switch (returnValue){
+            case RoomInfo roomInfo -> roomInfo;
+            case IllegalArgumentException e -> throw e;
+            case Exception e -> throw new RemoteException(e.getMessage());
+            default -> throw new InvalidReturnTypeException("Invalid return value type for Server::readyDown method", returnValue);
+        };
+    }
 
     @Override
     public boolean leaveRoom(Client client) throws RemoteException {

@@ -4,6 +4,7 @@ import it.polimi.ingsw.am49.controller.gameupdates.*;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.util.Observable;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,11 @@ public class VirtualGame extends Observable {
     private int turn;
     private GameStateType gameState;
     private VirtualPlayer currentPlayer;
+    private List<Integer> commonObjectives;
+    private Resource deckTopResource;
+    private Resource deckTopGold;
+    private List<Integer> revealedResourcesIds;
+    private List<Integer> revealedGoldsIds;
 
     private VirtualGame() {
         this.players = new ArrayList<>();
@@ -45,6 +51,7 @@ public class VirtualGame extends Observable {
             case CARD_PLACED_UPDATE -> this.handleCardPlacedUpdate((CardPlacedUpdate) gameUpdate);
             case HAND_UPDATE -> this.handleHandUpdate((HandUpdate) gameUpdate);
             case HIDDEN_HAND_UPDATE -> this.handleHiddenHandUpdate((HiddenHandUpdate) gameUpdate);
+            case GAME_STARTED_UPDATE -> this.handleGameStartedUpdate((GameStartedUpdate) gameUpdate);
         }
     }
 
@@ -79,19 +86,35 @@ public class VirtualGame extends Observable {
         player.notifyObservers();
     }
 
+    private void handleGameStartedUpdate(GameStartedUpdate update){
+        this.commonObjectives = update.commonObjectivesIds();
+        this.deckTopResource = update.deckTopResource();
+        this.deckTopGold = update.deckTopGold();
+        this.revealedResourcesIds = update.revealedResourcesIds();
+        this.revealedGoldsIds = update.revealedGoldsIds();
+    }
+
     public int getRound() {
         return round;
     }
-
     public int getTurn() {
         return turn;
     }
-
     public GameStateType getGameState() {
         return gameState;
     }
-
-    public VirtualPlayer getCurrentPlayer() {
-        return currentPlayer;
+    public VirtualPlayer getCurrentPlayer() {return currentPlayer;}
+    public List<Integer> getCommonObjectives() {return commonObjectives;}
+    public Resource getDeckTopResource() {
+        return deckTopResource;
+    }
+    public Resource getDeckTopGold() {
+        return deckTopGold;
+    }
+    public List<Integer> getRevealedResourcesIds() {
+        return revealedResourcesIds;
+    }
+    public List<Integer> getRevealedGoldsIds() {
+        return revealedGoldsIds;
     }
 }

@@ -92,6 +92,24 @@ public class SocketClientHandler implements Client {
                 }
                 this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
             }
+            case ReadyDownMTS params -> {
+                Object returnValue;
+                try{
+                    returnValue = this.server.readyDown(this);
+                }catch (RemoteException e){
+                    returnValue = e;
+                }
+                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+            }
+            case LeaveRoomMTS params -> {
+                Object returnValue;
+                try{
+                    returnValue = this.server.leaveRoom(this);
+                } catch (RemoteException e) {
+                    returnValue = e;
+                }
+                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+            }
             case ExecuteActionMTS params -> {
                 Object returnValue = null;
                 try {

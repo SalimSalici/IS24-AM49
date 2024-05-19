@@ -1,8 +1,10 @@
 package it.polimi.ingsw.am49.controller.gameupdates;
 
 import it.polimi.ingsw.am49.model.enumerations.Color;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Provides information about the game that just started, including starter card for the player receiving this update
@@ -12,7 +14,7 @@ import java.util.LinkedHashMap;
  * @param starterCardId starter card received by the player with relative username.
  * @param playersToColors provides info about player ordering and player-color association.
  */
-public record GameStartedUpdate(String username, int starterCardId, LinkedHashMap<String, Color> playersToColors) implements GameUpdate {
+public record GameStartedUpdate(String username, int starterCardId, LinkedHashMap<String, Color> playersToColors, List<Integer> commonObjectivesIds, Resource deckTopResource, Resource deckTopGold, List<Integer> revealedResourcesIds, List<Integer> revealedGoldsIds) implements GameUpdate {
     @Override
     public GameUpdateType getType() {
         return GameUpdateType.GAME_STARTED_UPDATE;

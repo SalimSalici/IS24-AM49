@@ -17,6 +17,7 @@ public class VirtualPlayer extends Observable {
     private List<Resource> hiddenHand;
     private Map<Symbol, Integer> activeSymbols;
     private final Color color;
+    private int personalObjectiveId;
 
     public VirtualPlayer(String username, Color color) {
         this.username = username;
@@ -58,6 +59,8 @@ public class VirtualPlayer extends Observable {
         return hand;
     }
 
+    public int getPersonalObjectiveId() {return personalObjectiveId;}
+
     public void setHand(List<Integer> hand) {
         this.hand = hand;
     }
@@ -69,4 +72,6 @@ public class VirtualPlayer extends Observable {
     public void setHiddenHand(List<Resource> hiddenHand) {
         this.hiddenHand = hiddenHand;
     }
+
+    public void setPersonalObjectiveId(int personalObjectiveId) {this.personalObjectiveId = personalObjectiveId;}
 }
