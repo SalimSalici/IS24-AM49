@@ -4,19 +4,17 @@ import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.Game;
+import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
-import it.polimi.ingsw.am49.model.events.CardPlacedEvent;
-import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
-import it.polimi.ingsw.am49.model.events.HandEvent;
-import it.polimi.ingsw.am49.model.events.StarterCardAssignedEvent;
+import it.polimi.ingsw.am49.model.events.*;
 import it.polimi.ingsw.am49.model.players.Player;
-import it.polimi.ingsw.am49.model.events.PlayersOrderEvent;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ChooseStarterSideState extends GameState {
@@ -36,6 +34,8 @@ public class ChooseStarterSideState extends GameState {
      */
     private final int starterHandGolds = 1;
 
+    private final GameDeck<ObjectiveCard> objectiveDeck;
+
     /**
      * Constructor for ChoseStarterSideState.
      * @param game istance of the {@link Game} class.
@@ -43,8 +43,8 @@ public class ChooseStarterSideState extends GameState {
     public ChooseStarterSideState(Game game) {
         super(GameStateType.CHOOSE_STARTER_SIDE, game, Set.of(GameActionType.CHOOSE_STARTER_SIDE));
         this.playersChoosing = new HashSet<>(game.getPlayers());
-        this.notYourTurnMessage =
-                "You have already choosen the side of your starter card. You must wait for the other players.";
+        this.notYourTurnMessage = "You have already choosen the side of your starter card. You must wait for the other players.";
+        this.objectiveDeck = DeckLoader.getInstance().getNewObjectiveDeck();
     }
 
     /**
@@ -57,17 +57,20 @@ public class ChooseStarterSideState extends GameState {
         this.game.triggerEvent(new PlayersOrderEvent(this.game.getPlayers()));
         // TODO: (maybe) set up drawable decks and revealed drawable cards here
 
+        // Draw common objectives
+        ObjectiveCard[] commonObjectives = this.game.getCommonObjectives();
+        for (int i = 0; i < commonObjectives.length; i++)
+            commonObjectives[i] = objectiveDeck.draw();
+        this.game.triggerEvent(new CommonObjectivesDrawnEvent(List.of(commonObjectives)));
+
         GameDeck<StarterCard> starterDeck = DeckLoader.getInstance().getNewStarterDeck();
-//        Map<Player, StarterCard> playersToStartingCard = new HashMap<>();
 
         for (Player p : this.game.getPlayers()) {
             StarterCard card = starterDeck.draw();
             p.setStarterCard(card);
             this.game.triggerEvent(new StarterCardAssignedEvent(p, card));
-//            playersToStartingCard.put(p, card);
         }
 
-//        this.game.triggerEvent(new StarterCardAssignedEvent(playersToStartingCard));
         this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound(), this.game.getCurrentPlayer()));
     }
 
@@ -88,7 +91,7 @@ public class ChooseStarterSideState extends GameState {
         this.playersChoosing.remove(player);
         if (this.playersChoosing.isEmpty()) {
             this.assignInitialHand();
-            this.goToNextState(new ChooseObjectiveState(this.game));
+            this.goToNextState(new ChooseObjectiveState(this.game, this.objectiveDeck));
         }
     }
 

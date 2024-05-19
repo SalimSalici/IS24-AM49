@@ -34,15 +34,17 @@ public class ChooseObjectiveState extends GameState {
      */
     private final Map<Player, List<ObjectiveCard>> playersToObjectives;
 
+    private final GameDeck<ObjectiveCard> objectiveDeck;
+
     /**
      * Constructs a new ChooseObjectiveState for a given game.
      * @param game the game this state is associated with.
      */
-    protected ChooseObjectiveState(Game game) {
+    protected ChooseObjectiveState(Game game, GameDeck<ObjectiveCard> objectiveDeck) {
         super(GameStateType.CHOOSE_OBJECTIVE, game, Set.of(GameActionType.CHOOSE_OBJECTIVE));
         this.playersToObjectives = new HashMap<>();
-        this.notYourTurnMessage =
-                "You have already choosen your personal objective. You must wait for the other players.";
+        this.notYourTurnMessage = "You have already choosen your personal objective. You must wait for the other players.";
+        this.objectiveDeck = objectiveDeck;
     }
 
     /**
@@ -50,21 +52,12 @@ public class ChooseObjectiveState extends GameState {
      */
     @Override
     public void setUp() {
-        GameDeck<ObjectiveCard> objectiveDeck = DeckLoader.getInstance().getNewObjectiveDeck();
-
-        // Draw common objectives
-
-        ObjectiveCard[] commonObjectives = this.game.getCommonObjectives();
-        for (int i = 0; i < commonObjectives.length; i++)
-            commonObjectives[i] = objectiveDeck.draw();
-        this.game.triggerEvent(new CommonObjectivesDrawnEvent(List.of(commonObjectives)));
 
         // Draw objectives for players to choose from
-
         for (Player p : this.game.getPlayers()) {
             List<ObjectiveCard> drawnObjectives = new LinkedList<>();
             for (int i = 0; i < 2; i++)
-                drawnObjectives.add(objectiveDeck.draw());
+                drawnObjectives.add(this.objectiveDeck.draw());
             this.playersToObjectives.put(p, drawnObjectives);
             this.game.triggerEvent(new ChoosableObjectivesEvent(p, drawnObjectives));
         }
