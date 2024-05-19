@@ -47,6 +47,8 @@ public interface Server extends Remote {
 
     public RoomInfo readyUp(Client client, Color color) throws RemoteException;
 
+    public RoomInfo readyDown(Client client) throws RemoteException;
+
     /**
      * This method is used by clients to leave the room they are in
      * @param client the client leaving the room

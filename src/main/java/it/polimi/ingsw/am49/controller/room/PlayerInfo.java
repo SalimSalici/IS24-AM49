@@ -34,6 +34,9 @@ public class PlayerInfo {
     public void setColor(Color color) {
         this.color = color;
     }
+    public void setNullColor(){
+        this.color = null;
+    }
 
     public ClientHandler getClient() {
         return client;

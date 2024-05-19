@@ -109,6 +109,20 @@ public class Room {
         }
     }
 
+    public void clientNoMoreReady(ClientHandler client) throws Exception{
+        String username = this.getUsernameByClient(client);
+        if (username == null)
+            throw new Exception("Client is not in the room.");
+        this.usernamesToPlayers.get(username).setNullColor();
+        this.usernamesToPlayers.get(username).setReadyToPlay(false);
+
+        this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
+                .filter(c -> !c.equals(client))
+                .forEach(c -> {
+                    c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is not ready.");
+                });
+    }
+
     private boolean allPlayersReady() {
         for (PlayerInfo pInfo : this.usernamesToPlayers.values())
             if (!pInfo.isReadyToPlay()) return false;

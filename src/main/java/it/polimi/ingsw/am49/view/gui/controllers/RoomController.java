@@ -9,6 +9,7 @@ import it.polimi.ingsw.am49.scenes.InvalidSceneException;
 import it.polimi.ingsw.am49.scenes.StarterCardScene;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -71,6 +72,10 @@ public class RoomController extends GuiController {
             this.buttonColor = null;
             this.setColor();
         });
+
+        this.leaveButton.setOnAction(e -> {
+            this.leaveRoom();
+        });
     }
 
     @Override
@@ -88,11 +93,26 @@ public class RoomController extends GuiController {
         }
     }
 
+    private void leaveRoom(){
+        this.buttonColor = null;
+        this.isUserReady = false;
+        try{
+            roomInfo = this.server.readyDown(this.app);
+            this.server.leaveRoom(this.app);
+            this.manager.changeScene(SceneTitle.MAIN_MENU);
+        } catch (RemoteException e) {
+            //TODO: handle exeption
+            throw new RuntimeException(e);
+        }
+
+    }
+
     private void setColor(){
         try {
             // se il colore è not set
             if(buttonColor == null){
-                //TODO: GESTISCI COLOR NOT SET
+                this.roomInfo = this.server.readyDown(this.app);
+                this.isUserReady = false;
             }
             else{
                 this.roomInfo = this.server.readyUp(this.app, buttonColor);
@@ -114,22 +134,24 @@ public class RoomController extends GuiController {
         this.playersLabel.setText("Players: " + this.roomInfo.playersToColors() + "/" + this.roomInfo.maxPlayers());
     }
 
-    private void drawPlayersList(){
-        playersListview.getItems().clear();
+    private void drawPlayersList() {
+        Platform.runLater(() -> {
+            playersListview.getItems().clear();
 
-        // populates playersListView
-        playersListview.getItems().addAll(
-            this.roomInfo.playersToColors()
-                .entrySet()
-                .stream()
-                .filter(entry -> !entry.getKey().equals(this.app.getUsername()))
-                .map(
-                        entry -> entry.getKey() + " " + (entry.getValue() == null  ? "not ready" : entry.getValue().toString().toLowerCase())
-                )
-                .toList()
-        );
+            // populates playersListView
+            playersListview.getItems().addAll(
+                    this.roomInfo.playersToColors()
+                            .entrySet()
+                            .stream()
+                            .filter(entry -> !entry.getKey().equals(this.app.getUsername()))
+                            .map(
+                                    entry -> entry.getKey() + " " + (entry.getValue() == null ? "not ready" : entry.getValue().toString().toLowerCase())
+                            )
+                            .toList()
+            );
 
-        System.out.println("Players List Updated: " + playersListview.getItems()); // Debug
+            System.out.println("Players List Updated: " + playersListview.getItems()); // Debug
+        });
     }
 }
 
