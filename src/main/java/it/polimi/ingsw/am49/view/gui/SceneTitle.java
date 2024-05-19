@@ -4,14 +4,14 @@ package it.polimi.ingsw.am49.view.gui;
 public enum SceneTitle {
     WELCOME,
     MAIN_MENU,
+    CHANGE_USERNAME,
+    CREATE_ROOM,
     ROOM,
     STARTER_CARD,
     OBJECTIVE_CARDS,
     WAITING,
-    CREATE_ROOM,
-    CHANGE_USERNAME;
-//    OVERVIEW,
-//    CHOOSE_OBJECTIVE,
+    OVERVIEW;
+
 //    GAME_OVER;
 
     public String getFileName() {
@@ -26,6 +26,7 @@ public enum SceneTitle {
             case OBJECTIVE_CARDS -> fileName = "objectiveCards.fxml";
             case CHANGE_USERNAME -> fileName = "changeUsername.fxml";
             case CREATE_ROOM -> fileName = "createRoom.fxml";
+            case OVERVIEW -> fileName = "overview.fxml";
         }
 
         return fileName;
