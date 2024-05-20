@@ -1,9 +1,12 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.gameupdates.DrawAreaUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.model.cards.Card;
 import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
 import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
 
 import java.util.List;
 
@@ -18,6 +21,8 @@ import java.util.List;
 public record DrawAreaEvent(
         int remainingResources,
         int remainingGolds,
+        Resource deckTopResource,
+        Resource deckTopGold,
         List<ResourceCard> revealedResources,
         List<GoldCard> revealedGolds
 ) implements GameEvent {
@@ -28,6 +33,13 @@ public record DrawAreaEvent(
 
     @Override
     public GameUpdate toGameUpdate() {
-        return null;
+        return new DrawAreaUpdate(
+                remainingResources,
+                remainingGolds,
+                deckTopResource,
+                deckTopGold,
+                revealedResources.stream().map(Card::getId).toList(),
+                revealedGolds.stream().map(Card::getId).toList()
+        );
     }
 }

@@ -2,7 +2,7 @@ package it.polimi.ingsw.am49.model.states;
 
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.actions.GameActionType;
-import it.polimi.ingsw.am49.model.actions.PlaceCard;
+import it.polimi.ingsw.am49.model.actions.PlaceCardAction;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
@@ -39,7 +39,7 @@ public class PlaceCardState extends GameState {
     @Override
     public void execute(GameAction action) throws Exception {
         this.checkActionValidity(action);
-        PlaceCard placeCardAction = (PlaceCard) action;
+        PlaceCardAction placeCardAction = (PlaceCardAction) action;
 
         PlaceableCard card = this.currentPlayer.getHandCardById(placeCardAction.getCardId());
         if (card == null)

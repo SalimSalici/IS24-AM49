@@ -2,7 +2,7 @@ package it.polimi.ingsw.am49.model.actions;
 
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 
-public class PlaceCard extends GameAction {
+public class PlaceCardAction extends GameAction {
 
     private final int cardId;
     private final int parentRow;
@@ -10,7 +10,7 @@ public class PlaceCard extends GameAction {
     private final CornerPosition cornerPosition;
     private final boolean flipped;
 
-    public PlaceCard(String username, int cardId, int parentRow, int parentCol, CornerPosition cornerPosition, boolean flipped) {
+    public PlaceCardAction(String username, int cardId, int parentRow, int parentCol, CornerPosition cornerPosition, boolean flipped) {
         super(GameActionType.PLACE_CARD, username);
         this.cardId = cardId;
         this.parentRow = parentRow;

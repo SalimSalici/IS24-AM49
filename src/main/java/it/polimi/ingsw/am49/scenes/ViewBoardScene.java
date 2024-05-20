@@ -4,7 +4,7 @@ import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
-import it.polimi.ingsw.am49.model.actions.PlaceCard;
+import it.polimi.ingsw.am49.model.actions.PlaceCardAction;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 import it.polimi.ingsw.am49.server.Server;
@@ -37,6 +37,7 @@ public class ViewBoardScene extends Scene implements Observer {
         this.server = this.tuiApp.getServer();
         this.game = tuiApp.getVirtualGame();
         this.virtualBoard = virtualBoard;
+        this.virtualBoard.addObserver(this);
         this.tuiBoard = new TuiBoard(virtualBoard);
         this.row = 25;
         this.col = 25;
@@ -47,7 +48,7 @@ public class ViewBoardScene extends Scene implements Observer {
         this.printBoard();
         while (this.running) {
             this.promptCommand();
-            //linesToClear = 2;
+            linesToClear = 2;
             String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
             if (parts.length == 0) {
                 System.out.println("Invalid command, please try again.");
@@ -57,27 +58,24 @@ public class ViewBoardScene extends Scene implements Observer {
 
             String command = parts[0];
             switch (command) {
-                case "q":
-                    this.moveBoard(RelativePosition.TOP_LEFT);
-                    break;
-                case "e":
-                    this.moveBoard(RelativePosition.TOP_RIGHT);
-                    break;
-                case "a":
-                    this.moveBoard(RelativePosition.BOTTOM_LEFT);
-                    break;
-                case "d":
-                    this.moveBoard(RelativePosition.BOTTOM_RIGHT);
-                    break;
-                case "p":
-                    this.placeCard(parts);
-                case "exit":
-                    this.sceneManager.setScene( new GameOverviewScene( this.sceneManager, this.tuiApp));
-                    this.running = false;
-                    break;
-                default:
+                case "q" -> this.moveBoard(RelativePosition.TOP_LEFT);
+                case "e" -> this.moveBoard(RelativePosition.TOP_RIGHT);
+                case "a" -> this.moveBoard(RelativePosition.BOTTOM_LEFT);
+                case "d" -> this.moveBoard(RelativePosition.BOTTOM_RIGHT);
+                case "p" -> {
+                    if (this.isClientTurn())
+                        this.placeCard(parts);
+                    else
+                        System.out.println("Invalid command, please try again.");
+                }
+                case "exit" -> {
+                    this.sceneManager.setScene(new GameOverviewScene(this.sceneManager, this.tuiApp));
+                    this.stop();
+                }
+                default -> {
                     System.out.println("Invalid command, please try again.");
                     linesToClear = 3;
+                }
             }
         }
     }
@@ -116,7 +114,7 @@ public class ViewBoardScene extends Scene implements Observer {
         String username = this.tuiApp.getUsername();
         VirtualPlayer player = this.game.getPlayerByUsername(username);
         if (player == null) {
-            System.out.println("Player not found.");
+            System.out.println("Not your turn.");
             return;
         }
 
@@ -165,18 +163,16 @@ public class ViewBoardScene extends Scene implements Observer {
         boolean flipped = scanner.nextLine().trim().startsWith("y");
 
         try {
-            this.server.executeAction(this.tuiApp, new PlaceCard(username, cardId, this.row, this.col, cornerPosition, flipped));
+            this.server.executeAction(this.tuiApp, new PlaceCardAction(username, cardId, this.row, this.col, cornerPosition, flipped));
             System.out.println("Card placed successfully.");
         } catch (NotYourTurnException e) {
             System.out.println("You must wait for your turn.");
         } catch (NotInGameException e) {
-            System.out.println("Failed to place the card. Please try again. (NotInGameException)");
+            System.out.println("Failed to place the card. (NotInGameException)");
         } catch (RemoteException e) {
             System.out.println("Failed to place the card. Please try again.");
             e.printStackTrace();
         }
-
-        this.printBoard();
     }
 
     private void moveBoard(RelativePosition relativePosition) {
@@ -191,9 +187,16 @@ public class ViewBoardScene extends Scene implements Observer {
     @Override
     public void update() {
         this.printBoard();
+        this.promptCommand();
+        this.linesToClear = 3;
     }
 
     private boolean isClientTurn() {
         return this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername());
+    }
+
+    private void stop() {
+        this.running = false;
+        this.game.deleteObserver(this);
     }
 }

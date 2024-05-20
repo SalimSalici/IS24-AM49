@@ -13,7 +13,9 @@ import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.DrawAreaEvent;
 import it.polimi.ingsw.am49.model.events.HandEvent;
 import it.polimi.ingsw.am49.model.players.Player;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -56,23 +58,47 @@ public class DrawCardState extends GameState {
         DrawPosition drawPosition = drawCardAction.getDrawPosition();
         PlaceableCard drawnCard = null;
         switch (drawPosition) {
-            case RESOURCE_DECK: {
+            case RESOURCE_DECK -> {
                 drawnCard = this.resourceGameDeck.draw();
                 this.currentPlayer.drawCard(drawnCard);
-                break;
             }
-            case GOLD_DECK: {
+            case GOLD_DECK -> {
                 drawnCard = this.goldGameDeck.draw();
                 this.currentPlayer.drawCard(drawnCard);
-                break;
             }
-            // TODO: handle draw from revealed cards
+            case REVEALED -> {
+                boolean found = false;
+                for (int i = 0; i < this.revealedResources.length && !found; i++) {
+                    ResourceCard current = this.revealedResources[i];
+                    if (current.getId() == drawCardAction.getIdOfRevealedDrawn()) {
+                        this.currentPlayer.drawCard(current);
+                        this.revealedResources[i] = this.resourceGameDeck.draw();
+                        found = true;
+                    }
+                }
+                for (int i = 0; i < this.revealedResources.length && !found; i++) {
+                    ResourceCard current = this.revealedResources[i];
+                    if (current.getId() == drawCardAction.getIdOfRevealedDrawn()) {
+                        this.currentPlayer.drawCard(current);
+                        this.revealedResources[i] = this.resourceGameDeck.draw();
+                        found = true;
+                    }
+                }
+                if (!found)
+                    throw new InvalidActionException(
+                            "Could not get revealed card with id: " + drawCardAction.getIdOfRevealedDrawn()
+                            + "\n Available revealed resources: " + Arrays.stream(this.revealedResources).toList()
+                            + "\n Available revealed golds: " + Arrays.stream(this.revealedGolds).toList()
+                    );
+            }
         }
 
         this.game.triggerEvent(
                 new DrawAreaEvent(
                         this.resourceGameDeck.size(),
                         this.goldGameDeck.size(),
+                        this.resourceGameDeck.peek().getResource(),
+                        this.goldGameDeck.peek().getResource(),
                         List.of(this.game.getRevealedResources()),
                         List.of(this.game.getRevealedGolds())
                 )

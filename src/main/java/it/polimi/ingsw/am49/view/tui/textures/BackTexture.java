@@ -7,7 +7,7 @@ public enum BackTexture {
     RG("/it/polimi/ingsw/am49/textures/tui/resource_back_green.txt"),
     RB("/it/polimi/ingsw/am49/textures/tui/resource_back_blue.txt"),
     RR("/it/polimi/ingsw/am49/textures/tui/resource_back_red.txt"),
-    RP("/it/polimi/ingsw/am49/textures/tui/resuouce_back_purple.txt"),
+    RP("/it/polimi/ingsw/am49/textures/tui/resource_back_purple.txt"),
     GB("/it/polimi/ingsw/am49/textures/tui/gold_back_blue.txt"),
     GG("/it/polimi/ingsw/am49/textures/tui/gold_back_green.txt"),
     GR("/it/polimi/ingsw/am49/textures/tui/gold_back_red.txt"),

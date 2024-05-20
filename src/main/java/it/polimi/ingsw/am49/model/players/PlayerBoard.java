@@ -145,10 +145,10 @@ public class PlayerBoard implements Serializable {
         BoardTile bl = this.board[blCoords.first][blCoords.second];
 
         if (tr == null && tl == null && br == null && bl == null) return false;
-        if (tr != null && tr.getCard().getBl().equals(Symbol.FORBIDDEN)) return false;
-        if (tl != null && tl.getCard().getBr().equals(Symbol.FORBIDDEN)) return false;
-        if (br != null && br.getCard().getTl().equals(Symbol.FORBIDDEN)) return false;
-        if (bl != null && bl.getCard().getTr().equals(Symbol.FORBIDDEN)) return false;
+        if (tr != null && tr.getCard().getActiveBl().equals(Symbol.FORBIDDEN)) return false;
+        if (tl != null && tl.getCard().getActiveBr().equals(Symbol.FORBIDDEN)) return false;
+        if (br != null && br.getCard().getActiveTl().equals(Symbol.FORBIDDEN)) return false;
+        if (bl != null && bl.getCard().getActiveTr().equals(Symbol.FORBIDDEN)) return false;
 
         return true;
     }

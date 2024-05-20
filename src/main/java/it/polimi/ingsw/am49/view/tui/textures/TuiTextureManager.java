@@ -46,6 +46,8 @@ public class TuiTextureManager {
             }
         }
 
+        System.out.println("FILENAME: " + fileName);
+
         //reads the .txt texture file and creates the texture in the buffer
         try (InputStream is = TuiTextureManager.class.getResourceAsStream(fileName);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {

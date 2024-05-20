@@ -5,7 +5,6 @@ import it.polimi.ingsw.am49.controller.gameupdates.GameStateChangedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
-import it.polimi.ingsw.am49.model.actions.PlaceCard;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;

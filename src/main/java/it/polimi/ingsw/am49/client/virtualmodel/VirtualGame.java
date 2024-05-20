@@ -26,9 +26,11 @@ public class VirtualGame extends Observable {
         this.players = new ArrayList<>();
     }
 
-    public static VirtualGame newGame(Map<String, Color> players) {
+    public static VirtualGame newGame(GameStartedUpdate update) {
+        Map<String, Color> players = update.playersToColors();
         VirtualGame game = new VirtualGame();
         players.forEach((username, color) -> game.players.add(new VirtualPlayer(username, color)));
+        game.handleGameStartedUpdate(update);
         return game;
     }
 
@@ -47,11 +49,12 @@ public class VirtualGame extends Observable {
 
     public void processGameUpdate(GameUpdate gameUpdate) {
         switch (gameUpdate.getType()) {
+            case GAME_STARTED_UPDATE -> this.handleGameStartedUpdate((GameStartedUpdate) gameUpdate);
             case GAME_STATE_UPDATE -> this.handleGameStateUpdate((GameStateChangedUpdate) gameUpdate);
             case CARD_PLACED_UPDATE -> this.handleCardPlacedUpdate((CardPlacedUpdate) gameUpdate);
             case HAND_UPDATE -> this.handleHandUpdate((HandUpdate) gameUpdate);
             case HIDDEN_HAND_UPDATE -> this.handleHiddenHandUpdate((HiddenHandUpdate) gameUpdate);
-            case GAME_STARTED_UPDATE -> this.handleGameStartedUpdate((GameStartedUpdate) gameUpdate);
+            case DRAW_AREA_UPDATE -> this.handleDrawAreaUpdate((DrawAreaUpdate) gameUpdate);
         }
     }
 
@@ -92,6 +95,15 @@ public class VirtualGame extends Observable {
         this.deckTopGold = update.deckTopGold();
         this.revealedResourcesIds = update.revealedResourcesIds();
         this.revealedGoldsIds = update.revealedGoldsIds();
+    }
+
+    private void handleDrawAreaUpdate(DrawAreaUpdate update){
+        // TODO: Implement a VirtualDrawArea class
+        this.deckTopResource = update.deckTopResource();
+        this.deckTopGold = update.deckTopGold();
+        this.revealedResourcesIds = update.revealedResources();
+        this.revealedGoldsIds = update.revealedGolds();
+        this.notifyObservers();
     }
 
     public int getRound() {

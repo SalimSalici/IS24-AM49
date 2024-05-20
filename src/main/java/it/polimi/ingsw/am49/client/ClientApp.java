@@ -34,7 +34,7 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
     @Override
     public void receiveGameUpdate(GameUpdate gameUpdate) {
         if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
-            this.game = VirtualGame.newGame(((GameStartedUpdate)gameUpdate).playersToColors());
+            this.game = VirtualGame.newGame((GameStartedUpdate)gameUpdate);
         } else
             this.game.processGameUpdate(gameUpdate);
     }
