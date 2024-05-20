@@ -168,16 +168,6 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <ImageView fitHeight="100.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
-                           <image>
-                              <Image url="@../images/gold_cards_front/102.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="100.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-                           <image>
-                              <Image url="@../images/gold_cards_front/097.png" />
-                           </image>
-                        </ImageView>
                         <ImageView fitHeight="100.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER">
                            <image>
                               <Image url="@../images/gold_cards_front/093.png" />

@@ -43,6 +43,7 @@ public class OverviewController extends GuiController implements Observer {
         drawObjectives();
         drawPlayers();
         drawDecks();
+        drawSymbols(myUsername);
     }
 
     @Override
@@ -51,7 +52,18 @@ public class OverviewController extends GuiController implements Observer {
     }
 
     private void drawObjectives(){
+        int index = 0;
+        for(int cardId : this.game.getCommonObjectives()){
+            ImageView cardImageview = new ImageView();
+            cardImageview.setImage(getImageByCardId(cardId, true));
+            cardImageview.setFitWidth(143);
+            cardImageview.setFitHeight(88);
 
+            objectivesGridpane.add(cardImageview, index, 0);
+            index++;
+        }
+
+        //display of the personal objective goes here
     }
 
     private void drawDecks(){
@@ -102,6 +114,8 @@ public class OverviewController extends GuiController implements Observer {
             totemImageview.setFitWidth(33);
             totemImageview.setFitHeight(36);
 
+            if(player.getUsername().equals(myUsername)) usernameLabel.setStyle("-fx-font-weight: bold;");;
+
             playersGridpane.add(viewboardButton, 0, index);
             playersGridpane.add(totemImageview, 2, index);
             playersGridpane.add(usernameLabel,3,  index);
@@ -114,13 +128,13 @@ public class OverviewController extends GuiController implements Observer {
     private void drawCurrentplayerindicator(){
         int index = 0;
         for (VirtualPlayer player : this.players) {
-            ImageView indicatorImmageview = new ImageView(new Image(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/turnIndicator.png")));
+            ImageView indicatorImmageview = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/turnIndicator.png"))));
 
             indicatorImmageview.setFitWidth(130);
             indicatorImmageview.setFitHeight(83);
 
             if(this.game.getCurrentPlayer().getUsername().equals(player.getUsername())){ //se player è il current player
-                playersGridpane.add(indicatorImmageview, 1, index);
+                playersGridpane.add(indicatorImmageview, 1, index); //TODO: SOMEHOW THE INDICATOR IS SHOWN ON TOP OF THE TOTEM
                 return;
             }
             index++;
@@ -144,6 +158,30 @@ public class OverviewController extends GuiController implements Observer {
         }
         else{
             //mostra hidden hand
+        }
+    }
+
+    private void drawSymbols(String username){
+        //populates the resource list with the strings rapresenting the values of the enum
+        List<Integer> resourcesCounts = this.focusedPlayer.getActiveSymbols().values().stream()
+                .limit(Resource.values().length).toList();
+
+        //populates the items list with the strings rapresenting the values of the enum
+        List<Integer> itemsCounts = this.focusedPlayer.getActiveSymbols().values().stream()
+                .skip(Resource.values().length)
+                .limit(Item.values().length).toList();
+
+        int index = 0;
+        for(int resourceNumber : resourcesCounts){
+            Label numberLabel = new Label(Integer.toString(resourceNumber));
+            resourcesGridpane.add(numberLabel, 2, index);
+            index++;
+        }
+        index = 0;
+        for(int itemNumber : itemsCounts){
+            Label numberLabel = new Label(Integer.toString(itemNumber));
+            itemsGridpane.add(numberLabel, 2, index);
+            index++;
         }
     }
 }
