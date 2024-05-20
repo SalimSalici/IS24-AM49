@@ -4,6 +4,9 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.enumerations.Color;
+import it.polimi.ingsw.am49.model.enumerations.Item;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
+import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.util.Observer;
 import javafx.fxml.FXML;
@@ -25,6 +28,7 @@ public class OverviewController extends GuiController implements Observer {
     private String myUsername;
     private List<VirtualPlayer> players;
     private VirtualDrawable drawableArea;
+    private VirtualPlayer focusedPlayer;
 
     @Override
     public void init() {
@@ -33,6 +37,7 @@ public class OverviewController extends GuiController implements Observer {
         this.players = this.game.getPlayers();
         this.game.addObserver(this);
         this.drawableArea = this.game.getDrawableArea();
+        this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
 
         drawHand(myUsername);
         drawObjectives();
@@ -50,20 +55,23 @@ public class OverviewController extends GuiController implements Observer {
     }
 
     private void drawDecks(){
+        drawableGridpane.getChildren().clear();
         //TODO: IMPLEMENTA CASO DI MAZZO VUOTO
         ImageView resourceDeckImageview = new ImageView(getImageBackByResource(drawableArea.getDeckTopResource(), false));
         ImageView goldDeckImageview = new ImageView(getImageBackByResource(drawableArea.getDeckTopGold(), true));
 
-        resourceDeckImageview.setFitWidth(162);
-        resourceDeckImageview.setFitHeight(92);
+        resourceDeckImageview.setFitWidth(143);
+        resourceDeckImageview.setFitHeight(88);
+        goldDeckImageview.setFitWidth(143);
+        goldDeckImageview.setFitHeight(88);
 
         drawableGridpane.add(resourceDeckImageview, 0, 0);
-        drawableGridpane.add(goldDeckImageview, 0, 1);
+        drawableGridpane.add(goldDeckImageview, 1, 0);
 
         // in this code the displaying of the resource and gold cards are managed apart, so that a different number for each type of card can be shown
-        ImageView cardImageview = new ImageView();
-        int index = 0;
+        int index = 1;
         for(int cardId : drawableArea.getRevealedResourcesIds()){
+            ImageView cardImageview = new ImageView();
             cardImageview.setImage(getImageByCardId(cardId, true));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
@@ -71,9 +79,9 @@ public class OverviewController extends GuiController implements Observer {
             drawableGridpane.add(cardImageview, 0, index);
             index++;
         }
-        index = 0;
+        index = 1;
         for(int cardId : drawableArea.getRevealedGoldsIds()){
-
+            ImageView cardImageview = new ImageView();
             cardImageview.setImage(getImageByCardId(cardId, true));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
@@ -84,6 +92,7 @@ public class OverviewController extends GuiController implements Observer {
     }
 
     private void drawPlayers(){
+        playersGridpane.getChildren().clear();
         int index = 0;
         for (VirtualPlayer player : this.players) {
             Button viewboardButton = new Button("View board");
@@ -119,6 +128,7 @@ public class OverviewController extends GuiController implements Observer {
     }
 
     private void drawHand(String username){
+        handGridpane.getChildren().clear();
         if(username.equals(myUsername)) {
             int index = 0;
             List<Integer> hand = this.game.getPlayerByUsername(username).getHand();
