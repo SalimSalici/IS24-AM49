@@ -115,7 +115,10 @@ public class RoomController extends GuiController {
                 this.manager.setRoomInfo(this.roomInfo);
             }
             // aggiorna la status label
-            //this.statusLabel.setText("Status: " + this.roomInfo.playersToColors().get(this.app.getUsername()).toString().toLowerCase()); //TODO: POI DOVRA' STAMPARE LE IMMAGINI DEI TOKEN
+            this.statusLabel.setText("Status: " + (this.roomInfo.playersToColors().get(this.app.getUsername()) == null
+                    ? "Not set"
+                    : this.roomInfo.playersToColors().get(this.app.getUsername()).toString().toLowerCase()) //TODO: POI DOVRA' STAMPARE LE IMMAGINI DEI TOKEN
+            );
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid color. Please try again.");
             this.buttonColor = null;

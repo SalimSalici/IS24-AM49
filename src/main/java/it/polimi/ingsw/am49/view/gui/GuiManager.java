@@ -40,8 +40,8 @@ public class GuiManager {
     public void start(Stage stage) throws IOException {
         setup();
         this.stage = stage;
-        stage.setMinWidth(400);
-        stage.setMinHeight(600);
+        stage.setWidth(600);
+        stage.setHeight(400);
         stage.setResizable(true);
         run();
     }
@@ -64,18 +64,17 @@ public class GuiManager {
         titleToController.getValue(titleToScene.getKey(currentScene)).init();
 
         Platform.runLater(() -> {
+            if (newSceneTitle == SceneTitle.OVERVIEW) {
+                stage.setWidth(1500);
+                stage.setHeight(780);
+            } else {
+                stage.setWidth(600);
+                stage.setHeight(400);
+            }
             stage.setScene(currentScene);
             stage.sizeToScene();
             stage.show();
         });
-
-        switch (newSceneTitle) {
-            case WELCOME -> {
-                stage.setResizable(true);
-                stage.setMinWidth(800);
-                stage.setMinHeight(600);
-            }
-        }
     }
 
     public void setFullScreen() {
@@ -89,7 +88,12 @@ public class GuiManager {
             for (SceneTitle sceneTitle : SceneTitle.values()) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource(sceneTitle.getFilePath()));
                 //Creates actual scene for this scene name
-                Scene scene = new Scene(loader.load());
+                Scene scene;
+                if (sceneTitle == SceneTitle.OVERVIEW) {
+                    scene = new Scene(loader.load(), 1500, 780);
+                } else {
+                    scene = new Scene(loader.load(), 600, 400);
+                }
                 //scene.setCursor(new ImageCursor(new Image(getClass().getResourceAsStream(""))));
                 titleToScene.put(sceneTitle, scene);
                 GuiController controller = loader.getController();
