@@ -73,6 +73,8 @@ public class DrawCardState extends GameState {
                 new DrawAreaEvent(
                         this.resourceGameDeck.size(),
                         this.goldGameDeck.size(),
+                        this.resourceGameDeck.peek().getResource(),
+                        this.goldGameDeck.peek().getResource(),
                         List.of(this.game.getRevealedResources()),
                         List.of(this.game.getRevealedGolds())
                 )

@@ -17,10 +17,7 @@ public class VirtualGame extends Observable {
     private GameStateType gameState;
     private VirtualPlayer currentPlayer;
     private List<Integer> commonObjectives;
-    private Resource deckTopResource;
-    private Resource deckTopGold;
-    private List<Integer> revealedResourcesIds;
-    private List<Integer> revealedGoldsIds;
+    private VirtualDrawable drawableArea;
 
     private VirtualGame() {
         this.players = new ArrayList<>();
@@ -52,9 +49,9 @@ public class VirtualGame extends Observable {
             case HAND_UPDATE -> this.handleHandUpdate((HandUpdate) gameUpdate);
             case HIDDEN_HAND_UPDATE -> this.handleHiddenHandUpdate((HiddenHandUpdate) gameUpdate);
             case GAME_STARTED_UPDATE -> this.handleGameStartedUpdate((GameStartedUpdate) gameUpdate);
+            case DRAWABLES_UPDATE -> this.handleDrawablesUpdate((DrawablesUpdate) gameUpdate);
         }
     }
-
     private void handleGameStateUpdate(GameStateChangedUpdate update) {
         this.gameState = update.gameStateType();
         this.turn = update.turn();
@@ -87,11 +84,17 @@ public class VirtualGame extends Observable {
     }
 
     private void handleGameStartedUpdate(GameStartedUpdate update){
-        this.commonObjectives = update.commonObjectivesIds();
-        this.deckTopResource = update.deckTopResource();
-        this.deckTopGold = update.deckTopGold();
-        this.revealedResourcesIds = update.revealedResourcesIds();
-        this.revealedGoldsIds = update.revealedGoldsIds();
+        this.drawableArea = new VirtualDrawable(update.deckTopResource(), update.deckTopGold(), update.revealedResourcesIds(), update.revealedGoldsIds());
+        this.notifyObservers();
+        this.drawableArea.notifyObservers();
+    }
+
+    private void handleDrawablesUpdate(DrawablesUpdate update){
+        this.drawableArea.setDeckTopResource(update.deckTopResource());
+        this.drawableArea.setDeckTopGold(update.deckTopGold());
+        this.drawableArea.setRevealedResourcesIds(update.revealedResourcesIds());
+        this.drawableArea.setRevealedGoldsIds(update.revealedGoldsIds());
+        this.drawableArea.notifyObservers();
     }
 
     public int getRound() {
@@ -105,16 +108,5 @@ public class VirtualGame extends Observable {
     }
     public VirtualPlayer getCurrentPlayer() {return currentPlayer;}
     public List<Integer> getCommonObjectives() {return commonObjectives;}
-    public Resource getDeckTopResource() {
-        return deckTopResource;
-    }
-    public Resource getDeckTopGold() {
-        return deckTopGold;
-    }
-    public List<Integer> getRevealedResourcesIds() {
-        return revealedResourcesIds;
-    }
-    public List<Integer> getRevealedGoldsIds() {
-        return revealedGoldsIds;
-    }
+    public VirtualDrawable getDrawableArea() {return drawableArea;}
 }

@@ -31,7 +31,6 @@ public class RoomController extends GuiController {
 
     private Server server;
     private RoomInfo roomInfo;
-    private boolean isUserReady;
     private Color buttonColor;
 
     public void initialize(){
@@ -42,7 +41,6 @@ public class RoomController extends GuiController {
     public void init() {
         this.server = this.app.getServer();
         this.roomInfo = this.manager.getRoomInfo();
-        this.isUserReady = false;
 
         titleLabel.setText("Room: " + this.roomInfo.roomName());
 
@@ -95,7 +93,6 @@ public class RoomController extends GuiController {
 
     private void leaveRoom(){
         this.buttonColor = null;
-        this.isUserReady = false;
         try{
             roomInfo = this.server.readyDown(this.app);
             this.server.leaveRoom(this.app);
@@ -112,18 +109,16 @@ public class RoomController extends GuiController {
             // se il colore è not set
             if(buttonColor == null){
                 this.roomInfo = this.server.readyDown(this.app);
-                this.isUserReady = false;
             }
             else{
                 this.roomInfo = this.server.readyUp(this.app, buttonColor);
-                this.isUserReady = true;
+                this.manager.setRoomInfo(this.roomInfo);
             }
             // aggiorna la status label
-            this.statusLabel.setText("Status: " + this.roomInfo.playersToColors().get(this.app.getUsername()).toString().toLowerCase()); //TODO: POI DOVRA' STAMPARE LE IMMAGINI DEI TOKEN
+            //this.statusLabel.setText("Status: " + this.roomInfo.playersToColors().get(this.app.getUsername()).toString().toLowerCase()); //TODO: POI DOVRA' STAMPARE LE IMMAGINI DEI TOKEN
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid color. Please try again.");
             this.buttonColor = null;
-            return;
         } catch (RemoteException e) {
             // TODO: Handle exception
             throw new RuntimeException(e);

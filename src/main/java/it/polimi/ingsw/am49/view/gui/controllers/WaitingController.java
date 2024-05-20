@@ -4,6 +4,7 @@ import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStateChangedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
+import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.scenes.ChooseObjectiveCardScene;
 import it.polimi.ingsw.am49.scenes.GameOverviewScene;
@@ -23,7 +24,7 @@ public class WaitingController extends GuiController{
         }
         if (gameUpdate.getType() == GameUpdateType.GAME_STATE_UPDATE) {
             if (((GameStateChangedUpdate)gameUpdate).gameStateType() == GameStateType.PLACE_CARD) {
-                //this.manager.changeScene(); //vai a overview
+                this.manager.changeScene(SceneTitle.OVERVIEW);
             }
         }
     }

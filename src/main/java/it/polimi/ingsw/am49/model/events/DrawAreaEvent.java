@@ -1,9 +1,12 @@
 package it.polimi.ingsw.am49.model.events;
 
+import it.polimi.ingsw.am49.controller.gameupdates.DrawablesUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.model.cards.Card;
 import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
 import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
 
 import java.util.List;
 
@@ -12,12 +15,16 @@ import java.util.List;
  * in the two drawable decks (resource deck and gold deck) and what are the revealed cards that can be drawn
  * @param remainingResources how many cards are left in the resource deck
  * @param remainingGolds how many cards are left in the gold deck
+ * @param topResourceDeck the resource of the top card of the resource's deck
+ * @param topGoldDeck the resource of the top card of the gold's deck
  * @param revealedResources the list of reveald resource cards that can be drawn
  * @param revealedGolds the list of reveald gold cards that can be drawn
  */
 public record DrawAreaEvent(
         int remainingResources,
         int remainingGolds,
+        Resource topResourceDeck,
+        Resource topGoldDeck,
         List<ResourceCard> revealedResources,
         List<GoldCard> revealedGolds
 ) implements GameEvent {
@@ -27,7 +34,7 @@ public record DrawAreaEvent(
     }
 
     @Override
-    public GameUpdate toGameUpdate() {
-        return null;
+    public DrawablesUpdate toGameUpdate() {
+        return new DrawablesUpdate(topResourceDeck, topGoldDeck, revealedResources.stream().map(Card::getId).toList(), revealedGolds.stream().map(Card::getId).toList());
     }
 }
