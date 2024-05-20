@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.view.gui;
 
 import it.polimi.ingsw.am49.client.GuiApp;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
+import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.util.BiMap;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -10,7 +11,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import it.polimi.ingsw.am49.view.gui.controllers.GuiController;
 
@@ -150,6 +153,8 @@ public class GuiManager {
 
     public void setRoomInfo(RoomInfo roomInfo) {
         this.roomInfo = roomInfo;
+
+        System.out.println(this.roomInfo.playersToColors());;
     }
 
     public void setStarterCardId(int starterCardId) {

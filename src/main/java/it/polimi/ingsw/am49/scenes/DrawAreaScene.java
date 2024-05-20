@@ -92,10 +92,10 @@ public class DrawAreaScene extends Scene implements Observer {
     }
 
     private void printDrawOptions() {
-        System.out.println("Deck top resource: " + this.game.getDeckTopResource());
-        System.out.println("Deck top gold: " + this.game.getDeckTopGold());
-        System.out.println("Revealed resources: " + this.game.getRevealedResourcesIds());
-        System.out.println("Revealed golds: " + this.game.getRevealedGoldsIds());
+        System.out.println("Deck top resource: " + this.game.getDrawableArea().getDeckTopResource());
+        System.out.println("Deck top gold: " + this.game.getDrawableArea().getDeckTopGold());
+        System.out.println("Revealed resources: " + this.game.getDrawableArea().getRevealedResourcesIds());
+        System.out.println("Revealed golds: " + this.game.getDrawableArea().getRevealedGoldsIds());
     }
 
     private void drawCard(String[] args) {

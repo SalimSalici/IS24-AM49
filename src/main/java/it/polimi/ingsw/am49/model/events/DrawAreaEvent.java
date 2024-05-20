@@ -15,6 +15,8 @@ import java.util.List;
  * in the two drawable decks (resource deck and gold deck) and what are the revealed cards that can be drawn
  * @param remainingResources how many cards are left in the resource deck
  * @param remainingGolds how many cards are left in the gold deck
+ * @param deckTopResource the resource of the top card of the resource's deck
+ * @param deckTopGold the resource of the top card of the gold's deck
  * @param revealedResources the list of reveald resource cards that can be drawn
  * @param revealedGolds the list of reveald gold cards that can be drawn
  */

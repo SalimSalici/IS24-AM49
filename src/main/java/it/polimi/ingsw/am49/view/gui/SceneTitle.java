@@ -9,8 +9,8 @@ public enum SceneTitle {
     ROOM,
     STARTER_CARD,
     OBJECTIVE_CARDS,
-    WAITING;
-    //OVERVIEW;
+    WAITING,
+    OVERVIEW;
 
 //    GAME_OVER;
 
@@ -26,7 +26,7 @@ public enum SceneTitle {
             case OBJECTIVE_CARDS -> fileName = "objectiveCards.fxml";
             case CHANGE_USERNAME -> fileName = "changeUsername.fxml";
             case CREATE_ROOM -> fileName = "createRoom.fxml";
-            //case OVERVIEW -> fileName = "overview.fxml";
+            case OVERVIEW -> fileName = "overview.fxml";
         }
 
         return fileName;

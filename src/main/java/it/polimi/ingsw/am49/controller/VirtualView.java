@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.controller;
 
 import it.polimi.ingsw.am49.client.Client;
+import it.polimi.ingsw.am49.controller.gameupdates.DrawablesUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.cards.Card;
@@ -61,6 +62,9 @@ public class VirtualView implements EventListener {
                         this.client.receiveGameUpdate(event.toGameUpdate());
                     else
                         this.client.receiveGameUpdate(((HandEvent) event).toHiddenHandUpdate());
+                }
+                case DRAW_AREA_UPDATE -> {
+                    this.client.receiveGameUpdate(event.toGameUpdate());
                 }
                 case PLAYERS_ORDER_SET_EVENT -> {
                     // discard... Player order will be communicated to the client with a GameStartedUpdate
