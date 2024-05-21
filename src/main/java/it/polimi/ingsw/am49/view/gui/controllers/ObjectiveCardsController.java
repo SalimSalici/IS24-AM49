@@ -48,6 +48,7 @@ public class ObjectiveCardsController extends GuiController{
     private void chooseObj(int objectiveId){
         try {
             this.server.executeAction(this.app, new ChooseObjectiveAction(this.app.getUsername(), objectiveId));
+            this.app.getVirtualGame().getPlayerByUsername(this.app.getUsername()).setPersonalObjectiveId(objectiveId);
             this.manager.changeScene(SceneTitle.WAITING);
         } catch (NotInGameException e) {
             // TODO: Handle exception

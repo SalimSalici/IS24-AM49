@@ -89,7 +89,12 @@ public class OverviewController extends GuiController implements Observer {
             index++;
         }
 
-        //display of the personal objective goes here
+        ImageView cardImageview = new ImageView();
+        cardImageview.setImage(getImageByCardId(this.game.getPlayerByUsername(myUsername).getPersonalObjectiveId(), true));
+        cardImageview.setFitWidth(143);
+        cardImageview.setFitHeight(88);
+        objectivesGridpane.add(cardImageview, index, 0);
+        index++;
     }
 
     private void drawDecks(){

@@ -13,15 +13,18 @@ public class WelcomeController extends GuiController {
     private TextField usernameTextfield;
 
     public void initialize(){
-        confirmButton.setOnAction(e -> {
-            if(this.isUsernameValid(usernameTextfield.getText())) {
-                app.setUsername(usernameTextfield.getText());
-                this.manager.changeScene(SceneTitle.MAIN_MENU);
-            }else System.out.println("The username your trying to use is not allowed");
-        });
+        confirmButton.setOnAction(e -> execute());
+        usernameTextfield.setOnAction(e -> execute());
     }
 
     private boolean isUsernameValid(String username) {
         return username.length() >= 2 && username.length() <= 20;
+    }
+
+    private void execute(){
+        if(this.isUsernameValid(usernameTextfield.getText())) {
+            app.setUsername(usernameTextfield.getText());
+            this.manager.changeScene(SceneTitle.MAIN_MENU);
+        }else System.out.println("The username your trying to use is not allowed");
     }
 }
