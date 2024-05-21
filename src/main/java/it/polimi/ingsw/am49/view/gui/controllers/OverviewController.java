@@ -9,13 +9,17 @@ import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.util.Observer;
+import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,6 +27,10 @@ import java.util.Objects;
 public class OverviewController extends GuiController implements Observer {
     @FXML
     private GridPane drawableGridpane, playersGridpane, objectivesGridpane, handGridpane, resourcesGridpane, itemsGridpane;
+    @FXML
+    private AnchorPane playerboardAnchorpane;
+    @FXML
+    private ProvaController playerboardController;
 
     private VirtualGame game;
     private String myUsername;
@@ -39,11 +47,29 @@ public class OverviewController extends GuiController implements Observer {
         this.drawableArea = this.game.getDrawableArea();
         this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
 
+        loadPlayerBoard();
         drawHand(myUsername);
         drawObjectives();
         drawPlayers();
         drawDecks();
         drawSymbols(myUsername);
+
+        if (playerboardController != null) {
+            playerboardController.init();
+        }
+    }
+
+    private void loadPlayerBoard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneTitle.PROVA.getFilePath()));
+            AnchorPane playerBoard = loader.load();
+            playerboardAnchorpane.getChildren().setAll(playerBoard);
+
+            // Ottieni il controller di prova.fxml
+            playerboardController = loader.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

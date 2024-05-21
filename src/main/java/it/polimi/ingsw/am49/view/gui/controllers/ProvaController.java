@@ -26,8 +26,8 @@ public class ProvaController extends GuiController {
 
     private final double rectangleWidth = 135;
     private final double rectangleHeight = 82; // Dimensioni standard delle carte
-    private final double innerPaneWidth = 600; // Dimensioni più grandi per innerPane
-    private final double innerPaneHeight = 600; // Dimensioni più grandi per innerPane
+    private final double innerPaneWidth = 650; // Dimensioni più grandi per innerPane
+    private final double innerPaneHeight = 340; // Dimensioni più grandi per innerPane
     private final double overlapOffset = 30; // Offset per sovrapposizione degli angoli
     private Random random = new Random();
 
@@ -68,10 +68,10 @@ public class ProvaController extends GuiController {
         right.setOnAction(e -> moveRight());
 
         // Pulsanti per i quattro angoli della schermata
-        Button topLeft = new Button("Top Left");
-        Button topRight = new Button("Top Right");
-        Button bottomLeft = new Button("Bottom Left");
-        Button bottomRight = new Button("Bottom Right");
+        Button topLeft = new Button("<TL>");
+        Button topRight = new Button("<TR>");
+        Button bottomLeft = new Button("<BL>");
+        Button bottomRight = new Button("<BR>");
 
         // Posiziona i pulsanti nei quattro angoli della schermata
         topLeft.setLayoutX(10);

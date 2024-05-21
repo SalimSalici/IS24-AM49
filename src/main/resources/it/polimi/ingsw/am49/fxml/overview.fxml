@@ -35,8 +35,10 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="693.0" layoutY="29.0" prefHeight="378.0" prefWidth="837.0" style="-fx-background-color: ED6A5A;" />
-      <AnchorPane layoutX="693.0" layoutY="416.0" prefHeight="333.0" prefWidth="837.0" style="-fx-background-color: ED6A5A;">
+       <AnchorPane id="playerboardAnchorpane" fx:id="playerboardAnchorpane" layoutX="700.0" layoutY="18.0">
+           <fx:include source="prova.fxml" />
+       </AnchorPane>
+       <AnchorPane layoutX="693.0" layoutY="416.0" prefHeight="333.0" prefWidth="837.0" style="-fx-background-color: ED6A5A;">
          <children>
             <AnchorPane layoutX="11.0" layoutY="12.0" prefHeight="175.0" prefWidth="494.0" style="-fx-background-color: #7E78D2;">
                <children>
