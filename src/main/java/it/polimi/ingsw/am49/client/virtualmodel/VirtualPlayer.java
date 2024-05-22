@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.util.Observable;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,10 @@ public class VirtualPlayer extends Observable {
         this.hiddenHand = new LinkedList<>();
         this.color = color;
         this.board = new VirtualBoard();
+        this.activeSymbols = new HashMap<>();
+        for (Symbol s : Symbol.values()) {
+            this.activeSymbols.put(s, 0);
+        }
     }
 
     public String getUsername() {
