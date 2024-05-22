@@ -10,12 +10,14 @@ public class VirtualBoard extends Observable {
     private int lastZIndex;
     private int lastPlacedRow;
     private int lastPlacedCol;
+    private VirtualTile starterTile;
 
     public VirtualBoard() {
         this.board = new VirtualTile[50][50];
         this.lastZIndex = 0;
         this.lastPlacedRow = -1;
         this.lastPlacedCol = -1;
+        this.starterTile = null;
     }
 
     public VirtualTile placeCard(VirtualCard card, int row, int col) {
@@ -24,12 +26,17 @@ public class VirtualBoard extends Observable {
         this.board[row][col] = tile;
         this.lastPlacedRow = row;
         this.lastPlacedCol = col;
+        if (this.starterTile == null) this.starterTile = tile;
         this.notifyObservers();
         return tile;
     }
 
     public VirtualTile getTile(int row, int col) {
         return this.board[row][col];
+    }
+
+    public VirtualTile getStarterTile() {
+        return this.starterTile;
     }
 
     // TODO: instead of code duplication, consider making this method static in PlayerBoard.java

@@ -74,4 +74,11 @@ public class VirtualPlayer extends Observable {
     }
 
     public void setPersonalObjectiveId(int personalObjectiveId) {this.personalObjectiveId = personalObjectiveId;}
+
+    public VirtualCard getStarterCard() {
+        VirtualTile starterTile = this.board.getStarterTile();
+        if (starterTile != null)
+            return starterTile.getCard();
+        return null;
+    }
 }
