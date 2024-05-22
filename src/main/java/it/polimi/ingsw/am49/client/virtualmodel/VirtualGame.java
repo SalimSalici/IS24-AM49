@@ -88,6 +88,7 @@ public class VirtualGame extends Observable {
 
     private void handleGameStartedUpdate(GameStartedUpdate update){
         this.drawableArea = new VirtualDrawable(update.deckTopResource(), update.deckTopGold(), update.revealedResourcesIds(), update.revealedGoldsIds());
+        this.commonObjectives = update.commonObjectivesIds();
         this.notifyObservers();
         this.drawableArea.notifyObservers();
     }

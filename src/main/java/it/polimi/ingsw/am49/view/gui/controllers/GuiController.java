@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.view.gui.controllers;
 
 
 import it.polimi.ingsw.am49.client.GuiApp;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.Color;
@@ -42,6 +43,9 @@ public abstract class GuiController {
 
         return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/" + subFolder + "/" + zeros + id + ".png")));
     }
+    protected Image getImageByVirtualCard(VirtualCard virtualCard){
+        return getImageByCardId(virtualCard.id(), virtualCard.flipped());
+    }
     protected Image getImageByTotemColor(Color color){
         String fileColor;
         switch (color){
@@ -58,8 +62,8 @@ public abstract class GuiController {
         int cardId;
         switch (resource){
             case MUSHROOMS -> cardId = 1;
-            case WOLVES -> cardId = 11;
-            case LEAVES -> cardId = 21;
+            case LEAVES -> cardId = 11;
+            case WOLVES -> cardId = 21;
             case BUGS -> cardId = 31;
             default -> cardId = 0;
         }

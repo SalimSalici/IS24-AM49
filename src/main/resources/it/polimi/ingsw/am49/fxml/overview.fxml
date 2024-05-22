@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="780.0" prefWidth="1540.0" style="-fx-background-color: E6E0A8;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.am49.view.gui.controllers.OverviewController">
@@ -23,46 +24,18 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
-               <children>
-                  <ImageView fitHeight="92.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
-                     <image>
-                        <Image url="@../images/gold_card_back/004.png" />
-                     </image></ImageView>
-                  <ImageView fitHeight="92.0" fitWidth="162.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-                     <image>
-                        <Image url="@../images/gold_card_back/054.png" />
-                     </image></ImageView>
-                  <ImageView fitHeight="92.0" fitWidth="132.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-                     <image>
-                        <Image url="@../images/gold_cards_front/013.png" />
-                     </image></ImageView>
-                  <ImageView fitHeight="88.0" fitWidth="143.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-                     <image>
-                        <Image url="@../images/gold_cards_front/069.png" />
-                     </image></ImageView>
-                  <ImageView fitHeight="88.0" fitWidth="146.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-                     <image>
-                        <Image url="@../images/gold_cards_front/022.png" />
-                     </image></ImageView>
-                  <ImageView fitHeight="89.0" fitWidth="132.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-                     <image>
-                        <Image url="@../images/gold_cards_front/079.png" />
-                     </image></ImageView>
-               </children>
             </GridPane>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="329.0" layoutY="29.0" prefHeight="720.0" prefWidth="357.0" style="-fx-background-color: ED6A5A;">
          <children>
-            <ImageView fitHeight="685.0" fitWidth="348.0" layoutX="8.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
-               <image>
-                  <Image url="@../images/plateau_score/plateau.png" />
-               </image>
-            </ImageView>
+            <Pane fx:id="pointsPane" layoutX="8.0" layoutY="16.0" prefHeight="685.0" prefWidth="343.0" />
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="693.0" layoutY="29.0" prefHeight="378.0" prefWidth="837.0" style="-fx-background-color: ED6A5A;" />
-      <AnchorPane layoutX="693.0" layoutY="416.0" prefHeight="333.0" prefWidth="837.0" style="-fx-background-color: ED6A5A;">
+       <AnchorPane id="playerboardAnchorpane" fx:id="playerboardAnchorpane" layoutX="700.0" layoutY="18.0">
+           <fx:include source="board.fxml" />
+       </AnchorPane>
+       <AnchorPane layoutX="693.0" layoutY="416.0" prefHeight="333.0" prefWidth="837.0" style="-fx-background-color: ED6A5A;">
          <children>
             <AnchorPane layoutX="11.0" layoutY="12.0" prefHeight="175.0" prefWidth="494.0" style="-fx-background-color: #7E78D2;">
                <children>
@@ -184,7 +157,7 @@
             </AnchorPane>
             <AnchorPane layoutX="11.0" layoutY="194.0" prefHeight="128.0" prefWidth="494.0" style="-fx-background-color: #7E78D2;">
                <children>
-                  <GridPane fx:id="objectivesGridpane" prefHeight="128.0" prefWidth="494.0">
+                  <GridPane fx:id="objectivesGridpane" layoutX="6.0" prefHeight="128.0" prefWidth="477.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -193,23 +166,6 @@
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
-                     <children>
-                        <ImageView fitHeight="100.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
-                           <image>
-                              <Image url="@../images/gold_cards_front/102.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="100.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-                           <image>
-                              <Image url="@../images/gold_cards_front/097.png" />
-                           </image>
-                        </ImageView>
-                        <ImageView fitHeight="100.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER">
-                           <image>
-                              <Image url="@../images/gold_cards_front/093.png" />
-                           </image>
-                        </ImageView>
-                     </children>
                   </GridPane>
                </children>
             </AnchorPane>

@@ -3,28 +3,42 @@ package it.polimi.ingsw.am49.view.gui.controllers;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
-import it.polimi.ingsw.am49.model.enumerations.Color;
-import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.model.enumerations.Item;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.util.Observer;
+import it.polimi.ingsw.am49.view.gui.PointsCoordinates;
+import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class OverviewController extends GuiController implements Observer {
     @FXML
     private GridPane drawableGridpane, playersGridpane, objectivesGridpane, handGridpane, resourcesGridpane, itemsGridpane;
+    @FXML
+    private AnchorPane playerboardAnchorpane;
+    @FXML
+    private BoardController playerboardController;
+    @FXML
+    private Pane pointsPane;
 
     private VirtualGame game;
     private String myUsername;
     private List<VirtualPlayer> players;
     private VirtualDrawable drawableArea;
+    private VirtualPlayer focusedPlayer;
 
     @Override
     public void init() {
@@ -33,11 +47,33 @@ public class OverviewController extends GuiController implements Observer {
         this.players = this.game.getPlayers();
         this.game.addObserver(this);
         this.drawableArea = this.game.getDrawableArea();
+        this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
 
+        loadPlayerBoard();
         drawHand(myUsername);
         drawObjectives();
         drawPlayers();
         drawDecks();
+        drawSymbols(myUsername);
+        drawPointsBoard();
+        drawPointsTokens();
+
+        if (playerboardController != null) {
+        playerboardController.init(this.game.getPlayers(), this.game.getPlayerByUsername(myUsername));
+        }
+    }
+
+    private void loadPlayerBoard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneTitle.BOARD.getFilePath()));
+            AnchorPane playerBoard = loader.load();
+            playerboardAnchorpane.getChildren().setAll(playerBoard);
+
+            // Ottieni il controller di board.fxml
+            playerboardController = loader.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -46,24 +82,43 @@ public class OverviewController extends GuiController implements Observer {
     }
 
     private void drawObjectives(){
+        int index = 0;
+        for(int cardId : this.game.getCommonObjectives()){
+            ImageView cardImageview = new ImageView();
+            cardImageview.setImage(getImageByCardId(cardId, true));
+            cardImageview.setFitWidth(143);
+            cardImageview.setFitHeight(88);
 
+            objectivesGridpane.add(cardImageview, index, 0);
+            index++;
+        }
+
+        ImageView cardImageview = new ImageView();
+        cardImageview.setImage(getImageByCardId(this.game.getPlayerByUsername(myUsername).getPersonalObjectiveId(), true));
+        cardImageview.setFitWidth(143);
+        cardImageview.setFitHeight(88);
+        objectivesGridpane.add(cardImageview, index, 0);
+        index++;
     }
 
     private void drawDecks(){
+        drawableGridpane.getChildren().clear();
         //TODO: IMPLEMENTA CASO DI MAZZO VUOTO
         ImageView resourceDeckImageview = new ImageView(getImageBackByResource(drawableArea.getDeckTopResource(), false));
         ImageView goldDeckImageview = new ImageView(getImageBackByResource(drawableArea.getDeckTopGold(), true));
 
-        resourceDeckImageview.setFitWidth(162);
-        resourceDeckImageview.setFitHeight(92);
+        resourceDeckImageview.setFitWidth(143);
+        resourceDeckImageview.setFitHeight(88);
+        goldDeckImageview.setFitWidth(143);
+        goldDeckImageview.setFitHeight(88);
 
         drawableGridpane.add(resourceDeckImageview, 0, 0);
-        drawableGridpane.add(goldDeckImageview, 0, 1);
+        drawableGridpane.add(goldDeckImageview, 1, 0);
 
         // in this code the displaying of the resource and gold cards are managed apart, so that a different number for each type of card can be shown
-        ImageView cardImageview = new ImageView();
-        int index = 0;
+        int index = 1;
         for(int cardId : drawableArea.getRevealedResourcesIds()){
+            ImageView cardImageview = new ImageView();
             cardImageview.setImage(getImageByCardId(cardId, true));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
@@ -71,9 +126,9 @@ public class OverviewController extends GuiController implements Observer {
             drawableGridpane.add(cardImageview, 0, index);
             index++;
         }
-        index = 0;
+        index = 1;
         for(int cardId : drawableArea.getRevealedGoldsIds()){
-
+            ImageView cardImageview = new ImageView();
             cardImageview.setImage(getImageByCardId(cardId, true));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
@@ -84,6 +139,7 @@ public class OverviewController extends GuiController implements Observer {
     }
 
     private void drawPlayers(){
+        playersGridpane.getChildren().clear();
         int index = 0;
         for (VirtualPlayer player : this.players) {
             Button viewboardButton = new Button("View board");
@@ -93,9 +149,14 @@ public class OverviewController extends GuiController implements Observer {
             totemImageview.setFitWidth(33);
             totemImageview.setFitHeight(36);
 
+            if(player.getUsername().equals(myUsername)) usernameLabel.setStyle("-fx-font-weight: bold;");;
+
             playersGridpane.add(viewboardButton, 0, index);
             playersGridpane.add(totemImageview, 2, index);
             playersGridpane.add(usernameLabel,3,  index);
+
+            viewboardButton.setOnAction(actionEvent ->  setFocusedPlayer(player));
+
             index++;
         }
         System.out.println(myUsername);
@@ -105,13 +166,13 @@ public class OverviewController extends GuiController implements Observer {
     private void drawCurrentplayerindicator(){
         int index = 0;
         for (VirtualPlayer player : this.players) {
-            ImageView indicatorImmageview = new ImageView(new Image(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/turnIndicator.png")));
+            ImageView indicatorImmageview = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/turnIndicator.png"))));
 
             indicatorImmageview.setFitWidth(130);
             indicatorImmageview.setFitHeight(83);
 
             if(this.game.getCurrentPlayer().getUsername().equals(player.getUsername())){ //se player è il current player
-                playersGridpane.add(indicatorImmageview, 1, index);
+                playersGridpane.add(indicatorImmageview, 1, index); //TODO: SOMEHOW THE INDICATOR IS SHOWN ON TOP OF THE TOTEM
                 return;
             }
             index++;
@@ -119,6 +180,7 @@ public class OverviewController extends GuiController implements Observer {
     }
 
     private void drawHand(String username){
+        handGridpane.getChildren().clear();
         if(username.equals(myUsername)) {
             int index = 0;
             List<Integer> hand = this.game.getPlayerByUsername(username).getHand();
@@ -133,7 +195,80 @@ public class OverviewController extends GuiController implements Observer {
             }
         }
         else{
-            //mostra hidden hand
+            int index = 0;
+            List<Resource> hand = this.game.getPlayerByUsername(username).getHiddenHand();
+            for (Resource resource : hand) {
+                ImageView cardImageview = new ImageView(getImageBackByResource(resource, false)); //TODO: distingui gold e resource
+
+                cardImageview.setFitWidth(132);
+                cardImageview.setFitHeight(87);
+
+                handGridpane.add(cardImageview, 0, index);
+                index++;
+            }
+        }
+    }
+
+    private void drawSymbols(String username){
+        //populates the resource list with the strings rapresenting the values of the enum
+        List<Integer> resourcesCounts = this.focusedPlayer.getActiveSymbols().values().stream()
+                .limit(Resource.values().length).toList();
+
+        //populates the items list with the strings rapresenting the values of the enum
+        List<Integer> itemsCounts = this.focusedPlayer.getActiveSymbols().values().stream()
+                .skip(Resource.values().length)
+                .limit(Item.values().length).toList();
+
+        int index = 0;
+        for(int resourceNumber : resourcesCounts){
+            Label numberLabel = new Label(Integer.toString(resourceNumber));
+            resourcesGridpane.add(numberLabel, 2, index);
+            index++;
+        }
+        index = 0;
+        for(int itemNumber : itemsCounts){
+            Label numberLabel = new Label(Integer.toString(itemNumber));
+            itemsGridpane.add(numberLabel, 2, index);
+            index++;
+        }
+    }
+
+    private void drawPointsBoard(){
+        // Carica l'immagine
+        Image pointsBoardImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/plateau_score/plateau.png")));
+        ImageView pointsBoardImageview = new ImageView(pointsBoardImage);
+
+        // Imposta la larghezza e l'altezza dell'ImageView in base al Pane
+        pointsBoardImageview.setFitWidth(pointsPane.getWidth());
+        pointsBoardImageview.setFitHeight(pointsPane.getHeight());
+
+        // Aggiungi l'ImageView al Pane
+        pointsPane.getChildren().add(pointsBoardImageview);
+
+        // Assicurati che l'ImageView ridimensioni insieme al Pane
+        pointsBoardImageview.fitWidthProperty().bind(pointsPane.widthProperty());
+        pointsBoardImageview.fitHeightProperty().bind(pointsPane.heightProperty());
+    }
+
+    private void drawPointsTokens(){
+        for (VirtualPlayer player : this.players) {
+            Circle circle = new Circle(14 + this.players.indexOf(player)*4, Color.TRANSPARENT);
+            circle.setStroke(player.getJavaFXColor());
+            circle.setStrokeWidth(4);
+            PointsCoordinates point = PointsCoordinates.fromNumber(player.getPoints());
+            circle.setCenterX(point.getX());
+            circle.setCenterY(point.getY());
+            pointsPane.getChildren().add(circle);
+        }
+    }
+
+
+    private void setFocusedPlayer(VirtualPlayer player){
+        if(!focusedPlayer.equals(player)) {
+            this.focusedPlayer = player;
+            this.playerboardController.switchPlayerBoard(focusedPlayer);
+            this.drawHand(focusedPlayer.getUsername());
+            this.drawSymbols(focusedPlayer.getUsername());
         }
     }
 }

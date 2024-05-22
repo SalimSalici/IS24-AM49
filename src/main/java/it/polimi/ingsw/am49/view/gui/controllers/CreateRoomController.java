@@ -41,22 +41,25 @@ public class CreateRoomController extends GuiController {
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 4, 2);
         numplayerSpinner.setValueFactory( valueFactory);
 
-        createButton.setOnAction(x-> {
-            if(this.isRoomNameValid(nameTextfield.getText()) && this.isNumPlayerValid(numplayerSpinner.getValue())){
-                try {
-                    RoomInfo roomInfo = this.server.createRoom(this.app, nameTextfield.getText(), numplayerSpinner.getValue(), this.app.getUsername());
-                    this.manager.setRoomInfo(roomInfo);
-                    this.manager.changeScene(SceneTitle.ROOM);
-                } catch (CreateRoomException | RemoteException | AlreadyInRoomException e){
-                    System.out.println(e.getMessage());
-                }
-
-            }
-        });
+        createButton.setOnAction(x-> execute());
+        nameTextfield.setOnAction(x-> execute());
     }
 
     private boolean isRoomNameValid(String name){ return name.length()>=2 && name.length()<=15;}
 
     private boolean isNumPlayerValid(int numplayer){ return numplayer >= 2 && numplayer <= 4;}
+
+    private void execute(){
+        if(this.isRoomNameValid(nameTextfield.getText()) && this.isNumPlayerValid(numplayerSpinner.getValue())){
+            try {
+                RoomInfo roomInfo = this.server.createRoom(this.app, nameTextfield.getText(), numplayerSpinner.getValue(), this.app.getUsername());
+                this.manager.setRoomInfo(roomInfo);
+                this.manager.changeScene(SceneTitle.ROOM);
+            } catch (CreateRoomException | RemoteException | AlreadyInRoomException e){
+                System.out.println(e.getMessage());
+            }
+
+        }
+    }
 
 }
