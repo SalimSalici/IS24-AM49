@@ -17,7 +17,8 @@ public enum BackTexture {
     ID_83("/it/polimi/ingsw/am49/textures/tui/83_back.txt"),
     ID_84("/it/polimi/ingsw/am49/textures/tui/84_back.txt"),
     ID_85("/it/polimi/ingsw/am49/textures/tui/85_back.txt"),
-    ID_86("/it/polimi/ingsw/am49/textures/tui/86_back.txt");
+    ID_86("/it/polimi/ingsw/am49/textures/tui/86_back.txt"),
+    OB("/it/polimi/ingsw/am49/textures/tui/objective_back.txt");
 
     private String fileName;
 

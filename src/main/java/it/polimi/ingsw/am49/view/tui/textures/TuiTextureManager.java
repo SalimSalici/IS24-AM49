@@ -3,20 +3,27 @@ package it.polimi.ingsw.am49.view.tui.textures;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class handles loading textures from disk for the TUI version of the game
  */
 public class TuiTextureManager {
 
-    /**
-     * Rapresents the texture of a card where every character has the correct color
-     */
-//    private static ColoredChar[][] buffer;
+    private final Map<Integer, TuiTexture> textures;
+
     private static TuiTextureManager instance;
 
     private TuiTextureManager() {
-//        buffer = new ColoredChar[5][15];
+        this.textures = new HashMap<>();
+        try {
+            for (int i = 1; i <= 102; i++)
+                this.textures.put(i, this.loadTexture(i));
+        } catch (IOException e) {
+            // TODO: handle exception
+            throw new RuntimeException(e);
+        }
     }
 
     public static TuiTextureManager getInstance() {
@@ -25,60 +32,65 @@ public class TuiTextureManager {
         return TuiTextureManager.instance;
     }
 
-    public static ColoredChar[][] getTexture(VirtualCard card) {
+    private TuiTexture loadTexture(int id) throws IOException {
+        ColoredChar[][] front;
+        ColoredChar[][] back;
 
+        String fileName = "/it/polimi/ingsw/am49/textures/tui/" + id + ".txt";
+        String backFileName;
+
+        try (InputStream inputStream = TuiTextureManager.class.getResourceAsStream(fileName);) {
+            if (inputStream == null)
+                throw new IOException("Couldn't load front tui texture for card with id + " + id);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                String line = reader.readLine();
+                backFileName = BackTexture.getFileName(line);
+                front = this.readTexture(reader);
+            }
+        }
+
+        if (backFileName == null)
+            throw new IOException("Couldn't find back tui texture path for card with id + " + id);
+
+        try (InputStream inputStream = TuiTextureManager.class.getResourceAsStream(backFileName);) {
+            if (inputStream == null)
+                throw new IOException("Couldn't load back tui texture for card with id + " + id);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                back = this.readTexture(reader);
+            }
+        }
+
+        return new TuiTexture(front, back);
+    }
+
+    private ColoredChar[][] readTexture(BufferedReader reader) throws IOException {
+        String line;
+        String[] charBuffer = new String[5];
+        String[] colorBuffer = new String[5];
         ColoredChar[][] buffer = new ColoredChar[5][15];
 
-        String fileName = "/it/polimi/ingsw/am49/textures/tui/" + card.id() + ".txt";
+        for (int i = 0; i < 5; i++) {   //reads the characters that compose the texture
+            line = reader.readLine();
+            charBuffer[i] = line;
+        }
 
-        //If the card is flipped reads the first line of the front of the card and throw that retreaves the correct
-        //file name for the back using the BackTesture enum
-        if (card.flipped()) {
-            try (InputStream is = TuiTextureManager.class.getResourceAsStream(fileName);
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-                String line = reader.readLine();
-                fileName = BackTexture.getFileName(line);
-                if (fileName == null || fileName.isEmpty()) {
-                    throw new FileNotFoundException("File not found");
-                }
-            } catch (IOException e) {
-                System.out.println("Error in reading file " + e.getMessage());
+        for (int i = 0; i < 5; i++) {   //reads the colors of each character of the texture
+            line = reader.readLine();
+            colorBuffer[i] = line;
+        }
+
+        for (int i = 0; i < charBuffer.length; i++) {   //assigns the correct color to every character
+            for (int j = 0; j < charBuffer[i].length(); j++) {
+                buffer[i][j] = new ColoredChar(charBuffer[i].charAt(j), AnsiColor.getColorForChar(colorBuffer[i].charAt(j)));
             }
         }
 
-        System.out.println("FILENAME: " + fileName);
-
-        //reads the .txt texture file and creates the texture in the buffer
-        try (InputStream is = TuiTextureManager.class.getResourceAsStream(fileName);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-            String line;
-            String[] charBuffer = new String[5];
-            String[] colorBuffer = new String[5];
-
-            //if the card is not flipped the first line of the .txt file, that contains the info reguarding
-            //the correct back texture is descarded.
-            if (!card.flipped()) {
-                line = reader.readLine();
-            }
-            for (int i = 0; i < 5; i++) {   //reads the characters that compose the texture
-                line = reader.readLine();
-                charBuffer[i] = line;
-            }
-
-            for (int i = 0; i < 5; i++) {   //reads the colors of each character of the texture
-                line = reader.readLine();
-                colorBuffer[i] = line;
-            }
-
-            for (int i = 0; i < charBuffer.length; i++) {   //assigns the correct color to every character
-                for (int j = 0; j < charBuffer[i].length(); j++) {
-                    buffer[i][j] = new ColoredChar(charBuffer[i].charAt(j), AnsiColor.getColorForChar(colorBuffer[i].charAt(j)));
-                }
-            }
-
-        } catch (IOException e) {
-            System.out.println("Error in reading file " + e.getMessage());
-        }
         return buffer;
+    }
+
+    public ColoredChar[][] getTexture(int id, boolean flipped) {
+        TuiTexture texture = this.textures.get(id);
+        if (flipped) return texture.getBackBuffer();
+        return texture.getFrontBuffer();
     }
 }

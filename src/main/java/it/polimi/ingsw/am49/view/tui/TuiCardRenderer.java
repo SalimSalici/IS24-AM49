@@ -3,20 +3,20 @@ package it.polimi.ingsw.am49.view.tui;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 import it.polimi.ingsw.am49.view.tui.textures.ColoredChar;
 
-public class TuiBoardRenderer {
+public class TuiCardRenderer {
     private final ColoredChar[][] buffer;
 
     private final int width;
     private final int height;
 
-    public TuiBoardRenderer(int width, int height) {
+    public TuiCardRenderer(int width, int height) {
         this.width = width;
         this.height = height;
         this.buffer = new ColoredChar[height][width];
-        this.clearBoard();
+        this.clear();
     }
 
-    public void clearBoard() {
+    public void clear() {
         for (int i = 0; i < buffer.length; i++) {
             for (int j = 0; j < buffer[i].length; j++) {
                 buffer[i][j] = new ColoredChar(' ', AnsiColor.ANSI_RESET);
@@ -49,8 +49,17 @@ public class TuiBoardRenderer {
         }
     }
 
-    // Print the entire player board buffer
-    public void printBoard() {
+    public void print() {
+        for (ColoredChar[] row : buffer) {
+            StringBuilder line = new StringBuilder();
+            for (ColoredChar cell : row) {
+                line.append(cell);
+            }
+            System.out.println(line);
+        }
+    }
+
+    public void printWithBorder() {
         String horBorder = "-".repeat(this.width + 2);
         System.out.println(horBorder);
 

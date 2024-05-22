@@ -1,5 +1,7 @@
 package it.polimi.ingsw.am49.view.tui.textures;
 
+import it.polimi.ingsw.am49.model.enumerations.Color;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +45,15 @@ public enum AnsiColor {
 
     public static AnsiColor getColorForChar(char c) {
         return colorMap.getOrDefault(c, ANSI_RESET); // Default: reset color
+    }
+
+    public static AnsiColor fromColor(Color color) {
+        return switch (color) {
+            case YELLOW -> AnsiColor.ANSI_YELLOW;
+            case GREEN -> AnsiColor.ANSI_GREEN;
+            case BLUE -> AnsiColor.ANSI_BLUE;
+            case RED -> AnsiColor.ANSI_RED;
+        };
     }
 
 }

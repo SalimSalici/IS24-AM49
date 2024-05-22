@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.view.tui;
 
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualTile;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 import it.polimi.ingsw.am49.view.tui.textures.TuiTextureManager;
@@ -11,15 +12,15 @@ import java.util.List;
 public class TuiBoard {
 
     private final VirtualBoard virtualBoard;
-    private final TuiBoardRenderer boardRenderer;
+    private final TuiCardRenderer renderer;
 
     public TuiBoard(VirtualBoard virtualBoard) {
         this.virtualBoard = virtualBoard;
-        this.boardRenderer = new TuiBoardRenderer(140, 30);
+        this.renderer = new TuiCardRenderer(140, 30);
     }
 
     public void drawNeighbourhood(int row, int col) {
-        this.boardRenderer.clearBoard();
+        this.renderer.clear();
 
         List<VirtualTile> neighbourhood = new ArrayList<>();
         VirtualTile centerTile = this.virtualBoard.getTile(row, col);
@@ -27,8 +28,8 @@ public class TuiBoard {
 
         this.addToNeighbourhood(neighbourhood, centerTile);
 
-        int centerDisplayRow = this.boardRenderer.getHeight() / 2;
-        int centerDisplayCol = this.boardRenderer.getWidth() / 2;
+        int centerDisplayRow = this.renderer.getHeight() / 2;
+        int centerDisplayCol = this.renderer.getWidth() / 2;
         int expandedRow = centerTile.getExpandedRow();
         int expandedCol = centerTile.getExpandedCol();
         neighbourhood.stream().sorted().forEach((virtualTile) -> {
@@ -38,9 +39,10 @@ public class TuiBoard {
             int currExpandedCol = virtualTile.getExpandedCol();
             int rowOffset = currExpandedRow - expandedRow;
             int colOffset = currExpandedCol - expandedCol;
+            VirtualCard card = this.virtualBoard.getTile(r, c).getCard();
 
-            this.boardRenderer.draw(
-                    TuiTextureManager.getTexture(this.virtualBoard.getTile(r, c).getCard()),
+            this.renderer.draw(
+                    TuiTextureManager.getInstance().getTexture(card.id(), card.flipped()),
                     centerDisplayCol + colOffset * 12,
                     centerDisplayRow + rowOffset * 3
             );
@@ -48,7 +50,7 @@ public class TuiBoard {
     }
 
     public void printBoard() {
-        this.boardRenderer.printBoard();
+        this.renderer.printWithBorder();
     }
 
     private void addToNeighbourhood(List<VirtualTile> neighbourhood, VirtualTile tile) {
