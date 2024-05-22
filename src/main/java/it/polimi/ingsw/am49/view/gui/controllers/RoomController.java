@@ -17,21 +17,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.rmi.RemoteException;
 
 public class RoomController extends GuiController {
 
     @FXML
-    Button redButton, greenButton, blueButton, yellowButton, notreadyButton, leaveButton;
+    private Button notreadyButton, leaveButton;
     @FXML
-    Label titleLabel, playersLabel, statusLabel;
+    private Label titleLabel, playersLabel;
     @FXML
-    ListView<String> playersListview;
+    private ListView<String> playersListview;
+    @FXML
+    private ImageView redImageview, greenImageview, blueImageview, yellowImageview, totemImageview;
 
     private Server server;
     private RoomInfo roomInfo;
-    private Color buttonColor;
+    private Color totemColor;
 
     public void initialize(){
 
@@ -45,29 +49,30 @@ public class RoomController extends GuiController {
         titleLabel.setText("Room: " + this.roomInfo.roomName());
 
         drawPlayersList();
+        drawPlayersCount();
 
-        this.redButton.setOnAction(e -> {
-            this.buttonColor = Color.RED;
+        this.redImageview.setOnMouseClicked(e -> {
+            this.totemColor = Color.RED;
             this.setColor();
         });
 
-        this.greenButton.setOnAction(e -> {
-            this.buttonColor = Color.GREEN;
+        this.greenImageview.setOnMouseClicked(e -> {
+            this.totemColor = Color.GREEN;
             this.setColor();
         });
 
-        this.blueButton.setOnAction(e -> {
-            this.buttonColor = Color.BLUE;
+        this.blueImageview.setOnMouseClicked(e -> {
+            this.totemColor = Color.BLUE;
             this.setColor();
         });
 
-        this.yellowButton.setOnAction(e -> {
-            this.buttonColor = Color.YELLOW;
+        this.yellowImageview.setOnMouseClicked(e -> {
+            this.totemColor = Color.YELLOW;
             this.setColor();
         });
 
         this.notreadyButton.setOnAction(e -> {
-            this.buttonColor = null;
+            this.totemColor = null;
             this.setColor();
         });
 
@@ -80,6 +85,7 @@ public class RoomController extends GuiController {
     public void roomUpdate(RoomInfo roomInfo, String message) throws InvalidSceneException {
         this.roomInfo = roomInfo;
         drawPlayersList();
+        drawPlayersCount();
     }
 
     @Override
@@ -92,7 +98,7 @@ public class RoomController extends GuiController {
     }
 
     private void leaveRoom(){
-        this.buttonColor = null;
+        this.totemColor = null;
         try{
             roomInfo = this.server.readyDown(this.app);
             this.server.leaveRoom(this.app);
@@ -107,29 +113,31 @@ public class RoomController extends GuiController {
     private void setColor(){
         try {
             // se il colore è not set
-            if(buttonColor == null){
+            if(totemColor == null){
                 this.roomInfo = this.server.readyDown(this.app);
             }
             else{
-                this.roomInfo = this.server.readyUp(this.app, buttonColor);
+                this.roomInfo = this.server.readyUp(this.app, totemColor);
                 this.manager.setRoomInfo(this.roomInfo);
             }
-            // aggiorna la status label
-            this.statusLabel.setText("Status: " + (this.roomInfo.playersToColors().get(this.app.getUsername()) == null
-                    ? "Not set"
-                    : this.roomInfo.playersToColors().get(this.app.getUsername()).toString().toLowerCase()) //TODO: POI DOVRA' STAMPARE LE IMMAGINI DEI TOKEN
+
+            this.totemImageview.setImage(this.roomInfo.playersToColors().get(this.app.getUsername()) != null
+                ? getImageByTotemColor(this.totemColor)
+                : null
             );
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid color. Please try again.");
-            this.buttonColor = null;
+            this.totemColor = null;
         } catch (RemoteException e) {
             // TODO: Handle exception
             throw new RuntimeException(e);
         }
     }
 
-    private void drawPlayersLabel(){
-        this.playersLabel.setText("Players: " + this.roomInfo.playersToColors() + "/" + this.roomInfo.maxPlayers());
+    private void drawPlayersCount(){
+        Platform.runLater(() -> {
+            playersLabel.setText("Players: " + this.roomInfo.playersToColors().size() + "/" + this.roomInfo.maxPlayers());
+        });
     }
 
     private void drawPlayersList() {

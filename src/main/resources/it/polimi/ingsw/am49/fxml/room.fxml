@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -18,10 +20,15 @@
                   <Font name="Gebetbuch Fraktur" size="50.0" />
                </font>
             </Label>
-            <HBox alignment="CENTER" spacing="30.0">
+            <HBox alignment="CENTER" spacing="200.0">
                <children>
                   <Label fx:id="playersLabel" text="Players:" textAlignment="CENTER" />
-                  <Label fx:id="statusLabel" prefHeight="16.0" prefWidth="100.0" text="Status: Not set" />
+                  <HBox alignment="CENTER" spacing="10.0">
+                     <children>
+                        <Label prefHeight="16.0" prefWidth="49.0" text="Totem:" />
+                        <ImageView fx:id="totemImageview" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </HBox>
                </children>
             </HBox>
          </children>
@@ -39,10 +46,26 @@
             <ListView fx:id="playersListview" focusTraversable="false" prefHeight="200.0" prefWidth="200.0" />
             <HBox alignment="CENTER" spacing="30.0">
                <children>
-                  <Button fx:id="redButton" mnemonicParsing="false" text="Red" />
-                  <Button fx:id="greenButton" mnemonicParsing="false" text="Green" />
-                  <Button fx:id="blueButton" mnemonicParsing="false" text="Blue" />
-                  <Button fx:id="yellowButton" mnemonicParsing="false" text="Yellow" />
+                  <ImageView fx:id="redImageview" fitHeight="56.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/CODEX_pion_rouge.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="greenImageview" fitHeight="119.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/CODEX_pion_vert.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="blueImageview" fitHeight="150.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/CODEX_pion_bleu.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="yellowImageview" fitHeight="150.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/CODEX_pion_jaune.png" />
+                     </image>
+                  </ImageView>
                   <Button fx:id="notreadyButton" mnemonicParsing="false" text="Not ready" />
                   <Button fx:id="leaveButton" mnemonicParsing="false" text="Leave" />
                </children>
