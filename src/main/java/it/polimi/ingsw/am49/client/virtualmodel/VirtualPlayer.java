@@ -55,6 +55,15 @@ public class VirtualPlayer extends Observable {
         return color;
     }
 
+    public javafx.scene.paint.Color getJavaFXColor() {
+        return switch (color) {
+            case BLUE -> javafx.scene.paint.Color.BLUE;
+            case RED -> javafx.scene.paint.Color.RED;
+            case GREEN -> javafx.scene.paint.Color.GREEN;
+            case YELLOW -> javafx.scene.paint.Color.YELLOW;
+        };
+    }
+
     public List<Integer> getHand() {
         return hand;
     }

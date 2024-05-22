@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.enumerations.Item;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.util.Observer;
+import it.polimi.ingsw.am49.view.gui.PointsCoordinates;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +16,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,6 +31,8 @@ public class OverviewController extends GuiController implements Observer {
     private AnchorPane playerboardAnchorpane;
     @FXML
     private BoardController playerboardController;
+    @FXML
+    private Pane pointsPane;
 
     private VirtualGame game;
     private String myUsername;
@@ -49,6 +55,8 @@ public class OverviewController extends GuiController implements Observer {
         drawPlayers();
         drawDecks();
         drawSymbols(myUsername);
+        drawPointsBoard();
+        drawPointsTokens();
 
         if (playerboardController != null) {
         playerboardController.init(this.game.getPlayers(), this.game.getPlayerByUsername(myUsername));
@@ -224,6 +232,36 @@ public class OverviewController extends GuiController implements Observer {
             index++;
         }
     }
+
+    private void drawPointsBoard(){
+        // Carica l'immagine
+        Image pointsBoardImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/plateau_score/plateau.png")));
+        ImageView pointsBoardImageview = new ImageView(pointsBoardImage);
+
+        // Imposta la larghezza e l'altezza dell'ImageView in base al Pane
+        pointsBoardImageview.setFitWidth(pointsPane.getWidth());
+        pointsBoardImageview.setFitHeight(pointsPane.getHeight());
+
+        // Aggiungi l'ImageView al Pane
+        pointsPane.getChildren().add(pointsBoardImageview);
+
+        // Assicurati che l'ImageView ridimensioni insieme al Pane
+        pointsBoardImageview.fitWidthProperty().bind(pointsPane.widthProperty());
+        pointsBoardImageview.fitHeightProperty().bind(pointsPane.heightProperty());
+    }
+
+    private void drawPointsTokens(){
+        for (VirtualPlayer player : this.players) {
+            Circle circle = new Circle(14 + this.players.indexOf(player)*4, Color.TRANSPARENT);
+            circle.setStroke(player.getJavaFXColor());
+            circle.setStrokeWidth(4);
+            PointsCoordinates point = PointsCoordinates.fromNumber(player.getPoints());
+            circle.setCenterX(point.getX());
+            circle.setCenterY(point.getY());
+            pointsPane.getChildren().add(circle);
+        }
+    }
+
 
     private void setFocusedPlayer(VirtualPlayer player){
         if(!focusedPlayer.equals(player)) {
