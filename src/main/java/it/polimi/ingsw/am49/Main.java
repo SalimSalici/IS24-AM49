@@ -4,7 +4,7 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.enumerations.Color;
-import it.polimi.ingsw.am49.view.tui.TuiBoard;
+import it.polimi.ingsw.am49.view.tui.TuiBoardRenderer;
 import it.polimi.ingsw.am49.view.tui.TuiPlayerRenderer;
 
 import java.util.List;
@@ -24,9 +24,9 @@ public class Main {
         vb.placeCard(new VirtualCard(1, false), 26, 27);
         vb.placeCard(new VirtualCard(1, false), 27, 28);
 
-        TuiBoard tuiBoard = new TuiBoard(vb);
-        tuiBoard.drawNeighbourhood(25, 25);
-        tuiBoard.printBoard();
+        TuiBoardRenderer tuiBoardRenderer = new TuiBoardRenderer(vb);
+        tuiBoardRenderer.drawNeighbourhood(25, 25);
+        tuiBoardRenderer.printBoard();
 
         VirtualPlayer player = new VirtualPlayer("Salim", Color.RED);
         player.setHand(List.of(1, 34, 65));

@@ -69,6 +69,9 @@ public class VirtualView implements EventListener {
                 case PLAYERS_ORDER_SET_EVENT -> {
                     // discard... Player order will be communicated to the client with a GameStartedUpdate
                 }
+                case PERSONAL_OBJECTIVE_CHOSEN_EVENT -> {
+                    // discard...
+                }
                 default -> this.client.receiveGameUpdate(event.toGameUpdate());
             }
         } catch (RemoteException ex) {

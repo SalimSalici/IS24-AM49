@@ -9,12 +9,12 @@ import it.polimi.ingsw.am49.view.tui.textures.TuiTextureManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TuiBoard {
+public class TuiBoardRenderer {
 
     private final VirtualBoard virtualBoard;
     private final TuiCardRenderer renderer;
 
-    public TuiBoard(VirtualBoard virtualBoard) {
+    public TuiBoardRenderer(VirtualBoard virtualBoard) {
         this.virtualBoard = virtualBoard;
         this.renderer = new TuiCardRenderer(140, 30);
     }

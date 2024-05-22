@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.model.events;
 
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.PersonalObjectiveChosenUpdate;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.Player;
@@ -19,6 +20,6 @@ public record PersonalObjectiveChosenEvent(Player player, ObjectiveCard objectiv
 
     @Override
     public GameUpdate toGameUpdate() {
-        return null;
+        return new PersonalObjectiveChosenUpdate(player().getUsername(), objectiveCard().getId());
     }
 }

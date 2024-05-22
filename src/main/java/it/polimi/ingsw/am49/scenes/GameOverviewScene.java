@@ -72,7 +72,7 @@ public class GameOverviewScene extends Scene implements Observer {
     }
 
     private void showBoard() {
-        this.sceneManager.setScene( new ViewBoardScene( this.sceneManager, this.tuiApp, this.game.getPlayerByUsername(this.tuiApp.getUsername()).getBoard()));
+        this.sceneManager.setScene( new ViewPlayerScene( this.sceneManager, this.tuiApp, this.game.getPlayerByUsername(this.tuiApp.getUsername())));
         this.stop();
     }
 

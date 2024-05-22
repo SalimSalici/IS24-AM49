@@ -11,8 +11,9 @@ import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.util.Observer;
-import it.polimi.ingsw.am49.view.tui.TuiBoard;
+import it.polimi.ingsw.am49.view.tui.TuiBoardRenderer;
 import it.polimi.ingsw.am49.util.Pair;
+import it.polimi.ingsw.am49.view.tui.TuiPlayerRenderer;
 
 import java.rmi.RemoteException;
 import java.util.stream.IntStream;
@@ -20,32 +21,34 @@ import java.util.stream.IntStream;
 /**
  * This class handles the display of the player board scene and the card placement action
  */
-public class ViewBoardScene extends Scene implements Observer {
+public class ViewPlayerScene extends Scene implements Observer {
 
     private final TuiApp tuiApp;
     private boolean running = true;
     private final Server server;
     private final VirtualGame game;
-    private final VirtualBoard virtualBoard;
-    private final TuiBoard tuiBoard;
+    private final VirtualBoard board;
+    private final TuiBoardRenderer tuiBoardRenderer;
+    private final TuiPlayerRenderer tuiPlayer;
     private int row;
     private int col;
 
-    public ViewBoardScene(SceneManager sceneManager, TuiApp tuiApp, VirtualBoard virtualBoard) {
+    public ViewPlayerScene(SceneManager sceneManager, TuiApp tuiApp, VirtualPlayer player) {
         super(sceneManager);
         this.tuiApp = tuiApp;
         this.server = this.tuiApp.getServer();
         this.game = tuiApp.getVirtualGame();
-        this.virtualBoard = virtualBoard;
-        this.virtualBoard.addObserver(this);
-        this.tuiBoard = new TuiBoard(virtualBoard);
+        this.board = player.getBoard();
+        this.board.addObserver(this);
+        this.tuiPlayer = new TuiPlayerRenderer(player, player.getUsername().equals(tuiApp.getUsername()), tuiApp.getVirtualGame().getCommonObjectives());
+        this.tuiBoardRenderer = new TuiBoardRenderer(this.board);
         this.row = 25;
         this.col = 25;
     }
 
     @Override
     public void play() {
-        this.printBoard();
+        this.printView();
         while (this.running) {
             this.promptCommand();
             linesToClear = 2;
@@ -81,17 +84,20 @@ public class ViewBoardScene extends Scene implements Observer {
     }
 
     private void printHeader() {
-        System.out.println("Board of player: " + tuiApp.getUsername());
+        System.out.println("Player view\n");
     }
 
     /**
      * Calls al method necessary to construct the output of the player board scene
      */
-    private void printBoard() {
+    private void printView() {
         this.clearScreen();
         this.printHeader();
-        tuiBoard.drawNeighbourhood(row, col);
-        tuiBoard.printBoard();
+        System.out.println();
+        tuiBoardRenderer.drawNeighbourhood(row, col);
+        tuiBoardRenderer.printBoard();
+        System.out.println();
+        tuiPlayer.print();
     }
 
     /**
@@ -177,16 +183,16 @@ public class ViewBoardScene extends Scene implements Observer {
 
     private void moveBoard(RelativePosition relativePosition) {
         Pair<Integer, Integer> newCoords = VirtualBoard.getCoords(relativePosition, this.row, this.col);
-        if (this.virtualBoard.getTile(newCoords.first, newCoords.second) != null) {
+        if (this.board.getTile(newCoords.first, newCoords.second) != null) {
             this.row = newCoords.first;
             this.col = newCoords.second;
         }
-        printBoard();
+        printView();
     }
 
     @Override
     public void update() {
-        this.printBoard();
+        this.printView();
         this.promptCommand();
         this.linesToClear = 3;
     }

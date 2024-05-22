@@ -77,6 +77,7 @@ public class ChooseObjectiveCardScene extends Scene {
     private synchronized void handleObjectiveChosen(int objectiveId) {
         try {
             this.server.executeAction(this.tuiApp, new ChooseObjectiveAction(this.username, objectiveId));
+            this.tuiApp.getVirtualGame().getPlayerByUsername(this.username).setPersonalObjectiveId(objectiveId);
             this.objectiveChosen = true;
         } catch (NotYourTurnException e) {
             throw new RuntimeException(e);
