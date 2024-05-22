@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.actions.PlaceCardAction;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
+import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
@@ -23,7 +24,6 @@ import java.util.stream.IntStream;
  */
 public class ViewPlayerScene extends Scene implements Observer {
 
-    private final TuiApp tuiApp;
     private boolean running = true;
     private final Server server;
     private final VirtualGame game;
@@ -34,13 +34,12 @@ public class ViewPlayerScene extends Scene implements Observer {
     private int col;
 
     public ViewPlayerScene(SceneManager sceneManager, TuiApp tuiApp, VirtualPlayer player) {
-        super(sceneManager);
-        this.tuiApp = tuiApp;
+        super(sceneManager, tuiApp);
         this.server = this.tuiApp.getServer();
         this.game = tuiApp.getVirtualGame();
         this.board = player.getBoard();
         this.board.addObserver(this);
-        this.tuiPlayer = new TuiPlayerRenderer(player, player.getUsername().equals(tuiApp.getUsername()), tuiApp.getVirtualGame().getCommonObjectives());
+        this.tuiPlayer = new TuiPlayerRenderer(player, !player.getUsername().equals(tuiApp.getUsername()), tuiApp.getVirtualGame().getCommonObjectives());
         this.tuiBoardRenderer = new TuiBoardRenderer(this.board);
         this.row = 25;
         this.col = 25;
@@ -66,12 +65,12 @@ public class ViewPlayerScene extends Scene implements Observer {
                 case "a" -> this.moveBoard(RelativePosition.BOTTOM_LEFT);
                 case "d" -> this.moveBoard(RelativePosition.BOTTOM_RIGHT);
                 case "p" -> {
-                    if (this.isClientTurn())
+                    if (this.canPlace())
                         this.placeCard(parts);
                     else
                         System.out.println("Invalid command, please try again.");
                 }
-                case "exit" -> {
+                case "b" -> {
                     this.sceneManager.setScene(new GameOverviewScene(this.sceneManager, this.tuiApp));
                     this.stop();
                 }
@@ -105,15 +104,15 @@ public class ViewPlayerScene extends Scene implements Observer {
      */
     private void promptCommand() {
         System.out.println("Available commands: ");
-        System.out.println("(Q) Move Top Left");
-        System.out.println("(E) Move Top Right");
-        System.out.println("(A) Move Bottom Left");
-        System.out.println("(D) Move Bottom Right");
-        if (this.isClientTurn()) {
-            System.out.println("(P) Place a card");
+        System.out.print("(Q) Move Top Left | ");
+        System.out.print("(E) Move Top Right | ");
+        System.out.print("(A) Move Bottom Left | ");
+        System.out.print("(D) Move Bottom Right");
+        if (this.canPlace()) {
+            System.out.print(" | (P) Place a card | ");
         }
-        System.out.println("Type 'exit' to go back to the Game Overview.");
-        System.out.print(">>> ");
+        System.out.print("(B) Back");
+        System.out.print("\n>>> ");
     }
 
     private void placeCard(String[] args) {
@@ -197,8 +196,9 @@ public class ViewPlayerScene extends Scene implements Observer {
         this.linesToClear = 3;
     }
 
-    private boolean isClientTurn() {
-        return this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername());
+    private boolean canPlace() {
+        return  this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername())
+                && this.game.getGameState() == GameStateType.PLACE_CARD;
     }
 
     private void stop() {

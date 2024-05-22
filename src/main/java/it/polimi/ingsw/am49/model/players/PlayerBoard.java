@@ -48,6 +48,9 @@ public class PlayerBoard implements Serializable {
         this.board[25][25] = this.starterTile;
         this.placementOrder.add(this.starterTile);
         this.availableResources = new HashMap<>();
+        for (Symbol s : Symbol.values()) {
+            this.availableResources.put(s, 0);
+        }
     }
 
     /**

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.scenes;
 
+import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
@@ -7,13 +8,15 @@ import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 import java.util.Scanner;
 
 public abstract class Scene {
-    protected SceneManager sceneManager;
+    protected final SceneManager sceneManager;
+    protected final TuiApp tuiApp;
     protected final Scanner scanner;
 
     protected int linesToClear;
 
-    public Scene(SceneManager sceneManager) {
+    public Scene(SceneManager sceneManager, TuiApp tuiApp) {
         this.sceneManager = sceneManager;
+        this.tuiApp = tuiApp;
         this.scanner = new Scanner(System.in);
     }
 

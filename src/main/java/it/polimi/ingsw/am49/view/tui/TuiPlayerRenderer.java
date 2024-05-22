@@ -62,11 +62,11 @@ public class TuiPlayerRenderer {
         this.renderer.draw(texture, 62, 2);
 
         cardId = this.commonObjectives.getFirst();
-        texture = TuiTextureManager.getInstance().getTexture(cardId, hidden);
+        texture = TuiTextureManager.getInstance().getTexture(cardId, false);
         this.renderer.draw(texture, 85, 2);
 
         cardId = this.commonObjectives.get(1);
-        texture = TuiTextureManager.getInstance().getTexture(cardId, hidden);
+        texture = TuiTextureManager.getInstance().getTexture(cardId, false);
         this.renderer.draw(texture, 101, 2);
 
         this.renderer.print();

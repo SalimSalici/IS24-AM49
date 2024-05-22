@@ -14,7 +14,6 @@ import java.util.stream.IntStream;
 import java.util.List;
 
 public class StarterCardScene extends Scene {
-    private final TuiApp tuiApp;
     private boolean running = true;
     private final Server server;
     private final String username;
@@ -23,8 +22,7 @@ public class StarterCardScene extends Scene {
     private final int starterCardId;
 
     public StarterCardScene(SceneManager sceneManager, TuiApp tuiApp, int starterCardId) {
-        super(sceneManager);
-        this.tuiApp = tuiApp;
+        super(sceneManager, tuiApp);
         this.server = tuiApp.getServer();
         this.username = tuiApp.getUsername();
         this.starterCardId = starterCardId;

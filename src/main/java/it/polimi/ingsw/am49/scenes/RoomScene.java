@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 public class RoomScene extends Scene {
-    private final TuiApp tuiApp;
     private Boolean running = true;
     private final Server server;
     private RoomInfo roomInfo;
@@ -24,8 +23,7 @@ public class RoomScene extends Scene {
     private Thread inputThread;
 
     public RoomScene(SceneManager sceneManager, TuiApp tuiApp, RoomInfo roomInfo) {
-        super(sceneManager);
-        this.tuiApp = tuiApp;
+        super(sceneManager, tuiApp);
         this.server = this.tuiApp.getServer();
         this.roomInfo = roomInfo;
         this.isUserReady = false;

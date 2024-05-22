@@ -6,11 +6,8 @@ import java.util.stream.IntStream;
 
 public class WelcomeScene extends Scene {
 
-    private final TuiApp tuiApp;
-
     public WelcomeScene(SceneManager sceneManager, TuiApp tuiApp) {
-        super(sceneManager);
-        this.tuiApp = tuiApp;
+        super(sceneManager, tuiApp);
     }
 
     @Override
@@ -29,9 +26,10 @@ public class WelcomeScene extends Scene {
             linesToClear = 2;
             username = this.scanner.nextLine();
             valid = this.isUsernameValid(username);
-            if (!valid)
+            if (!valid) {
                 IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
                 System.out.println("Invalid username, please choose a username between 2 and 20 characters.");
+            }
         }
 
         this.tuiApp.setUsername(username);

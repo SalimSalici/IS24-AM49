@@ -19,15 +19,12 @@ import java.util.stream.IntStream;
  * This class handles the display of the draw area and the draw card action
  */
 public class DrawAreaScene extends Scene implements Observer {
-
-    private final TuiApp tuiApp;
     private boolean running = true;
     private final Server server;
     private final VirtualGame game;
 
     public DrawAreaScene(SceneManager sceneManager, TuiApp tuiApp) {
-        super(sceneManager);
-        this.tuiApp = tuiApp;
+        super(sceneManager, tuiApp);
         this.server = this.tuiApp.getServer();
         this.game = tuiApp.getVirtualGame();
         this.game.addObserver(this);

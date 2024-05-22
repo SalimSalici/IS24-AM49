@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class ChooseObjectiveCardScene extends Scene {
-    private final TuiApp tuiApp;
     private boolean running = true;
     private final Server server;
     private final String username;
@@ -23,8 +22,7 @@ public class ChooseObjectiveCardScene extends Scene {
     private boolean objectiveChosen = false;
 
     public ChooseObjectiveCardScene(SceneManager sceneManager, TuiApp tuiApp, List<Integer> objectiveCardIds) {
-        super(sceneManager);
-        this.tuiApp = tuiApp;
+        super(sceneManager, tuiApp);
         this.server = tuiApp.getServer();
         this.username = tuiApp.getUsername();
         this.objectiveCardIds = objectiveCardIds;

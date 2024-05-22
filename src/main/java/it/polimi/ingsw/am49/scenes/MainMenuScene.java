@@ -21,7 +21,7 @@ public class MainMenuScene extends Scene {
     private List<RoomInfo> rooms;
 
     public MainMenuScene(SceneManager sceneManager, TuiApp tuiApp) {
-        super(sceneManager);
+        super(sceneManager, tuiApp);
         this.tuiApp = tuiApp;
         this.server = tuiApp.getServer();
         this.rooms = new LinkedList<>();

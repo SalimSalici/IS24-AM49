@@ -6,13 +6,11 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.util.Observer;
 
 public class GameOverviewScene extends Scene implements Observer {
-    private final TuiApp tuiApp;
     private final VirtualGame game;
     private boolean running = true;
 
     public GameOverviewScene(SceneManager sceneManager, TuiApp tuiApp) {
-        super(sceneManager);
-        this.tuiApp = tuiApp;
+        super(sceneManager, tuiApp);
         this.game = tuiApp.getVirtualGame();
         this.game.addObserver(this);
     }
