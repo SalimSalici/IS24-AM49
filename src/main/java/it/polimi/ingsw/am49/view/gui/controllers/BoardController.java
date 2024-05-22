@@ -1,71 +1,80 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ProvaController extends GuiController {
+public class BoardController extends GuiController {
     @FXML
-    private Button up, down, left, right;
-
+    private Button upButton, downButton, leftButton, rightButton;
     @FXML
     private Pane containerPane; // Pane più grande per contenere il riquadro e i pulsanti
+
+    private List<VirtualPlayer> players;
 
     private Pane innerPane; // Pane più grande come riquadro
     private Pane imagePane; // Pane per contenere le ImageView
 
-    private ImageView provaImageView;
+    private ImageView starterImageview;
     private ImageView selectedImageView;
 
-    private final double rectangleWidth = 135;
-    private final double rectangleHeight = 82; // Dimensioni standard delle carte
+    private final double cardWidth = 135;
+    private final double cardHeight = 82; // Dimensioni standard delle carte
     private final double innerPaneWidth = 650; // Dimensioni più grandi per innerPane
     private final double innerPaneHeight = 340; // Dimensioni più grandi per innerPane
     private final double overlapOffset = 30; // Offset per sovrapposizione degli angoli
-    private Random random = new Random();
+    private final Random random = new Random();
+    private final Map<VirtualPlayer, List<ImageView>> playerBoards = new HashMap<>(); //map to save in memory the players' boards
+    private VirtualPlayer currentPlayer;
 
-    @Override
-    public void init() {
+    public void init(List<VirtualPlayer> players, VirtualPlayer myPlayer) {
+        this.players = players;
+
         innerPane = new Pane();
         innerPane.setPrefSize(innerPaneWidth, innerPaneHeight); // Imposta le dimensioni più grandi del riquadro
         innerPane.setStyle("-fx-border-color: black;"); // Aggiunge un bordo nero per visualizzare il riquadro
 
-        // Imposta il clipping per innerPane
+        // Set the clipping for innerPane
         Rectangle clip = new Rectangle(innerPaneWidth, innerPaneHeight);
         innerPane.setClip(clip);
 
-        // Pane per contenere le ImageView
+        // Pane used to contain the imageViews
         imagePane = new Pane();
 
         // Calcola le coordinate iniziali per centrare il rettangolo in innerPane
-        double initialX = (innerPaneWidth - rectangleWidth) / 2;
-        double initialY = (innerPaneHeight - rectangleHeight) / 2;
+        double initialX = (innerPaneWidth - cardWidth) / 2;
+        double initialY = (innerPaneHeight - cardHeight) / 2;
 
-        // Creazione della ImageView con ID carta compreso tra 81 e 86
-        int initialCardId = 81 + random.nextInt(6);
-        provaImageView = createSelectableImageView(initialX, initialY, rectangleWidth, rectangleHeight, "CIAO", initialCardId);
-
-        // Aggiungi la ImageView a imagePane
-        imagePane.getChildren().add(provaImageView);
+        // does the setup of the starting card for each player
+        for(VirtualPlayer player : this.players){
+            setupStartingCards(player);
+        }
 
         innerPane.getChildren().add(imagePane);
+
         containerPane.getChildren().add(innerPane); // Aggiunge il riquadro al pane più grande
 
-        // Listener per centrare il riquadro quando containerPane cambia dimensioni
+        // lisetener to dinamically change dimensions when resizing 
         containerPane.widthProperty().addListener((obs, oldVal, newVal) -> centerInnerPane());
         containerPane.heightProperty().addListener((obs, oldVal, newVal) -> centerInnerPane());
 
-        up.setOnAction(e -> moveUp());
-        down.setOnAction(e -> moveDown());
-        left.setOnAction(e -> moveLeft());
-        right.setOnAction(e -> moveRight());
+        upButton.setOnAction(e -> moveUp());
+        downButton.setOnAction(e -> moveDown());
+        leftButton.setOnAction(e -> moveLeft());
+        rightButton.setOnAction(e -> moveRight());
 
         // Pulsanti per i quattro angoli della schermata
         Button topLeft = new Button("<TL>");
@@ -89,10 +98,10 @@ public class ProvaController extends GuiController {
         containerPane.getChildren().addAll(topLeft, topRight, bottomLeft, bottomRight);
 
         // Gestione degli eventi dei pulsanti degli angoli
-        topLeft.setOnAction(e -> addImageViewToSelected(-135 + overlapOffset, -83 + overlapOffset));
-        topRight.setOnAction(e -> addImageViewToSelected(rectangleWidth - overlapOffset, -83 + overlapOffset));
-        bottomLeft.setOnAction(e -> addImageViewToSelected(-135 + overlapOffset, rectangleHeight - overlapOffset));
-        bottomRight.setOnAction(e -> addImageViewToSelected(rectangleWidth - overlapOffset, rectangleHeight - overlapOffset));
+        topLeft.setOnAction(e -> addImageViewToSelected(-cardWidth + overlapOffset, -cardHeight + overlapOffset));
+        topRight.setOnAction(e -> addImageViewToSelected(cardWidth - overlapOffset, -cardHeight + overlapOffset));
+        bottomLeft.setOnAction(e -> addImageViewToSelected(-cardWidth + overlapOffset, cardHeight - overlapOffset));
+        bottomRight.setOnAction(e -> addImageViewToSelected(cardWidth - overlapOffset, cardHeight - overlapOffset));
 
         // Pulsante reset
         Button resetButton = new Button("Reset");
@@ -102,22 +111,65 @@ public class ProvaController extends GuiController {
 
         containerPane.getChildren().add(resetButton);
 
+        currentPlayer = myPlayer;
+
         // Seleziona il pannello iniziale
-        selectImageView(provaImageView);
+        selectImageView(starterImageview);
+        saveCurrentBoardState(currentPlayer);
     }
 
-    private ImageView createSelectableImageView(double x, double y, double width, double height, String id, int cardId) {
+    private void setupStartingCards(VirtualPlayer player){
+        double initialX = (innerPaneWidth - cardWidth) / 2;
+        double initialY = (innerPaneHeight - cardHeight) / 2;
+        VirtualCard startingCard = new VirtualCard(81 + random.nextInt(6), true);
+        starterImageview = createSelectableImageView(initialX, initialY, player.getUsername(), startingCard); // the id is the username of the client
+        imagePane.getChildren().add(starterImageview);
+        saveCurrentBoardState(player);
+    }
+
+    private void saveCurrentBoardState(VirtualPlayer player) {
+        List<ImageView> currentBoard = new ArrayList<>();
+        for (Node node : imagePane.getChildren()) {
+            if (node instanceof ImageView) {
+                currentBoard.add(cloneImageView((ImageView) node));
+            }
+        }
+        playerBoards.put(player, currentBoard);
+    }
+
+    private void loadBoardState(VirtualPlayer player) {
+        List<ImageView> board = playerBoards.get(player);
+        imagePane.getChildren().clear();
+        if (board != null) {
+            imagePane.getChildren().addAll(board);
+        } else { // used to load the starting cards
+            setupStartingCards(player);
+        }
+    }
+
+    private ImageView cloneImageView(ImageView original) {
+        ImageView clone = new ImageView();
+        clone.setLayoutX(original.getLayoutX());
+        clone.setLayoutY(original.getLayoutY());
+        clone.setFitWidth(original.getFitWidth());
+        clone.setFitHeight(original.getFitHeight());
+        clone.setImage(original.getImage());
+        clone.setId(original.getId());
+        clone.setOnMouseClicked(e -> selectImageView(clone));
+        return clone;
+    }
+
+    private ImageView createSelectableImageView(double x, double y, String id, VirtualCard card) {
         ImageView imageView = new ImageView();
         imageView.setLayoutX(x);
         imageView.setLayoutY(y);
-        imageView.setFitWidth(width);
-        imageView.setFitHeight(height);
-        imageView.setImage(getImageByCardId(cardId, true));
+        imageView.setFitWidth(cardWidth);
+        imageView.setFitHeight(cardHeight);
+        imageView.setImage(getImageByVirtualCard(card));
         imageView.setId(id);
         imageView.setOnMouseClicked(e -> selectImageView(imageView));
         return imageView;
     }
-
 
     private void selectImageView(ImageView imageView) {
         if (selectedImageView != null) {
@@ -160,29 +212,28 @@ public class ProvaController extends GuiController {
         if (selectedImageView != null) {
             double newX = selectedImageView.getLayoutX() + offsetX;
             double newY = selectedImageView.getLayoutY() + offsetY;
-            int cardId = 1 + random.nextInt(80); // ID carta compreso tra 1 e 80
-            addImageView(newX, newY, cardId);
+            VirtualCard card = new VirtualCard((1 + random.nextInt(80)), true); // generates a random card
+            addImageView(newX, newY, card);
         }
     }
 
-    private void addImageView(double x, double y, int cardId) {
-        ImageView newImageView = createSelectableImageView(x, y, rectangleWidth, rectangleHeight, "NEW", cardId);
+    private void addImageView(double x, double y, VirtualCard card) {
+        ImageView newImageView = createSelectableImageView(x, y, "NEW", card);
         imagePane.getChildren().add(newImageView);
     }
 
     private void resetImageViews() {
-        double initialX = (innerPaneWidth - rectangleWidth) / 2;
-        double initialY = (innerPaneHeight - rectangleHeight) / 2;
+        double initialX = (innerPaneWidth - cardWidth) / 2;
+        double initialY = (innerPaneHeight - cardHeight) / 2;
 
-        double deltaX = provaImageView.getLayoutX() - initialX;
-        double deltaY = provaImageView.getLayoutY() - initialY;
+        double deltaX = starterImageview.getLayoutX() - initialX;
+        double deltaY = starterImageview.getLayoutY() - initialY;
 
-        provaImageView.setLayoutX(initialX);
-        provaImageView.setLayoutY(initialY);
+        starterImageview.setLayoutX(initialX);
+        starterImageview.setLayoutY(initialY);
 
         for (Node node : imagePane.getChildren()) {
-            if (node instanceof ImageView && !"CIAO".equals(node.getId())) {
-                ImageView imageView = (ImageView) node;
+            if (node instanceof ImageView imageView && ! currentPlayer.getUsername().equals(node.getId())) {
                 imageView.setLayoutX(imageView.getLayoutX() - deltaX);
                 imageView.setLayoutY(imageView.getLayoutY() - deltaY);
             }
@@ -190,5 +241,12 @@ public class ProvaController extends GuiController {
 
         imagePane.setLayoutX(0);
         imagePane.setLayoutY(0);
+    }
+
+    public void switchPlayerBoard(VirtualPlayer player) {
+        saveCurrentBoardState(currentPlayer);
+        currentPlayer = player;
+        centerInnerPane();
+        loadBoardState(player);
     }
 }

@@ -3,11 +3,8 @@ package it.polimi.ingsw.am49.view.gui.controllers;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
-import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.Item;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
-import it.polimi.ingsw.am49.model.enumerations.Symbol;
-import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.util.Observer;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.fxml.FXML;
@@ -21,7 +18,6 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class OverviewController extends GuiController implements Observer {
@@ -30,7 +26,7 @@ public class OverviewController extends GuiController implements Observer {
     @FXML
     private AnchorPane playerboardAnchorpane;
     @FXML
-    private ProvaController playerboardController;
+    private BoardController playerboardController;
 
     private VirtualGame game;
     private String myUsername;
@@ -55,17 +51,17 @@ public class OverviewController extends GuiController implements Observer {
         drawSymbols(myUsername);
 
         if (playerboardController != null) {
-            playerboardController.init();
+        playerboardController.init(this.game.getPlayers(), this.game.getPlayerByUsername(myUsername));
         }
     }
 
     private void loadPlayerBoard() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneTitle.PROVA.getFilePath()));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneTitle.BOARD.getFilePath()));
             AnchorPane playerBoard = loader.load();
             playerboardAnchorpane.getChildren().setAll(playerBoard);
 
-            // Ottieni il controller di prova.fxml
+            // Ottieni il controller di board.fxml
             playerboardController = loader.getController();
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,6 +146,9 @@ public class OverviewController extends GuiController implements Observer {
             playersGridpane.add(viewboardButton, 0, index);
             playersGridpane.add(totemImageview, 2, index);
             playersGridpane.add(usernameLabel,3,  index);
+
+            viewboardButton.setOnAction(actionEvent ->  setFocusedPlayer(player));
+
             index++;
         }
         System.out.println(myUsername);
@@ -188,7 +187,17 @@ public class OverviewController extends GuiController implements Observer {
             }
         }
         else{
-            //mostra hidden hand
+            int index = 0;
+            List<Resource> hand = this.game.getPlayerByUsername(username).getHiddenHand();
+            for (Resource resource : hand) {
+                ImageView cardImageview = new ImageView(getImageBackByResource(resource, false)); //TODO: distingui gold e resource
+
+                cardImageview.setFitWidth(132);
+                cardImageview.setFitHeight(87);
+
+                handGridpane.add(cardImageview, 0, index);
+                index++;
+            }
         }
     }
 
@@ -213,6 +222,15 @@ public class OverviewController extends GuiController implements Observer {
             Label numberLabel = new Label(Integer.toString(itemNumber));
             itemsGridpane.add(numberLabel, 2, index);
             index++;
+        }
+    }
+
+    private void setFocusedPlayer(VirtualPlayer player){
+        if(!focusedPlayer.equals(player)) {
+            this.focusedPlayer = player;
+            this.playerboardController.switchPlayerBoard(focusedPlayer);
+            this.drawHand(focusedPlayer.getUsername());
+            this.drawSymbols(focusedPlayer.getUsername());
         }
     }
 }
