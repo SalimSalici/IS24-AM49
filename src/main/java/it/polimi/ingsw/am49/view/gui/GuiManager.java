@@ -105,7 +105,7 @@ public class GuiManager {
             System.out.println("Senes setup failed");
             stop();
         }
-        currentScene = titleToScene.getValue(SceneTitle.WELCOME);
+        currentScene = titleToScene.getValue(SceneTitle.OVERVIEW);
         titleToController.getValue(titleToScene.getKey(currentScene)).init();
     }
 
