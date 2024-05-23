@@ -114,7 +114,7 @@ public class SocketClientHandler implements Client {
                 Object returnValue = null;
                 try {
                     this.server.executeAction(this, params.gameAction());
-                } catch (NotInGameException | NotYourTurnException e) {
+                } catch (NotInGameException | NotYourTurnException | InvalidActionException e) {
                     returnValue = e;
                 }
                 this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));

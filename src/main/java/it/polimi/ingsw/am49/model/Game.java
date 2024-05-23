@@ -13,6 +13,8 @@ import it.polimi.ingsw.am49.model.events.GameEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.model.states.ChooseStarterSideState;
 import it.polimi.ingsw.am49.model.states.GameState;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
 import java.io.Serializable;
 import java.util.*;
@@ -98,7 +100,7 @@ public class Game implements Serializable, EventEmitter {
      * @param action the action received from a player.
      * @throws Exception if the action cannot be executed.
      */
-    public void executeAction(GameAction action) throws Exception {
+    public void executeAction(GameAction action) throws InvalidActionException, NotYourTurnException {
         this.gameState.execute(action);
     }
 

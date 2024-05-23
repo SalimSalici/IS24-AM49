@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 
 import java.io.Serializable;
 import java.util.*;
@@ -74,24 +75,18 @@ public class Player implements Serializable {
      * @param parentRow the row of the tile on witch the card tries to be placed.
      * @param parentCol the col of the tile on witch the card tries to be placed.
      * @param corner represents the corner on witch the card tries to be placed see {@link CornerPosition}.
-     * @throws Exception signals that there aren't enough cards in the hand or that card cost is not met.
+     * @throws InvalidActionException signals that there aren't enough cards in the hand, card cost is not met or tile position is not valid.
      */
-    public BoardTile  placeCard(PlaceableCard card, int parentRow, int parentCol, CornerPosition corner) throws Exception {
-        if(hand.isEmpty()) throw new Exception("You don't have cards to place");
-        if (!hand.contains(card)) throw new Exception("You don't have the card you're trying to place");
+    public BoardTile  placeCard(PlaceableCard card, int parentRow, int parentCol, CornerPosition corner) throws InvalidActionException {
+        if (!hand.contains(card)) throw new InvalidActionException("You don't have the card you're trying to place");
 
-        // TODO: add method to PlaceableCard to check if the card can be placed (and avoid casting)...
-        // TODO: ... and ColouredCard class can be deleted alltogether
         if(!card.isFlipped()){
-            if(!board.isCardCostMet( card )) throw new Exception("There aren't enough resources to play this car");
+            if(!board.isCardCostMet(card)) throw new InvalidActionException("You don't have enough resources to play this card.");
         }
 
         BoardTile newTile = board.placeTile(card, parentRow, parentCol, corner.toRelativePosition());
-
         points += card.calculatePoints(board, newTile);
-
         hand.remove(card);
-
         return newTile;
     }
 
@@ -103,11 +98,10 @@ public class Player implements Serializable {
      * Adds the card passed as parameter to the hand.
      * @param card is a {@link it.polimi.ingsw.am49.model.cards.placeables.GoldCard} or a {@link it.polimi.ingsw.am49.model.cards.placeables.ResourceCard}.
      * @see PlaceableCard
-     * @throws Exception signals that the hand is full.
+     * @throws InvalidActionException signals that the hand is full.
      */
-    public void drawCard(PlaceableCard card) throws Exception{
-        if(hand.size() >= maxCards) throw new Exception("You have too many cards");
-
+    public void drawCard(PlaceableCard card) throws InvalidActionException {
+        if(hand.size() >= maxCards) throw new InvalidActionException("You cannot draw a card now. Your hand is full.");
         hand.add(card);
     }
 

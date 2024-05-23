@@ -108,7 +108,9 @@ public abstract class PlaceableCard extends Card implements Serializable {
      * @return the total points the player gets from placing the card
      */
     public int calculatePoints(PlayerBoard playerBoard, BoardTile boardTile) {
-        return pointsStrategy.execute(playerBoard, boardTile) * points;
+        if (!this.flipped)
+            return pointsStrategy.execute(playerBoard, boardTile) * points;
+        return 0;
     }
 
     /**

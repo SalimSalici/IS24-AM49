@@ -7,5 +7,5 @@ RR
 RRRRRRRRRRRRRRR
 R R    Y      R
 R             R
-R             R
+RYY         YYR
 RRRRRRRRRRRRRRR

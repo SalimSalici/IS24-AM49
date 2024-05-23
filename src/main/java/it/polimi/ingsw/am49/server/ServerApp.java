@@ -141,15 +141,11 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public void executeAction(Client client, GameAction action) {
+    public void executeAction(Client client, GameAction action) throws InvalidActionException, NotYourTurnException, NotInGameException {
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
         Room room = this.clientsToRooms.get(clientHandler);
-        try {
-            if (room != null) room.executeGameAction(clientHandler, action);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
+        if (room != null) room.executeGameAction(clientHandler, action);
+        else throw new NotInGameException();
     }
 
     @Override

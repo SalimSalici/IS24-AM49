@@ -13,6 +13,8 @@ import it.polimi.ingsw.am49.model.events.CommonObjectivesDrawnEvent;
 import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
 import it.polimi.ingsw.am49.model.events.PersonalObjectiveChosenEvent;
 import it.polimi.ingsw.am49.model.players.Player;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
 import java.util.*;
 
@@ -68,10 +70,11 @@ public class ChooseObjectiveState extends GameState {
     /**
      * Handles the logic to choose witch prsonal objective to pick from the options presented.
      * @param action tells witch type of {@link GameAction} neds to be handled.
-     * @throws Exception if the player didn't choose an objetive of the ones dealt to him.
+     * @throws InvalidActionException if the player didn't choose an objetive of the ones dealt to him.
+     * @throws NotYourTurnException if the player making the action is not the current player.
      */
     @Override
-    public void execute(GameAction action) throws Exception {
+    public void execute(GameAction action) throws InvalidActionException, NotYourTurnException {
         this.checkActionValidity(action);
         ChooseObjectiveAction chooseObjectiveAction = (ChooseObjectiveAction) action;
 
@@ -80,9 +83,8 @@ public class ChooseObjectiveState extends GameState {
         List<ObjectiveCard> playerObjectives = this.playersToObjectives.get(player);
         ObjectiveCard chosenObjectiveCard = this.getObjectiveById(objectiveId, playerObjectives);
 
-        // TODO: custom exception...
         if (chosenObjectiveCard == null)
-            throw new Exception("You must choose one of the objectives that was dealt to you");
+            throw new InvalidActionException("You must choose one of the objectives that was dealt to you.");
 
         player.setPersonalObjective(chosenObjectiveCard);
         this.playersToObjectives.remove(player);

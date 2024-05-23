@@ -20,11 +20,9 @@ public enum BackTexture {
     ID_86("/it/polimi/ingsw/am49/textures/tui/86_back.txt"),
     OB("/it/polimi/ingsw/am49/textures/tui/objective_back.txt");
 
-    private String fileName;
+    private final String fileName;
 
     BackTexture(String fileName) { this.fileName = fileName; }
-
-
 
     public static String getFileName(String code) {
         for (BackTexture texture : BackTexture.values()) {
@@ -35,5 +33,5 @@ public enum BackTexture {
         return null;
     }
 
-    private String getValue(){ return this.fileName; }
+    public String getValue(){ return this.fileName; }
 }

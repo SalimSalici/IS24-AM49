@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.view.tui.textures;
 
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
 
 import java.io.*;
 import java.util.HashMap;
@@ -12,16 +13,35 @@ import java.util.Map;
 public class TuiTextureManager {
 
     private final Map<Integer, TuiTexture> textures;
-
+    private final Map<BackTexture, ColoredChar[][]> backTextures;
     private static TuiTextureManager instance;
 
     private TuiTextureManager() {
+
+        this.backTextures = new HashMap<>();
+        try {
+            for (BackTexture bt : BackTexture.values()) {
+                try (InputStream inputStream = TuiTextureManager.class.getResourceAsStream(bt.getValue())) {
+                    if (inputStream == null)
+                        throw new IOException("Couldn't load front back texture for " + bt.name() + " " + bt.getValue());
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                        this.backTextures.put(bt, this.readTexture(reader));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
         this.textures = new HashMap<>();
         try {
             for (int i = 1; i <= 102; i++)
                 this.textures.put(i, this.loadTexture(i));
         } catch (IOException e) {
             // TODO: handle exception
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -37,26 +57,14 @@ public class TuiTextureManager {
         ColoredChar[][] back;
 
         String fileName = "/it/polimi/ingsw/am49/textures/tui/" + id + ".txt";
-        String backFileName;
 
         try (InputStream inputStream = TuiTextureManager.class.getResourceAsStream(fileName);) {
             if (inputStream == null)
                 throw new IOException("Couldn't load front tui texture for card with id + " + id);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
                 String line = reader.readLine();
-                backFileName = BackTexture.getFileName(line);
                 front = this.readTexture(reader);
-            }
-        }
-
-        if (backFileName == null)
-            throw new IOException("Couldn't find back tui texture path for card with id + " + id);
-
-        try (InputStream inputStream = TuiTextureManager.class.getResourceAsStream(backFileName);) {
-            if (inputStream == null)
-                throw new IOException("Couldn't load back tui texture for card with id + " + id);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-                back = this.readTexture(reader);
+                back = this.backTextures.get(BackTexture.valueOf(line));
             }
         }
 
@@ -92,5 +100,9 @@ public class TuiTextureManager {
         TuiTexture texture = this.textures.get(id);
         if (flipped) return texture.getBackBuffer();
         return texture.getFrontBuffer();
+    }
+
+    public ColoredChar[][] getBackTexture(BackTexture backTexture) {
+        return this.backTextures.get(backTexture);
     }
 }

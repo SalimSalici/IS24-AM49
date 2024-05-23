@@ -30,7 +30,7 @@ public record DrawAreaEvent(
 ) implements GameEvent {
     @Override
     public GameEventType getType() {
-        return GameEventType.DRAW_AREA_UPDATE;
+        return GameEventType.DRAW_AREA_EVENT;
     }
 
     @Override

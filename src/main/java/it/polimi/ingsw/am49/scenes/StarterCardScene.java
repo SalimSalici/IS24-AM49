@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
@@ -75,6 +76,9 @@ public class StarterCardScene extends Scene {
         try {
             this.server.executeAction(this.tuiApp, new ChooseStarterSideAction(this.username, flipped));
             this.sideChosen = true;
+        } catch (InvalidActionException e) {
+            // TODO: Handle exception
+            throw new RuntimeException(e);
         } catch (NotInGameException e) {
             // TODO: Handle exception
             throw new RuntimeException(e);

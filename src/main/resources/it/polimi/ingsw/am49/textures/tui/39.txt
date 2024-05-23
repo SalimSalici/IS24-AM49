@@ -5,7 +5,7 @@ RP
 |           B |
 +-------------+
 MMMMMMMMMMMMMMM
-M      1      M
+MYY    1    YYM
 M             M
-M           M M
+MYY         M M
 MMMMMMMMMMMMMMM

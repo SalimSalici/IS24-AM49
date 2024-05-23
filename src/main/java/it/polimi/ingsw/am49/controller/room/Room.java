@@ -7,7 +7,10 @@ import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.ClientHandler;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
+import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+
 import java.util.*;
 
 public class Room {
@@ -144,13 +147,15 @@ public class Room {
         this.game.startGame();
     }
 
-    public void executeGameAction(ClientHandler client, GameAction action) throws Exception {
-        if (!this.usernameCorrespondsToClient(action.getUsername(), client))
-            throw new Exception("Username of action does not correspond to associated client."
+    public void executeGameAction(ClientHandler client, GameAction action) throws InvalidActionException, NotYourTurnException {
+        if (!this.usernameCorrespondsToClient(action.getUsername(), client)) {
+            System.err.println("Username of action does not correspond to associated client."
                     + "\nExpected: " + this.getUsernameByClient(client)
                     + " - Received: " + action.getUsername());
+            throw new InvalidActionException("Client and username don't correspond. Aborting.");
+        }
 
-        System.out.println("Player '" + action.getUsername() + "' executed action " + action.toString());
+        System.out.println("Player '" + action.getUsername() + "' executed action " + action);
         this.game.executeAction(action);
     }
 

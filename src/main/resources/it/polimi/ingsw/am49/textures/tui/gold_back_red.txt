@@ -4,7 +4,7 @@
 |-,         ,-|
 +-------------+
 RRRRRRRRRRRRRRR
-R             R
+RYY         YYR
 R      R      R
-R             R
+RYY         YYR
 RRRRRRRRRRRRRRR

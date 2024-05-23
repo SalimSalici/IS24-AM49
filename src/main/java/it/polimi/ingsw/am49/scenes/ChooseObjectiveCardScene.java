@@ -7,6 +7,7 @@ import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
@@ -77,6 +78,8 @@ public class ChooseObjectiveCardScene extends Scene {
             this.server.executeAction(this.tuiApp, new ChooseObjectiveAction(this.username, objectiveId));
             this.tuiApp.getVirtualGame().getPlayerByUsername(this.username).setPersonalObjectiveId(objectiveId);
             this.objectiveChosen = true;
+        } catch (InvalidActionException e) {
+            throw new RuntimeException(e);
         } catch (NotYourTurnException e) {
             throw new RuntimeException(e);
         } catch (NotInGameException e) {

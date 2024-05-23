@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.util.Pair;
 import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
 
@@ -57,6 +58,10 @@ public class PlayerBoard implements Serializable {
      * Updates the availableResources Map every time that a card is added.
      */
     private void updateAvailableResources() {
+        for (Symbol s : Symbol.values()) {
+            this.availableResources.put(s, 0);
+        }
+
         Map<Symbol, Integer> tileSymbols;
         for(BoardTile tile : this.getPlacementOrder()){
             tileSymbols = tile.getActiveSymbols();
@@ -110,9 +115,9 @@ public class PlayerBoard implements Serializable {
      * @param parentRow,ParentCol are the coordinates of the card(tile) whose corner has been covered by the new card
      * @param relativePosition indicates which corner has been covered
      */
-    public BoardTile placeTile(PlaceableCard card, int parentRow, int parentCol, RelativePosition relativePosition) throws Exception {
+    public BoardTile placeTile(PlaceableCard card, int parentRow, int parentCol, RelativePosition relativePosition) throws InvalidActionException {
         Pair<Integer, Integer> coords = this.getCoords(relativePosition, parentRow, parentCol);
-        if (!this.isPlaceableTile(coords.first, coords.second)) throw new Exception("Invalid tile");
+        if (!this.isPlaceableTile(coords.first, coords.second)) throw new InvalidActionException("You cannot place a card here.");
 
         BoardTile newBoardTile = new BoardTile(card, coords.first, coords.second, this);
         this.board[coords.first][coords.second] = newBoardTile;

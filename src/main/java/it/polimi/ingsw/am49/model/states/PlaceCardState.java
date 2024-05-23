@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.model.states;
 
+import it.polimi.ingsw.am49.controller.gameupdates.HandUpdate;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.actions.PlaceCardAction;
@@ -8,8 +9,11 @@ import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.CardPlacedEvent;
+import it.polimi.ingsw.am49.model.events.HandEvent;
 import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.Player;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
 import java.util.Set;
 
@@ -34,29 +38,26 @@ public class PlaceCardState extends GameState {
     /**
      * Handles the placement of a card.
      * @param action tells witch type of {@link GameAction} neds to be handled.
-     * @throws Exception if the card can not be placed.
+     * @throws InvalidActionException if the action is not supported by this state.
+     * @throws NotYourTurnException if the player making the action is not the current player.
      */
     @Override
-    public void execute(GameAction action) throws Exception {
+    public void execute(GameAction action) throws InvalidActionException, NotYourTurnException {
         this.checkActionValidity(action);
         PlaceCardAction placeCardAction = (PlaceCardAction) action;
 
         PlaceableCard card = this.currentPlayer.getHandCardById(placeCardAction.getCardId());
         if (card == null)
-            throw new Exception("You are trying to place a card that is not in your hand");
+            throw new InvalidActionException("Invalid action. You tried to place a card that is not in your hand.");
 
         card.setFlipped(placeCardAction.getFlipped());
         int parentRow = placeCardAction.getParentRow();
         int parentCol = placeCardAction.getParentCol();
         CornerPosition cornerPosition = placeCardAction.getCornerPosition();
 
-        BoardTile newTile;
-        try {
-            newTile = this.currentPlayer.placeCard(card, parentRow, parentCol, cornerPosition);
-        } catch (Exception ex) {
-            throw new Exception("Could not place tile");
-        }
+        BoardTile newTile = this.currentPlayer.placeCard(card, parentRow, parentCol, cornerPosition);
 
+        this.game.triggerEvent(new HandEvent(currentPlayer, currentPlayer.getHand().stream().toList()));
         this.game.triggerEvent(new CardPlacedEvent(currentPlayer, newTile));
         this.goToNextState(new DrawCardState(this.game));
     }

@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.view.gui.controllers;
 
 import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
 import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
@@ -50,7 +51,7 @@ public class ObjectiveCardsController extends GuiController{
             this.server.executeAction(this.app, new ChooseObjectiveAction(this.app.getUsername(), objectiveId));
             this.app.getVirtualGame().getPlayerByUsername(this.app.getUsername()).setPersonalObjectiveId(objectiveId);
             this.manager.changeScene(SceneTitle.WAITING);
-        } catch (NotInGameException e) {
+        } catch (NotInGameException | InvalidActionException e) {
             // TODO: Handle exception
             throw new RuntimeException(e);
         } catch (RemoteException e) {

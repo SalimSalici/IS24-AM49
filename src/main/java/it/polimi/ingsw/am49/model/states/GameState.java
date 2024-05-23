@@ -5,6 +5,8 @@ import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -55,38 +57,36 @@ public abstract class GameState {
     /**
      * Handles the main task of the State.
      * @param action tells witch type of {@link GameAction} neds to be handled.
-     * @throws Exception if unexpected behavior is uncoverd during the state handling.
+     * @throws InvalidActionException if the action is not supported by this state.
+     * @throws NotYourTurnException if the player making the action is not the current player.
      */
-    public abstract void execute(GameAction action) throws Exception;
+    public abstract void execute(GameAction action) throws InvalidActionException, NotYourTurnException;
 
     /**
      * Handles the process of switching to the state passed as parameter.
      * @param nextState the state to switch to.
-     * @throws Exception if the destination state is not found or can not access it.
      */
-    public void goToNextState(GameState nextState) throws Exception {
-        if (nextState == null)
-            throw new Exception("Server error. nextState was not set");
+    public void goToNextState(GameState nextState) {
+        if (nextState == null) {
+            System.err.println("Tried to switch to null state.");
+            return;
+        }
 
         this.game.setGameState(nextState);
-        try {
-            nextState.setUp();
-        } catch (Exception ex) {
-            System.err.println("Server error when going to next state...");
-            ex.printStackTrace();
-        }
+        nextState.setUp();
     }
 
     /**
      * Checks if the action requested by the player if valid in the current game state ad if not notifies the player.
      * @param action that the player tries to perform.
-     * @throws Exception indicates why the desired action is not possible.
+     * @throws InvalidActionException if the action is not supported by this state.
+     * @throws NotYourTurnException if the player making the action is not the current player.
      */
-    protected void checkActionValidity(GameAction action) throws Exception {
+    protected void checkActionValidity(GameAction action) throws InvalidActionException, NotYourTurnException {
         if (!this.acceptableActionTypes.contains(action.getType()))
-            throw new Exception("You cannot do that now");
+            throw new InvalidActionException("You cannot do that now.");
         if (!this.isYourTurn(action))
-            throw new Exception(this.notYourTurnMessage);
+            throw new NotYourTurnException(this.notYourTurnMessage);
     }
 
     protected abstract boolean isYourTurn(GameAction action);

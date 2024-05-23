@@ -63,7 +63,7 @@ public class VirtualView implements EventListener {
                     else
                         this.client.receiveGameUpdate(((HandEvent) event).toHiddenHandUpdate());
                 }
-                case DRAW_AREA_UPDATE -> {
+                case DRAW_AREA_EVENT -> {
                     this.client.receiveGameUpdate(event.toGameUpdate());
                 }
                 case PLAYERS_ORDER_SET_EVENT -> {

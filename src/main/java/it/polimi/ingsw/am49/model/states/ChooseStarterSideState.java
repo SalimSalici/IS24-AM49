@@ -11,6 +11,8 @@ import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.*;
 import it.polimi.ingsw.am49.model.players.Player;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -77,10 +79,11 @@ public class ChooseStarterSideState extends GameState {
     /**
      * Handles the main logic for the {@link ChooseStarterSideState}.
      * @param action tells witch type of {@link GameAction} neds to be handled.
-     * @throws Exception
+     * @throws InvalidActionException if the action is not supported by this state.
+     * @throws NotYourTurnException if the player making the action is not the current player.
      */
     @Override
-    public void execute(GameAction action) throws Exception {
+    public void execute(GameAction action) throws InvalidActionException, NotYourTurnException {
         this.checkActionValidity(action); //if this check fails the rest of the code won't be executed
 
         Player player = this.game.getPlayerByUsername(action.getUsername());
@@ -102,15 +105,14 @@ public class ChooseStarterSideState extends GameState {
 
     /**
      * Deals three cards for the initial hand of eatch player.
-     * @throws Exception
      */
-    private void assignInitialHand() throws Exception {
+    private void assignInitialHand() {
         for (Player p : this.game.getPlayers()) {
             for (int i = 0; i < this.starterHandResources; i++)
-                p.drawCard(this.game.getResourceGameDeck().draw());
+                p.getHand().add(this.game.getResourceGameDeck().draw());
 
             for (int i = 0; i < this.starterHandGolds; i++)
-                p.drawCard(this.game.getGoldGameDeck().draw());
+                p.getHand().add(this.game.getGoldGameDeck().draw());
 
             this.game.triggerEvent(new HandEvent(p, p.getHand().stream().toList()));
         }

@@ -5,7 +5,7 @@ RB
 |-,           |
 +-------------+
 BBBBBBBBBBBBBBB
-B      Y    B B
+BYY    Y    B B
 B             B
-B             B
+BYY           B
 BBBBBBBBBBBBBBB

@@ -8,7 +8,6 @@ import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
-import it.polimi.ingsw.am49.view.tui.TUIApp;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -93,12 +92,8 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
             serverType = "RMI";
         }
 
-        if (List.of(args).contains("--tui-old")) {
-            new TUIApp(client, server).startTUI();
-        } else {
-            client.setServer(server);
-            client.initialize();
-        }
+        client.setServer(server);
+        client.initialize();
 
         System.out.println("Connected to the " + serverType + " server");
 

@@ -4,7 +4,7 @@
 |-,         ,-|
 +-------------+
 BBBBBBBBBBBBBBB
-B             B
+BYY         YYB
 B      B      B
-B             B
+BYY         YYB
 BBBBBBBBBBBBBBB

@@ -5,7 +5,7 @@ RG
 | L           |
 +-------------+
 GGGGGGGGGGGGGGG
-G      Y      G
+GYY    Y    YYG
 G             G
 G G           G
 GGGGGGGGGGGGGGG

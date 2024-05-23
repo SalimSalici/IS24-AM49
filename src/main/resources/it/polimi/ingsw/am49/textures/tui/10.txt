@@ -5,7 +5,7 @@ RR
 | M         ,-|
 +-------------+
 RRRRRRRRRRRRRRR
-R      Y      R
+R      Y    YYR
 R             R
-R R           R
+R R         YYR
 RRRRRRRRRRRRRRR

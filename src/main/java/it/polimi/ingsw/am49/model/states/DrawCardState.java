@@ -14,6 +14,7 @@ import it.polimi.ingsw.am49.model.events.DrawAreaEvent;
 import it.polimi.ingsw.am49.model.events.HandEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +53,7 @@ public class DrawCardState extends GameState {
      * @throws Exception
      */
     @Override
-    public void execute(GameAction action) throws Exception {
+    public void execute(GameAction action) throws NotYourTurnException, InvalidActionException {
         this.checkActionValidity(action);
         DrawCardAction drawCardAction = (DrawCardAction) action;
         DrawPosition drawPosition = drawCardAction.getDrawPosition();
@@ -76,20 +77,16 @@ public class DrawCardState extends GameState {
                         found = true;
                     }
                 }
-                for (int i = 0; i < this.revealedResources.length && !found; i++) {
-                    ResourceCard current = this.revealedResources[i];
+                for (int i = 0; i < this.revealedGolds.length && !found; i++) {
+                    GoldCard current = this.revealedGolds[i];
                     if (current.getId() == drawCardAction.getIdOfRevealedDrawn()) {
                         this.currentPlayer.drawCard(current);
-                        this.revealedResources[i] = this.resourceGameDeck.draw();
+                        this.revealedGolds[i] = this.goldGameDeck.draw();
                         found = true;
                     }
                 }
                 if (!found)
-                    throw new InvalidActionException(
-                            "Could not get revealed card with id: " + drawCardAction.getIdOfRevealedDrawn()
-                            + "\n Available revealed resources: " + Arrays.stream(this.revealedResources).toList()
-                            + "\n Available revealed golds: " + Arrays.stream(this.revealedGolds).toList()
-                    );
+                    throw new InvalidActionException("Attempt to draw a card that is not in the draw area.");
             }
         }
 

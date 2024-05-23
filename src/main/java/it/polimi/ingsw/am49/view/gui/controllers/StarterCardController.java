@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.view.gui.controllers;
 
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
@@ -48,6 +49,9 @@ public class StarterCardController extends GuiController{
         try {
             this.server.executeAction(this.app, new ChooseStarterSideAction(this.app.getUsername(), flipped));
             this.manager.changeScene(SceneTitle.WAITING);
+        } catch (InvalidActionException e) {
+            // TODO: Handle exception
+            throw new RuntimeException(e);
         } catch (NotInGameException e) {
             // TODO: Handle exception
             throw new RuntimeException(e);
