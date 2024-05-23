@@ -71,6 +71,9 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
     protected abstract void initialize();
 
     public static void main(String[] args) throws IOException, NotBoundException, AlreadyInRoomException, NotInGameException {
+
+        System.setProperty("java.rmi.server.hostname", "10.147.20.145");
+
         ClientApp client;
         if(List.of(args).contains("--gui")) {
             client = new GuiApp(args);
@@ -79,7 +82,7 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
             client = new TuiApp();
         }
 
-        String host = "127.0.0.1";
+        String host = "10.147.20.145";
         int serverPort = 8458;
 
         Server server = null;
@@ -101,7 +104,7 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
     }
 
     private static Server getRMIServer(String host, int port) throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry("127.0.0.1", port);
+        Registry registry = LocateRegistry.getRegistry(host, port);
         return (Server) registry.lookup("server.am49.codex_naturalis");
     }
 

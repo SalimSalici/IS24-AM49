@@ -33,6 +33,7 @@ public class ItemPointsStrategy implements PlacementPointsStrategy, Serializable
         int itemCount = 0;
 
         for(BoardTile tile : playerBoard.getPlacementOrder()){
+            // TODO: use Symbol instead of Item (must readapt JSON loader)
             itemCount += tile.getActiveSymbols().get((Item)item);
         }
 

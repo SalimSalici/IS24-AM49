@@ -174,6 +174,8 @@ public class ServerApp implements Server {
     }
 
     public static void main(String[] args) throws IOException, AlreadyBoundException {
+        System.setProperty("java.rmi.server.hostname", "10.147.20.145");
+
         int port = 8458;
         Server server = new ServerApp();
         Registry registry = LocateRegistry.createRegistry(port);

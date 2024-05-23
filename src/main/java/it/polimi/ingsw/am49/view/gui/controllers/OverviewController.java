@@ -44,25 +44,26 @@ public class OverviewController extends GuiController implements Observer {
 
     @Override
     public void init() {
-//        this.game = app.getVirtualGame();
-//        this.myUsername = this.app.getUsername();
-//        this.players = this.game.getPlayers();
-//        this.game.addObserver(this);
-//        this.drawableArea = this.game.getDrawableArea();
-//        this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
+        this.game = app.getVirtualGame();
+        this.myUsername = this.app.getUsername();
+        this.players = this.game.getPlayers();
+        this.game.addObserver(this);
+        this.drawableArea = this.game.getDrawableArea();
+        this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
 
         loadPlayerBoard();
-//        drawHand(myUsername);
-//        drawObjectives();
-//        drawPlayers();
-//        drawDecks();
-//        drawSymbols(myUsername);
-//        drawPointsBoard();
-//        drawPointsTokens();
-        VirtualPlayer debugPlayer = new VirtualPlayer("nico", it.polimi.ingsw.am49.model.enumerations.Color.BLUE);
+        drawHand(myUsername);
+        drawObjectives();
+        drawPlayers();
+        drawDecks();
+        drawSymbols(myUsername);
+        drawPointsBoard();
+        drawPointsTokens();
+//        VirtualPlayer debugPlayer = new VirtualPlayer("nico", it.polimi.ingsw.am49.model.enumerations.Color.BLUE);
 
         if (playerboardController != null) {
-        playerboardController.init(Stream.of(debugPlayer).toList(), debugPlayer);
+            playerboardController.init(players, this.game.getCurrentPlayer());
+//        playerboardController.init(Stream.of(debugPlayer).toList(), debugPlayer);
         }
     }
 
