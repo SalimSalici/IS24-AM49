@@ -174,6 +174,18 @@ public class BoardController extends GuiController {
         bottomLeftButton.setOnAction(e -> handleCornerButtonAction(cardPane, -cardWidth + cornerWidth, cardHeight - cornerHeight));
         bottomRightButton.setOnAction(e -> handleCornerButtonAction(cardPane, cardWidth - cornerWidth, cardHeight - cornerHeight));
 
+        // used to display the low opacity preview of the card that will be placed when hovering a corner button
+        topLeftButton.setOnMouseEntered(e -> handleCornerButtonHover(cardPane, -cardWidth + cornerWidth, -cardHeight + cornerHeight));
+        topRightButton.setOnMouseEntered(e -> handleCornerButtonHover(cardPane, cardWidth - cornerWidth, -cardHeight + cornerHeight));
+        bottomRightButton.setOnMouseEntered(e -> handleCornerButtonHover(cardPane, cardWidth - cornerWidth, cardHeight - cornerHeight));
+        bottomLeftButton.setOnMouseEntered(e -> handleCornerButtonHover(cardPane, -cardWidth + cornerWidth, cardHeight - cornerHeight));
+
+        topLeftButton.setOnMouseExited(e -> clearPreviewImageView());
+        topRightButton.setOnMouseExited(e -> clearPreviewImageView());
+        bottomRightButton.setOnMouseExited(e -> clearPreviewImageView());
+        bottomLeftButton.setOnMouseExited(e -> clearPreviewImageView());
+
+
         topLeftButton.setOpacity(0);
         topRightButton.setOpacity(0);
         bottomLeftButton.setOpacity(0);
@@ -191,6 +203,13 @@ public class BoardController extends GuiController {
         double newY = cardPane.getLayoutY() + offsetY;
         VirtualCard card = new VirtualCard((1 + random.nextInt(80)), true);
         addImageView(newX, newY, card);
+    }
+
+    private void handleCornerButtonHover(StackPane cardPane, double offsetX, double offsetY) {
+        double newX = cardPane.getLayoutX() + offsetX;
+        double newY = cardPane.getLayoutY() + offsetY;
+        VirtualCard card = new VirtualCard((1 + random.nextInt(80)), true);
+        previewImageView(newX, newY, card);
     }
 
     private void selectImageView(ImageView imageView) {
@@ -231,6 +250,27 @@ public class BoardController extends GuiController {
         imagePane.getChildren().add(cardPane);
     }
 
+    private void previewImageView(double x, double y, VirtualCard card) {
+
+        clearPreviewImageView();
+
+        ImageView previewImage = new ImageView();
+        previewImage.setFitWidth(cardWidth);
+        previewImage.setFitHeight(cardHeight);
+        previewImage.setImage(getImageByVirtualCard(card));
+        previewImage.setOpacity(0.5); // Imposta l'opacità per l'anteprima
+        previewImage.setMouseTransparent(true);
+
+        previewImage.setLayoutX(x);
+        previewImage.setLayoutY(y);
+        previewImage.setId("preview");
+
+        imagePane.getChildren().add(previewImage);
+    }
+
+    private void clearPreviewImageView() {
+            imagePane.getChildren().removeIf(node -> "preview".equals(node.getId()));
+    }
     private void resetImageViews() {
         double initialX = (innerPaneWidth - cardWidth) / 2;
         double initialY = (innerPaneHeight - cardHeight) / 2;

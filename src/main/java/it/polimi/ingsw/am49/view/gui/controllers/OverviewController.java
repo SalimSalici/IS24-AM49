@@ -1,11 +1,13 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.enumerations.Item;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.util.Observer;
+import it.polimi.ingsw.am49.util.Pair;
 import it.polimi.ingsw.am49.view.gui.PointsCoordinates;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.fxml.FXML;
@@ -41,7 +43,8 @@ public class OverviewController extends GuiController implements Observer {
     private List<VirtualPlayer> players;
     private VirtualDrawable drawableArea;
     private VirtualPlayer focusedPlayer;
-    private Map<Integer, Boolean> visibleHand;
+    private List<VirtualCard> visibleHand;
+    private Pair<VirtualCard, ImageView> selectedCard;
 
     @Override
     public void init() {
@@ -51,9 +54,9 @@ public class OverviewController extends GuiController implements Observer {
         this.game.addObserver(this);
         this.drawableArea = this.game.getDrawableArea();
         this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
-        this.visibleHand = this.game.getPlayerByUsername(myUsername).getHand()
-                .stream()
-                .collect(Collectors.toMap(cardId -> cardId, cardId -> true));
+        this.visibleHand = new ArrayList<>(this.game.getPlayerByUsername(myUsername).getHand().stream()
+                .map(elem -> new VirtualCard(elem, false))
+                .collect(Collectors.toList()));
 
         loadPlayerBoard();
         drawHand(myUsername);
@@ -194,8 +197,8 @@ public class OverviewController extends GuiController implements Observer {
 
             Image rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_Icon.png")));
 
-            for (Map.Entry<Integer, Boolean> card : visibleHand.entrySet()) {
-                ImageView cardImageview = new ImageView(getImageByCardId(card.getKey(), card.getValue()));
+            for (VirtualCard card : visibleHand) {
+                ImageView cardImageview = new ImageView(getImageByCardId(card.id(), !card.flipped()));
                 ImageView rotationImageview = new ImageView(rotationImage);
                 Button rotationButton = new Button();
 
@@ -208,9 +211,12 @@ public class OverviewController extends GuiController implements Observer {
                 rotationButton.setGraphic(rotationImageview);
 
                 rotationButton.setOnAction(event -> {
-                    visibleHand.put(card.getKey(), !card.getValue());
+                    boolean side = !card.flipped();
+                    visibleHand.set(visibleHand.indexOf(card), new VirtualCard(card.id(), side));
                     drawHand(myUsername);
                 });
+
+                cardImageview.setOnMouseClicked(mouseEvent -> selectCard(cardImageview, card));
 
                 handGridpane.add(cardImageview, 1, index);
                 handGridpane.add(rotationButton, 0, index);
@@ -230,6 +236,15 @@ public class OverviewController extends GuiController implements Observer {
                 index++;
             }
         }
+    }
+
+    private void selectCard(ImageView selectedCardImageview, VirtualCard card){
+        if (selectedCard != null) {
+            selectedCard.second.setStyle(selectedCardImageview.getStyle().replace("-fx-border-color: blue;", "-fx-border-color: gray;"));
+        }
+        selectedCard = new Pair<>(card, selectedCardImageview);
+        selectedCard.second.setStyle(selectedCardImageview.getStyle().replace("-fx-border-color: gray;", "-fx-border-color: blue;"));
+        System.out.println("Carta selezionata: " + selectedCard.first);
     }
 
     private void drawSymbols(String username){
