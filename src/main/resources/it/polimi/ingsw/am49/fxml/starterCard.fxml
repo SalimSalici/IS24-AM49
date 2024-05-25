@@ -15,9 +15,9 @@
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="30.0">
                <children>
                   <ImageView fx:id="frontImageview" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  <Label text="FRONT">
+                  <Label text="front">
                      <font>
-                        <Font size="25.0" />
+                        <Font name="DejaVu Sans Mono Bold" size="25.0" />
                      </font>
                   </Label>
                </children>
@@ -25,9 +25,9 @@
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="30.0">
                <children>
                   <ImageView fx:id="backImageview" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  <Label text="BACK">
+                  <Label text="back">
                      <font>
-                        <Font size="25.0" />
+                        <Font name="DejaVu Sans Mono Bold" size="25.0" />
                      </font>
                   </Label>
                </children>
@@ -36,10 +36,13 @@
       </HBox>
    </center>
    <top>
-      <Label fx:id="descriptionLabel" text="User, choose the side of your starter card" BorderPane.alignment="BOTTOM_LEFT">
+      <Label fx:id="descriptionLabel" text="User, choose the side of your starter card:" BorderPane.alignment="BOTTOM_LEFT">
          <padding>
             <Insets left="100.0" top="75.0" />
          </padding>
+         <font>
+            <Font name="DejaVu Sans Mono" size="13.0" />
+         </font>
       </Label>
    </top>
 </BorderPane>

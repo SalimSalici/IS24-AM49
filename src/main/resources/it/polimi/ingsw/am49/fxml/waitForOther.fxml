@@ -8,7 +8,7 @@
    <center>
       <Label alignment="CENTER" text="Wait for other players..." BorderPane.alignment="CENTER">
          <font>
-            <Font size="30.0" />
+            <Font name="DejaVu Sans Mono Bold Oblique" size="30.0" />
          </font>
       </Label>
    </center>

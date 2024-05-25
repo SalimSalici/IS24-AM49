@@ -9,12 +9,13 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: E6E0A8;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.am49.view.gui.controllers.MainMenuController">
    <top>
-      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+      <ImageView fitHeight="131.0" fitWidth="243.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
          <image>
-            <Image url="@../images/elements/codex_naturalis_logo_1.png" />
+            <Image url="@../images/elements/codex_naturalis_logo.png" />
          </image>
          <BorderPane.margin>
             <Insets top="20.0" />
@@ -24,7 +25,10 @@
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="usernameLabel" maxWidth="1.7976931348623157E308" prefHeight="18.0" text="Username: Nico" />
+            <Label fx:id="usernameLabel" maxWidth="1.7976931348623157E308" prefHeight="18.0" text="Username: Nico">
+               <font>
+                  <Font name="DejaVu Sans Mono" size="13.0" />
+               </font></Label>
             <ListView fx:id="roomsListview" prefHeight="200.0" prefWidth="200.0">
                <VBox.margin>
                   <Insets />
@@ -32,9 +36,15 @@
             </ListView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
                <children>
-                  <Button fx:id="joinroomButton" mnemonicParsing="false" text="Join Room" />
+                  <Button fx:id="joinroomButton" mnemonicParsing="false" text="Join Room">
+                     <font>
+                        <Font name="DejaVu Sans Mono" size="13.0" />
+                     </font></Button>
                   <Button fx:id="createroomButton" mnemonicParsing="false" text="Create Room" />
-                  <Button fx:id="usernameButton" mnemonicParsing="false" text="Change username" />
+                  <Button fx:id="usernameButton" mnemonicParsing="false" text="Change username">
+                     <font>
+                        <Font name="DejaVu Sans Mono" size="13.0" />
+                     </font></Button>
                   <Button fx:id="refreshButton" mnemonicParsing="false" text="Refresh" />
                </children>
             </HBox>

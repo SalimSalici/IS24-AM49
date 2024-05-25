@@ -10,6 +10,7 @@ import it.polimi.ingsw.am49.view.gui.PointsCoordinates;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -21,9 +22,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class OverviewController extends GuiController implements Observer {
@@ -41,6 +41,7 @@ public class OverviewController extends GuiController implements Observer {
     private List<VirtualPlayer> players;
     private VirtualDrawable drawableArea;
     private VirtualPlayer focusedPlayer;
+    private Map<Integer, Boolean> visibleHand;
 
     @Override
     public void init() {
@@ -50,6 +51,9 @@ public class OverviewController extends GuiController implements Observer {
         this.game.addObserver(this);
         this.drawableArea = this.game.getDrawableArea();
         this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
+        this.visibleHand = this.game.getPlayerByUsername(myUsername).getHand()
+                .stream()
+                .collect(Collectors.toMap(cardId -> cardId, cardId -> true));
 
         loadPlayerBoard();
         drawHand(myUsername);
@@ -184,17 +188,32 @@ public class OverviewController extends GuiController implements Observer {
     }
 
     private void drawHand(String username){
-        handGridpane.getChildren().clear();
+       handGridpane.getChildren().clear();
         if(username.equals(myUsername)) {
             int index = 0;
-            List<Integer> hand = this.game.getPlayerByUsername(username).getHand();
-            for (int card : hand) {
-                ImageView cardImageview = new ImageView(getImageByCardId(card, true));
+
+            Image rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_Icon.png")));
+
+            for (Map.Entry<Integer, Boolean> card : visibleHand.entrySet()) {
+                ImageView cardImageview = new ImageView(getImageByCardId(card.getKey(), card.getValue()));
+                ImageView rotationImageview = new ImageView(rotationImage);
+                Button rotationButton = new Button();
 
                 cardImageview.setFitWidth(132);
                 cardImageview.setFitHeight(87);
+                rotationImageview.setFitWidth(16);
+                rotationImageview.setFitHeight(16);
+                rotationButton.setPrefSize(24, 24);
 
-                handGridpane.add(cardImageview, 0, index);
+                rotationButton.setGraphic(rotationImageview);
+
+                rotationButton.setOnAction(event -> {
+                    visibleHand.put(card.getKey(), !card.getValue());
+                    drawHand(myUsername);
+                });
+
+                handGridpane.add(cardImageview, 1, index);
+                handGridpane.add(rotationButton, 0, index);
                 index++;
             }
         }
@@ -207,7 +226,7 @@ public class OverviewController extends GuiController implements Observer {
                 cardImageview.setFitWidth(132);
                 cardImageview.setFitHeight(87);
 
-                handGridpane.add(cardImageview, 0, index);
+                handGridpane.add(cardImageview, 1, index);
                 index++;
             }
         }

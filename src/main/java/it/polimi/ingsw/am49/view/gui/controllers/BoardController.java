@@ -30,9 +30,11 @@ public class BoardController extends GuiController {
     private ImageView selectedImageView;
     private final double cardWidth = 135;
     private final double cardHeight = 82;
+
+    private final double cornerWidth = cardWidth * 0.25;
+    private final double cornerHeight = cardHeight * 0.44;
     private final double innerPaneWidth = 650;
     private final double innerPaneHeight = 340;
-    private final double overlapOffset = 30;
     private final Random random = new Random();
     private final Map<VirtualPlayer, List<ImageView>> playerBoards = new HashMap<>();
     private VirtualPlayer currentPlayer;
@@ -154,6 +156,12 @@ public class BoardController extends GuiController {
         Button bottomLeftButton = createCornerButton("BL");
         Button bottomRightButton = createCornerButton("BR");
 
+        topRightButton.setPrefSize(cornerWidth, cornerHeight);
+        topLeftButton.setPrefSize(cornerWidth, cornerHeight);
+        bottomRightButton.setPrefSize(cornerWidth, cornerHeight);
+
+        bottomLeftButton.setPrefSize(cornerWidth, cornerHeight);
+
         StackPane.setAlignment(topLeftButton, Pos.TOP_LEFT);
         StackPane.setAlignment(topRightButton, Pos.TOP_RIGHT);
         StackPane.setAlignment(bottomLeftButton, Pos.BOTTOM_LEFT);
@@ -161,10 +169,15 @@ public class BoardController extends GuiController {
 
         cardPane.getChildren().addAll(topLeftButton, topRightButton, bottomLeftButton, bottomRightButton);
 
-        topLeftButton.setOnAction(e -> handleCornerButtonAction(cardPane, -cardWidth + overlapOffset, -cardHeight + overlapOffset));
-        topRightButton.setOnAction(e -> handleCornerButtonAction(cardPane, cardWidth - overlapOffset, -cardHeight + overlapOffset));
-        bottomLeftButton.setOnAction(e -> handleCornerButtonAction(cardPane, -cardWidth + overlapOffset, cardHeight - overlapOffset));
-        bottomRightButton.setOnAction(e -> handleCornerButtonAction(cardPane, cardWidth - overlapOffset, cardHeight - overlapOffset));
+        topLeftButton.setOnAction(e -> handleCornerButtonAction(cardPane, -cardWidth + cornerWidth, -cardHeight + cornerHeight));
+        topRightButton.setOnAction(e -> handleCornerButtonAction(cardPane, cardWidth - cornerWidth, -cardHeight + cornerHeight));
+        bottomLeftButton.setOnAction(e -> handleCornerButtonAction(cardPane, -cardWidth + cornerWidth, cardHeight - cornerHeight));
+        bottomRightButton.setOnAction(e -> handleCornerButtonAction(cardPane, cardWidth - cornerWidth, cardHeight - cornerHeight));
+
+        topLeftButton.setOpacity(0);
+        topRightButton.setOpacity(0);
+        bottomLeftButton.setOpacity(0);
+        bottomRightButton.setOpacity(0);
     }
 
     private Button createCornerButton(String text) {

@@ -17,6 +17,9 @@
                <VBox.margin>
                   <Insets />
                </VBox.margin>
+               <font>
+                  <Font name="DejaVu Sans Mono Oblique" size="13.0" />
+               </font>
             </TextField>
             <Button fx:id="confirmButton" alignment="CENTER" mnemonicParsing="false" prefHeight="39.0" prefWidth="164.0" style="-fx-background-color: #341e17;" text="Confirm" textAlignment="CENTER" textFill="WHITE">
                <font>
@@ -30,9 +33,9 @@
       </VBox>
    </center>
    <top>
-      <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+      <ImageView fitHeight="175.0" fitWidth="313.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
          <image>
-            <Image url="@../images/elements/codex_naturalis_logo_1.png" />
+            <Image url="@../images/elements/codex_naturalis_logo.png" />
          </image>
          <BorderPane.margin>
             <Insets top="20.0" />
