@@ -1,9 +1,9 @@
 package it.polimi.ingsw.am49.view.tui;
 
-import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
+import it.polimi.ingsw.am49.util.Pair;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 import it.polimi.ingsw.am49.view.tui.textures.BackTexture;
 import it.polimi.ingsw.am49.view.tui.textures.ColoredChar;
@@ -46,77 +46,73 @@ public class TuiPlayerRenderer {
 
     public void printHandAndObjectives() {
         System.out.println("Hand" + " ".repeat(51) + "Personal obj." + " ".repeat(10) + "Common objectives");
-
         this.renderer.clear();
 
-        Integer cardId;
-        ColoredChar[][] texture;
         if (!this.hidden) {
-            Integer[] hand = new Integer[3];
-            for (int i = 0; i < this.player.getHand().size(); i++) {
-                hand[i] = this.player.getHand().get(i);
-            }
-
-            cardId = hand[0];
-            if (cardId != null) {
-                texture = TuiTextureManager.getInstance().getTexture(cardId, false);
-                this.renderer.draw(texture, 7, 2);
-            }
-
-            cardId = hand[1];
-            if (cardId != null) {
-                texture = TuiTextureManager.getInstance().getTexture(cardId, false);
-                this.renderer.draw(texture, 23, 2);
-            }
-
-            cardId = hand[2];
-            if (cardId != null) {
-                texture = TuiTextureManager.getInstance().getTexture(cardId, false);
-                this.renderer.draw(texture, 39, 2);
-            }
-
-            cardId = this.player.getPersonalObjectiveId();
-            texture = TuiTextureManager.getInstance().getTexture(cardId, hidden);
-            this.renderer.draw(texture, 62, 2);
+            this.drawVisibleHandAndObjective();
         } else {
-            Resource[] hiddenHand = new Resource[3];
-            for (int i = 0; i < this.player.getHiddenHandAsResources().size(); i++) {
-                hiddenHand[i] = this.player.getHiddenHandAsResources().get(i);
-            }
-
-            Resource cardResource = hiddenHand[0];
-            if (cardResource != null)
-                this.renderer.draw(this.getBackTextureFromResource(cardResource), 7, 2);
-
-            cardResource = hiddenHand[1];
-            if (cardResource != null)
-                this.renderer.draw(this.getBackTextureFromResource(cardResource), 23, 2);
-
-            cardResource = hiddenHand[2];
-            if (cardResource != null)
-                this.renderer.draw(this.getBackTextureFromResource(cardResource), 39, 2);
-
-            this.renderer.draw(textureManager.getBackTexture(BackTexture.OB), 62, 2);
+            this.drawHiddenHandAndObjective();
         }
 
-        cardId = this.commonObjectives.getFirst();
-        texture = TuiTextureManager.getInstance().getTexture(cardId, false);
-        this.renderer.draw(texture, 85, 2);
-
-        cardId = this.commonObjectives.get(1);
-        texture = TuiTextureManager.getInstance().getTexture(cardId, false);
-        this.renderer.draw(texture, 101, 2);
-
+        this.drawCommonObjectives();
         this.renderer.print();
     }
 
-    private ColoredChar[][] getBackTextureFromResource(Resource resource) {
-        return switch (resource) {
-            case WOLVES -> textureManager.getBackTexture(BackTexture.RB);
-            case LEAVES -> textureManager.getBackTexture(BackTexture.RG);
-            case MUSHROOMS -> textureManager.getBackTexture(BackTexture.RR);
-            case BUGS -> textureManager.getBackTexture(BackTexture.RP);
-        };
+    private void drawVisibleHandAndObjective() {
+        List<Integer> hand = this.player.getHand();
+
+        for (int i = 0; i < hand.size(); i++) {
+            drawCard(hand.get(i), 7 + i * 16);
+        }
+
+        Integer personalObjectiveId = this.player.getPersonalObjectiveId();
+        drawCard(personalObjectiveId, 62);
+    }
+
+    private void drawHiddenHandAndObjective() {
+        List<Pair<Resource, Boolean>> hiddenHand = this.player.getHiddenHand();
+
+        for (int i = 0; i < hiddenHand.size(); i++) {
+            Pair<Resource, Boolean> pair = hiddenHand.get(i);
+            ColoredChar[][] texture = getBackPlaceableTexture(pair.first, pair.second);
+            if (texture != null) {
+                this.renderer.draw(texture, 7 + i * 16, 2);
+            }
+        }
+
+        ColoredChar[][] obTexture = textureManager.getBackTexture(BackTexture.OB);
+        this.renderer.draw(obTexture, 62, 2);
+    }
+
+    private void drawCommonObjectives() {
+        for (int i = 0; i < this.commonObjectives.size(); i++) {
+            Integer cardId = this.commonObjectives.get(i);
+            drawCard(cardId, 85 + i * 16);
+        }
+    }
+
+    private void drawCard(Integer cardId, int xPosition) {
+        if (cardId != null) {
+            ColoredChar[][] texture = TuiTextureManager.getInstance().getTexture(cardId, false);
+            this.renderer.draw(texture, xPosition, 2);
+        }
+    }
+
+    private ColoredChar[][] getBackPlaceableTexture(Resource resource, boolean gold) {
+        if (!gold)
+            return switch (resource) {
+                case WOLVES -> textureManager.getBackTexture(BackTexture.RB);
+                case LEAVES -> textureManager.getBackTexture(BackTexture.RG);
+                case MUSHROOMS -> textureManager.getBackTexture(BackTexture.RR);
+                case BUGS -> textureManager.getBackTexture(BackTexture.RP);
+            };
+        else
+            return switch (resource) {
+                case WOLVES -> textureManager.getBackTexture(BackTexture.GB);
+                case LEAVES -> textureManager.getBackTexture(BackTexture.GG);
+                case MUSHROOMS -> textureManager.getBackTexture(BackTexture.GR);
+                case BUGS -> textureManager.getBackTexture(BackTexture.GP);
+            };
     }
 
     public void print() {
