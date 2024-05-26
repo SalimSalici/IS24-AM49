@@ -67,6 +67,8 @@ public abstract class PlaceableCard extends Card implements Serializable {
      */
     protected final PlacementPointsStrategy pointsStrategy;
 
+    protected boolean isGoldCard;
+
 
     /**
      * Costructs a new PlaceableCard object with the specified symbols in the
@@ -83,7 +85,7 @@ public abstract class PlaceableCard extends Card implements Serializable {
      * @param pointsStrategy object used to call the strategy design pattern
      */
     public PlaceableCard(int id, Symbol tr, Symbol tl, Symbol br, Symbol bl, Resource resource,
-                         int points, PlacementPointsStrategy pointsStrategy, Map<Symbol, Integer> price) {
+                         int points, PlacementPointsStrategy pointsStrategy, Map<Symbol, Integer> price, boolean isGoldCard) {
         super(id);
         this.tr = tr;
         this.tl = tl;
@@ -92,6 +94,7 @@ public abstract class PlaceableCard extends Card implements Serializable {
         this.resource = resource;
         this.points = points;
         this.pointsStrategy = pointsStrategy;
+        this.isGoldCard = isGoldCard;
 
         Map<Symbol, Integer> tempPrice = new HashMap<>( price );
         for (Symbol sym : Symbol.values())
@@ -253,4 +256,6 @@ public abstract class PlaceableCard extends Card implements Serializable {
     public void setFlipped(boolean flipped) {
         this.flipped = flipped;
     }
+
+    public boolean isGoldCard() { return isGoldCard; }
 }

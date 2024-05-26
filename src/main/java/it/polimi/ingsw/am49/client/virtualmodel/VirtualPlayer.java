@@ -4,6 +4,7 @@ import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.util.Observable;
+import it.polimi.ingsw.am49.util.Pair;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,7 +16,7 @@ public class VirtualPlayer extends Observable {
     private int points;
     private final VirtualBoard board;
     private List<Integer> hand;
-    private List<Resource> hiddenHand;
+    private List<Pair<Resource, Boolean>> hiddenHand;
     private Map<Symbol, Integer> activeSymbols;
     private final Color color;
     private int personalObjectiveId;
@@ -79,11 +80,19 @@ public class VirtualPlayer extends Observable {
         this.hand = hand;
     }
 
-    public List<Resource> getHiddenHand() {
+    public List<Pair<Resource, Boolean>> getHiddenHand() {
         return hiddenHand;
     }
 
-    public void setHiddenHand(List<Resource> hiddenHand) {
+    public List<Resource> getHiddenHandAsResources() {  //TODO: DA ELIMINARE È UN FIX TEMPORANEO bisognerà cambiare l'implementazione della gestione del back delle carte nella TUI
+        List<Resource> resources = new LinkedList<>();
+        for (Pair<Resource, Boolean> pair : hiddenHand) {
+            resources.add(pair.first);
+        }
+        return resources;
+    }
+
+    public void setHiddenHand(List<Pair<Resource, Boolean>> hiddenHand) {
         this.hiddenHand = hiddenHand;
     }
 

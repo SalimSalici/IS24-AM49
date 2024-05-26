@@ -1,6 +1,8 @@
 package it.polimi.ingsw.am49.util;
 
-public class Pair<T, E> {
+import java.io.Serializable;
+
+public class Pair<T, E> implements Serializable {
     public T first;
     public E second;
 

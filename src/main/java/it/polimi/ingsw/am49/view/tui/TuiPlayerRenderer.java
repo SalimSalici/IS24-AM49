@@ -80,8 +80,8 @@ public class TuiPlayerRenderer {
             this.renderer.draw(texture, 62, 2);
         } else {
             Resource[] hiddenHand = new Resource[3];
-            for (int i = 0; i < this.player.getHiddenHand().size(); i++) {
-                hiddenHand[i] = this.player.getHiddenHand().get(i);
+            for (int i = 0; i < this.player.getHiddenHandAsResources().size(); i++) {
+                hiddenHand[i] = this.player.getHiddenHandAsResources().get(i);
             }
 
             Resource cardResource = hiddenHand[0];

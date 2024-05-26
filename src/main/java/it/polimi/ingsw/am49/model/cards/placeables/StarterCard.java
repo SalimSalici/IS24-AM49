@@ -52,9 +52,9 @@ public class StarterCard extends PlaceableCard implements Serializable {
      */
     public StarterCard(
             int id, Symbol tr, Symbol tl, Symbol br, Symbol bl, Resource resource, int points,
-            List<Resource> centerResources, Symbol trb, Symbol tlb, Symbol brb, Symbol blb
+            List<Resource> centerResources, Symbol trb, Symbol tlb, Symbol brb, Symbol blb, boolean isGoldCard
     ) {
-        super(id, tr, tl, br, bl, resource, points, new BasicPointsStrategy(), new HashMap<>());
+        super(id, tr, tl, br, bl, resource, points, new BasicPointsStrategy(), new HashMap<>(), isGoldCard);
         this.centerResources = new LinkedList<>(centerResources);
         this.trb = trb;
         this.tlb = tlb;
@@ -77,7 +77,8 @@ public class StarterCard extends PlaceableCard implements Serializable {
             other.resource,
             other.points,
             new BasicPointsStrategy(),
-            new HashMap<>()
+            new HashMap<>(),
+            other.isGoldCard
         );
         this.centerResources = new LinkedList<>(other.centerResources);
         this.trb = other.trb;

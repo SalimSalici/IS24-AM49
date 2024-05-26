@@ -27,8 +27,8 @@ public class ResourceCard extends PlaceableCard implements Serializable {
      * @param points the amount of points given to the player assuming the condition shown on the card
      *               is accomplished a single time
      */
-    public ResourceCard(int id, Symbol tr, Symbol tl, Symbol br, Symbol bl, Resource resource, int points) {
-        super(id, tr, tl, br, bl, resource, points, new BasicPointsStrategy(), new HashMap<>());
+    public ResourceCard(int id, Symbol tr, Symbol tl, Symbol br, Symbol bl, Resource resource, int points, boolean isGoldCard) {
+        super(id, tr, tl, br, bl, resource, points, new BasicPointsStrategy(), new HashMap<>(), isGoldCard);
     }
 
     /**
@@ -37,7 +37,7 @@ public class ResourceCard extends PlaceableCard implements Serializable {
      * @param other the {@link PlaceableCard} that is being copied
      */
     public ResourceCard(ResourceCard other) {
-        super(other.id, other.tr, other.tl, other.br, other.bl, other.resource, other.points, new BasicPointsStrategy(), new HashMap<>());
+        super(other.id, other.tr, other.tl, other.br, other.bl, other.resource, other.points, new BasicPointsStrategy(), new HashMap<>(), other.isGoldCard);
     }
 
     @Override

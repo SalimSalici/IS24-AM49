@@ -91,7 +91,13 @@ public class OverviewController extends GuiController implements Observer {
 
     @Override
     public void update() {
-
+//        drawHand(myUsername);
+//        drawObjectives();
+//        drawPlayers();
+//        drawDecks();
+//        drawSymbols(myUsername);
+//        drawPointsBoard();
+//        drawPointsTokens();
     }
 
     private void drawObjectives(){
@@ -228,9 +234,9 @@ public class OverviewController extends GuiController implements Observer {
         }
         else{
             int index = 0;
-            List<Resource> hand = this.game.getPlayerByUsername(username).getHiddenHand();
-            for (Resource resource : hand) {
-                ImageView cardImageview = new ImageView(getImageBackByResource(resource, false)); //TODO: distingui gold e resource
+            List<Pair<Resource, Boolean>> hand = this.game.getPlayerByUsername(username).getHiddenHand();
+            for (Pair<Resource, Boolean> pair : hand) {
+                ImageView cardImageview = new ImageView(getImageBackByResource(pair.first, pair.second)); //TODO: distingui gold e resource
 
                 cardImageview.setFitWidth(132);
                 cardImageview.setFitHeight(87);

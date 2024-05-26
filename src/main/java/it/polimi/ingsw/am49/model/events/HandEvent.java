@@ -6,8 +6,11 @@ import it.polimi.ingsw.am49.controller.gameupdates.HiddenHandUpdate;
 import it.polimi.ingsw.am49.model.cards.Card;
 import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.players.Player;
+import it.polimi.ingsw.am49.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +31,11 @@ public record HandEvent(Player player, List<PlaceableCard> hand) implements Game
     }
 
     public HiddenHandUpdate toHiddenHandUpdate() {
-        return new HiddenHandUpdate(player.getUsername(), hand.stream().map(PlaceableCard::getResource).toList());
+        List<Pair<Resource, Boolean>> hiddenHand = new ArrayList<>();
+
+        for (PlaceableCard card : hand) {
+            hiddenHand.add(new Pair<>(card.getResource(), card.isGoldCard()));
+        }
+        return new HiddenHandUpdate(player.getUsername(), hiddenHand);
     }
 }

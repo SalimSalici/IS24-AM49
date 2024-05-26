@@ -33,8 +33,8 @@ public class GoldCard extends PlaceableCard implements Serializable {
      */
     public GoldCard(int id, Symbol tr, Symbol tl, Symbol br, Symbol bl,
                     Resource resource, int points, PlacementPointsStrategy pointsStrategy,
-                    Map<Symbol, Integer> price) {
-        super(id, tr, tl, br, bl, resource, points, pointsStrategy, price);
+                    Map<Symbol, Integer> price, boolean isGoldCard) {
+        super(id, tr, tl, br, bl, resource, points, pointsStrategy, price, isGoldCard);
     }
 
     /**
@@ -43,7 +43,7 @@ public class GoldCard extends PlaceableCard implements Serializable {
      * @param other the {@link GoldCard} that is being copied
      */
     public GoldCard(GoldCard other) {
-        super(other.id, other.tr, other.tl, other.br, other.bl, other.resource, other.points, other.pointsStrategy, other.price);
+        super(other.id, other.tr, other.tl, other.br, other.bl, other.resource, other.points, other.pointsStrategy, other.price, other.isGoldCard);
     }
 
     @Override
