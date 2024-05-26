@@ -198,7 +198,7 @@ public class OverviewController extends GuiController implements Observer {
         }
     }
 
-    private void drawHand(String username){
+    public void drawHand(String username){
        handGridpane.getChildren().clear();
         if(username.equals(myUsername)) {
             int index = 0;
@@ -324,5 +324,16 @@ public class OverviewController extends GuiController implements Observer {
             return null;
         else
             return selectedCard.first;
+    }
+
+    public void updateVisibleHand() {
+        List<VirtualCard> newVisibleHand = new ArrayList<>(this.game.getPlayerByUsername(myUsername).getHand().stream()
+                .map(elem -> new VirtualCard(elem, this.visibleHand.stream().filter(virtualCard -> virtualCard.id() == elem).findFirst().map(VirtualCard::flipped).orElse(false)))
+                .collect(Collectors.toList()));
+
+        this.visibleHand = newVisibleHand;
+
+        if(focusedPlayer.getUsername().equals(myUsername))
+            drawHand(myUsername);
     }
 }

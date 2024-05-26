@@ -42,28 +42,28 @@ public class BoardController extends GuiController {
     private final double cornerHeight = cardHeight * 0.44;
     private final double innerPaneWidth = 650;
     private final double innerPaneHeight = 340;
-    private double initialX = (innerPaneWidth - cardWidth) / 2;
-    private double initialY = (innerPaneHeight - cardHeight) / 2;
+    private final double initialX = (innerPaneWidth - cardWidth) / 2;
+    private final double initialY = (innerPaneHeight - cardHeight) / 2;
     private final Random random = new Random();
     private final Map<VirtualPlayer, List<ImageView>> playerBoards = new HashMap<>();
     private final List<CardPane> myBoard = new ArrayList<>();
     String myUsername;
     private VirtualPlayer currentPlayer;
+    private VirtualPlayer myPlayer;
 
     public void init(List<VirtualPlayer> players, OverviewController overviewController) {
         this.overviewController = overviewController;
         this.players = players;
         this.myUsername = this.app.getUsername();
-        this.currentPlayer = players.stream()
+        this.myPlayer = players.stream()
                 .filter(player -> player.getUsername().equals(myUsername))
                 .findFirst()
                 .orElse(null);
+        this.currentPlayer = myPlayer;
 
         setupPanes();
         setupButtons();
         setupPlayersStartingCards();
-
-//        saveCurrentBoardState(currentPlayer);
     }
 
     private void setupPanes() {
@@ -95,7 +95,7 @@ public class BoardController extends GuiController {
 
     private void setupPlayersStartingCards() {
         for (VirtualPlayer player : players) {
-            if(!isMe(player))
+            if(isNotMe(player))
                 setupStartingCard(player);
         }
         setupMyStartingCard();
@@ -103,7 +103,7 @@ public class BoardController extends GuiController {
 
     private void setupStartingCard(VirtualPlayer player) {
         List<ImageView> board = new ArrayList<>();
-        VirtualCard startingCard = new VirtualCard(81 + random.nextInt(6), true);
+        VirtualCard startingCard = new VirtualCard(player.getStarterCard().id(), player.getStarterCard().flipped());
         starterImageview = createCardImageView(initialX, initialY, player.getUsername(), startingCard);
 
         board.add(starterImageview);
@@ -113,31 +113,14 @@ public class BoardController extends GuiController {
     }
 
     private void setupMyStartingCard() {
-        VirtualCard startingCard = new VirtualCard(81 + random.nextInt(6), true);
+        VirtualCard startingCard = new VirtualCard(myPlayer.getStarterCard().id(), myPlayer.getStarterCard().flipped());
         myBoard.add(createCardPane(initialX, initialY, myUsername, startingCard, 25, 25));
         starterImageview = (ImageView) myBoard.getFirst().stackPane().getChildren().getFirst();
         imagePane.getChildren().add(myBoard.getFirst().stackPane());
     }
 
-//    private void saveCurrentBoardState(VirtualPlayer player) {
-//        if(isMe(player))
-//            return;
-//
-//        List<ImageView> currentBoard = new ArrayList<>();
-//        for (Node node : imagePane.getChildren()) {
-//            if (node instanceof StackPane) {
-//                for (Node child : ((StackPane) node).getChildren()) {
-//                    if (child instanceof ImageView) {
-//                        currentBoard.add(cloneImageView((ImageView) child));
-//                    }
-//                }
-//            }
-//        }
-//        playerBoards.put(player, currentBoard);
-//    }
-
     private void loadBoardState(VirtualPlayer player) {
-        if(!isMe(player)) {
+        if(isNotMe(player)) {
             List<ImageView> board = playerBoards.get(player);
             imagePane.getChildren().clear();
             if (board != null) {
@@ -154,17 +137,6 @@ public class BoardController extends GuiController {
             imagePane.getChildren().add(cardpane.stackPane());
     }
 
-//    private ImageView cloneImageView(ImageView original) {
-//        ImageView clone = new ImageView();
-//        clone.setLayoutX(original.getLayoutX());
-//        clone.setLayoutY(original.getLayoutY());
-//        clone.setFitWidth(original.getFitWidth());
-//        clone.setFitHeight(original.getFitHeight());
-//        clone.setImage(original.getImage());
-//        clone.setId(original.getId());
-//        return clone;
-//    }
-
     private ImageView createCardImageView(double x, double y, String id, VirtualCard card){
         ImageView imageView = new ImageView();
         imageView.setFitWidth(cardWidth);
@@ -176,22 +148,6 @@ public class BoardController extends GuiController {
 
         return imageView;
     }
-
-//    private StackPane createCardStackpane(double x, double y, String id, VirtualCard card) {
-//        ImageView imageView = new ImageView();
-//        imageView.setFitWidth(cardWidth);
-//        imageView.setFitHeight(cardHeight);
-//        imageView.setImage(getImageByVirtualCard(card));
-//        imageView.setId(id);
-//
-//        StackPane cardStackpane = new StackPane();
-//        cardStackpane.setLayoutX(x);
-//        cardStackpane.setLayoutY(y);
-//        cardStackpane.setPrefSize(cardWidth, cardHeight);
-//        cardStackpane.getChildren().add(imageView);
-//
-//        return cardStackpane;
-//    }
 
     private CardPane createCardPane(double x, double y, String  id, VirtualCard card, int row, int col){
         ImageView imageView = new ImageView();
@@ -270,6 +226,7 @@ public class BoardController extends GuiController {
                 this.app.getServer().executeAction(this.app, new PlaceCardAction(this.app.getUsername(), card.id(), cardpane.row(), cardpane.col(), cornerPosition, card.flipped()));
                 Pair<Integer, Integer> newCoords = VirtualBoard.getCoords(cornerPosition.toRelativePosition(), cardpane.row(), cardpane.col());
                 addCardPane(newX, newY, card,String.valueOf(card.id()), newCoords.first, newCoords.second);
+                this.overviewController.updateVisibleHand();
             } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
 
             } catch (InvalidActionException e) {
@@ -281,6 +238,8 @@ public class BoardController extends GuiController {
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+
+
         }
     }
 
@@ -326,7 +285,6 @@ public class BoardController extends GuiController {
     }
 
     private void previewImageView(double x, double y, VirtualCard card) {
-
         clearPreviewImageView();
 
         ImageView previewImage = new ImageView();
@@ -372,18 +330,13 @@ public class BoardController extends GuiController {
     }
 
     public void switchPlayerBoard(VirtualPlayer player) {
-//        saveCurrentBoardState(currentPlayer);
         currentPlayer = player;
         loadBoardState(player);
         centerInnerPane();
     }
 
-    private boolean isMyBoard(){
-        return (currentPlayer.getUsername().equals(this.app.getUsername()));
-    }
-
-    private boolean isMe(VirtualPlayer player){
-        return player.getUsername().equals(myUsername);
+    private boolean isNotMe(VirtualPlayer player){
+        return !player.getUsername().equals(myUsername);
     }
 
 }
