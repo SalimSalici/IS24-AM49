@@ -69,8 +69,8 @@ public class OverviewController extends GuiController implements Observer {
 //        VirtualPlayer debugPlayer = new VirtualPlayer("nico", it.polimi.ingsw.am49.model.enumerations.Color.BLUE);
 
         if (playerboardController != null) {
-            playerboardController.init(players, this.game.getCurrentPlayer());
-//        playerboardController.init(Stream.of(debugPlayer).toList(), debugPlayer);
+            playerboardController.init(players, this);
+//        playerboardController.init(Stream.of(debugPlayer).toList());
         }
     }
 
@@ -78,10 +78,12 @@ public class OverviewController extends GuiController implements Observer {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneTitle.BOARD.getFilePath()));
             AnchorPane playerBoard = loader.load();
+
             playerboardAnchorpane.getChildren().setAll(playerBoard);
 
             // Ottieni il controller di board.fxml
             playerboardController = loader.getController();
+            playerboardController.setGui(this.app, this.manager);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,7 +98,7 @@ public class OverviewController extends GuiController implements Observer {
         int index = 0;
         for(int cardId : this.game.getCommonObjectives()){
             ImageView cardImageview = new ImageView();
-            cardImageview.setImage(getImageByCardId(cardId, true));
+            cardImageview.setImage(getImageByCardId(cardId, false));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
 
@@ -105,7 +107,7 @@ public class OverviewController extends GuiController implements Observer {
         }
 
         ImageView cardImageview = new ImageView();
-        cardImageview.setImage(getImageByCardId(this.game.getPlayerByUsername(myUsername).getPersonalObjectiveId(), true));
+        cardImageview.setImage(getImageByCardId(this.game.getPlayerByUsername(myUsername).getPersonalObjectiveId(), false));
         cardImageview.setFitWidth(143);
         cardImageview.setFitHeight(88);
         objectivesGridpane.add(cardImageview, index, 0);
@@ -130,7 +132,7 @@ public class OverviewController extends GuiController implements Observer {
         int index = 1;
         for(int cardId : drawableArea.getRevealedResourcesIds()){
             ImageView cardImageview = new ImageView();
-            cardImageview.setImage(getImageByCardId(cardId, true));
+            cardImageview.setImage(getImageByCardId(cardId, false));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
 
@@ -140,7 +142,7 @@ public class OverviewController extends GuiController implements Observer {
         index = 1;
         for(int cardId : drawableArea.getRevealedGoldsIds()){
             ImageView cardImageview = new ImageView();
-            cardImageview.setImage(getImageByCardId(cardId, true));
+            cardImageview.setImage(getImageByCardId(cardId, false));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
 
@@ -198,7 +200,7 @@ public class OverviewController extends GuiController implements Observer {
             Image rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_Icon.png")));
 
             for (VirtualCard card : visibleHand) {
-                ImageView cardImageview = new ImageView(getImageByCardId(card.id(), !card.flipped()));
+                ImageView cardImageview = new ImageView(getImageByCardId(card.id(), card.flipped()));
                 ImageView rotationImageview = new ImageView(rotationImage);
                 Button rotationButton = new Button();
 
@@ -214,6 +216,7 @@ public class OverviewController extends GuiController implements Observer {
                     boolean side = !card.flipped();
                     visibleHand.set(visibleHand.indexOf(card), new VirtualCard(card.id(), side));
                     drawHand(myUsername);
+                    selectedCard = null;
                 });
 
                 cardImageview.setOnMouseClicked(mouseEvent -> selectCard(cardImageview, card));
@@ -240,10 +243,10 @@ public class OverviewController extends GuiController implements Observer {
 
     private void selectCard(ImageView selectedCardImageview, VirtualCard card){
         if (selectedCard != null) {
-            selectedCard.second.setStyle(selectedCardImageview.getStyle().replace("-fx-border-color: blue;", "-fx-border-color: gray;"));
+            selectedCard.second.setOpacity(1);
         }
         selectedCard = new Pair<>(card, selectedCardImageview);
-        selectedCard.second.setStyle(selectedCardImageview.getStyle().replace("-fx-border-color: gray;", "-fx-border-color: blue;"));
+        selectedCard.second.setOpacity(0.6);
         System.out.println("Carta selezionata: " + selectedCard.first);
     }
 
@@ -308,5 +311,12 @@ public class OverviewController extends GuiController implements Observer {
             this.drawHand(focusedPlayer.getUsername());
             this.drawSymbols(focusedPlayer.getUsername());
         }
+    }
+
+    public VirtualCard getSelectedCard() {
+        if(selectedCard == null)
+            return null;
+        else
+            return selectedCard.first;
     }
 }

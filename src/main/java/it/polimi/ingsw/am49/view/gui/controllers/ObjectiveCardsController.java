@@ -26,15 +26,15 @@ public class ObjectiveCardsController extends GuiController{
         int starterCardId = this.manager.getStarterCardId();
         List<Integer> objectiveCardIds = this.manager.getObjectiveCardsIds();
 
-        Image startingImage = getImageByCardId(starterCardId, true);
+        Image startingImage = getImageByCardId(starterCardId, false); //TODO : INSERIRE IL LATO GIUSTO DELLA STARTER CARD
         starterImageview.setImage(startingImage);
 
         int firstObj = objectiveCardIds.get(0);
-        Image firstobjImage = getImageByCardId(firstObj, true);
+        Image firstobjImage = getImageByCardId(firstObj, false);
         firstobjImageview.setImage(firstobjImage);
 
         int secondObj = objectiveCardIds.get(1);
-        Image secondobjImage = getImageByCardId(secondObj, true);
+        Image secondobjImage = getImageByCardId(secondObj, false);
         secondobjImageview.setImage(secondobjImage);
 
         firstobjImageview.setOnMouseClicked(mouseEvent -> {

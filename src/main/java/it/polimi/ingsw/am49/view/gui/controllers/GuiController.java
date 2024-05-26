@@ -30,11 +30,11 @@ public abstract class GuiController {
 
     public void gameUpdate(GameUpdate gameUpdate) throws InvalidSceneException{}
 
-    protected Image getImageByCardId(int id, boolean front){
+    protected Image getImageByCardId(int id, boolean flipped){
         String zeros = "0".repeat(3 - String.valueOf(id).length());
         String subFolder;
 
-        if(front){
+        if(!flipped){
             subFolder = "gold_cards_front";
         } else
             subFolder = "gold_card_back";
@@ -74,6 +74,6 @@ public abstract class GuiController {
 
         if(isGold) cardId += 40; // questo offset permette di prendere la prima carta gold per ogni tipo di risorsa
 
-        return getImageByCardId(cardId, false);
+        return getImageByCardId(cardId, true);
     }
 }

@@ -30,8 +30,8 @@ public class StarterCardController extends GuiController{
 
         int starterCardId = this.manager.getStarterCardId();
         
-        Image frontImage = getImageByCardId(starterCardId, true);
-        Image backImage = getImageByCardId(starterCardId, false);
+        Image frontImage = getImageByCardId(starterCardId, false);
+        Image backImage = getImageByCardId(starterCardId, true);
 
         frontImageview.setImage(frontImage);
         backImageview.setImage(backImage);
