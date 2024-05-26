@@ -4,8 +4,13 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
+import it.polimi.ingsw.am49.model.actions.DrawCardAction;
+import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.Item;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
+import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
+import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.util.Observer;
 import it.polimi.ingsw.am49.util.Pair;
 import it.polimi.ingsw.am49.view.gui.PointsCoordinates;
@@ -24,9 +29,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static it.polimi.ingsw.am49.model.enumerations.DrawPosition.*;
 
 public class OverviewController extends GuiController implements Observer {
     @FXML
@@ -91,13 +99,13 @@ public class OverviewController extends GuiController implements Observer {
 
     @Override
     public void update() {
-//        drawHand(myUsername);
-//        drawObjectives();
-//        drawPlayers();
-//        drawDecks();
-//        drawSymbols(myUsername);
-//        drawPointsBoard();
-//        drawPointsTokens();
+        drawHand(myUsername);
+        drawCurrentplayerindicator();
+        drawDecks();
+        drawSymbols(myUsername);
+        drawPointsBoard();
+        drawPointsTokens();
+        updateVisibleHand();
     }
 
     private void drawObjectives(){
@@ -124,7 +132,10 @@ public class OverviewController extends GuiController implements Observer {
         drawableGridpane.getChildren().clear();
         //TODO: IMPLEMENTA CASO DI MAZZO VUOTO
         ImageView resourceDeckImageview = new ImageView(getImageBackByResource(drawableArea.getDeckTopResource(), false));
+        resourceDeckImageview.setOnMouseClicked(mouseEvent -> drawCard(0,RESOURCE_DECK));
+
         ImageView goldDeckImageview = new ImageView(getImageBackByResource(drawableArea.getDeckTopGold(), true));
+        goldDeckImageview.setOnMouseClicked(mouseEvent -> drawCard(0,GOLD_DECK));
 
         resourceDeckImageview.setFitWidth(143);
         resourceDeckImageview.setFitHeight(88);
@@ -142,6 +153,8 @@ public class OverviewController extends GuiController implements Observer {
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
 
+            cardImageview.setOnMouseClicked(mouseEvent -> drawCard(cardId, REVEALED));
+
             drawableGridpane.add(cardImageview, 0, index);
             index++;
         }
@@ -151,6 +164,8 @@ public class OverviewController extends GuiController implements Observer {
             cardImageview.setImage(getImageByCardId(cardId, false));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
+
+            cardImageview.setOnMouseClicked(mouseEvent -> drawCard(cardId, REVEALED));
 
             drawableGridpane.add(cardImageview, 1, index);
             index++;
@@ -246,6 +261,25 @@ public class OverviewController extends GuiController implements Observer {
             }
         }
     }
+
+    /**
+     * Method to handle the process of drawing a card frome one of the decks
+     * @param cardId
+     * @param drawPosition
+     */
+    private void drawCard(int cardId, DrawPosition drawPosition) {
+        try {
+            this.app.getServer().executeAction(this.app, new DrawCardAction(this.myUsername, drawPosition, cardId));
+            this.update();
+        } catch (NotYourTurnException | InvalidActionException e) {
+            showErrorPopup(e.getMessage());
+        } catch (NotInGameException e) {
+            showErrorPopup("It seems like you are not in a game. Please restart the application.");
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private void selectCard(ImageView selectedCardImageview, VirtualCard card){
         if (selectedCard != null) {

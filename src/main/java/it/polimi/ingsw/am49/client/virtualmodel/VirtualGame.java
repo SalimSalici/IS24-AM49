@@ -51,7 +51,6 @@ public class VirtualGame extends Observable {
             case CARD_PLACED_UPDATE -> this.handleCardPlacedUpdate((CardPlacedUpdate) gameUpdate);
             case HAND_UPDATE -> this.handleHandUpdate((HandUpdate) gameUpdate);
             case HIDDEN_HAND_UPDATE -> this.handleHiddenHandUpdate((HiddenHandUpdate) gameUpdate);
-            case DRAWABLES_UPDATE -> this.handleDrawablesUpdate((DrawablesUpdate) gameUpdate);
             case DRAW_AREA_UPDATE -> this.handleDrawAreaUpdate((DrawAreaUpdate) gameUpdate);
         }
     }
@@ -91,14 +90,6 @@ public class VirtualGame extends Observable {
         this.drawableArea = new VirtualDrawable(update.deckTopResource(), update.deckTopGold(), update.revealedResourcesIds(), update.revealedGoldsIds());
         this.commonObjectives = update.commonObjectivesIds();
         this.notifyObservers();
-        this.drawableArea.notifyObservers();
-    }
-
-    private void handleDrawablesUpdate(DrawablesUpdate update){
-        this.drawableArea.setDeckTopResource(update.deckTopResource());
-        this.drawableArea.setDeckTopGold(update.deckTopGold());
-        this.drawableArea.setRevealedResourcesIds(update.revealedResourcesIds());
-        this.drawableArea.setRevealedGoldsIds(update.revealedGoldsIds());
         this.drawableArea.notifyObservers();
     }
 

@@ -9,6 +9,7 @@ import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.scenes.InvalidSceneException;
 import it.polimi.ingsw.am49.view.gui.GuiManager;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 
 import java.util.Objects;
@@ -75,5 +76,14 @@ public abstract class GuiController {
         if(isGold) cardId += 40; // questo offset permette di prendere la prima carta gold per ogni tipo di risorsa
 
         return getImageByCardId(cardId, true);
+    }
+
+    public void showErrorPopup(String errorMessage) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(errorMessage);
+
+        alert.showAndWait();
     }
 }

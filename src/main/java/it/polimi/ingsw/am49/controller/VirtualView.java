@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.controller;
 
 import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.controller.gameupdates.DrawablesUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.cards.Card;

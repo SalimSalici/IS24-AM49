@@ -177,7 +177,6 @@ public class BoardController extends GuiController {
         topRightButton.setPrefSize(cornerWidth, cornerHeight);
         topLeftButton.setPrefSize(cornerWidth, cornerHeight);
         bottomRightButton.setPrefSize(cornerWidth, cornerHeight);
-
         bottomLeftButton.setPrefSize(cornerWidth, cornerHeight);
 
         StackPane.setAlignment(topLeftButton, Pos.TOP_LEFT);
@@ -188,7 +187,7 @@ public class BoardController extends GuiController {
         cardpane.stackPane().getChildren().addAll(topLeftButton, topRightButton, bottomLeftButton, bottomRightButton);
 
         topLeftButton.setOnAction(e -> handleCornerButtonAction(cardpane, -cardWidth + cornerWidth, -cardHeight + cornerHeight, CornerPosition.TOP_LEFT));
-        topRightButton.setOnAction(e -> handleCornerButtonAction(cardpane, cardWidth - cornerWidth, -cardHeight + cornerHeight, CornerPosition.TOP_LEFT));
+        topRightButton.setOnAction(e -> handleCornerButtonAction(cardpane, cardWidth - cornerWidth, -cardHeight + cornerHeight, CornerPosition.TOP_RIGHT));
         bottomLeftButton.setOnAction(e -> handleCornerButtonAction(cardpane, -cardWidth + cornerWidth, cardHeight - cornerHeight, CornerPosition.BOTTOM_RIGHT));
         bottomRightButton.setOnAction(e -> handleCornerButtonAction(cardpane, cardWidth - cornerWidth, cardHeight - cornerHeight, CornerPosition.BOTTOM_LEFT));
 
