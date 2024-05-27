@@ -3,6 +3,7 @@ module it.polimi.ingsw.am49 {
     requires javafx.fxml;
     requires com.google.gson;
     requires java.rmi;
+    requires java.logging;
 
     opens it.polimi.ingsw.am49 to javafx.fxml;
     opens it.polimi.ingsw.am49.model.cards to com.google.gson;

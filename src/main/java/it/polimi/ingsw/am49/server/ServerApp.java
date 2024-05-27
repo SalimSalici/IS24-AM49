@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.exceptions.*;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
@@ -176,12 +177,15 @@ public class ServerApp implements Server {
     public static void main(String[] args) throws IOException, AlreadyBoundException {
         System.setProperty("java.rmi.server.hostname", "127.0.0.1");
 
+        Log.initializeLogger("server.log", true);
+        Log.getLogger().info("Hello logger test");
+
         int port = 8458;
         Server server = new ServerApp();
         Registry registry = LocateRegistry.createRegistry(port);
         registry.bind("server.am49.codex_naturalis", UnicastRemoteObject.exportObject(server, port));
-        System.out.println("RMI Server started on port " + port);
+        Log.getLogger().info("RMI Server started on port " + port);
         ServerSocketManager serverSocketManager = new ServerSocketManager(server, port + 1);
-        System.out.println("Socket Server started on port " + (port + 1));
+        Log.getLogger().info("Socket Server started on port " + (port + 1));
     }
 }
