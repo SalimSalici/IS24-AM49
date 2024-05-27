@@ -49,4 +49,8 @@ public class PlayerInfo {
     public void setVirtualView(VirtualView virtualView) {
         this.virtualView = virtualView;
     }
+
+    public VirtualView getVirtualView() {
+        return virtualView;
+    }
 }

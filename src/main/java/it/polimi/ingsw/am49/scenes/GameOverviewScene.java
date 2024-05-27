@@ -62,7 +62,11 @@ public class GameOverviewScene extends Scene implements Observer {
                         this.errorMessage = "You cannot do that action now.";
                     break;
                 case "exit":
-                    // TODO: Tell server about disconnection
+                    try {
+                        this.tuiApp.getServer().disconnect(this.tuiApp);
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
                     this.sceneManager.setScene(new MainMenuScene(this.sceneManager, this.tuiApp));
                     this.stop();
                     break;

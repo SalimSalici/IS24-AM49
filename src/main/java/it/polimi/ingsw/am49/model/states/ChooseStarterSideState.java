@@ -13,11 +13,9 @@ import it.polimi.ingsw.am49.model.events.*;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.util.Log;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ChooseStarterSideState extends GameState {
 
@@ -125,5 +123,21 @@ public class ChooseStarterSideState extends GameState {
                 List.of(this.game.getRevealedResources()),
                 List.of(this.game.getRevealedGolds())
         ));
+    }
+
+    public void disconnectPlayer(String username) {
+        Player player = this.game.getPlayerByUsername(username);
+        if (player == null || !player.isOnline()) return;
+
+        player.setIsOnline(false);
+
+        if (this.playersChoosing.contains(player)) {
+            boolean flipped = new Random().nextBoolean();
+            try {
+                this.execute(new ChooseStarterSideAction(username, flipped));
+            } catch (NotYourTurnException | InvalidActionException e) {
+                Log.getLogger().severe("Disconnect player anomaly... Exception message: " + e.getMessage());
+            }
+        }
     }
 }

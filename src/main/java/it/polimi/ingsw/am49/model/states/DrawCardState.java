@@ -57,7 +57,7 @@ public class DrawCardState extends GameState {
     public void execute(GameAction action) throws NotYourTurnException, InvalidActionException {
         this.checkActionValidity(action);
 
-        Log.getLogger().info("Executing action of player '" + action.getUsername() + "'");
+        Log.getLogger().info("Executing action " + action.toString());
 
         DrawCardAction drawCardAction = (DrawCardAction) action;
         DrawPosition drawPosition = drawCardAction.getDrawPosition();
@@ -108,16 +108,7 @@ public class DrawCardState extends GameState {
                 new HandEvent(currentPlayer, currentPlayer.getHand().stream().toList())
         );
 
-        // Check if game is over
-        if (this.game.isFinalRound() && this.currentPlayer.equals(this.game.getLastPlayer())) {
-            this.goToNextState(new EndGameState(this.game));
-            return;
-        }
-
-        // Game is not over, move on to the next turn
         this.handleSwitchToNextTurn();
-
-        this.goToNextState(new PlaceCardState(this.game));
     }
 
     @Override
@@ -128,9 +119,23 @@ public class DrawCardState extends GameState {
     /**
      * Handles the switch to next turn logic by also checking if the EndGame or FinalRound has to start.
      */
-    private void handleSwitchToNextTurn() {
+    public void handleSwitchToNextTurn() {
         this.game.incrementTurn();
 
+        do {
+            if (this.game.isFinalRound() && this.currentPlayer.equals(this.game.getLastPlayer())) {
+                this.goToNextState(new EndGameState(this.game));
+                return;
+            }
+
+            this.handleEndGameAndFinalRound();
+            this.game.setCurrentPlayer(this.game.getNextPlayer());
+        } while (!this.game.getCurrentPlayer().isOnline());
+
+        this.goToNextState(new PlaceCardState(this.game));
+    }
+
+    private void handleEndGameAndFinalRound() {
         if (this.currentPlayer.getPoints() > 20 || (this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty()))
             this.game.setEndGame(true);
 
@@ -139,7 +144,25 @@ public class DrawCardState extends GameState {
             if (this.game.isEndGame())
                 this.game.setFinalRound(true);
         }
+    }
 
-        this.game.setCurrentPlayer(this.game.getNextPlayer());
+    @Override
+    public void disconnectPlayer(String username) {
+        Player player = this.game.getPlayerByUsername(username);
+        if (player == null || !player.isOnline()) return;
+
+        player.setIsOnline(false);
+
+        if (this.currentPlayer.equals(player))
+            this.afkAction(player);
+    }
+
+    private void afkAction(Player player) {
+        // TODO: make sure that the drawn card is actually there (deck is not empty etc...)
+        try {
+            this.execute(new DrawCardAction(player.getUsername(), DrawPosition.RESOURCE_DECK, 0));
+        } catch (NotYourTurnException | InvalidActionException e) {
+            Log.getLogger().severe("Disconnect player anomaly... Exception message: " + e.getMessage());
+        }
     }
 }

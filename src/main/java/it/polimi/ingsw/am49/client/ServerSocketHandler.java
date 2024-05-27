@@ -88,7 +88,7 @@ public class ServerSocketHandler implements Server {
     }
 
     @Override
-    public void disconnectClient(Client client) throws RemoteException {
+    public void disconnect(Client client) throws RemoteException {
 //        try {
 //            this.objectOutputStream.writeObject(new LogoutMTS(username));
 //        } catch (IOException e) {

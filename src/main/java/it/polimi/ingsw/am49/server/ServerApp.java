@@ -31,8 +31,10 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public void disconnectClient(Client client) {
-
+    public void disconnect(Client client) {
+        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+        Room room = this.clientsToRooms.get(clientHandler);
+        if (room != null) room.disconnectClient(clientHandler);
     }
 
     @Override

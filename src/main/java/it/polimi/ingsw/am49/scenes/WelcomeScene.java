@@ -35,7 +35,7 @@ public class WelcomeScene extends Scene {
         }
 
         // TODO: remove logger
-        Log.initializeLogger(username + new Random().nextInt(100000), false);
+        Log.initializeLogger(username + new Random().nextInt(100000) + ".log", false);
         Log.getLogger().info("Logging in with username '" + username + "'");
 
         this.tuiApp.setUsername(username);

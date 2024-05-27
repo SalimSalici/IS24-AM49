@@ -104,6 +104,10 @@ public class Game implements Serializable, EventEmitter {
         this.gameState.execute(action);
     }
 
+    public void disconnectPlayer(String username) {
+        this.gameState.disconnectPlayer(username);
+    }
+
     /**
      * @return the game deck containing resource cards
      */

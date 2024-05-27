@@ -10,8 +10,10 @@ import it.polimi.ingsw.am49.server.ClientHandler;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Room {
 
@@ -29,8 +31,6 @@ public class Room {
     private final HashMap<String, PlayerInfo> usernamesToPlayers;
     private Game game;
     private boolean gameStarted;
-
-//    private GameEventsHandler gameEventsHandler;
 
     public Room(String roomName, int maxPlayers, ClientHandler creatorClient, String creatorUsername) {
         this.roomName = roomName;
@@ -154,16 +154,26 @@ public class Room {
                     + " - Received: " + action.getUsername());
             throw new InvalidActionException("Client and username don't correspond. Aborting.");
         }
-
-        System.out.println("Player '" + action.getUsername() + "' executed action " + action);
         this.game.executeAction(action);
     }
 
-    public void onClientDisconnect(ClientHandler client, String username) throws Exception {
-        if (!this.usernameCorrespondsToClient(username, client))
-            throw new Exception("Username of action does not correspond to associated client");
+    public void disconnectClient(ClientHandler client) {
+        String username = this.getUsernameByClient(client);
+        PlayerInfo playerInfo = this.usernamesToPlayers.get(username);
 
-        // TODO: communicate to controller in both cases when a game has already started or when a game is starting
+        if (this.gameStarted) {
+            if (playerInfo != null)
+                playerInfo.getVirtualView().destroy();
+
+            if (username != null)
+                this.game.disconnectPlayer(username);
+        }
+
+        this.removePlayer(client);
+
+        Log.getLogger().info("Player '" + username + "' disconnected from the room.");
+
+        // TODO: notify other players
     }
 
     /**

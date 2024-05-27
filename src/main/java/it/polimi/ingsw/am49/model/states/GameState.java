@@ -90,4 +90,6 @@ public abstract class GameState {
     }
 
     protected abstract boolean isYourTurn(GameAction action);
+
+    public abstract void disconnectPlayer(String username);
 }

@@ -81,5 +81,10 @@ public class VirtualView implements EventListener {
             ex.printStackTrace();
         }
     }
+
+    public void destroy() {
+        for (GameEventType eventType : GameEventType.values())
+            this.game.removeEventListener(eventType, this);
+    }
 }
 

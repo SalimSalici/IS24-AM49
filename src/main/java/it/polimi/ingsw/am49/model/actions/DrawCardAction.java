@@ -19,4 +19,8 @@ public class DrawCardAction extends GameAction {
     public int getIdOfRevealedDrawn() {
         return idOfRevealedDrawn;
     }
+
+    public String toString() {
+        return "DrawCardAction[username=" + username + ", drawPosition=" + drawPosition + ", idOfRevealedDrawn=" + idOfRevealedDrawn + "]";
+    }
 }

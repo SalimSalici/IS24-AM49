@@ -5,8 +5,6 @@ import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.EndgameEvent;
 import it.polimi.ingsw.am49.model.players.Player;
-import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
-import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,5 +52,10 @@ public class EndGameState extends GameState {
     @Override
     protected boolean isYourTurn(GameAction action) {
         return false;
+    }
+
+    @Override
+    public void disconnectPlayer(String username) {
+
     }
 }

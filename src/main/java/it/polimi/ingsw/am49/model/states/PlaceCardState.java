@@ -1,6 +1,5 @@
 package it.polimi.ingsw.am49.model.states;
 
-import it.polimi.ingsw.am49.controller.gameupdates.HandUpdate;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.actions.PlaceCardAction;
@@ -8,12 +7,12 @@ import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
-import it.polimi.ingsw.am49.model.events.CardPlacedEvent;
-import it.polimi.ingsw.am49.model.events.HandEvent;
+import it.polimi.ingsw.am49.model.events.*;
 import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.util.Set;
 
@@ -44,6 +43,9 @@ public class PlaceCardState extends GameState {
     @Override
     public void execute(GameAction action) throws InvalidActionException, NotYourTurnException {
         this.checkActionValidity(action);
+
+        Log.getLogger().info("Executing action " + action.toString());
+
         PlaceCardAction placeCardAction = (PlaceCardAction) action;
 
         PlaceableCard card = this.currentPlayer.getHandCardById(placeCardAction.getCardId());
@@ -65,5 +67,21 @@ public class PlaceCardState extends GameState {
     @Override
     protected boolean isYourTurn(GameAction action) {
         return this.currentPlayer.getUsername().equals(action.getUsername());
+    }
+
+    @Override
+    public void disconnectPlayer(String username) {
+        Player player = this.game.getPlayerByUsername(username);
+        if (player == null || !player.isOnline()) return;
+
+        player.setIsOnline(false);
+
+        if (this.currentPlayer.equals(player))
+            this.skipTurn();
+    }
+
+    private void skipTurn() {
+        DrawCardState drawCardState = new DrawCardState(this.game);
+        drawCardState.handleSwitchToNextTurn();
     }
 }

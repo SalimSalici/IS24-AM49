@@ -5,7 +5,6 @@ import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.actions.GameActionType;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
-import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.ChoosableObjectivesEvent;
@@ -15,6 +14,7 @@ import it.polimi.ingsw.am49.model.events.PersonalObjectiveChosenEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.util.*;
 
@@ -110,5 +110,22 @@ public class ChooseObjectiveState extends GameState {
             if (objCard.getId() == id)
                 return objCard;
         return null;
+    }
+
+    public void disconnectPlayer(String username) {
+        Player player = this.game.getPlayerByUsername(username);
+        if (player == null || !player.isOnline()) return;
+
+        player.setIsOnline(false);
+
+        List<ObjectiveCard> objectives = this.playersToObjectives.get(player);
+        if (objectives == null) return;
+
+        int randomObjectiveId = objectives.get(new Random().nextInt(objectives.size())).getId();
+        try {
+            this.execute(new ChooseObjectiveAction(username, randomObjectiveId));
+        } catch (InvalidActionException | NotYourTurnException e) {
+            Log.getLogger().severe("Disconnect player anomaly... Exception message: " + e.getMessage());
+        }
     }
 }

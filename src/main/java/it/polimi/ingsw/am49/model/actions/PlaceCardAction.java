@@ -38,4 +38,16 @@ public class PlaceCardAction extends GameAction {
     public boolean getFlipped() {
         return flipped;
     }
+
+    @Override
+    public String toString() {
+        return "PlaceCardAction[" +
+                "username=" + getUsername() +
+                ", cardId=" + cardId +
+                ", parentRow=" + parentRow +
+                ", parentCol=" + parentCol +
+                ", cornerPosition=" + cornerPosition +
+                ", flipped=" + flipped +
+                ']';
+    }
 }

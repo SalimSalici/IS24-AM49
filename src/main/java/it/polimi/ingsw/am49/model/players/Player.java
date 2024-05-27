@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class Player implements Serializable {
     /**
-     * Is set in the lobby phase and identifies every player //TODO: add link to the class for the lobby
+     * Username of the player
      */
     private final String username;
 
@@ -40,13 +40,17 @@ public class Player implements Serializable {
     private int points;
 
     /**
-     * Stores the hand of the player. //TODO: switch from stack to list
+     * Stores the hand of the player.
      */
-    private final Set<PlaceableCard> hand;
+    private final List<PlaceableCard> hand;
+
+    /**
+     * The maximum amount of cards in a player's hand.
+     */
     private final int maxCards;
 
     /**
-     * Tracks if a player is online or ofline, is set in {//TODO: include link}.
+     * Tracks if a player is online or offline
      */
     private boolean isOnline;
 
@@ -58,14 +62,14 @@ public class Player implements Serializable {
 
     /**
      * Constructor of the class player
-     * @param username see {//TODO: fill the link}
+     * @param username of the playere
      */
     public Player(String username){
         this.username = username;
         this.points = 0;
-        this.hand = new HashSet<>();
+        this.hand = new LinkedList<>();
         this.maxCards = 3;
-        this.isOnline = false;
+        this.isOnline = true;
     }
 
     /**
@@ -193,7 +197,7 @@ public class Player implements Serializable {
      * Getter for the hand.
      * @return a stack.
      */
-    public Set<PlaceableCard> getHand() {
+    public List<PlaceableCard> getHand() {
         return hand;
     }
 
@@ -203,6 +207,13 @@ public class Player implements Serializable {
      */
     public boolean isOnline() {
         return isOnline;
+    }
+
+    /**
+     * Setter for isOnline.
+     */
+    public void setIsOnline(boolean online) {
+        this.isOnline = online;
     }
 
     /**
