@@ -27,7 +27,7 @@ public class TuiDrawAreaRenderer {
             case BUGS -> this.textureManager.getBackTexture(BackTexture.RP);
         };
 
-        ColoredChar[][] goldBackTexture = switch (drawArea.getDeckTopResource()) {
+        ColoredChar[][] goldBackTexture = switch (drawArea.getDeckTopGold()) {
             case WOLVES -> this.textureManager.getBackTexture(BackTexture.GB);
             case LEAVES -> this.textureManager.getBackTexture(BackTexture.GG);
             case MUSHROOMS -> this.textureManager.getBackTexture(BackTexture.GR);

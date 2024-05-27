@@ -4,12 +4,12 @@ import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.cards.Card;
-import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.events.*;
 import it.polimi.ingsw.am49.model.players.Player;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -48,6 +48,7 @@ public class VirtualView implements EventListener {
                             players.put(p.getUsername(), p.getColor());
                         GameStartedUpdate update = new GameStartedUpdate(this.username, starterCardId, players, commonObjectivesIds, resourceDeckTop, goldDeckTop, revealedResourcesIds, revealedGoldsIds);
                         this.client.receiveGameUpdate(update);
+                        Log.getLogger().info("Sent GameStartedUpdate to '" + username + "' - " + update.toString());
                     }
                 }
                 case CHOOSABLE_OBJECTIVES_EVENT -> {
@@ -64,6 +65,7 @@ public class VirtualView implements EventListener {
                 }
                 case DRAW_AREA_EVENT -> {
                     this.client.receiveGameUpdate(event.toGameUpdate());
+                    Log.getLogger().info("Sent DrawAreaUpdate to '" + username + "' - " + event.toGameUpdate());
                 }
                 case PLAYERS_ORDER_SET_EVENT -> {
                     // discard... Player order will be communicated to the client with a GameStartedUpdate

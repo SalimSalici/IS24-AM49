@@ -1,7 +1,9 @@
 package it.polimi.ingsw.am49.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.util.Log;
 
+import java.util.Random;
 import java.util.stream.IntStream;
 
 public class WelcomeScene extends Scene {
@@ -31,6 +33,10 @@ public class WelcomeScene extends Scene {
                 System.out.println("Invalid username, please choose a username between 2 and 20 characters.");
             }
         }
+
+        // TODO: remove logger
+        Log.initializeLogger(username + new Random().nextInt(100000), false);
+        Log.getLogger().info("Logging in with username '" + username + "'");
 
         this.tuiApp.setUsername(username);
         this.sceneManager.setScene(new MainMenuScene(this.sceneManager, this.tuiApp));

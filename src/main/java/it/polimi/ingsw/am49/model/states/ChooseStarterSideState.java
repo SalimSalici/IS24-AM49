@@ -116,5 +116,14 @@ public class ChooseStarterSideState extends GameState {
 
             this.game.triggerEvent(new HandEvent(p, p.getHand().stream().toList()));
         }
+
+        this.game.triggerEvent(new DrawAreaEvent(
+                this.game.getResourceGameDeck().size(),
+                this.game.getGoldGameDeck().size(),
+                this.game.getResourceGameDeck().peek().getResource(),
+                this.game.getGoldGameDeck().peek().getResource(),
+                List.of(this.game.getRevealedResources()),
+                List.of(this.game.getRevealedGolds())
+        ));
     }
 }

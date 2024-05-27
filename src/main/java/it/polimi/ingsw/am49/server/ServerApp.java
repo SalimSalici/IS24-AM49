@@ -178,7 +178,6 @@ public class ServerApp implements Server {
         System.setProperty("java.rmi.server.hostname", "127.0.0.1");
 
         Log.initializeLogger("server.log", true);
-        Log.getLogger().info("Hello logger test");
 
         int port = 8458;
         Server server = new ServerApp();

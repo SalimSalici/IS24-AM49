@@ -3,8 +3,8 @@ package it.polimi.ingsw.am49.client.virtualmodel;
 import it.polimi.ingsw.am49.controller.gameupdates.*;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
+import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.util.Observable;
-import it.polimi.ingsw.am49.model.enumerations.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,7 @@ public class VirtualGame extends Observable {
         VirtualGame game = new VirtualGame();
         players.forEach((username, color) -> game.players.add(new VirtualPlayer(username, color)));
         game.handleGameStartedUpdate(update);
+        Log.getLogger().info("Creating new VirtualGame - " + update.toString());
         return game;
     }
 
@@ -45,6 +46,7 @@ public class VirtualGame extends Observable {
     }
 
     public void processGameUpdate(GameUpdate gameUpdate) {
+        Log.getLogger().info("Received GameUpdate - " + gameUpdate.toString());
         switch (gameUpdate.getType()) {
             case GAME_STARTED_UPDATE -> this.handleGameStartedUpdate((GameStartedUpdate) gameUpdate);
             case GAME_STATE_UPDATE -> this.handleGameStateUpdate((GameStateChangedUpdate) gameUpdate);

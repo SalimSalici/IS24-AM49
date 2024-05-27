@@ -15,8 +15,8 @@ import it.polimi.ingsw.am49.model.events.HandEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.util.Log;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -50,11 +50,15 @@ public class DrawCardState extends GameState {
      * is triggered.
      * The method also checks if the game is over, if not it mooves to the next turn.
      * @param action tells witch type of {@link GameAction} neds to be handled.
-     * @throws Exception
+     * @throws InvalidActionException if the action is not supported by this state.
+     * @throws NotYourTurnException if the player making the action is not the current player.
      */
     @Override
     public void execute(GameAction action) throws NotYourTurnException, InvalidActionException {
         this.checkActionValidity(action);
+
+        Log.getLogger().info("Executing action of player '" + action.getUsername() + "'");
+
         DrawCardAction drawCardAction = (DrawCardAction) action;
         DrawPosition drawPosition = drawCardAction.getDrawPosition();
         PlaceableCard drawnCard = null;
