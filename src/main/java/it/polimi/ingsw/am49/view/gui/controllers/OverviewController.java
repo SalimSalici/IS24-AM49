@@ -4,10 +4,13 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
+import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.GameStateChangedUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.model.actions.DrawCardAction;
-import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
-import it.polimi.ingsw.am49.model.enumerations.Item;
-import it.polimi.ingsw.am49.model.enumerations.Resource;
+import it.polimi.ingsw.am49.model.enumerations.*;
+import it.polimi.ingsw.am49.scenes.InvalidSceneException;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
@@ -80,6 +83,8 @@ public class OverviewController extends GuiController implements Observer {
             playerboardController.init(players, this);
 //        playerboardController.init(Stream.of(debugPlayer).toList());
         }
+
+        drawSymbols(myUsername);
     }
 
     private void loadPlayerBoard() {
@@ -94,6 +99,13 @@ public class OverviewController extends GuiController implements Observer {
             playerboardController.setGui(this.app, this.manager);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void gameUpdate(GameUpdate gameUpdate) throws InvalidSceneException {
+        if (gameUpdate.getType() == GameUpdateType.GAME_STATE_UPDATE) {
+            update();
         }
     }
 
@@ -292,13 +304,16 @@ public class OverviewController extends GuiController implements Observer {
 
     private void drawSymbols(String username){
         //populates the resource list with the strings rapresenting the values of the enum
-        List<Integer> resourcesCounts = this.focusedPlayer.getActiveSymbols().values().stream()
-                .limit(Resource.values().length).toList();
+        List<Integer> resourcesCounts = this.focusedPlayer.getActiveSymbols().entrySet().stream().filter(symbolIntegerEntry -> symbolIntegerEntry.getKey().toResource() != null).sorted(Map.Entry.comparingByKey(Comparator.comparing(Symbol::toString))).map(Map.Entry::getValue).toList();
 
         //populates the items list with the strings rapresenting the values of the enum
-        List<Integer> itemsCounts = this.focusedPlayer.getActiveSymbols().values().stream()
-                .skip(Resource.values().length)
-                .limit(Item.values().length).toList();
+        List<Integer> itemsCounts = this.focusedPlayer.getActiveSymbols().entrySet().stream().filter(symbolIntegerEntry -> symbolIntegerEntry.getKey().toItem() != null).sorted(Map.Entry.comparingByKey(Comparator.comparing(Symbol::toString))).map(Map.Entry::getValue).toList();
+
+        resourcesGridpane.getChildren().removeIf(node ->
+                GridPane.getColumnIndex(node) != null && GridPane.getColumnIndex(node) == 2 && node instanceof Label);
+
+        itemsGridpane.getChildren().removeIf(node ->
+                GridPane.getColumnIndex(node) != null && GridPane.getColumnIndex(node) == 2 && node instanceof Label);
 
         int index = 0;
         for(int resourceNumber : resourcesCounts){
@@ -358,6 +373,10 @@ public class OverviewController extends GuiController implements Observer {
             return null;
         else
             return selectedCard.first;
+    }
+
+    public void unselectCard() {
+        this.selectedCard = null;
     }
 
     public void updateVisibleHand() {

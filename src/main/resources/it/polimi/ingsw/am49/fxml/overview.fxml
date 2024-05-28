@@ -117,7 +117,7 @@
                               <Label contentDisplay="CENTER" text="X" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                               <Label contentDisplay="CENTER" text="X" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                               <Label contentDisplay="CENTER" text="X" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
-                              <ImageView fitHeight="83.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
+                              <ImageView fitHeight="83.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                                  <image>
                                     <Image url="@../images/elements/mushroom.png" />
                                  </image>
@@ -127,20 +127,16 @@
                                     <Image url="@../images/elements/leaf.png" />
                                  </image>
                               </ImageView>
-                              <ImageView fitHeight="83.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-                                 <image>
-                                    <Image url="@../images/elements/wolf.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fitHeight="83.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                              <ImageView fitHeight="83.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
                                  <image>
                                     <Image url="@../images/elements/bug.png" />
                                  </image>
                               </ImageView>
-                              <Label text="0" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
-                              <Label text="0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                              <Label text="0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-                              <Label text="0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                              <ImageView fitHeight="83.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                                 <image>
+                                    <Image url="@../images/elements/wolf.png" />
+                                 </image>
+                              </ImageView>
                            </children>
                         </GridPane>
                      </children>
@@ -162,12 +158,12 @@
                               <Label contentDisplay="CENTER" text="X" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                               <Label contentDisplay="CENTER" text="X" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                               <Label contentDisplay="CENTER" text="X" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-                              <ImageView fitHeight="83.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
+                              <ImageView fitHeight="83.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                                  <image>
                                     <Image url="@../images/elements/manuscript.png" />
                                  </image>
                               </ImageView>
-                              <ImageView fitHeight="83.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                              <ImageView fitHeight="83.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER">
                                  <image>
                                     <Image url="@../images/elements/inkwell.png" />
                                  </image>
@@ -177,9 +173,6 @@
                                     <Image url="@../images/elements/quill.png" />
                                  </image>
                               </ImageView>
-                              <Label text="0" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
-                              <Label text="0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                              <Label text="0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
                      </children>

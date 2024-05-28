@@ -99,6 +99,7 @@ public class BoardController extends GuiController {
                 setupStartingCard(player);
         }
         setupMyStartingCard();
+        this.overviewController.update();
     }
 
     private void setupStartingCard(VirtualPlayer player) {
@@ -121,6 +122,7 @@ public class BoardController extends GuiController {
 
     private void loadBoardState(VirtualPlayer player) {
         if(isNotMe(player)) {
+            loadBoardFromVirtualBoard(player);
             List<ImageView> board = playerBoards.get(player);
             imagePane.getChildren().clear();
             if (board != null) {
@@ -224,18 +226,13 @@ public class BoardController extends GuiController {
             try {
                 this.app.getServer().executeAction(this.app, new PlaceCardAction(this.app.getUsername(), card.id(), cardpane.row(), cardpane.col(), cornerPosition, card.flipped()));
                 Pair<Integer, Integer> newCoords = VirtualBoard.getCoords(cornerPosition.toRelativePosition(), cardpane.row(), cardpane.col());
+
                 addCardPane(newX, newY, card,String.valueOf(card.id()), newCoords.first, newCoords.second);
-                this.overviewController.updateVisibleHand();
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-
-            } catch (InvalidActionException e) {
-
-            } catch (NotYourTurnException e) {
-
-            } catch (NotInGameException e) {
-
-            } catch (RemoteException e) {
-                e.printStackTrace();
+                this.overviewController.update();
+                this.overviewController.unselectCard();
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException | NotInGameException |
+                     NotYourTurnException | RemoteException | InvalidActionException e) {
+                showErrorPopup(e.getMessage());
             }
 
 
@@ -331,6 +328,7 @@ public class BoardController extends GuiController {
     public void switchPlayerBoard(VirtualPlayer player) {
         currentPlayer = player;
         loadBoardState(player);
+        this.overviewController.update();
         centerInnerPane();
     }
 
