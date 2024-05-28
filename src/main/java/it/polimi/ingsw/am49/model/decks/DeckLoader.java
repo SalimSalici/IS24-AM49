@@ -9,13 +9,11 @@ import it.polimi.ingsw.am49.model.cards.adapters.SymbolTypeAdapter;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.cards.placeables.*;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
+import it.polimi.ingsw.am49.util.Log;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class creates the immutable decks by reading the JSON files in the resouces. The immutable decks are used as
@@ -43,6 +41,7 @@ public class DeckLoader {
      * The Gson object is set to Pretty printing to enhance redability.
      */
     private DeckLoader() {
+        Log.getLogger().info("Loading cards from jsons.");
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(PlacementPointsStrategy.class, new PlacementPointsStrategyTypeAdapter())
                 .registerTypeAdapter(GoldCard.class, new GoldCardTypeAdapter())
@@ -52,9 +51,13 @@ public class DeckLoader {
                 .setPrettyPrinting()
                 .create();
         this.resourceCardImmutableDeck = new ImmutableDeck<>(this.loadResourcesFromJson());
+        Log.getLogger().info("Reource cards loaded.");
         this.goldCardImmutableDeck = new ImmutableDeck<>(this.loadGoldsFromJson());
+        Log.getLogger().info("Gold cards loaded.");
         this.starterCardImmutableDeck = new ImmutableDeck<>(this.loadStartersFromJson());
+        Log.getLogger().info("Starter cards loaded.");
         this.objectiveCardImmutableDeck = new ImmutableDeck<>(this.loadObjectivesFromJson());
+        Log.getLogger().info("Objective cards loaded.");
     }
 
     /**
@@ -143,14 +146,18 @@ public class DeckLoader {
      * See the following path for the resourcesCards JSON file: {@code src/main/resources/resourceCards.jason}.
      */
     private List<ResourceCard> loadResourcesFromJson() {
-        String filePath = Objects.requireNonNull(DeckLoader.class.getResource("resourceCards.json")).getPath();
 
+        String resourcePath = "/it/polimi/ingsw/am49/model/decks/resourceCards.json";
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            return Arrays.stream(this.gson.fromJson(reader, ResourceCard[].class)).toList();
-        } catch (IOException ex) {
-            //noinspection CallToPrintStackTrace
-            ex.printStackTrace();
+        try (InputStream is = DeckLoader.class.getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                throw new IllegalArgumentException("Resource not found: " + resourcePath);
+            }
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+                return Arrays.stream(this.gson.fromJson(reader, ResourceCard[].class)).toList();
+            }
+        } catch (IOException | IllegalArgumentException ex) {
+            Log.getLogger().severe("loadResourceFromJson() exception: " + ex.getMessage());
             System.exit(1);
             return null;
         }
@@ -162,13 +169,18 @@ public class DeckLoader {
      * See the following path for the goldCards JSON file: {@code src/main/resources/goldCards.jason}.
      */
     private List<GoldCard> loadGoldsFromJson() {
-        String filePath = Objects.requireNonNull(DeckLoader.class.getResource("goldCards.json")).getPath();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            return Arrays.stream(this.gson.fromJson(reader, GoldCard[].class)).toList();
-        } catch (IOException ex) {
-            //noinspection CallToPrintStackTrace
-            ex.printStackTrace();
+        String resourcePath = "/it/polimi/ingsw/am49/model/decks/goldCards.json";
+
+        try (InputStream is = DeckLoader.class.getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                throw new IllegalArgumentException("Resource not found: " + resourcePath);
+            }
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+                return Arrays.stream(this.gson.fromJson(reader, GoldCard[].class)).toList();
+            }
+        } catch (IOException | IllegalArgumentException ex) {
+            Log.getLogger().severe("loadResourceFromJson() exception: " + ex.getMessage());
             System.exit(1);
             return null;
         }
@@ -180,13 +192,18 @@ public class DeckLoader {
      * See the following path for the starterCards JSON file: {@code src/main/resources/starterCards.jason}.
      */
     private List<StarterCard> loadStartersFromJson() {
-        String filePath = Objects.requireNonNull(DeckLoader.class.getResource("starterCards.json")).getPath();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            return Arrays.stream(this.gson.fromJson(reader, StarterCard[].class)).toList();
-        } catch (IOException ex) {
-            //noinspection CallToPrintStackTrace
-            ex.printStackTrace();
+        String resourcePath = "/it/polimi/ingsw/am49/model/decks/starterCards.json";
+
+        try (InputStream is = DeckLoader.class.getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                throw new IllegalArgumentException("Resource not found: " + resourcePath);
+            }
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+                return Arrays.stream(this.gson.fromJson(reader, StarterCard[].class)).toList();
+            }
+        } catch (IOException | IllegalArgumentException ex) {
+            Log.getLogger().severe("loadResourceFromJson() exception: " + ex.getMessage());
             System.exit(1);
             return null;
         }
@@ -198,13 +215,18 @@ public class DeckLoader {
      * See the following path for the objectiveCards JSON file: {@code src/main/resources/objectiveCards.jason}.
      */
     private List<ObjectiveCard> loadObjectivesFromJson() {
-        String filePath = Objects.requireNonNull(DeckLoader.class.getResource("objectiveCards.json")).getPath();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            return Arrays.stream(this.gson.fromJson(reader, ObjectiveCard[].class)).toList();
-        } catch (IOException ex) {
-            //noinspection CallToPrintStackTrace
-            ex.printStackTrace();
+        String resourcePath = "/it/polimi/ingsw/am49/model/decks/objectiveCards.json";
+
+        try (InputStream is = DeckLoader.class.getResourceAsStream(resourcePath)) {
+            if (is == null) {
+                throw new IllegalArgumentException("Resource not found: " + resourcePath);
+            }
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+                return Arrays.stream(this.gson.fromJson(reader, ObjectiveCard[].class)).toList();
+            }
+        } catch (IOException | IllegalArgumentException ex) {
+            Log.getLogger().severe("loadResourceFromJson() exception: " + ex.getMessage());
             System.exit(1);
             return null;
         }

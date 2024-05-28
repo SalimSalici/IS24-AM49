@@ -11,7 +11,10 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<junit.version>5.10.0</junit.version>  </properties>
+    <junit.version>5.10.0</junit.version>
+    <server.main.class>it.polimi.ingsw.am49.server.ServerApp</server.main.class>
+    <client.main.class>it.polimi.ingsw.am49.client.ClientApp</client.main.class>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -64,6 +67,47 @@
             <mainClass>it.polimi.ingsw.am49.view.gui.GuiManager</mainClass>
           </configuration>
         </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <!-- Execution for the Server jar -->
+          <execution>
+            <id>server-package</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>it.polimi.ingsw.am49.server.ServerApp</mainClass>
+                </transformer>
+              </transformers>
+              <finalName>server</finalName>
+            </configuration>
+          </execution>
+
+          <!-- Execution for the Client jar -->
+          <execution>
+            <id>client-package</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>it.polimi.ingsw.am49.client.ClientApp</mainClass>
+                </transformer>
+              </transformers>
+              <finalName>client</finalName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>

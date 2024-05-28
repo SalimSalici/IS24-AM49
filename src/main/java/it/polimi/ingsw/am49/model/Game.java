@@ -15,6 +15,7 @@ import it.polimi.ingsw.am49.model.states.ChooseStarterSideState;
 import it.polimi.ingsw.am49.model.states.GameState;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.io.Serializable;
 import java.util.*;
@@ -49,6 +50,9 @@ public class Game implements Serializable, EventEmitter {
      * @param numPlayers number of players that are playing the current game
      */
     public Game(int gameId, int numPlayers) {
+
+        Log.getLogger().info("Creating new game with " + numPlayers + " players.");
+
         this.gameId = gameId;
         this.numPlayers = numPlayers;
         this.eventManager = new EventManager();
@@ -68,6 +72,8 @@ public class Game implements Serializable, EventEmitter {
 
         for (int i = 0; i < revealedGolds.length; i++)
             revealedGolds[i] = goldGameDeck.draw();
+
+        Log.getLogger().info("Game created.");
     }
 
     public void startGame(){
