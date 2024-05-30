@@ -4,6 +4,11 @@ import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
 import it.polimi.ingsw.am49.util.Observable;
 import it.polimi.ingsw.am49.util.Pair;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+
 public class VirtualBoard extends Observable {
 
     private final VirtualTile[][] board;
@@ -76,5 +81,13 @@ public class VirtualBoard extends Observable {
             }
         }
         return new Pair<>(row, col);
+    }
+
+    public List<VirtualTile> getOrderedTilesList(){ //TODO: consider another option since this one could be inefficient
+        return Arrays.stream(this.board)
+                .flatMap(Arrays::stream)
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparingInt(VirtualTile::getzIndex))
+                .toList();
     }
 }

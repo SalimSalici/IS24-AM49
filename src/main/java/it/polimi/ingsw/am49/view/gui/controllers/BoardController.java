@@ -3,6 +3,7 @@ package it.polimi.ingsw.am49.view.gui.controllers;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualTile;
 import it.polimi.ingsw.am49.model.actions.PlaceCardAction;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
@@ -13,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -120,6 +122,14 @@ public class BoardController extends GuiController {
         imagePane.getChildren().add(myBoard.getFirst().stackPane());
     }
 
+    public void updateBoards(){
+        for(VirtualPlayer player : players){
+            loadBoardFromVirtualBoard(player);
+        }
+        if(isNotMe(currentPlayer))
+            loadBoardState(currentPlayer);
+    }
+
     private void loadBoardState(VirtualPlayer player) {
         if(isNotMe(player)) {
             loadBoardFromVirtualBoard(player);
@@ -137,6 +147,26 @@ public class BoardController extends GuiController {
         imagePane.getChildren().clear();
         for(CardPane cardpane : myBoard)
             imagePane.getChildren().add(cardpane.stackPane());
+    }
+
+    private void loadBoardFromVirtualBoard(VirtualPlayer player){
+        if(isNotMe(player)){
+            List<ImageView> board = new ArrayList<ImageView>();
+            int startingRow = player.getBoard().getStarterTile().getExpandedRow();
+            int startingCol = player.getBoard().getStarterTile().getExpandedCol();
+
+            for(VirtualTile tile : player.getBoard().getOrderedTilesList()){
+                int offX = startingCol - tile.getExpandedCol() ;
+                int offY = startingRow - tile.getExpandedRow() ;
+
+                double posX = initialX - offX * (cardWidth - cornerWidth);
+                double posY = initialY - offY * (cardHeight - cornerHeight);
+                ImageView tileImageView = createCardImageView(posX, posY, String.valueOf(tile.getCard().id()), tile.getCard());
+                board.add(tileImageView);
+            }
+
+            playerBoards.put(player, board);
+        }
     }
 
     private ImageView createCardImageView(double x, double y, String id, VirtualCard card){
@@ -190,8 +220,8 @@ public class BoardController extends GuiController {
 
         topLeftButton.setOnAction(e -> handleCornerButtonAction(cardpane, -cardWidth + cornerWidth, -cardHeight + cornerHeight, CornerPosition.TOP_LEFT));
         topRightButton.setOnAction(e -> handleCornerButtonAction(cardpane, cardWidth - cornerWidth, -cardHeight + cornerHeight, CornerPosition.TOP_RIGHT));
-        bottomLeftButton.setOnAction(e -> handleCornerButtonAction(cardpane, -cardWidth + cornerWidth, cardHeight - cornerHeight, CornerPosition.BOTTOM_RIGHT));
-        bottomRightButton.setOnAction(e -> handleCornerButtonAction(cardpane, cardWidth - cornerWidth, cardHeight - cornerHeight, CornerPosition.BOTTOM_LEFT));
+        bottomLeftButton.setOnAction(e -> handleCornerButtonAction(cardpane, -cardWidth + cornerWidth, cardHeight - cornerHeight, CornerPosition.BOTTOM_LEFT));
+        bottomRightButton.setOnAction(e -> handleCornerButtonAction(cardpane, cardWidth - cornerWidth, cardHeight - cornerHeight, CornerPosition.BOTTOM_RIGHT));
 
         // used to display the low opacity preview of the card that will be placed when hovering a corner button
         topLeftButton.setOnMouseEntered(e -> handleCornerButtonHover(cardpane.stackPane(), -cardWidth + cornerWidth, -cardHeight + cornerHeight));
@@ -234,8 +264,6 @@ public class BoardController extends GuiController {
                      NotYourTurnException | RemoteException | InvalidActionException e) {
                 showErrorPopup(e.getMessage());
             }
-
-
         }
     }
 

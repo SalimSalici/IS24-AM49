@@ -18,6 +18,7 @@ import it.polimi.ingsw.am49.util.Observer;
 import it.polimi.ingsw.am49.util.Pair;
 import it.polimi.ingsw.am49.view.gui.PointsCoordinates;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -74,7 +75,7 @@ public class OverviewController extends GuiController implements Observer {
         drawObjectives();
         drawPlayers();
         drawDecks();
-        drawSymbols(myUsername);
+
         drawPointsBoard();
         drawPointsTokens();
 //        VirtualPlayer debugPlayer = new VirtualPlayer("nico", it.polimi.ingsw.am49.model.enumerations.Color.BLUE);
@@ -104,20 +105,20 @@ public class OverviewController extends GuiController implements Observer {
 
     @Override
     public void gameUpdate(GameUpdate gameUpdate) throws InvalidSceneException {
-        if (gameUpdate.getType() == GameUpdateType.GAME_STATE_UPDATE) {
             update();
-        }
     }
 
-    @Override
     public void update() {
-        drawHand(myUsername);
-        drawCurrentplayerindicator();
-        drawDecks();
-        drawSymbols(myUsername);
-        drawPointsBoard();
-        drawPointsTokens();
-        updateVisibleHand();
+        Platform.runLater(() -> {
+            drawCurrentplayerindicator();
+            drawDecks();
+            drawSymbols(myUsername);
+            drawPointsBoard();
+            drawPointsTokens();
+            updateVisibleHand();
+            drawHand(myUsername);
+            this.playerboardController.updateBoards();
+        });
     }
 
     private void drawObjectives(){
