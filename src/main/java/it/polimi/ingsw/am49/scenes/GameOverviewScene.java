@@ -63,7 +63,8 @@ public class GameOverviewScene extends Scene implements Observer {
                     break;
                 case "exit":
                     try {
-                        this.tuiApp.getServer().disconnect(this.tuiApp);
+//                        this.tuiApp.getServer().disconnect(this.tuiApp);
+                        this.tuiApp.getServer().leaveRoom(this.tuiApp);
                     } catch (RemoteException e) {
                         throw new RuntimeException(e);
                     }

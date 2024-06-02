@@ -32,13 +32,6 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public void disconnect(Client client) {
-        ClientHandler clientHandler = this.getClientHandlerByClient(client);
-        Room room = this.clientsToRooms.get(clientHandler);
-        if (room != null) room.disconnectClient(clientHandler);
-    }
-
-    @Override
     public List<RoomInfo> fetchRooms(Client client) {
         List<RoomInfo> roomInfos = new LinkedList<>();
         for (Room room : this.rooms) {
@@ -127,6 +120,7 @@ public class ServerApp implements Server {
         return room.getRoomInfo();
     }
 
+    // TODO: rename this to "leave(...)", as it is used to leave the room and possibly also the game if it started
     @Override
     public boolean leaveRoom(Client client) throws RemoteException {
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
@@ -142,6 +136,13 @@ public class ServerApp implements Server {
             this.rooms.remove(room);
 
         return roomLeft;
+    }
+
+    @Override
+    public void disconnect(Client client) {
+//        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+//        Room room = this.clientsToRooms.get(clientHandler);
+//        if (room != null) room.disconnectClient(clientHandler);
     }
 
     @Override

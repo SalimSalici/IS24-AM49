@@ -28,6 +28,7 @@ public class Room {
      */
     private final int maxPlayers;
     private int currentPlayers;
+    private Timer pauseTimer;
     private final HashMap<String, PlayerInfo> usernamesToPlayers;
     private Game game;
     private boolean gameStarted;
@@ -52,6 +53,11 @@ public class Room {
         this.usernamesToPlayers.put(playerUsername, new PlayerInfo(playerUsername, playerClient));
         this.currentPlayers++;
 
+        if (currentPlayers > 1 && this.game != null && !this.game.isPaused()) {
+            this.game.setPaused(false);
+            this.stopPauseTimer();
+        }
+
         this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                 .filter(c -> !c.equals(playerClient))
                 .forEach(c -> {
@@ -64,12 +70,22 @@ public class Room {
         );
     }
 
-    // TODO: maybe think more about this method (?)
     public boolean removePlayer(ClientHandler client) {
         String username = this.getUsernameByClient(client);
-        PlayerInfo pInfo = this.usernamesToPlayers.remove(username);
-        if (pInfo != null) {
+        PlayerInfo playerInfo = this.usernamesToPlayers.remove(username);
+        if (playerInfo != null) {
             this.currentPlayers--;
+
+            if (this.gameStarted) {
+                playerInfo.getVirtualView().destroy();
+                this.game.disconnectPlayer(username);
+
+                if (currentPlayers == 1) {
+                    System.out.println("Starting timer!");
+                    this.game.setPaused(true);
+                    this.startPauseTimer();
+                }
+            }
 
             this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                     .filter(c -> !c.equals(client) )
@@ -81,6 +97,42 @@ public class Room {
         }
         return false;
     }
+
+    private void startPauseTimer() {
+        this.pauseTimer = new Timer();
+        this.pauseTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                game.forfeitWinner(usernamesToPlayers.keySet().iterator().next());
+            }
+        }, 1000 * 20); // 60 seconds
+    }
+
+    private void stopPauseTimer() {
+        if (this.pauseTimer != null) {
+            this.pauseTimer.cancel();
+            this.pauseTimer = null;
+        }
+    }
+
+//    public void disconnectClient(ClientHandler client) {
+//        String username = this.getUsernameByClient(client);
+//        PlayerInfo playerInfo = this.usernamesToPlayers.get(username);
+//
+//        if (this.gameStarted) {
+//            if (playerInfo != null)
+//                playerInfo.getVirtualView().destroy();
+//
+//            if (username != null)
+//                this.game.disconnectPlayer(username);
+//        }
+//
+//        this.removePlayer(client);
+//
+//        Log.getLogger().info("Player '" + username + "' disconnected from the room.");
+//
+//        // TODO: notify other players
+//    }
 
     /**
      * The Server will call this method to communicate the room that the specified client is ready to play the game
@@ -157,25 +209,6 @@ public class Room {
         this.game.executeAction(action);
     }
 
-    public void disconnectClient(ClientHandler client) {
-        String username = this.getUsernameByClient(client);
-        PlayerInfo playerInfo = this.usernamesToPlayers.get(username);
-
-        if (this.gameStarted) {
-            if (playerInfo != null)
-                playerInfo.getVirtualView().destroy();
-
-            if (username != null)
-                this.game.disconnectPlayer(username);
-        }
-
-        this.removePlayer(client);
-
-        Log.getLogger().info("Player '" + username + "' disconnected from the room.");
-
-        // TODO: notify other players
-    }
-
     /**
      * Checks if a client attempting to join the room is allowed to do so. Throws a {@link JoinRoomException} if not
      * This method is mainly used by {@link Room#addNewPlayer(ClientHandler, String)}
@@ -194,7 +227,7 @@ public class Room {
             throw new JoinRoomException("Game already started");
 
         if (this.currentPlayers >= this.maxPlayers)
-            throw new JoinRoomException("Max player amount for this room reached.");
+            throw new JoinRoomException("Room is full.");
     }
 
     private ClientHandler getClientByUsername(String username) {

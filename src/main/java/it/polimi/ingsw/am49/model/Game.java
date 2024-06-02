@@ -35,6 +35,7 @@ public class Game implements Serializable, EventEmitter {
     private Player currentPlayer;
     private Player winner;
     private boolean endGame;
+    private boolean paused;
     private boolean finalRound;
     private final EventManager eventManager;
     private final ObjectiveCard[] commonObjectives;
@@ -60,6 +61,7 @@ public class Game implements Serializable, EventEmitter {
         this.round = 0;
         this.players = new ArrayList<>();
         this.endGame = false;
+        this.paused = false;
         this.finalRound = false;
         this.commonObjectives = new ObjectiveCard[2]; // the common objectives are set in the relevant game state
         this.revealedResources = new ResourceCard[2];
@@ -112,6 +114,11 @@ public class Game implements Serializable, EventEmitter {
 
     public void disconnectPlayer(String username) {
         this.gameState.disconnectPlayer(username);
+    }
+
+    public void forfeitWinner(String username) {
+        // TODO: implement this
+        System.out.println(username + " won by forfeit.");
     }
 
     /**
@@ -279,5 +286,13 @@ public class Game implements Serializable, EventEmitter {
 
     public GoldCard[] getRevealedGolds() {
         return revealedGolds;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
     }
 }
