@@ -63,4 +63,6 @@ public interface Server extends Remote {
     public void reconnect(Client c, String gameName) throws RemoteException;
 
     public void ping(Client c) throws RemoteException;
+
+    public String getClientHostAddress() throws RemoteException;
 }

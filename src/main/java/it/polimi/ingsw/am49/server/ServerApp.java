@@ -13,6 +13,7 @@ import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
@@ -176,8 +177,20 @@ public class ServerApp implements Server {
         return null;
     }
 
+    @Override
+    public String getClientHostAddress() throws RemoteException {
+        try {
+            System.out.println(UnicastRemoteObject.getClientHost());
+            return UnicastRemoteObject.getClientHost();
+        } catch (ServerNotActiveException e) {
+            Log.getLogger().severe("Couldn't get client host address.");
+            return null;
+        }
+    }
+
     public static void main(String[] args) throws IOException, AlreadyBoundException {
         System.setProperty("java.rmi.server.hostname", "127.0.0.1");
+//        System.setProperty("java.rmi.server.hostname", "10.147.20.145");
 
         Log.initializeLogger("server.log", true);
 

@@ -250,6 +250,11 @@ public class ServerSocketHandler implements Server {
 
     }
 
+    @Override
+    public String getClientHostAddress() throws RemoteException {
+        return null;
+    }
+
     /**
      * Returns a unique id for socket message identification.
      * The unique id is obtained by continuously incrementing an integer value. At some point
