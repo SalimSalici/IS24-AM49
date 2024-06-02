@@ -1,11 +1,11 @@
 RP
 +-------------+
-|-'         '-|
+|-'    1    '-|
 |             |
 |           B |
 +-------------+
 MMMMMMMMMMMMMMM
-MYY    1    YYM
+MYY    Y    YYM
 M             M
-MYY         M M
+M           M M
 MMMMMMMMMMMMMMM
