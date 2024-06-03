@@ -1,8 +1,8 @@
 package it.polimi.ingsw.am49.client.socketrevamp;
 
-import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.messages.ReturnMessage;
 import it.polimi.ingsw.am49.messages.SocketMessage;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -24,7 +24,7 @@ public class SocketHandler {
     private final AtomicInteger uniqueId = new AtomicInteger();
     private volatile boolean shouldListen = true;
 
-    public SocketHandler(String host, int port, Client client) throws IOException {
+    public SocketHandler(String host, int port) throws IOException {
         this.socket = new Socket(host, port);
         this.output = new ObjectOutputStream(socket.getOutputStream());
         this.input = new ObjectInputStream(socket.getInputStream());
@@ -34,12 +34,16 @@ public class SocketHandler {
         while (shouldListen) {
             Object msg = input.readObject();
             if (msg instanceof ReturnMessage returnMsg) {
+                Log.getLogger().info("Received return value from server: " + returnMsg);
                 CompletableFuture<Object> future = returnValues.get(returnMsg.id());
                 if (future != null) {
                     future.complete(returnMsg.returnValue());
                 }
             } else if (msg instanceof SocketMessage pushMsg) {
-                // TODO: handle
+                Log.getLogger().info("Received call from server: " + pushMsg);
+                this.handlePushMessage(pushMsg);
+            } else {
+                Log.getLogger().severe("Received unknown message from server: " + msg);
             }
         }
     }
@@ -59,7 +63,7 @@ public class SocketHandler {
         }
     }
 
-    public void handlePushMessage(SocketMessage msg) {}
+    protected void handlePushMessage(SocketMessage msg) {}
 
     public int getUniqueId() {
         return uniqueId.getAndIncrement();

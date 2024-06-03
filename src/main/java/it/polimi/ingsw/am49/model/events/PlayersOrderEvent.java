@@ -1,11 +1,11 @@
 package it.polimi.ingsw.am49.model.events;
 
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.PlayerOrderUpdate;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents an event that is triggered when the order of players for a game session is set.
@@ -20,7 +20,7 @@ public record PlayersOrderEvent(List<Player> playersOrder) implements GameEvent 
 
     @Override
     public PlayerOrderUpdate toGameUpdate() {
-        return new PlayerOrderUpdate(playersOrder.stream().map(Player::getUsername).toList());
+        return new PlayerOrderUpdate(playersOrder.stream().map(Player::getUsername).collect(Collectors.toList()));
     }
 }
 

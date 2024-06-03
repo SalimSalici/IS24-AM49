@@ -17,17 +17,19 @@ public class Log {
             return false;
 
         logger = Logger.getLogger("log");
-        logger.setUseParentHandlers(false);
+        if (!console)
+            logger.setUseParentHandlers(false);
+
         try {
             FileHandler fh = new FileHandler(directory + filename, false);
             fh.setFormatter(new CustomFormatter());
             logger.addHandler(fh);
 
-            if (console) {
-                SystemOutHandler consoleHandler = new SystemOutHandler();
-                consoleHandler.setFormatter(new CustomFormatter());
-                logger.addHandler(consoleHandler);
-            }
+//            if (console) {
+//                SystemOutHandler consoleHandler = new SystemOutHandler();
+//                consoleHandler.setFormatter(new CustomFormatter());
+//                logger.addHandler(consoleHandler);
+//            }
         } catch (IOException e) {
             System.err.println("Error setting up file handler for logger.");
         }

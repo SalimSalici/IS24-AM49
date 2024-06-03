@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.controller;
 
 import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.cards.Card;
 import it.polimi.ingsw.am49.model.enumerations.Color;
@@ -15,6 +16,7 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VirtualView implements EventListener {
     private final Game game;
@@ -38,11 +40,15 @@ public class VirtualView implements EventListener {
                     StarterCardAssignedEvent evt = (StarterCardAssignedEvent) event;
                     if (evt.player().getUsername().equals(this.username)) {
                         int starterCardId = evt.starterCard().getId();
-                        List<Integer> commonObjectivesIds = Arrays.stream(this.game.getCommonObjectives()).map(Card::getId).toList();
+
+                        List<Integer> commonObjectivesIds = Arrays.stream(this.game.getCommonObjectives()).map(Card::getId).collect(Collectors.toCollection(java.util.ArrayList::new));
+
                         Resource resourceDeckTop = this.game.getResourceGameDeck().peek().getResource();
                         Resource goldDeckTop = this.game.getGoldGameDeck().peek().getResource();
-                        List<Integer> revealedResourcesIds = Arrays.stream(this.game.getRevealedResources()).map(Card::getId).toList();
-                        List<Integer> revealedGoldsIds = Arrays.stream(this.game.getRevealedGolds()).map(Card::getId).toList();
+
+                        List<Integer> revealedResourcesIds = Arrays.stream(this.game.getRevealedResources()).map(Card::getId).collect(Collectors.toCollection(java.util.ArrayList::new));
+                        List<Integer> revealedGoldsIds = Arrays.stream(this.game.getRevealedGolds()).map(Card::getId).collect(Collectors.toCollection(java.util.ArrayList::new));
+
                         LinkedHashMap<String, Color> players = new LinkedHashMap<>();
                         for (Player p : this.game.getPlayers())
                             players.put(p.getUsername(), p.getColor());
@@ -73,11 +79,18 @@ public class VirtualView implements EventListener {
                 case PERSONAL_OBJECTIVE_CHOSEN_EVENT -> {
                     // discard...
                 }
-                default -> this.client.receiveGameUpdate(event.toGameUpdate());
+                default -> {
+                    GameUpdate update = event.toGameUpdate();
+                    if (update != null)
+                        this.client.receiveGameUpdate(event.toGameUpdate());
+                }
             }
+        } catch (NullPointerException ex) {
+            // TODO: handle exception properly
+            Log.getLogger().severe("Client threw a NullPointerException");
         } catch (RemoteException ex) {
             // TODO: handle exception properly
-            System.err.println("Error sending game update to client with username " + this.username);
+            System.err.println("RemoteException while sending game update to client with username " + this.username);
             ex.printStackTrace();
         }
     }

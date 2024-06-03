@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.model.events;
 
 import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.cards.Card;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
@@ -9,6 +8,7 @@ import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This event is triggered when a player receives a list of objective cards from which
@@ -34,6 +34,6 @@ public record ChoosableObjectivesEvent(
 
     @Override
     public ChoosableObjectivesUpdate toGameUpdate() {
-        return new ChoosableObjectivesUpdate(player.getUsername(), objectiveCards.stream().map(Card::getId).toList());
+        return new ChoosableObjectivesUpdate(player.getUsername(), objectiveCards.stream().map(Card::getId).collect(Collectors.toList()));
     }
 }

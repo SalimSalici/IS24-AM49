@@ -1,12 +1,12 @@
 package it.polimi.ingsw.am49.model.events;
 
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.PlayerJoinedUpdate;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents an event that occurs when a player joins a game session.
@@ -31,7 +31,7 @@ public record PlayerJoinedEvent(Player playerWhoJoined, List<Player> playersInGa
     public PlayerJoinedUpdate toGameUpdate() {
         return new PlayerJoinedUpdate(
                 playerWhoJoined().getUsername(),
-                playersInGame.stream().map(Player::getUsername).toList()
+                playersInGame.stream().map(Player::getUsername).collect(Collectors.toList())
         );
     }
 }

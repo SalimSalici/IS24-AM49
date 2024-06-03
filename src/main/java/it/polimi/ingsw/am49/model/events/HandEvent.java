@@ -1,6 +1,5 @@
 package it.polimi.ingsw.am49.model.events;
 
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.HandUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.HiddenHandUpdate;
 import it.polimi.ingsw.am49.model.cards.Card;
@@ -12,6 +11,7 @@ import it.polimi.ingsw.am49.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents an event that notifies about updates to a player's hand of cards.
@@ -27,7 +27,7 @@ public record HandEvent(Player player, List<PlaceableCard> hand) implements Game
 
     @Override
     public HandUpdate toGameUpdate() {
-        return new HandUpdate(player.getUsername(), hand.stream().map(Card::getId).toList());
+        return new HandUpdate(player.getUsername(), hand.stream().map(Card::getId).collect(Collectors.toList()));
     }
 
     public HiddenHandUpdate toHiddenHandUpdate() {

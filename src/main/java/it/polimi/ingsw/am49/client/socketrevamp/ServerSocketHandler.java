@@ -7,22 +7,22 @@ import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.*;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public class ServerSocketHandler implements Server {
-    private final SocketHandler socketHandler;
+public class ServerSocketHandler extends SocketHandler implements Server {
     private final Client client;
 
     public ServerSocketHandler(String host, int port, Client client) throws IOException {
+        super(host, port);
         this.client = client;
-        this.socketHandler = new SocketHandler(host, port, client);
 
         new Thread(() -> {
             try {
-                this.socketHandler.startListeningForMessages();
+                this.startListeningForMessages();
             } catch (Exception e) {
                 throw new RuntimeException("Failed to start listening for messages: " + e.getMessage(), e);
             }
@@ -37,7 +37,7 @@ public class ServerSocketHandler implements Server {
     @Override
     public List<RoomInfo> fetchRooms(Client client) throws RemoteException {
         try {
-            return socketHandler.sendRequest(new FetchRoomsMTS(socketHandler.getUniqueId()), List.class);
+            return this.sendRequest(new FetchRoomsMTS(this.getUniqueId()), List.class);
         } catch (Exception e) {
             throw new RemoteException(e.getMessage());
         }
@@ -46,7 +46,7 @@ public class ServerSocketHandler implements Server {
     @Override
     public RoomInfo createRoom(Client client, String roomName, int numPlayers, String creatorUsername) throws RemoteException, AlreadyInRoomException, CreateRoomException {
         try {
-            return socketHandler.sendRequest(new CreateRoomMTS(socketHandler.getUniqueId(), roomName, numPlayers, creatorUsername), RoomInfo.class);
+            return this.sendRequest(new CreateRoomMTS(this.getUniqueId(), roomName, numPlayers, creatorUsername), RoomInfo.class);
         } catch (AlreadyInRoomException | CreateRoomException e) {
             throw e;
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class ServerSocketHandler implements Server {
     @Override
     public RoomInfo joinRoom(Client client, String roomName, String username) throws RemoteException, AlreadyInRoomException, JoinRoomException {
         try {
-            return socketHandler.sendRequest(new JoinRoomMTS(socketHandler.getUniqueId(), roomName, username), RoomInfo.class);
+            return this.sendRequest(new JoinRoomMTS(this.getUniqueId(), roomName, username), RoomInfo.class);
         } catch (AlreadyInRoomException | JoinRoomException e) {
             throw e;
         } catch (Exception e) {
@@ -68,7 +68,7 @@ public class ServerSocketHandler implements Server {
     @Override
     public RoomInfo readyUp(Client client, Color color) throws RemoteException, RoomException {
         try {
-            return socketHandler.sendRequest(new ReadyUpMTS(socketHandler.getUniqueId(), color), RoomInfo.class);
+            return this.sendRequest(new ReadyUpMTS(this.getUniqueId(), color), RoomInfo.class);
         } catch (RoomException e) {
             throw e;
         } catch (Exception e) {
@@ -79,7 +79,7 @@ public class ServerSocketHandler implements Server {
     @Override
     public RoomInfo readyDown(Client client) throws RemoteException, RoomException {
         try {
-            return socketHandler.sendRequest(new ReadyDownMTS(socketHandler.getUniqueId()), RoomInfo.class);
+            return this.sendRequest(new ReadyDownMTS(this.getUniqueId()), RoomInfo.class);
         } catch (RoomException e) {
             throw e;
         } catch (Exception e) {
@@ -90,7 +90,7 @@ public class ServerSocketHandler implements Server {
     @Override
     public boolean leaveRoom(Client client) throws RemoteException, RoomException {
         try {
-            return socketHandler.sendRequest(new LeaveRoomMTS(socketHandler.getUniqueId()), Boolean.class);
+            return this.sendRequest(new LeaveRoomMTS(this.getUniqueId()), Boolean.class);
         } catch (RoomException e) {
             throw e;
         } catch (Exception e) {
@@ -102,7 +102,7 @@ public class ServerSocketHandler implements Server {
     public void executeAction(Client c, GameAction action)
             throws RemoteException, InvalidActionException, NotYourTurnException, NotInGameException {
         try {
-            socketHandler.sendRequest(new ExecuteActionMTS(socketHandler.getUniqueId(), action), Void.class);
+            this.sendRequest(new ExecuteActionMTS(this.getUniqueId(), action), Void.class);
         } catch (InvalidActionException | NotYourTurnException | NotInGameException e) {
             throw e;
         } catch (Exception e) {
@@ -124,5 +124,21 @@ public class ServerSocketHandler implements Server {
     public String getClientHostAddress() throws RemoteException {
         // Implement as needed
         return null;
+    }
+
+    @Override
+    protected void handlePushMessage(SocketMessage pushMsg) {
+        try {
+            switch (pushMsg) {
+                case RoomUpdateMTC params ->
+                        this.client.roomUpdate(params.roomInfo(), params.message());
+                case ReceiveGameUpdateMTC params -> {
+                    this.client.receiveGameUpdate(params.gameUpdate());
+                }
+                default -> throw new RemoteException("Unexpected message received: " + pushMsg);
+            }
+        } catch (RemoteException e) {
+            Log.getLogger().severe("Error handling RMI call from server in handlePushMessage(...): " + e.getMessage());
+        }
     }
 }

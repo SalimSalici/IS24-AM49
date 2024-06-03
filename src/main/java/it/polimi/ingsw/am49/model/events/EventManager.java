@@ -1,6 +1,5 @@
 package it.polimi.ingsw.am49.model.events;
 
-import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 
 import java.util.HashMap;
@@ -66,14 +65,6 @@ public class EventManager implements EventEmitter {
      * @param gameEvent the event to be triggered
      */
     public void triggerEvent(GameEvent gameEvent) {
-        this.listeners.get(gameEvent.getType()).forEach(listener -> {
-            try {
-                listener.onEventTrigger(gameEvent);
-            } catch (Exception e) {
-                // TODO: Log the exception or handle it as needed
-                System.err.println("Error processing event: " + e.getMessage());
-                e.printStackTrace();
-            }
-        });
+        this.listeners.get(gameEvent.getType()).forEach(listener -> listener.onEventTrigger(gameEvent));
     }
 }

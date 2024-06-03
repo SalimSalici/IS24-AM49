@@ -9,6 +9,7 @@ import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This event notifies changes the changes in the drawable area. More specifically, how many cards remain
@@ -40,8 +41,8 @@ public record DrawAreaEvent(
                 remainingGolds,
                 deckTopResource,
                 deckTopGold,
-                revealedResources.stream().map(Card::getId).toList(),
-                revealedGolds.stream().map(Card::getId).toList()
+                revealedResources.stream().map(Card::getId).collect(Collectors.toList()),
+                revealedGolds.stream().map(Card::getId).collect(Collectors.toList())
         );
     }
 }

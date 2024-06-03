@@ -67,7 +67,7 @@ public class SocketClientHandler implements Client {
                 } catch (AlreadyInRoomException | RemoteException | CreateRoomException e) {
                     returnValue = e;
                 }
-                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
             case JoinRoomMTS params -> {
                 Object returnValue;
@@ -80,7 +80,7 @@ public class SocketClientHandler implements Client {
                 } catch (JoinRoomException | RemoteException | AlreadyInRoomException | IllegalArgumentException e) {
                     returnValue = e;
                 }
-                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
             case ReadyUpMTS params -> {
                 Object returnValue;
@@ -92,7 +92,7 @@ public class SocketClientHandler implements Client {
                 } catch (RemoteException | RoomException e) {
                     returnValue = e;
                 }
-                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
             case ReadyDownMTS params -> {
                 Object returnValue;
@@ -101,7 +101,7 @@ public class SocketClientHandler implements Client {
                 }catch (RemoteException | RoomException e){
                     returnValue = e;
                 }
-                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
             case LeaveRoomMTS params -> {
                 Object returnValue;
@@ -110,7 +110,7 @@ public class SocketClientHandler implements Client {
                 } catch (RemoteException | RoomException e) {
                     returnValue = e;
                 }
-                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
             case ExecuteActionMTS params -> {
                 Object returnValue = null;
@@ -119,7 +119,7 @@ public class SocketClientHandler implements Client {
                 } catch (NotInGameException | NotYourTurnException | InvalidActionException e) {
                     returnValue = e;
                 }
-                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
             case FetchRoomsMTS params -> {
                 Object returnValue;
@@ -128,9 +128,9 @@ public class SocketClientHandler implements Client {
                 } catch (Exception e) {
                     returnValue = e;
                 }
-                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
-            default -> System.err.println("Received unknown type of message: " + msg.getClass().getSimpleName());
+            default -> Log.getLogger().severe("Received unknown type of message: " + msg.getClass().getSimpleName());
         }
     }
 
@@ -144,7 +144,7 @@ public class SocketClientHandler implements Client {
     @Override
     public void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException {
         try {
-            this.objectOutputStream.writeObject(
+            this.writeToOutputStream(
                     new RoomUpdateMTC(0, roomInfo, message)
             );
         } catch (IOException e) {
@@ -157,7 +157,8 @@ public class SocketClientHandler implements Client {
     @Override
     public void receiveGameUpdate(GameUpdate gameUpdate) throws RemoteException {
         try {
-            this.objectOutputStream.writeObject(
+            System.out.println("GAMEUPDATE: " + gameUpdate);
+            this.writeToOutputStream(
                     new ReceiveGameUpdateMTC(0, gameUpdate)
             );
         } catch (IOException e) {
@@ -175,5 +176,11 @@ public class SocketClientHandler implements Client {
     @Override
     public void ping() throws RemoteException {
 
+    }
+
+    private void writeToOutputStream(Object obj) throws IOException {
+        synchronized (this.objectOutputStream) {
+            this.objectOutputStream.writeObject(obj);
+        }
     }
 }

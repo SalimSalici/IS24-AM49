@@ -1,13 +1,12 @@
 package it.polimi.ingsw.am49.model.events;
 
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.PlayerJoinedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.PlayerLeftUpdate;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.Player;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents an event that occurs when a player leaves the game session.
@@ -32,7 +31,7 @@ public record PlayerLeftEvent(Player playerWhoLeft, List<Player> remainingPlayer
     public PlayerLeftUpdate toGameUpdate() {
         return new PlayerLeftUpdate(
                 playerWhoLeft().getUsername(),
-                remainingPlayers.stream().map(Player::getUsername).toList()
+                remainingPlayers.stream().map(Player::getUsername).collect(Collectors.toList())
         );
     }
 }

@@ -9,6 +9,7 @@ import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -33,6 +34,8 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
     @Override
     public void receiveGameUpdate(GameUpdate gameUpdate) {
+        if (gameUpdate == null)
+            Log.getLogger().severe("Received a null GameUpdate from the server.");
         if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
             this.game = VirtualGame.newGame((GameStartedUpdate)gameUpdate);
         } else
