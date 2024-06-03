@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.messages.*;
 import it.polimi.ingsw.am49.server.exceptions.*;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.io.*;
 import java.net.Socket;
@@ -43,6 +44,7 @@ public class SocketClientHandler implements Client {
                 this.disconnect();
                 break;
             }
+            Log.getLogger().info("Received message from " + this.clientSocket.getRemoteSocketAddress() + " - " + msg);
             if (msg instanceof SocketMessage)
                 this.handleMessage((SocketMessage) msg);
         }
@@ -87,7 +89,7 @@ public class SocketClientHandler implements Client {
                             this,
                             params.color()
                     );
-                } catch (RemoteException | IllegalArgumentException e) {
+                } catch (RemoteException | RoomException e) {
                     returnValue = e;
                 }
                 this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
@@ -96,7 +98,7 @@ public class SocketClientHandler implements Client {
                 Object returnValue;
                 try{
                     returnValue = this.server.readyDown(this);
-                }catch (RemoteException e){
+                }catch (RemoteException | RoomException e){
                     returnValue = e;
                 }
                 this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
@@ -105,7 +107,7 @@ public class SocketClientHandler implements Client {
                 Object returnValue;
                 try{
                     returnValue = this.server.leaveRoom(this);
-                } catch (RemoteException e) {
+                } catch (RemoteException | RoomException e) {
                     returnValue = e;
                 }
                 this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
@@ -120,7 +122,13 @@ public class SocketClientHandler implements Client {
                 this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
             }
             case FetchRoomsMTS params -> {
-                this.server.fetchRooms(this);
+                Object returnValue;
+                try {
+                    returnValue = this.server.fetchRooms(this);
+                } catch (Exception e) {
+                    returnValue = e;
+                }
+                this.objectOutputStream.writeObject(new ReturnMessage(msg.id(), returnValue));
             }
             default -> System.err.println("Received unknown type of message: " + msg.getClass().getSimpleName());
         }

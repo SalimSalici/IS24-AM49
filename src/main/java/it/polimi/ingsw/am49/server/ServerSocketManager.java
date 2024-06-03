@@ -1,5 +1,7 @@
 package it.polimi.ingsw.am49.server;
 
+import it.polimi.ingsw.am49.util.Log;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,6 +25,7 @@ public class ServerSocketManager {
             try {
                 Socket clientSocket = this.serverSocket.accept();
                 this.socketClientHandlers.add(new SocketClientHandler(clientSocket, this.server));
+                Log.getLogger().info("Accepted new client with address: " + clientSocket.getRemoteSocketAddress());
             } catch (IOException e) {
                 System.out.println("Error accpeting a client...");
                 throw new RuntimeException(e);
