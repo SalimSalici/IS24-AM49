@@ -53,7 +53,7 @@ public class Room {
         this.usernamesToPlayers.put(playerUsername, new PlayerInfo(playerUsername, playerClient));
         this.currentPlayers++;
 
-        if (currentPlayers > 1 && this.game != null && !this.game.isPaused()) {
+        if (currentPlayers > 1 && this.game != null && this.game.isPaused()) {
             this.game.setPaused(false);
             this.stopPauseTimer();
         }
@@ -76,16 +76,8 @@ public class Room {
         if (playerInfo != null) {
             this.currentPlayers--;
 
-            if (this.gameStarted) {
-                playerInfo.getVirtualView().destroy();
-                this.game.disconnectPlayer(username);
-
-                if (currentPlayers == 1) {
-                    System.out.println("Starting timer!");
-                    this.game.setPaused(true);
-                    this.startPauseTimer();
-                }
-            }
+            if (this.gameStarted)
+                this.removePlayerFromGame(playerInfo, username);
 
             this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                     .filter(c -> !c.equals(client) )
@@ -96,6 +88,17 @@ public class Room {
             return true;
         }
         return false;
+    }
+
+    private void removePlayerFromGame(PlayerInfo playerInfo, String username) {
+        playerInfo.getVirtualView().destroy();
+        this.game.disconnectPlayer(username);
+
+        if (currentPlayers == 1) {
+            System.out.println("Starting timer!");
+            this.game.setPaused(true);
+            this.startPauseTimer();
+        }
     }
 
     private void startPauseTimer() {
