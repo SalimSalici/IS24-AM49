@@ -7,20 +7,17 @@ import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.server.exceptions.RoomException;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 public class RoomScene extends Scene {
     private Boolean running = true;
     private final Server server;
     private RoomInfo roomInfo;
     private boolean isUserReady;
-
-    private Thread inputThread;
 
     public RoomScene(SceneManager sceneManager, TuiApp tuiApp, RoomInfo roomInfo) {
         super(sceneManager, tuiApp);
@@ -161,7 +158,7 @@ public class RoomScene extends Scene {
         } catch (IllegalArgumentException e) {
             this.showError("Invalid color. Please try again.");
             return;
-        } catch (RemoteException e) {
+        } catch (RemoteException | RoomException e) {
             // TODO: Handle exception
             throw new RuntimeException(e);
         }
@@ -175,7 +172,8 @@ public class RoomScene extends Scene {
             this.server.leaveRoom(this.tuiApp);
             this.sceneManager.setScene(new MainMenuScene( this.sceneManager, this.tuiApp));
             this.running = false;
-        } catch (RemoteException e) {
+        } catch (RemoteException | RoomException e) {
+            // TODO: handle appropriately
             System.out.println("Failed to leave the room");
             e.printStackTrace();
         }

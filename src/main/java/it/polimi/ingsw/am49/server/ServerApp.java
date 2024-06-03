@@ -42,7 +42,7 @@ public class ServerApp implements Server {
 
     @Override
     public RoomInfo createRoom(Client client, String roomName, int numPlayers, String creatorUsername)
-            throws RemoteException, AlreadyInRoomException, CreateRoomException {
+            throws AlreadyInRoomException, CreateRoomException {
 
         if (roomName.length() < 2 || roomName.length() > 15)
             throw new CreateRoomException("Invalid room name. Room name should be between 2 and 15 charactes.");
@@ -69,7 +69,7 @@ public class ServerApp implements Server {
 
     @Override
     public RoomInfo joinRoom(Client client, String roomName, String username)
-            throws RemoteException, AlreadyInRoomException, JoinRoomException {
+            throws AlreadyInRoomException, JoinRoomException {
 
         if (username == null)
             throw new JoinRoomException("Username is null.");
@@ -93,30 +93,18 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public RoomInfo readyUp(Client client, Color color) throws RemoteException {
+    public RoomInfo readyUp(Client client, Color color) throws RoomException {
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
         Room room = this.clientsToRooms.get(clientHandler);
-        try {
-            room.clientReady(clientHandler, color);
-        } catch (Exception e) {
-            // TODO: create appropriate exceptions
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
+        room.clientReady(clientHandler, color);
         return room.getRoomInfo();
     }
 
     @Override
-    public RoomInfo readyDown(Client client) throws RemoteException {
+    public RoomInfo readyDown(Client client) throws RoomException {
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
         Room room = this.clientsToRooms.get(clientHandler);
-        try{
-            room.clientNoMoreReady(clientHandler);
-        }catch (Exception e) {
-            //TODO: create appropriate exeption
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
+        room.clientNoMoreReady(clientHandler);
         return room.getRoomInfo();
     }
 

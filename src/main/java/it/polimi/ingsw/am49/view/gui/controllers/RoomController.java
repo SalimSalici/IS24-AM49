@@ -8,6 +8,7 @@ import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.scenes.InvalidSceneException;
 import it.polimi.ingsw.am49.scenes.StarterCardScene;
 import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.server.exceptions.RoomException;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -103,7 +104,7 @@ public class RoomController extends GuiController {
             roomInfo = this.server.readyDown(this.app);
             this.server.leaveRoom(this.app);
             this.manager.changeScene(SceneTitle.MAIN_MENU);
-        } catch (RemoteException e) {
+        } catch (RemoteException | RoomException e) {
             //TODO: handle exeption
             throw new RuntimeException(e);
         }
@@ -128,7 +129,7 @@ public class RoomController extends GuiController {
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid color. Please try again.");
             this.totemColor = null;
-        } catch (RemoteException e) {
+        } catch (RemoteException | RoomException e) {
             // TODO: Handle exception
             throw new RuntimeException(e);
         }

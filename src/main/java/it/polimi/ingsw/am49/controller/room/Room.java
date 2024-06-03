@@ -1,6 +1,5 @@
 package it.polimi.ingsw.am49.controller.room;
 
-import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.VirtualView;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.actions.GameAction;
@@ -10,10 +9,9 @@ import it.polimi.ingsw.am49.server.ClientHandler;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
-import it.polimi.ingsw.am49.util.Log;
+import it.polimi.ingsw.am49.server.exceptions.RoomException;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 public class Room {
 
@@ -142,16 +140,16 @@ public class Room {
      * with the chosen color
      * @param client the client readying up
      * @param color the chosen color of the client
-     * @throws Exception
+     * @throws RoomException if something goes wrong
      */
-    public void clientReady(ClientHandler client, Color color) throws Exception{
+    public void clientReady(ClientHandler client, Color color) throws RoomException {
 
         String username = this.getUsernameByClient(client);
         if (username == null)
-            throw new Exception("Client is not in the room.");
+            throw new RoomException("Client is not in the room.");
 
         if(!this.isColorAvailale(color))
-            throw new Exception("Color " + color + "is not available.");
+            throw new RoomException("Color " + color + "is not available.");
 
         this.usernamesToPlayers.get(username).setColor(color);
         this.usernamesToPlayers.get(username).setReadyToPlay(true);
@@ -167,10 +165,11 @@ public class Room {
         }
     }
 
-    public void clientNoMoreReady(ClientHandler client) throws Exception{
+    public void clientNoMoreReady(ClientHandler client) throws RoomException {
         String username = this.getUsernameByClient(client);
         if (username == null)
-            throw new Exception("Client is not in the room.");
+            throw new RoomException("Client is not in the room.");
+
         this.usernamesToPlayers.get(username).setNullColor();
         this.usernamesToPlayers.get(username).setReadyToPlay(false);
 

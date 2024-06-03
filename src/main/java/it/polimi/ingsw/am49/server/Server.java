@@ -43,11 +43,11 @@ public interface Server extends Remote {
      * @throws IllegalArgumentException if username is invalid (too short or too long)
      */
     public RoomInfo joinRoom(Client client, String roomName, String username)
-            throws RemoteException, AlreadyInRoomException, JoinRoomException, IllegalArgumentException;
+            throws RemoteException, AlreadyInRoomException, JoinRoomException;
 
-    public RoomInfo readyUp(Client client, Color color) throws RemoteException;
+    public RoomInfo readyUp(Client client, Color color) throws RemoteException, RoomException;
 
-    public RoomInfo readyDown(Client client) throws RemoteException;
+    public RoomInfo readyDown(Client client) throws RemoteException, RoomException;
 
     /**
      * This method is used by clients to leave the room they are in
@@ -55,7 +55,7 @@ public interface Server extends Remote {
      * @return true if client left the room, false if the client was not in a room
      * @throws RemoteException if there is a network issue while invoking the remote method
      */
-    public boolean leaveRoom(Client client) throws RemoteException;
+    public boolean leaveRoom(Client client) throws RemoteException, RoomException;
 
     public void executeAction(Client c, GameAction action)
             throws RemoteException, InvalidActionException, NotYourTurnException, NotInGameException;

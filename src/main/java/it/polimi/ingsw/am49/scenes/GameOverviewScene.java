@@ -9,6 +9,7 @@ import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.server.exceptions.RoomException;
 import it.polimi.ingsw.am49.util.Observer;
 import it.polimi.ingsw.am49.view.tui.TuiDrawAreaRenderer;
 import it.polimi.ingsw.am49.view.tui.TuiPlayerRenderer;
@@ -65,7 +66,7 @@ public class GameOverviewScene extends Scene implements Observer {
                     try {
 //                        this.tuiApp.getServer().disconnect(this.tuiApp);
                         this.tuiApp.getServer().leaveRoom(this.tuiApp);
-                    } catch (RemoteException e) {
+                    } catch (RemoteException | RoomException e) {
                         throw new RuntimeException(e);
                     }
                     this.sceneManager.setScene(new MainMenuScene(this.sceneManager, this.tuiApp));
