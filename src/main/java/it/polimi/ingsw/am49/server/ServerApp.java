@@ -127,13 +127,6 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public void disconnect(Client client) {
-//        ClientHandler clientHandler = this.getClientHandlerByClient(client);
-//        Room room = this.clientsToRooms.get(clientHandler);
-//        if (room != null) room.disconnectClient(clientHandler);
-    }
-
-    @Override
     public void executeAction(Client client, GameAction action) throws InvalidActionException, NotYourTurnException, NotInGameException {
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
         Room room = this.clientsToRooms.get(clientHandler);

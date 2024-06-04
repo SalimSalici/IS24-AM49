@@ -12,8 +12,6 @@ import java.util.List;
 
 public interface Server extends Remote {
 
-    public void disconnect(Client client) throws RemoteException;
-
     public List<RoomInfo> fetchRooms(Client client) throws RemoteException;
 
     /**

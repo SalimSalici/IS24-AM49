@@ -1,4 +1,4 @@
-package it.polimi.ingsw.am49.client.socketrevamp;
+package it.polimi.ingsw.am49.client.sockets;
 
 import it.polimi.ingsw.am49.messages.ReturnMessage;
 import it.polimi.ingsw.am49.messages.SocketMessage;
@@ -16,6 +16,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The SocketHandler class is responsible for managing socket communication between the client and the server.
+ * It handles the creation of socket connections, sending and receiving messages, and managing the lifecycle
+ * of the socket connection.
+ */
 public class SocketHandler {
     private final Socket socket;
     private final ObjectOutputStream output;
@@ -24,12 +29,37 @@ public class SocketHandler {
     private final AtomicInteger uniqueId = new AtomicInteger();
     private volatile boolean shouldListen = true;
 
+    /**
+     * Constructs a SocketHandler with the specified host and port.
+     *
+     * @param host the host to connect to
+     * @param port the port to connect to
+     * @throws IOException if an I/O error occurs when creating the socket
+     */
     public SocketHandler(String host, int port) throws IOException {
         this.socket = new Socket(host, port);
         this.output = new ObjectOutputStream(socket.getOutputStream());
         this.input = new ObjectInputStream(socket.getInputStream());
     }
 
+    /**
+     * Constructs a SocketHandler with an existing socket.
+     *
+     * @param socket the existing socket
+     * @throws IOException if an I/O error occurs when creating the input/output streams
+     */
+    public SocketHandler(Socket socket) throws IOException {
+        this.socket = socket;
+        this.output = new ObjectOutputStream(socket.getOutputStream());
+        this.input = new ObjectInputStream(socket.getInputStream());
+    }
+
+    /**
+     * Starts listening for messages from the socket.
+     *
+     * @throws IOException if an I/O error occurs while reading from the input stream
+     * @throws ClassNotFoundException if the class of a serialized object cannot be found
+     */
     public void startListeningForMessages() throws IOException, ClassNotFoundException {
         while (shouldListen) {
             Object msg = input.readObject();
@@ -48,12 +78,22 @@ public class SocketHandler {
         }
     }
 
+    /**
+     * Sends a request to the server and waits for a response.
+     *
+     * @param request the request message to send
+     * @param responseType the expected type of the response
+     * @return the response from the server
+     * @throws Exception if an error occurs while sending the request or waiting for the response
+     */
     public <T> T sendRequest(SocketMessage request, Class<T> responseType) throws Exception {
         try {
-            output.writeObject(request);
+            synchronized(output) {
+                output.writeObject(request);
+            }
             CompletableFuture<Object> future = new CompletableFuture<>();
             returnValues.put(request.id(), future);
-            Object result = future.get(3, TimeUnit.SECONDS);
+            Object result = future.get(10, TimeUnit.SECONDS);
             if (result instanceof Throwable) {
                 throw (Exception) result;
             }
@@ -63,8 +103,20 @@ public class SocketHandler {
         }
     }
 
+    /**
+     * Handles push messages received from the socket.
+     *
+     * @param msg the push message to handle
+     */
     protected void handlePushMessage(SocketMessage msg) {}
 
+    /**
+     * Returns a unique identifier to be used for a new message to the socket.
+     * When sending the message with the return value, the other party will need
+     * to attach the generated unique identifier.
+     *
+     * @return a unique identifier
+     */
     public int getUniqueId() {
         return uniqueId.getAndIncrement();
     }

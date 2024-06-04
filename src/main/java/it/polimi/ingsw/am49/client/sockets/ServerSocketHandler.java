@@ -1,4 +1,4 @@
-package it.polimi.ingsw.am49.client.socketrevamp;
+package it.polimi.ingsw.am49.client.sockets;
 
 import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
@@ -13,9 +13,21 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
 
+/**
+ * The ServerSocketHandler class is responsible for handling socket communication
+ * between the client and the server, implementing the Server interface.
+ */
 public class ServerSocketHandler extends SocketHandler implements Server {
     private final Client client;
 
+    /**
+     * Constructs a ServerSocketHandler with the specified host, port, and client.
+     *
+     * @param host   the host to connect to
+     * @param port   the port to connect to
+     * @param client the client instance
+     * @throws IOException if an I/O error occurs when creating the socket
+     */
     public ServerSocketHandler(String host, int port, Client client) throws IOException {
         super(host, port);
         this.client = client;
@@ -29,11 +41,13 @@ public class ServerSocketHandler extends SocketHandler implements Server {
         }).start();
     }
 
-    @Override
-    public void disconnect(Client client) throws RemoteException {
-        // Implementation details for disconnecting
-    }
-
+    /**
+     * Fetches the list of rooms available on the server.
+     *
+     * @param client the client requesting the room list
+     * @return a list of RoomInfo objects
+     * @throws RemoteException if a remote communication error occurs
+     */
     @Override
     public List<RoomInfo> fetchRooms(Client client) throws RemoteException {
         try {
@@ -43,6 +57,18 @@ public class ServerSocketHandler extends SocketHandler implements Server {
         }
     }
 
+    /**
+     * Creates a new room on the server.
+     *
+     * @param client the client creating the room
+     * @param roomName the name of the room
+     * @param numPlayers the number of players in the room
+     * @param creatorUsername the username of the room creator
+     * @return the created RoomInfo object
+     * @throws RemoteException if a remote communication error occurs
+     * @throws AlreadyInRoomException if the client is already in a room
+     * @throws CreateRoomException if there is an error creating the room
+     */
     @Override
     public RoomInfo createRoom(Client client, String roomName, int numPlayers, String creatorUsername) throws RemoteException, AlreadyInRoomException, CreateRoomException {
         try {
@@ -54,6 +80,17 @@ public class ServerSocketHandler extends SocketHandler implements Server {
         }
     }
 
+    /**
+     * Joins an existing room on the server.
+     *
+     * @param client the client joining the room
+     * @param roomName the name of the room
+     * @param username the username of the client
+     * @return the RoomInfo object of the joined room
+     * @throws RemoteException if a remote communication error occurs
+     * @throws AlreadyInRoomException if the client is already in a room
+     * @throws JoinRoomException if there is an error joining the room
+     */
     @Override
     public RoomInfo joinRoom(Client client, String roomName, String username) throws RemoteException, AlreadyInRoomException, JoinRoomException {
         try {
@@ -65,6 +102,15 @@ public class ServerSocketHandler extends SocketHandler implements Server {
         }
     }
 
+    /**
+     * Marks the client as ready in the specified room.
+     *
+     * @param client the client readying up
+     * @param color the color chosen by the client
+     * @return the updated RoomInfo object
+     * @throws RemoteException if a remote communication error occurs
+     * @throws RoomException if there is an error with the room
+     */
     @Override
     public RoomInfo readyUp(Client client, Color color) throws RemoteException, RoomException {
         try {
@@ -76,6 +122,14 @@ public class ServerSocketHandler extends SocketHandler implements Server {
         }
     }
 
+    /**
+     * Marks the client as not ready in the specified room.
+     *
+     * @param client the client readying down
+     * @return the updated RoomInfo object
+     * @throws RemoteException if a remote communication error occurs
+     * @throws RoomException if there is an error with the room
+     */
     @Override
     public RoomInfo readyDown(Client client) throws RemoteException, RoomException {
         try {
@@ -87,6 +141,14 @@ public class ServerSocketHandler extends SocketHandler implements Server {
         }
     }
 
+    /**
+     * Leaves the current room.
+     *
+     * @param client the client leaving the room
+     * @return true if the client successfully left the room, false otherwise
+     * @throws RemoteException if a remote communication error occurs
+     * @throws RoomException if there is an error with the room
+     */
     @Override
     public boolean leaveRoom(Client client) throws RemoteException, RoomException {
         try {
@@ -98,6 +160,16 @@ public class ServerSocketHandler extends SocketHandler implements Server {
         }
     }
 
+    /**
+     * Executes a game action.
+     *
+     * @param c the client executing the action
+     * @param action the game action to execute
+     * @throws RemoteException if a remote communication error occurs
+     * @throws InvalidActionException if the action is invalid
+     * @throws NotYourTurnException if it is not the client's turn
+     * @throws NotInGameException if the client is not in a game
+     */
     @Override
     public void executeAction(Client c, GameAction action)
             throws RemoteException, InvalidActionException, NotYourTurnException, NotInGameException {
@@ -110,22 +182,46 @@ public class ServerSocketHandler extends SocketHandler implements Server {
         }
     }
 
+    /**
+     * Reconnects the client to a game.
+     *
+     * @param c the client reconnecting
+     * @param gameName the name of the game to reconnect to
+     * @throws RemoteException if a remote communication error occurs
+     */
     @Override
     public void reconnect(Client c, String gameName) throws RemoteException {
-        // Implement as needed
+        // TODO
     }
 
+    /**
+     * Pings the server to check connectivity.
+     *
+     * @param c the client pinging the server
+     * @throws RemoteException if a remote communication error occurs
+     */
     @Override
     public void ping(Client c) throws RemoteException {
-        // Implement as needed
+        // TODO
     }
 
+    /**
+     * Gets the host address of the client.
+     *
+     * @return the client's host address
+     * @throws RemoteException if a remote communication error occurs
+     */
     @Override
     public String getClientHostAddress() throws RemoteException {
-        // Implement as needed
+        // TODO
         return null;
     }
 
+    /**
+     * Handles push messages received from the server.
+     *
+     * @param pushMsg the push message to handle
+     */
     @Override
     protected void handlePushMessage(SocketMessage pushMsg) {
         try {

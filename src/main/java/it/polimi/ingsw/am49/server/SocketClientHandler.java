@@ -157,7 +157,6 @@ public class SocketClientHandler implements Client {
     @Override
     public void receiveGameUpdate(GameUpdate gameUpdate) throws RemoteException {
         try {
-            System.out.println("GAMEUPDATE: " + gameUpdate);
             this.writeToOutputStream(
                     new ReceiveGameUpdateMTC(0, gameUpdate)
             );
