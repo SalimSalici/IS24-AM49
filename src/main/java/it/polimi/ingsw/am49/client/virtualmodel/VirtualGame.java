@@ -7,8 +7,10 @@ import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.util.Observable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class VirtualGame extends Observable {
     private final List<VirtualPlayer> players;
@@ -18,7 +20,6 @@ public class VirtualGame extends Observable {
     private VirtualPlayer currentPlayer;
     private List<Integer> commonObjectives;
     private VirtualDrawable drawableArea;
-
     private VirtualGame() {
         this.players = new ArrayList<>();
     }
@@ -54,6 +55,7 @@ public class VirtualGame extends Observable {
             case HAND_UPDATE -> this.handleHandUpdate((HandUpdate) gameUpdate);
             case HIDDEN_HAND_UPDATE -> this.handleHiddenHandUpdate((HiddenHandUpdate) gameUpdate);
             case DRAW_AREA_UPDATE -> this.handleDrawAreaUpdate((DrawAreaUpdate) gameUpdate);
+            case END_GAME_UPDATE -> this.handleEndGameUpdate((EndGameUpdate) gameUpdate);
         }
     }
 
@@ -103,6 +105,30 @@ public class VirtualGame extends Observable {
         this.drawableArea.notifyObservers();
     }
 
+    private void handleEndGameUpdate(EndGameUpdate update){
+        this.gameState = GameStateType.END_GAME;
+        for (Map.Entry<String, Integer[]> entry : update.playerToPoints().entrySet()) {
+            String username = entry.getKey();
+            Integer[] pointsAndObjectives = entry.getValue();
+            VirtualPlayer player = this.getPlayerFromUsername(username);
+
+            if (player == null) {
+                Log.getLogger().severe("Received invalid EndGameUpdate: player username mismatch");
+                continue;
+            }
+
+            if (pointsAndObjectives.length < 2) {
+                Log.getLogger().severe("Received invalid EndGameUpdate: missing points and/or completed objectives");
+                player.setPoints(0);
+                player.setCompletedObjectives(0);
+            } else {
+                player.setPoints(pointsAndObjectives[0]);
+                player.setCompletedObjectives(pointsAndObjectives[1]);
+            }
+        }
+        this.notifyObservers();
+    }
+
     public int getRound() {
         return round;
     }
@@ -112,7 +138,31 @@ public class VirtualGame extends Observable {
     public GameStateType getGameState() {
         return gameState;
     }
-    public VirtualPlayer getCurrentPlayer() {return currentPlayer;}
-    public List<Integer> getCommonObjectives() {return commonObjectives;}
-    public VirtualDrawable getDrawableArea() {return drawableArea;}
+
+    private VirtualPlayer getPlayerFromUsername(String username) {
+        for (int i = 0; i < this.players.size(); i++)
+            if (this.players.get(i).getUsername().equals(username))
+                return this.players.get(i);
+        return null;
+    }
+
+    public VirtualPlayer getCurrentPlayer() { return currentPlayer; }
+    public List<Integer> getCommonObjectives() { return commonObjectives; }
+    public VirtualDrawable getDrawableArea() { return drawableArea; }
+
+    public List<VirtualPlayer> getRanking() {
+        return this.players.stream()
+                .sorted((p1, p2) -> {
+                    if (p1.getPoints() > p2.getPoints())
+                        return -1;
+                    else if (p1.getPoints() < p2.getPoints())
+                        return 1;
+                    else if (p1.getCompletedObjectives() > p2.getCompletedObjectives())
+                        return -1;
+                    else if (p1.getCompletedObjectives() < p2.getCompletedObjectives())
+                        return 1;
+                    return 0;
+                })
+                .collect(Collectors.toCollection(LinkedList::new));
+    }
 }

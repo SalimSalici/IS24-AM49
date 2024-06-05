@@ -6,22 +6,19 @@ import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.EndgameEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Rapresents the game after the final round has been played.
  */
 public class EndGameState extends GameState {
 
-    List<Player> players;
+    private final List<Player> players;
 
     /**
      * Stores how many objectives every player has completed.
      */
-    Map<Player, Integer> playersToAchievedObjevtives;
+    private final Map<Player, Integer> playersToAchievedObjectives;
 
     /**
      * Constructs the EndGameState.
@@ -32,6 +29,7 @@ public class EndGameState extends GameState {
         this.players = game.getPlayers();
         this.notYourTurnMessage =
                 "The game is over. If you want to keep playing you must create a new game.";
+        this.playersToAchievedObjectives = new HashMap<>();
     }
 
     /**
@@ -41,9 +39,9 @@ public class EndGameState extends GameState {
     public void setUp() {
         for (Player player : this.players) {
             int achievedObjectives = player.calculateFinalPoints(Arrays.asList(this.game.getCommonObjectives()));
-            playersToAchievedObjevtives.put(player, achievedObjectives);
+            playersToAchievedObjectives.put(player, achievedObjectives);
         }
-        this.game.triggerEvent(new EndgameEvent(playersToAchievedObjevtives));
+        this.game.triggerEvent(new EndgameEvent(playersToAchievedObjectives));
     }
 
     @Override

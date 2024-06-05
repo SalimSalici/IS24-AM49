@@ -19,7 +19,6 @@ public class StarterCardScene extends Scene {
     private final Server server;
     private final String username;
     private boolean sideChosen = false;
-
     private final int starterCardId;
 
     public StarterCardScene(SceneManager sceneManager, TuiApp tuiApp, int starterCardId) {

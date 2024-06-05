@@ -62,6 +62,9 @@ public class GameOverviewScene extends Scene implements Observer {
                     else
                         this.errorMessage = "You cannot do that action now.";
                     break;
+                case "r", "rankings":
+                    this.handleRankings();
+                    break;
                 case "exit":
                     try {
 //                        this.tuiApp.getServer().disconnect(this.tuiApp);
@@ -97,6 +100,7 @@ public class GameOverviewScene extends Scene implements Observer {
         System.out.println("     | Game Overview |        ");
         System.out.println("     *****************        ");
         System.out.println("\nCurrent state: " + this.game.getGameState());
+        System.out.println("\nRound: " + this.game.getRound() + " - Turn: " + this.game.getTurn());
     }
 
     private void printPlayerList() {
@@ -135,6 +139,8 @@ public class GameOverviewScene extends Scene implements Observer {
         System.out.print("(1) chat | (2) focus player | (3) view player | ");
         if (this.canDraw())
             System.out.print("(4) draw card | ");
+        if (this.game.getGameState() == GameStateType.END_GAME)
+            System.out.print("(r) show ranking | ");
         System.out.print("exit");
         System.out.print("\n>>> ");
 
@@ -236,9 +242,28 @@ public class GameOverviewScene extends Scene implements Observer {
                 && this.game.getGameState() == GameStateType.DRAW_CARD;
     }
 
+    private void handleRankings() {
+        if (this.game.getGameState() != GameStateType.END_GAME) {
+            this.showError("Game is not over.");
+            return;
+        }
+        this.showRankings();
+        this.scanner.nextLine();
+    }
+
+    private void showRankings() {
+        this.printHeader();
+        System.out.println();
+        this.printEndGameContent();
+        System.out.println("\n\nPress enter to go back.");
+    }
+
     @Override
     public void update() {
-        this.printContent();
+        if (this.game.getGameState() == GameStateType.END_GAME)
+            this.showRankings();
+        else
+            this.printContent();
         this.promptCommand();
     }
 

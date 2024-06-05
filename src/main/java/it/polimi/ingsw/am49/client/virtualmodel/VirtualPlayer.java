@@ -14,6 +14,7 @@ import java.util.Map;
 public class VirtualPlayer extends Observable {
     private final String username;
     private int points;
+    private int completedObjectives;
     private final VirtualBoard board;
     private List<Integer> hand;
     private List<Pair<Resource, Boolean>> hiddenHand;
@@ -47,6 +48,14 @@ public class VirtualPlayer extends Observable {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    public int getCompletedObjectives() {
+        return this.completedObjectives;
+    }
+
+    public void setCompletedObjectives(int completedObjectives) {
+        this.completedObjectives = completedObjectives;
     }
 
     public Map<Symbol, Integer> getActiveSymbols() {

@@ -151,10 +151,11 @@ public class Player implements Serializable {
      */
     public int calculateFinalPoints(List<ObjectiveCard> commonObjectives){
         int objectivesAchieved = 0;
-        points += personalObjective.calculatePoints(board);
-        objectivesAchieved = points > 0 ? 1 : 0;
+        int objPoints = personalObjective.calculatePoints(board);
+        points += objPoints;
+        objectivesAchieved = objPoints > 0 ? 1 : 0;
         for (ObjectiveCard objectiveCard : commonObjectives) {
-            int objPoints = objectiveCard.calculatePoints(board);
+            objPoints = objectiveCard.calculatePoints(board);
             points += objPoints;
             if (objPoints > 0) objectivesAchieved++;
         }

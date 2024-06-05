@@ -1,10 +1,12 @@
 package it.polimi.ingsw.am49.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
+import java.util.List;
 import java.util.Scanner;
 
 public abstract class Scene {
@@ -29,8 +31,6 @@ public abstract class Scene {
     protected void clearScreen() {
         System.out.println("-".repeat(150));
         System.out.println("\033[H\033[2J");
-//        for (int i = 0; i < 60; i++)
-//            System.out.println();
     }
 
     protected void clearLastLine() {
@@ -80,5 +80,17 @@ public abstract class Scene {
     protected void showError(String message, int linesToClear) {
         System.out.println(AnsiColor.ANSI_RED + message + AnsiColor.ANSI_RESET);
         this.linesToClear = linesToClear;
+    }
+
+    protected void printEndGameContent() {
+        List<VirtualPlayer> ranking = this.tuiApp.getVirtualGame().getRanking();
+        for (int i = 0; i < ranking.size(); i++) {
+            VirtualPlayer player = ranking.get(i);
+            System.out.println(
+                    (i+1) + " " + AnsiColor.fromColor(player.getColor()) + player.getUsername() + AnsiColor.ANSI_RESET + ": " +
+                    player.getPoints() + " points and " +
+                    player.getCompletedObjectives() + " completed objectives."
+            );
+        }
     }
 }

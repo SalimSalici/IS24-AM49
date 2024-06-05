@@ -10,19 +10,14 @@ import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class MainMenuScene extends Scene {
-
-    private final TuiApp tuiApp;
     private boolean running = true;
     private final Server server;
-
     private List<RoomInfo> rooms;
 
     public MainMenuScene(SceneManager sceneManager, TuiApp tuiApp) {
         super(sceneManager, tuiApp);
-        this.tuiApp = tuiApp;
         this.server = tuiApp.getServer();
         this.rooms = new LinkedList<>();
     }
@@ -191,10 +186,10 @@ public class MainMenuScene extends Scene {
             this.running = false;
         } catch (JoinRoomException | AlreadyInRoomException  e) {
             this.clearLines(2); // Delete "Loading..."
-            showError("Failed to join room." + e.getMessage());
+            this.showError("Failed to join room." + e.getMessage());
         } catch (RemoteException e) {
             this.clearLines(2); // Delete "Loading..."
-            showError("RemoteException. " + e.getMessage());
+            this.showError("RemoteException. " + e.getMessage());
         }
     }
 
