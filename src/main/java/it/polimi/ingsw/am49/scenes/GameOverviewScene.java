@@ -142,15 +142,15 @@ public class GameOverviewScene extends Scene implements Observer {
     }
 
     private void handleViewPlayer(String[] args) {
-        if (args.length < 2) {
-            this.errorMessage = "You must specify a player.";
-            return;
-        }
         try {
-            int playerIndex = Integer.parseInt(args[1]) - 1;
-            VirtualPlayer player = this.game.getPlayers().get(playerIndex);
-            this.sceneManager.setScene(new ViewPlayerScene(this.sceneManager, this.tuiApp, player));
-            this.stop();
+            VirtualPlayer player = args.length < 2 ?
+                    this.getClientPlayer() :
+                    this.game.getPlayers().get(Integer.parseInt(args[1]) - 1);
+            if (player != null) {
+                this.sceneManager.setScene(new ViewPlayerScene(this.sceneManager, this.tuiApp, player));
+                this.stop();
+            } else
+                this.errorMessage = "Unexpected error occurred. If it persists, please restart the client.";
         } catch (NumberFormatException e) {
             this.errorMessage = "Argument must be a number. Please try again.";
             return;
@@ -161,15 +161,15 @@ public class GameOverviewScene extends Scene implements Observer {
     }
 
     private void handleFocusPlayer(String[] args) {
-        if (args.length < 2) {
-            this.errorMessage = "You must specify a player.";
-            return;
-        }
         try {
-            int playerIndex = Integer.parseInt(args[1]) - 1;
-            VirtualPlayer player = this.game.getPlayers().get(playerIndex);
-            boolean hidden = !player.getUsername().equals(this.tuiApp.getUsername());
-            this.focusedPlayerRenderer = new TuiPlayerRenderer(player, hidden, this.game.getCommonObjectives());
+            VirtualPlayer player = args.length < 2 ?
+                    this.getClientPlayer() :
+                    this.game.getPlayers().get(Integer.parseInt(args[1]) - 1);
+            if (player != null) {
+                boolean hidden = !player.getUsername().equals(this.tuiApp.getUsername());
+                this.focusedPlayerRenderer = new TuiPlayerRenderer(player, hidden, this.game.getCommonObjectives());
+            } else
+                this.errorMessage = "Unexpected error occurred. If it persists, please restart the client.";
         } catch (NumberFormatException e) {
             this.errorMessage = "Argument must be a number. Please try again.";
             return;
@@ -177,6 +177,16 @@ public class GameOverviewScene extends Scene implements Observer {
             this.errorMessage = "Argument must be between 1 and " + this.game.getPlayers().size();
             return;
         }
+    }
+
+    /**
+     * @return the {@link VirtualPlayer} associated with this client
+     */
+    private VirtualPlayer getClientPlayer() {
+        for (VirtualPlayer p : this.game.getPlayers())
+            if (p.getUsername().equals(this.tuiApp.getUsername()))
+                return p;
+        return null;
     }
 
     private void handleDrawCard(String[] args) {

@@ -19,6 +19,8 @@ import it.polimi.ingsw.am49.view.tui.TuiPlayerRenderer;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
 import java.rmi.RemoteException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class handles the display of the player board scene and the card placement action
@@ -61,11 +63,10 @@ public class ViewPlayerScene extends Scene implements Observer {
             }
 
             String command = parts[0];
-            switch (command) {
-                case "q", "tl" -> this.moveBoard(RelativePosition.TOP_LEFT);
-                case "e", "tr" -> this.moveBoard(RelativePosition.TOP_RIGHT);
-                case "a", "bl" -> this.moveBoard(RelativePosition.BOTTOM_LEFT);
-                case "d", "br" -> this.moveBoard(RelativePosition.BOTTOM_RIGHT);
+            if (!command.isEmpty() && List.of('q', 'e', 'a', 'd').contains(command.charAt(0))) {
+                this.handleMove(command);
+            } else switch (command) {
+                case "s", "starter" -> moveBoard(25, 25);
                 case "p", "place" -> {
                     if (this.canPlace())
                         this.handlePlaceCard(parts);
@@ -119,6 +120,26 @@ public class ViewPlayerScene extends Scene implements Observer {
         this.errorMessage = "";
     }
 
+    private void handleMove(String directionsString) {
+        LinkedList<RelativePosition> directions = new LinkedList<>();
+        try {
+            for (int i = 0; i < directionsString.length(); i++) {
+                switch (directionsString.charAt(i)) {
+                    case 'q' -> directions.add(RelativePosition.TOP_LEFT);
+                    case 'e' -> directions.add(RelativePosition.TOP_RIGHT);
+                    case 'a' -> directions.add(RelativePosition.BOTTOM_LEFT);
+                    case 'd' -> directions.add(RelativePosition.BOTTOM_RIGHT);
+                    default -> throw new IllegalArgumentException("Wrong direction: " + directionsString.charAt(i));
+                }
+            }
+            directions.forEach(this::moveBoard);
+        } catch (IllegalArgumentException e) {
+            this.errorMessage = e.getMessage();
+            return;
+        }
+
+    }
+
     private void handlePlaceCard(String[] args) {
         String username = this.tuiApp.getUsername();
         VirtualPlayer player = this.game.getPlayerByUsername(username);
@@ -131,50 +152,6 @@ public class ViewPlayerScene extends Scene implements Observer {
             this.errorMessage = "Invalid command. You must specify which card to place, the corner and if it should be flipped.";
             return;
         }
-
-//        System.out.println("Your hand: " + player.getHand());
-//        int cardId = -1;
-//        linesToClear = 1;
-//        while (true) {
-//            System.out.print("Enter the card ID to place: ");
-//            try {
-//                cardId = Integer.parseInt(scanner.nextLine().trim());
-//                if (player.getHand().contains(cardId)) {
-//                    IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-//                    System.out.println("You chose the card number " + cardId);
-//                    linesToClear = 1;
-//                    break;
-//                } else {
-//                    IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-//                    System.out.println("Invalid card ID. The card is not in your hand.");
-//                    linesToClear = 2;
-//                }
-//            } catch (NumberFormatException e) {
-//                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-//                System.out.println("Invalid input. Please enter a valid card ID.");
-//                linesToClear = 2;
-//            }
-//        }
-//
-//        CornerPosition cornerPosition = null;
-//        linesToClear = 1;
-//        while (true) {
-//            System.out.print("Enter the corner position (TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT): ");
-//            try {
-//                cornerPosition = CornerPosition.valueOf(scanner.nextLine().trim().toUpperCase());
-//                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-//                System.out.println("You chose the corner: " + cornerPosition.toString());
-//                linesToClear = 1;
-//                break;
-//            } catch (IllegalArgumentException e) {
-//                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-//                System.out.println("Invalid input. Please enter a valid corner position.");
-//                linesToClear = 2;
-//            }
-//        }
-//
-//        System.out.print("Flip the card? (yes/no): ");
-//        boolean flipped = scanner.nextLine().trim().startsWith("y");
 
         try {
             int cardIndex = Integer.parseInt(args[1]) - 1;
@@ -214,6 +191,13 @@ public class ViewPlayerScene extends Scene implements Observer {
         if (this.board.getTile(newCoords.first, newCoords.second) != null) {
             this.row = newCoords.first;
             this.col = newCoords.second;
+        }
+    }
+
+    private void moveBoard(int row, int col) {
+        if (this.board.getTile(row, col) != null) {
+            this.row = row;
+            this.col = col;
         }
     }
 
