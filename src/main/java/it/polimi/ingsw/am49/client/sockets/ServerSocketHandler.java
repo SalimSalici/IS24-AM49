@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.client.sockets;
 
 import it.polimi.ingsw.am49.client.Client;
+import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.messages.*;
 import it.polimi.ingsw.am49.model.actions.GameAction;
@@ -186,12 +187,14 @@ public class ServerSocketHandler extends SocketHandler implements Server {
      * Reconnects the client to a game.
      *
      * @param c the client reconnecting
-     * @param gameName the name of the game to reconnect to
+     * @param roomName the name of the room to reconnect to
+     * @param username the username to be used by the client
      * @throws RemoteException if a remote communication error occurs
      */
     @Override
-    public void reconnect(Client c, String gameName) throws RemoteException {
+    public CompleteGameInfo reconnect(Client c, String roomName, String username) throws RemoteException, JoinRoomException, AlreadyInRoomException {
         // TODO
+        return null;
     }
 
     /**

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.virtualmodel;
 
+import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.*;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
@@ -33,8 +34,34 @@ public class VirtualGame extends Observable {
         return game;
     }
 
-    // TODO:
-    // public VirtualGame loadGame(CompleteGameInfo gameInfo) { ... }
+     public static VirtualGame loadGame(CompleteGameInfo gameInfo) {
+        VirtualGame game = new VirtualGame();
+        gameInfo.players().forEach(completePlayerInfo -> {
+            VirtualPlayer player = new VirtualPlayer(completePlayerInfo.username(), completePlayerInfo.color());
+            player.setPoints(completePlayerInfo.points());
+            player.setPersonalObjectiveId(completePlayerInfo.personalObjectiveId());
+            player.setHand(completePlayerInfo.hand().handIds());
+            player.setHiddenHand(completePlayerInfo.hiddenHand().hiddenHand());
+            player.setActiveSymbols(completePlayerInfo.activeSymbols());
+            completePlayerInfo.tiles().forEach(
+                    tile -> player.getBoard().placeCard(
+                            new VirtualCard(tile.cardId(), tile.flipped()),
+                            tile.row(),
+                            tile.col()
+                    )
+            );
+            game.players.add(player);
+        });
+        game.commonObjectives = gameInfo.commonObjectiveIds();
+        game.drawableArea = new VirtualDrawable(
+                gameInfo.drawArea().deckTopResource(),
+                gameInfo.drawArea().deckTopGold(),
+                gameInfo.drawArea().revealedResources(),
+                gameInfo.drawArea().revealedGolds()
+        );
+        game.handleGameStateUpdate(gameInfo.gameState());
+        return game;
+     }
 
     public List<VirtualPlayer> getPlayers() {
         return players;

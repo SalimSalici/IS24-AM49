@@ -116,6 +116,14 @@ public class Game implements Serializable, EventEmitter {
         this.gameState.disconnectPlayer(username);
     }
 
+    public boolean reconnectPlayer(String username) {
+        Player player = this.getPlayerByUsername(username);
+        if (player == null) return false; // No player with the given username
+        if (player.isOnline()) return false; // Player with that username already online
+        player.setIsOnline(true);
+        return true;
+    }
+
     public void forfeitWinner(String username) {
         // TODO: implement this
         System.out.println(username + " won by forfeit.");

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.server;
 
 import it.polimi.ingsw.am49.client.Client;
+import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.enumerations.Color;
@@ -58,7 +59,7 @@ public interface Server extends Remote {
     public void executeAction(Client c, GameAction action)
             throws RemoteException, InvalidActionException, NotYourTurnException, NotInGameException;
 
-    public void reconnect(Client c, String gameName) throws RemoteException;
+    public CompleteGameInfo reconnect(Client c, String roomName, String username) throws RemoteException, JoinRoomException, AlreadyInRoomException;
 
     public void ping(Client c) throws RemoteException;
 

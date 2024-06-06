@@ -1,14 +1,21 @@
 package it.polimi.ingsw.am49.model.players;
 
+import it.polimi.ingsw.am49.controller.CompletePlayerInfo;
+import it.polimi.ingsw.am49.controller.gameupdates.HandUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.HiddenHandUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.TileInfo;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.util.Pair;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class implements the logic for the players
@@ -230,6 +237,40 @@ public class Player implements Serializable {
         return "Player: " + this.username + "\n" +
                 "\tpoints: " + this.points;
 
+    }
+
+    public CompletePlayerInfo toCompletePlayerInfo(boolean hidden) {
+        LinkedList<TileInfo> tiles = this.board.getPlacementOrder().stream()
+                .map(boardTile ->  new TileInfo(boardTile.getCard().getId(), boardTile.getRow(), boardTile.getCol(), boardTile.getCard().isFlipped()))
+                .collect(Collectors.toCollection(java.util.LinkedList::new));
+
+        HandUpdate handUpdate;
+        HiddenHandUpdate hiddenHandUpdate;
+        LinkedList<Integer> handIds = new LinkedList<>();
+        List<Pair<Resource, Boolean>> hiddenHand = new LinkedList<>();
+
+        if (hidden)
+            for (PlaceableCard card : this.hand)
+                hiddenHand.add(new Pair<>(card.getResource(), card.isGoldCard()));
+        else
+            for (PlaceableCard card : this.hand)
+                handIds.add(card.getId());
+
+        handUpdate = new HandUpdate(this.username, handIds);
+        hiddenHandUpdate = new HiddenHandUpdate(this.username, hiddenHand);
+        int personalObjectiveId = hidden ? 0 : this.personalObjective.getId();
+
+        return new CompletePlayerInfo(
+                hidden,
+                username,
+                points,
+                color,
+                personalObjectiveId,
+                tiles,
+                handUpdate,
+                hiddenHandUpdate,
+                this.board.getAvailableResources()
+        );
     }
 }
 

@@ -1,8 +1,12 @@
 package it.polimi.ingsw.am49.controller.room;
 
+import it.polimi.ingsw.am49.controller.CompleteGameInfo;
+import it.polimi.ingsw.am49.controller.CompletePlayerInfo;
 import it.polimi.ingsw.am49.controller.VirtualView;
+import it.polimi.ingsw.am49.controller.gameupdates.*;
 import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.actions.GameAction;
+import it.polimi.ingsw.am49.model.cards.Card;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.ClientHandler;
@@ -12,6 +16,7 @@ import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.server.exceptions.RoomException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Room {
 
@@ -51,11 +56,6 @@ public class Room {
         this.usernamesToPlayers.put(playerUsername, new PlayerInfo(playerUsername, playerClient));
         this.currentPlayers++;
 
-        if (currentPlayers > 1 && this.game != null && this.game.isPaused()) {
-            this.game.setPaused(false);
-            this.stopPauseTimer();
-        }
-
         this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                 .filter(c -> !c.equals(playerClient))
                 .forEach(c -> {
@@ -68,6 +68,27 @@ public class Room {
         );
     }
 
+    public CompleteGameInfo reconnect(ClientHandler playerClient, String playerUsername) throws JoinRoomException {
+        if (this.game == null)
+            throw new JoinRoomException("Cannot reconnect to a game that hasn't started.");
+
+        boolean success = this.game.reconnectPlayer(playerUsername);
+        if (!success) throw new JoinRoomException("Invalid username. Could not reconnect to the game.");
+
+        PlayerInfo pInfo = new PlayerInfo(playerUsername, playerClient);
+        this.usernamesToPlayers.put(playerUsername, pInfo);
+        this.currentPlayers++;
+
+        pInfo.setVirtualView(new VirtualView(this.game, pInfo.getClient(), pInfo.getUsername()));
+
+        if (currentPlayers > 1 && this.game != null && this.game.isPaused()) {
+            this.game.setPaused(false);
+            this.stopPauseTimer();
+        }
+
+        return this.getCompleteGameInfo(playerUsername);
+    }
+
     public boolean removePlayer(ClientHandler client) {
         String username = this.getUsernameByClient(client);
         PlayerInfo playerInfo = this.usernamesToPlayers.remove(username);
@@ -75,7 +96,7 @@ public class Room {
             this.currentPlayers--;
 
             if (this.gameStarted)
-                this.removePlayerFromGame(playerInfo, username);
+                this.removePlayerFromGame(playerInfo);
 
             this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                     .filter(c -> !c.equals(client) )
@@ -88,9 +109,9 @@ public class Room {
         return false;
     }
 
-    private void removePlayerFromGame(PlayerInfo playerInfo, String username) {
+    private void removePlayerFromGame(PlayerInfo playerInfo) {
         playerInfo.getVirtualView().destroy();
-        this.game.disconnectPlayer(username);
+        this.game.disconnectPlayer(playerInfo.getUsername());
 
         if (currentPlayers == 1) {
             System.out.println("Starting timer!");
@@ -115,25 +136,6 @@ public class Room {
             this.pauseTimer = null;
         }
     }
-
-//    public void disconnectClient(ClientHandler client) {
-//        String username = this.getUsernameByClient(client);
-//        PlayerInfo playerInfo = this.usernamesToPlayers.get(username);
-//
-//        if (this.gameStarted) {
-//            if (playerInfo != null)
-//                playerInfo.getVirtualView().destroy();
-//
-//            if (username != null)
-//                this.game.disconnectPlayer(username);
-//        }
-//
-//        this.removePlayer(client);
-//
-//        Log.getLogger().info("Player '" + username + "' disconnected from the room.");
-//
-//        // TODO: notify other players
-//    }
 
     /**
      * The Server will call this method to communicate the room that the specified client is ready to play the game
@@ -226,7 +228,7 @@ public class Room {
             throw new JoinRoomException("Client is already in the room.");
 
         if (this.gameStarted)
-            throw new JoinRoomException("Game already started");
+            throw new JoinRoomException("Game already started.");
 
         if (this.currentPlayers >= this.maxPlayers)
             throw new JoinRoomException("Room is full.");
@@ -275,5 +277,36 @@ public class Room {
 
     public int getCurrentPlayers() {
         return currentPlayers;
+    }
+
+    private CompleteGameInfo getCompleteGameInfo(String username) {
+        LinkedList<Integer> commonObjectivesIds = Arrays.stream(this.game.getCommonObjectives()).map(Card::getId).collect(Collectors.toCollection(java.util.LinkedList::new));
+        LinkedList<CompletePlayerInfo> players = this.game.getPlayers().stream()
+                .map(player -> {
+                    boolean hidden = !player.getUsername().equals(username);
+                    return player.toCompletePlayerInfo(hidden);
+                })
+                .collect(Collectors.toCollection(LinkedList::new));
+        DrawAreaUpdate drawAreaUpdate = new DrawAreaUpdate(
+                this.game.getResourceGameDeck().size(),
+                this.game.getGoldGameDeck().size(),
+                this.game.getResourceGameDeck().peek().getResource(),
+                this.game.getGoldGameDeck().peek().getResource(),
+                Arrays.stream(this.game.getRevealedResources()).map(Card::getId).collect(Collectors.toCollection(LinkedList::new)),
+                Arrays.stream(this.game.getRevealedGolds()).map(Card::getId).collect(Collectors.toCollection(LinkedList::new))
+        );
+        GameStateChangedUpdate gameStateUpdate = new GameStateChangedUpdate(
+                this.game.getGameState().getType(),
+                this.game.getTurn(),
+                this.game.getRound(),
+                this.game.getCurrentPlayer().getUsername());
+
+        return new CompleteGameInfo(
+                username,
+                drawAreaUpdate,
+                gameStateUpdate,
+                commonObjectivesIds,
+                players
+        );
     }
 }

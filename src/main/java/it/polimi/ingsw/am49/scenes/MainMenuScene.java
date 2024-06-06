@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
@@ -64,8 +65,7 @@ public class MainMenuScene extends Scene {
                 handleJoinRoom(parts);
                 break;
             case "4":
-                // TODO: Handle reconnect
-                linesToClear = 3;
+                handleReconnectRoom(parts);
                 break;
             case "5":
                 // TODO: Handle help
@@ -188,6 +188,32 @@ public class MainMenuScene extends Scene {
             this.clearLines(2); // Delete "Loading..."
             this.showError("Failed to join room." + e.getMessage());
         } catch (RemoteException e) {
+            this.clearLines(2); // Delete "Loading..."
+            this.showError("RemoteException. " + e.getMessage());
+        }
+    }
+
+    private void handleReconnectRoom(String[] args) {
+        if (args.length < 2) {
+            showError("Missing parameters, please try again. Type '3 --help' for more information about this command.");
+            return;
+        }
+        if (args[1].equals("--help")) {
+            showHelp("The 'join' command is used to join an existing room. When joining a room, you must specify its name.", "3 [room name]");
+            return;
+        }
+        String roomName = args[1];
+
+        try {
+            System.out.println("Loading...");
+            CompleteGameInfo completeGameInfo = this.server.reconnect(this.tuiApp, roomName, this.tuiApp.getUsername());
+            this.tuiApp.loadGame(completeGameInfo);
+            this.sceneManager.setScene(new GameOverviewScene(this.sceneManager, this.tuiApp));
+            this.running = false;
+        } catch (JoinRoomException | AlreadyInRoomException  e) {
+            this.clearLines(2); // Delete "Loading..."
+            this.showError("Failed to join room." + e.getMessage());
+        }catch (RemoteException e) {
             this.clearLines(2); // Delete "Loading..."
             this.showError("RemoteException. " + e.getMessage());
         }

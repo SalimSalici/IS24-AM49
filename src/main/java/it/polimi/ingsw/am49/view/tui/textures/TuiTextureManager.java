@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.view.tui.textures;
 
-import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
-import it.polimi.ingsw.am49.model.enumerations.Resource;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.io.*;
 import java.util.HashMap;
@@ -97,6 +96,7 @@ public class TuiTextureManager {
     }
 
     public ColoredChar[][] getTexture(int id, boolean flipped) {
+        Log.getLogger().info("Texture requested. Id: " + id + " - flipped: " + flipped);
         TuiTexture texture = this.textures.get(id);
         if (flipped) return texture.getBackBuffer();
         return texture.getFrontBuffer();

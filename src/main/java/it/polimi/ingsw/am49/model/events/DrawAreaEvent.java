@@ -8,6 +8,7 @@ import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,8 +42,8 @@ public record DrawAreaEvent(
                 remainingGolds,
                 deckTopResource,
                 deckTopGold,
-                revealedResources.stream().map(Card::getId).collect(Collectors.toList()),
-                revealedGolds.stream().map(Card::getId).collect(Collectors.toList())
+                revealedResources.stream().map(Card::getId).collect(Collectors.toCollection(LinkedList::new)),
+                revealedGolds.stream().map(Card::getId).collect(Collectors.toCollection(LinkedList::new))
         );
     }
 }

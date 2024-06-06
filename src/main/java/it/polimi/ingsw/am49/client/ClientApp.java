@@ -2,6 +2,7 @@ package it.polimi.ingsw.am49.client;
 
 import it.polimi.ingsw.am49.client.sockets.ServerSocketHandler;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
+import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
@@ -50,6 +51,10 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
     @Override
     public void ping() {
 
+    }
+
+    public void loadGame(CompleteGameInfo completeGameInfo) {
+        this.game = VirtualGame.loadGame(completeGameInfo);
     }
 
     public void setUsername(String username) {

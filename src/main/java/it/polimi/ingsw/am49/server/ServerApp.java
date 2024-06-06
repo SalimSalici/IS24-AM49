@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.server;
 
 import it.polimi.ingsw.am49.client.Client;
+import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.room.Room;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.actions.GameAction;
@@ -71,22 +72,28 @@ public class ServerApp implements Server {
     public RoomInfo joinRoom(Client client, String roomName, String username)
             throws AlreadyInRoomException, JoinRoomException {
 
-        if (username == null)
-            throw new JoinRoomException("Username is null.");
+//        if (username == null)
+//            throw new JoinRoomException("Username is null.");
+//
+//        if (username.length() < 2 || username.length() > 15)
+//            throw new JoinRoomException("Invalid username. Your username should be between 2 and 15 charactes.");
+//
+//        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+//
+//        if (clientHandler != null)
+//            throw new AlreadyInRoomException(this.clientsToRooms.get(clientHandler).getRoomName());
+//
+//        Room room = this.getRoomByName(roomName);
+//        if (room == null)
+//            throw new JoinRoomException("The room you tried to join doesn't exist.");
+//
+//        clientHandler = new ClientHandler(client);
+//        room.addNewPlayer(clientHandler, username);
+//        this.clientsToRooms.put(clientHandler, room);
+//        return room.getRoomInfo();
 
-        if (username.length() < 2 || username.length() > 15)
-            throw new JoinRoomException("Invalid username. Your username should be between 2 and 15 charactes.");
-
-        ClientHandler clientHandler = this.getClientHandlerByClient(client);
-
-        if (clientHandler != null)
-            throw new AlreadyInRoomException(this.clientsToRooms.get(clientHandler).getRoomName());
-
-        Room room = this.getRoomByName(roomName);
-        if (room == null)
-            throw new JoinRoomException("The room you tried to join doesn't exist.");
-
-        clientHandler = new ClientHandler(client);
+        Room room = this.validateNewClientAndGetRoom(client, roomName, username);
+        ClientHandler clientHandler = new ClientHandler(client);
         room.addNewPlayer(clientHandler, username);
         this.clientsToRooms.put(clientHandler, room);
         return room.getRoomInfo();
@@ -135,8 +142,12 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public void reconnect(Client client, String gameName) {
-
+    public CompleteGameInfo reconnect(Client client, String roomName, String username) throws AlreadyInRoomException, JoinRoomException {
+        Room room = this.validateNewClientAndGetRoom(client, roomName, username);
+        ClientHandler clientHandler = new ClientHandler(client);
+        CompleteGameInfo gameInfo = room.reconnect(clientHandler, username);
+        this.clientsToRooms.put(clientHandler, room);
+        return gameInfo;
     }
 
     @Override
@@ -168,6 +179,25 @@ public class ServerApp implements Server {
             Log.getLogger().severe("Couldn't get client host address.");
             return null;
         }
+    }
+
+    private Room validateNewClientAndGetRoom(Client client, String roomName, String username) throws AlreadyInRoomException, JoinRoomException {
+        if (username == null)
+            throw new JoinRoomException("Username is null.");
+
+        if (username.length() < 2 || username.length() > 15)
+            throw new JoinRoomException("Invalid username. Your username should be between 2 and 15 characters.");
+
+        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+
+        if (clientHandler != null)
+            throw new AlreadyInRoomException(this.clientsToRooms.get(clientHandler).getRoomName());
+
+        Room room = this.getRoomByName(roomName);
+        if (room == null)
+            throw new JoinRoomException("The room you tried to join doesn't exist.");
+
+        return room;
     }
 
     public static void main(String[] args) throws IOException, AlreadyBoundException {

@@ -1,12 +1,9 @@
 package it.polimi.ingsw.am49.model.events;
 
 import it.polimi.ingsw.am49.controller.gameupdates.CardPlacedUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.players.BoardTile;
 import it.polimi.ingsw.am49.model.players.Player;
-
-import java.util.Collections;
 
 /**
  * Implements the event that notifies when a card gets placed.
@@ -28,7 +25,7 @@ public record CardPlacedEvent(Player player, BoardTile boardTile) implements Gam
                 boardTile.getRow(),
                 boardTile.getCol(),
                 boardTile.getCard().isFlipped(),
-                Collections.unmodifiableMap(player.getBoard().getAvailableResources()),
+                player.getBoard().getAvailableResources(),
                 player.getPoints()
         );
     }
