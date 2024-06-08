@@ -3,9 +3,9 @@ package it.polimi.ingsw.am49.model.cards.adapters;
 import com.google.gson.*;
 import it.polimi.ingsw.am49.model.cards.placeables.BasicPointsStrategy;
 import it.polimi.ingsw.am49.model.cards.placeables.CornersPointsStrategy;
-import it.polimi.ingsw.am49.model.cards.placeables.ItemPointsStrategy;
+import it.polimi.ingsw.am49.model.cards.placeables.SymbolsPointsStrategy;
 import it.polimi.ingsw.am49.model.cards.placeables.PlacementPointsStrategy;
-import it.polimi.ingsw.am49.model.enumerations.Item;
+import it.polimi.ingsw.am49.model.enumerations.Symbol;
 
 import java.lang.reflect.Type;
 
@@ -15,8 +15,8 @@ public class PlacementPointsStrategyTypeAdapter implements JsonSerializer<Placem
     public JsonElement serialize(PlacementPointsStrategy src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("name", src.getClass().getSimpleName());
-        if (src instanceof ItemPointsStrategy)
-            jsonObject.addProperty("item", ((ItemPointsStrategy)src).getItem().name());
+        if (src instanceof SymbolsPointsStrategy)
+            jsonObject.addProperty("symbol", ((SymbolsPointsStrategy)src).getSymbol().name());
 
         return jsonObject;
     }
@@ -33,9 +33,9 @@ public class PlacementPointsStrategyTypeAdapter implements JsonSerializer<Placem
         }
 
         return switch (name) {
-            case "ItemPointsStrategy" -> {
-                Item item = Item.valueOf(jsonObj.get("item").getAsString());
-                yield new ItemPointsStrategy(item);
+            case "SymbolsPointsStrategy" -> {
+                Symbol symbol = Symbol.valueOf(jsonObj.get("symbol").getAsString());
+                yield new SymbolsPointsStrategy(symbol);
             }
             case "CornersPointsStrategy" -> new CornersPointsStrategy();
             case "BasicPointsStrategy" -> new BasicPointsStrategy();
