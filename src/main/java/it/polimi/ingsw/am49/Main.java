@@ -6,9 +6,9 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
-import it.polimi.ingsw.am49.view.tui.TuiBoardRenderer;
-import it.polimi.ingsw.am49.view.tui.TuiDrawAreaRenderer;
-import it.polimi.ingsw.am49.view.tui.TuiPlayerRenderer;
+import it.polimi.ingsw.am49.view.tui.renderers.TuiBoardRenderer;
+import it.polimi.ingsw.am49.view.tui.renderers.TuiDrawAreaRenderer;
+import it.polimi.ingsw.am49.view.tui.renderers.TuiPlayerRenderer;
 
 import java.util.List;
 

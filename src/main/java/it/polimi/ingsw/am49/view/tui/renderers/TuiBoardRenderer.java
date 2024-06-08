@@ -1,4 +1,4 @@
-package it.polimi.ingsw.am49.view.tui;
+package it.polimi.ingsw.am49.view.tui.renderers;
 
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;

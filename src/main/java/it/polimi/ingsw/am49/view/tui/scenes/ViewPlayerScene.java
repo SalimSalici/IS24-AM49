@@ -1,4 +1,4 @@
-package it.polimi.ingsw.am49.scenes;
+package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
@@ -13,9 +13,9 @@ import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.util.Observer;
-import it.polimi.ingsw.am49.view.tui.TuiBoardRenderer;
+import it.polimi.ingsw.am49.view.tui.renderers.TuiBoardRenderer;
 import it.polimi.ingsw.am49.util.Pair;
-import it.polimi.ingsw.am49.view.tui.TuiPlayerRenderer;
+import it.polimi.ingsw.am49.view.tui.renderers.TuiPlayerRenderer;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
 import java.rmi.RemoteException;

@@ -4,11 +4,8 @@ import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStateChangedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
-import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
-import it.polimi.ingsw.am49.scenes.ChooseObjectiveCardScene;
-import it.polimi.ingsw.am49.scenes.GameOverviewScene;
-import it.polimi.ingsw.am49.scenes.InvalidSceneException;
+import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.am49.view.tui;
+package it.polimi.ingsw.am49.view.tui.renderers;
 
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 import it.polimi.ingsw.am49.view.tui.textures.ColoredChar;

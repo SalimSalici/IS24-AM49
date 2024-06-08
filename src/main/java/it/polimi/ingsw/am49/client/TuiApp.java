@@ -2,9 +2,9 @@ package it.polimi.ingsw.am49.client;
 
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
-import it.polimi.ingsw.am49.scenes.InvalidSceneException;
-import it.polimi.ingsw.am49.scenes.SceneManager;
-import it.polimi.ingsw.am49.scenes.WelcomeScene;
+import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
+import it.polimi.ingsw.am49.view.tui.scenes.SceneManager;
+import it.polimi.ingsw.am49.view.tui.scenes.WelcomeScene;
 
 import java.rmi.RemoteException;
 

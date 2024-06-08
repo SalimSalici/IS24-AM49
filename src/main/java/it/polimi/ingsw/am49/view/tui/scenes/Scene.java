@@ -1,4 +1,4 @@
-package it.polimi.ingsw.am49.scenes;
+package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;

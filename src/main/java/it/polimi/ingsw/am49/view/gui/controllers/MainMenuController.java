@@ -1,8 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
-import it.polimi.ingsw.am49.scenes.InvalidSceneException;
-import it.polimi.ingsw.am49.scenes.RoomScene;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;

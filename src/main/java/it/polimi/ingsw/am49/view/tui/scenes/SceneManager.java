@@ -1,4 +1,4 @@
-package it.polimi.ingsw.am49.scenes;
+package it.polimi.ingsw.am49.view.tui.scenes;
 
 public class SceneManager {
     private Scene currentScene;

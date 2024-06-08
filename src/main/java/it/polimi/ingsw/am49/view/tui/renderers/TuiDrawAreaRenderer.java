@@ -1,11 +1,9 @@
-package it.polimi.ingsw.am49.view.tui;
+package it.polimi.ingsw.am49.view.tui.renderers;
 
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.view.tui.textures.BackTexture;
 import it.polimi.ingsw.am49.view.tui.textures.ColoredChar;
 import it.polimi.ingsw.am49.view.tui.textures.TuiTextureManager;
-
-import java.util.List;
 
 public class TuiDrawAreaRenderer {
 
