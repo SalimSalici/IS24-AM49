@@ -130,6 +130,15 @@ public class SocketClientHandler implements Client {
                 }
                 this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
+            case ReconnectMTS params -> {
+                Object returnValue;
+                try {
+                    returnValue = this.server.reconnect(this, params.roomName(), params.useraname());
+                } catch (Exception e) {
+                    returnValue = e;
+                }
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
+            }
             default -> Log.getLogger().severe("Received unknown type of message: " + msg.getClass().getSimpleName());
         }
     }

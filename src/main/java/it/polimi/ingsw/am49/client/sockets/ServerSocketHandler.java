@@ -193,8 +193,13 @@ public class ServerSocketHandler extends SocketHandler implements Server {
      */
     @Override
     public CompleteGameInfo reconnect(Client c, String roomName, String username) throws RemoteException, JoinRoomException, AlreadyInRoomException {
-        // TODO
-        return null;
+        try {
+            return this.sendRequest(new ReconnectMTS(this.getUniqueId(), roomName, username), CompleteGameInfo.class);
+        } catch (AlreadyInRoomException | JoinRoomException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RemoteException(e.getMessage());
+        }
     }
 
     /**
