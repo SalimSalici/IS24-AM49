@@ -26,15 +26,15 @@ public class ObjectiveCardsController extends GuiController{
         int starterCardId = this.manager.getStarterCardId();
         List<Integer> objectiveCardIds = this.manager.getObjectiveCardsIds();
 
-        Image startingImage = getImageByCardId(starterCardId, false); //TODO : INSERIRE IL LATO GIUSTO DELLA STARTER CARD
+        Image startingImage = this.guiTextureManager.getCardImage(starterCardId, false); //TODO : INSERIRE IL LATO GIUSTO DELLA STARTER CARD
         starterImageview.setImage(startingImage);
 
         int firstObj = objectiveCardIds.get(0);
-        Image firstobjImage = getImageByCardId(firstObj, false);
+        Image firstobjImage = this.guiTextureManager.getCardImage(firstObj, false);
         firstobjImageview.setImage(firstobjImage);
 
         int secondObj = objectiveCardIds.get(1);
-        Image secondobjImage = getImageByCardId(secondObj, false);
+        Image secondobjImage = this.guiTextureManager.getCardImage(secondObj, false);
         secondobjImageview.setImage(secondobjImage);
 
         firstobjImageview.setOnMouseClicked(mouseEvent -> {

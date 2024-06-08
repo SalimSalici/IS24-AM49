@@ -173,7 +173,7 @@ public class BoardController extends GuiController {
         ImageView imageView = new ImageView();
         imageView.setFitWidth(cardWidth);
         imageView.setFitHeight(cardHeight);
-        imageView.setImage(getImageByVirtualCard(card));
+        imageView.setImage(this.guiTextureManager.getCardImageByVirtualCard(card));
         imageView.setId(id);
         imageView.setLayoutX(x);
         imageView.setLayoutY(y);
@@ -185,7 +185,7 @@ public class BoardController extends GuiController {
         ImageView imageView = new ImageView();
         imageView.setFitWidth(cardWidth);
         imageView.setFitHeight(cardHeight);
-        imageView.setImage(getImageByVirtualCard(card));
+        imageView.setImage(this.guiTextureManager.getCardImageByVirtualCard(card));
         imageView.setId(id);
 
         StackPane cardStackpane = new StackPane();
@@ -314,7 +314,7 @@ public class BoardController extends GuiController {
         ImageView previewImage = new ImageView();
         previewImage.setFitWidth(cardWidth);
         previewImage.setFitHeight(cardHeight);
-        previewImage.setImage(getImageByVirtualCard(card));
+        previewImage.setImage(this.guiTextureManager.getCardImageByVirtualCard(card));
         previewImage.setOpacity(0.5); // Imposta l'opacità per l'anteprima
         previewImage.setMouseTransparent(true);
 

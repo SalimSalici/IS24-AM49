@@ -12,26 +12,26 @@ public enum BackTexture {
     GG("/it/polimi/ingsw/am49/textures/tui/gold_back_green.txt"),
     GR("/it/polimi/ingsw/am49/textures/tui/gold_back_red.txt"),
     GP("/it/polimi/ingsw/am49/textures/tui/gold_back_purple.txt"),
-    ID_81("/it/polimi/ingsw/am49/textures/tui/81_back.txt"),
-    ID_82("/it/polimi/ingsw/am49/textures/tui/82_back.txt"),
-    ID_83("/it/polimi/ingsw/am49/textures/tui/83_back.txt"),
-    ID_84("/it/polimi/ingsw/am49/textures/tui/84_back.txt"),
-    ID_85("/it/polimi/ingsw/am49/textures/tui/85_back.txt"),
-    ID_86("/it/polimi/ingsw/am49/textures/tui/86_back.txt"),
+//    ID_81("/it/polimi/ingsw/am49/textures/tui/81_back.txt"),
+//    ID_82("/it/polimi/ingsw/am49/textures/tui/82_back.txt"),
+//    ID_83("/it/polimi/ingsw/am49/textures/tui/83_back.txt"),
+//    ID_84("/it/polimi/ingsw/am49/textures/tui/84_back.txt"),
+//    ID_85("/it/polimi/ingsw/am49/textures/tui/85_back.txt"),
+//    ID_86("/it/polimi/ingsw/am49/textures/tui/86_back.txt"),
     OB("/it/polimi/ingsw/am49/textures/tui/objective_back.txt");
 
     private final String fileName;
 
     BackTexture(String fileName) { this.fileName = fileName; }
 
-    public static String getFileName(String code) {
-        for (BackTexture texture : BackTexture.values()) {
-            if (texture.name().equals(code)) {
-                return texture.getValue();
-            }
-        }
-        return null;
-    }
+//    public static String getFileName(String code) {
+//        for (BackTexture texture : BackTexture.values()) {
+//            if (texture.name().equals(code)) {
+//                return texture.getValue();
+//            }
+//        }
+//        return null;
+//    }
 
     public String getValue(){ return this.fileName; }
 }

@@ -123,7 +123,7 @@ public class RoomController extends GuiController {
             }
 
             this.totemImageview.setImage(this.roomInfo.playersToColors().get(this.app.getUsername()) != null
-                ? getImageByTotemColor(this.totemColor)
+                ? this.guiTextureManager.getImageByTotemColor(this.totemColor)
                 : null
             );
         } catch (IllegalArgumentException e) {

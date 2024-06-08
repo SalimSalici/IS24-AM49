@@ -125,7 +125,7 @@ public class OverviewController extends GuiController implements Observer {
         int index = 0;
         for(int cardId : this.game.getCommonObjectives()){
             ImageView cardImageview = new ImageView();
-            cardImageview.setImage(getImageByCardId(cardId, false));
+            cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
 
@@ -134,7 +134,7 @@ public class OverviewController extends GuiController implements Observer {
         }
 
         ImageView cardImageview = new ImageView();
-        cardImageview.setImage(getImageByCardId(this.game.getPlayerByUsername(myUsername).getPersonalObjectiveId(), false));
+        cardImageview.setImage(this.guiTextureManager.getCardImage(this.game.getPlayerByUsername(myUsername).getPersonalObjectiveId(), false));
         cardImageview.setFitWidth(143);
         cardImageview.setFitHeight(88);
         objectivesGridpane.add(cardImageview, index, 0);
@@ -144,10 +144,10 @@ public class OverviewController extends GuiController implements Observer {
     private void drawDecks(){
         drawableGridpane.getChildren().clear();
         //TODO: IMPLEMENTA CASO DI MAZZO VUOTO
-        ImageView resourceDeckImageview = new ImageView(getImageBackByResource(drawableArea.getDeckTopResource(), false));
+        ImageView resourceDeckImageview = new ImageView(this.guiTextureManager.getCardBackByResource(drawableArea.getDeckTopResource(), false));
         resourceDeckImageview.setOnMouseClicked(mouseEvent -> drawCard(0,RESOURCE_DECK));
 
-        ImageView goldDeckImageview = new ImageView(getImageBackByResource(drawableArea.getDeckTopGold(), true));
+        ImageView goldDeckImageview = new ImageView(this.guiTextureManager.getCardBackByResource(drawableArea.getDeckTopGold(), true));
         goldDeckImageview.setOnMouseClicked(mouseEvent -> drawCard(0,GOLD_DECK));
 
         resourceDeckImageview.setFitWidth(143);
@@ -162,7 +162,7 @@ public class OverviewController extends GuiController implements Observer {
         int index = 1;
         for(int cardId : drawableArea.getRevealedResourcesIds()){
             ImageView cardImageview = new ImageView();
-            cardImageview.setImage(getImageByCardId(cardId, false));
+            cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
 
@@ -174,7 +174,7 @@ public class OverviewController extends GuiController implements Observer {
         index = 1;
         for(int cardId : drawableArea.getRevealedGoldsIds()){
             ImageView cardImageview = new ImageView();
-            cardImageview.setImage(getImageByCardId(cardId, false));
+            cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
             cardImageview.setFitWidth(143);
             cardImageview.setFitHeight(88);
 
@@ -190,7 +190,7 @@ public class OverviewController extends GuiController implements Observer {
         int index = 0;
         for (VirtualPlayer player : this.players) {
             Button viewboardButton = new Button("View board");
-            ImageView totemImageview = new ImageView(getImageByTotemColor(player.getColor()));
+            ImageView totemImageview = new ImageView(this.guiTextureManager.getImageByTotemColor(player.getColor()));
             Label usernameLabel = new Label(player.getUsername());
 
             totemImageview.setFitWidth(33);
@@ -234,7 +234,7 @@ public class OverviewController extends GuiController implements Observer {
             Image rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_Icon.png")));
 
             for (VirtualCard card : visibleHand) {
-                ImageView cardImageview = new ImageView(getImageByCardId(card.id(), card.flipped()));
+                ImageView cardImageview = new ImageView(this.guiTextureManager.getCardImage(card.id(), card.flipped()));
                 ImageView rotationImageview = new ImageView(rotationImage);
                 Button rotationButton = new Button();
 
@@ -264,7 +264,7 @@ public class OverviewController extends GuiController implements Observer {
             int index = 0;
             List<Pair<Resource, Boolean>> hand = this.game.getPlayerByUsername(username).getHiddenHand();
             for (Pair<Resource, Boolean> pair : hand) {
-                ImageView cardImageview = new ImageView(getImageBackByResource(pair.first, pair.second)); //TODO: distingui gold e resource
+                ImageView cardImageview = new ImageView(this.guiTextureManager.getCardBackByResource(pair.first, pair.second)); //TODO: distingui gold e resource
 
                 cardImageview.setFitWidth(132);
                 cardImageview.setFitHeight(87);
