@@ -9,6 +9,8 @@ import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.view.tui.renderers.TuiCardRenderer;
+import it.polimi.ingsw.am49.view.tui.textures.TuiTextureManager;
 
 import java.rmi.RemoteException;
 import java.util.stream.IntStream;
@@ -20,12 +22,14 @@ public class StarterCardScene extends Scene {
     private final String username;
     private boolean sideChosen = false;
     private final int starterCardId;
+    private final TuiCardRenderer renderer;
 
     public StarterCardScene(SceneManager sceneManager, TuiApp tuiApp, int starterCardId) {
         super(sceneManager, tuiApp);
         this.server = tuiApp.getServer();
         this.username = tuiApp.getUsername();
         this.starterCardId = starterCardId;
+        this.renderer = new TuiCardRenderer(31, 5);
     }
 
     @Override
@@ -47,10 +51,10 @@ public class StarterCardScene extends Scene {
             String command = parts[0];
             switch (command) {
                 case "1":
-                    this.handleStarterSideChosen(true);
+                    this.handleStarterSideChosen(false);
                     break;
                 case "2":
-                    this.handleStarterSideChosen(false);
+                    this.handleStarterSideChosen(true);
                     break;
                 default:
                     System.out.println("Invalid command, please try again.");
@@ -97,16 +101,23 @@ public class StarterCardScene extends Scene {
         System.out.println("*******************************");
         System.out.println("       | Starter card |        ");
         System.out.println("       ****************        ");
-        System.out.println("\n\n\n");
-        System.out.println("Your starter card is: " + this.starterCardId);
-        System.out.println("\n\n\n");
+        System.out.println("\n\n");
+        System.out.println("Choose if you want to flip your starter card:");
+        System.out.println("\n");
+        System.out.println("(1) No          (2) Yes");
+        this.printStarterCard();
+        System.out.println("\n");
+    }
 
+    private void printStarterCard() {
+        TuiTextureManager textureManager = TuiTextureManager.getInstance();
+        this.renderer.draw(textureManager.getTexture(this.starterCardId, false), 7, 2);
+        this.renderer.draw(textureManager.getTexture(this.starterCardId, true), 23, 2);
+        this.renderer.print();
     }
 
     private void promptCommand() {
-        System.out.println("Do you want to flip your starter card?\n");
-        System.out.println("Available commands: (1) yes | (2) no ");
-        System.out.print(">>> ");
+        System.out.print("Your choice >>> ");
     }
 
     public void gameUpdate(GameUpdate gameUpdate) {

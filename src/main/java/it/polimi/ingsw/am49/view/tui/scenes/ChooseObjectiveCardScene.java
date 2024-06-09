@@ -10,6 +10,8 @@ import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.view.tui.renderers.TuiCardRenderer;
+import it.polimi.ingsw.am49.view.tui.textures.TuiTextureManager;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -21,12 +23,14 @@ public class ChooseObjectiveCardScene extends Scene {
     private final String username;
     private final List<Integer> objectiveCardIds;
     private boolean objectiveChosen = false;
+    private final TuiCardRenderer renderer;
 
     public ChooseObjectiveCardScene(SceneManager sceneManager, TuiApp tuiApp, List<Integer> objectiveCardIds) {
         super(sceneManager, tuiApp);
         this.server = tuiApp.getServer();
         this.username = tuiApp.getUsername();
         this.objectiveCardIds = objectiveCardIds;
+        this.renderer = new TuiCardRenderer(31, 5);
     }
 
     @Override
@@ -91,6 +95,13 @@ public class ChooseObjectiveCardScene extends Scene {
         }
     }
 
+    private void printObjecetiveCards() {
+        TuiTextureManager textureManager = TuiTextureManager.getInstance();
+        this.renderer.draw(textureManager.getTexture(this.objectiveCardIds.getFirst(), false), 7, 2);
+        this.renderer.draw(textureManager.getTexture(this.objectiveCardIds.get(1), false), 23, 2);
+        this.renderer.print();
+    }
+
     private void printHeader() {
         this.clearScreen();
         System.out.println("*******************************");
@@ -98,18 +109,16 @@ public class ChooseObjectiveCardScene extends Scene {
         System.out.println("*******************************");
         System.out.println("   | Choose an objective |    ");
         System.out.println("   *************************    ");
-        System.out.println("\n\n\n");
-        System.out.println("Available objective cards:");
-
-        for (int i = 0; i < this.objectiveCardIds.size(); i++) {
-            System.out.println((i + 1) + ". Objective Card " + this.objectiveCardIds.get(i));
-        }
-        System.out.println("\n\n\n");
+        System.out.println("\n\n");
+        System.out.println("Choose your personal objective card:");
+        System.out.println("\n");
+        System.out.println("(1)             (2)");
+        this.printObjecetiveCards();
+        System.out.println("\n");
     }
 
     private void promptCommand() {
-        System.out.println("Choose an objective card by entering the corresponding number:");
-        System.out.print(">>> ");
+        System.out.print("Your choice >>> ");
     }
 
     public synchronized void gameUpdate(GameUpdate gameUpdate) {
