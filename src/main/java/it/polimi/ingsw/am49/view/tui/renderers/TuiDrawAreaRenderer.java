@@ -5,18 +5,29 @@ import it.polimi.ingsw.am49.view.tui.textures.BackTexture;
 import it.polimi.ingsw.am49.view.tui.textures.ColoredChar;
 import it.polimi.ingsw.am49.view.tui.textures.TuiTextureManager;
 
+/**
+ * The TuiDrawAreaRenderer class is responsible for rendering the draw area on the TUI.
+ */
 public class TuiDrawAreaRenderer {
 
     private final TuiCardRenderer renderer;
     private final VirtualDrawable drawArea;
     private final TuiTextureManager textureManager;
 
+    /**
+     * Constructs a TuiDrawAreaRenderer with the specified virtual draw area.
+     *
+     * @param drawArea the virtual draw area to render
+     */
     public TuiDrawAreaRenderer(VirtualDrawable drawArea) {
         this.renderer = new TuiCardRenderer(53, 10);
         this.drawArea = drawArea;
         textureManager = TuiTextureManager.getInstance();
     }
 
+    /**
+     * Prints the draw area to the console.
+     */
     public void print() {
         ColoredChar[][] resourceBackTexture = switch (drawArea.getDeckTopResource()) {
             case WOLVES -> this.textureManager.getBackTexture(BackTexture.RB);
