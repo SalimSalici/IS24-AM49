@@ -14,6 +14,7 @@ public class GuiTextureManager {
     private final Map<Resource, Image> goldBack;
     private final Map<Resource, Image> resourceBack;
     private final Image objectiveBack;
+    private final Image turnIndicator;
 
     private static GuiTextureManager instance;
 
@@ -30,6 +31,7 @@ public class GuiTextureManager {
         }
 
         objectiveBack = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/gold_card_back/087.png")));
+        turnIndicator = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/turnIndicator.png")));
 
         // loads all the cards
         this.textures = new HashMap<>();
@@ -42,8 +44,6 @@ public class GuiTextureManager {
             String zeros = "0".repeat(3 - String.valueOf(id).length());
             String subFolder_front = "gold_cards_front";
             String subFolder_back = "gold_card_back";
-
-            System.out.println("/it/polimi/ingsw/am49/images/" + subFolder_front + "/" + zeros + id + ".png");
 
             Image frontImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/" + subFolder_front + "/" + zeros + id + ".png")));
             Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/" + subFolder_back + "/" + zeros + id + ".png")));
@@ -115,5 +115,9 @@ public class GuiTextureManager {
         }
 
         return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/" + "CODEX_pion_" + fileColor + ".png")));
+    }
+
+    public Image getTurnIndicator() {
+        return turnIndicator;
     }
 }

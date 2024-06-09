@@ -18,6 +18,8 @@ import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -100,18 +102,19 @@ public class OverviewController extends GuiController implements Observer {
 
     @Override
     public void gameUpdate(GameUpdate gameUpdate) throws InvalidSceneException {
+        System.out.println("- - - - - - - U P D A T E - - - - - - - ");
             update();
     }
 
     public void update() {
         Platform.runLater(() -> {
-            drawCurrentplayerindicator();
+            drawCurrentPlayerIndicator();
             drawDecks();
-            drawSymbols(myUsername);
+            drawSymbols(focusedPlayer.getUsername());
             drawPointsBoard();
             drawPointsTokens();
             updateVisibleHand();
-            drawHand(myUsername);
+            drawHand(focusedPlayer.getUsername());
             this.playerboardController.updateBoards();
         });
     }
@@ -202,29 +205,45 @@ public class OverviewController extends GuiController implements Observer {
             index++;
         }
         System.out.println(myUsername);
-        drawCurrentplayerindicator();
+        drawCurrentPlayerIndicator();
     }
 
-    private void drawCurrentplayerindicator(){
+
+    private void drawCurrentPlayerIndicator() {
         int index = 0;
+        //ImageView indicatorImmageView = new ImageView(this.guiTextureManager.getTurnIndicator()); //TODO: MAKE THIS WORK
+        ImageView indicatorImageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/turnIndicator.png"))));
+        indicatorImageView.setFitWidth(130);
+        indicatorImageView.setFitHeight(83);
+
+        GridPane.setHalignment(indicatorImageView, HPos.CENTER); // Allineamento orizzontale
+        GridPane.setValignment(indicatorImageView, VPos.CENTER); // Allineamento verticale
+
+        clearTurnIndicator();
         for (VirtualPlayer player : this.players) {
-            ImageView indicatorImmageview = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/turnIndicator.png"))));
-
-            indicatorImmageview.setFitWidth(130);
-            indicatorImmageview.setFitHeight(83);
-
-            if(this.game.getCurrentPlayer().getUsername().equals(player.getUsername())){ //se player è il current player
-                playersGridpane.add(indicatorImmageview, 1, index); //TODO: SOMEHOW THE INDICATOR IS SHOWN ON TOP OF THE TOTEM
+            if (this.game.getCurrentPlayer().getUsername().equals(player.getUsername())) { //if is the turn of player
+                playersGridpane.add(indicatorImageView, 1, index); //TODO: SOMEHOW THE INDICATOR IS SHOWN ON TOP OF THE TOTEM
                 return;
             }
             index++;
         }
     }
 
+
+    private void clearTurnIndicator() {
+        for (VirtualPlayer player : this.players) {
+            // only remove nodes that are in the second column of playersGridpane
+            playersGridpane.getChildren().removeIf(node -> {
+                Integer columnIndex = GridPane.getColumnIndex(node);
+                return columnIndex != null && columnIndex == 1;
+            });
+        }
+    }
+
     public void drawHand(String username){
        handGridpane.getChildren().clear();
+        int index = 0;
         if(username.equals(myUsername)) {
-            int index = 0;
 
             Image rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_Icon.png")));
 
@@ -256,7 +275,6 @@ public class OverviewController extends GuiController implements Observer {
             }
         }
         else{
-            int index = 0;
             List<Pair<Resource, Boolean>> hand = this.game.getPlayerByUsername(username).getHiddenHand();
             for (Pair<Resource, Boolean> pair : hand) {
                 ImageView cardImageview = new ImageView(this.guiTextureManager.getCardBackByResource(pair.first, pair.second)); //TODO: distingui gold e resource
@@ -278,7 +296,6 @@ public class OverviewController extends GuiController implements Observer {
     private void drawCard(int cardId, DrawPosition drawPosition) {
         try {
             this.app.getServer().executeAction(this.app, new DrawCardAction(this.myUsername, drawPosition, cardId));
-            this.update();
         } catch (NotYourTurnException | InvalidActionException e) {
             showErrorPopup(e.getMessage());
         } catch (NotInGameException e) {
