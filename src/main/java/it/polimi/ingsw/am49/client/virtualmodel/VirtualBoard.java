@@ -32,7 +32,6 @@ public class VirtualBoard extends Observable {
         this.lastPlacedRow = row;
         this.lastPlacedCol = col;
         if (this.starterTile == null) this.starterTile = tile;
-        this.notifyObservers();
         return tile;
     }
 
