@@ -33,6 +33,7 @@ public class ViewPlayerScene extends Scene implements Observer {
     private final VirtualBoard board;
     private final TuiBoardRenderer tuiBoardRenderer;
     private final TuiPlayerRenderer tuiPlayer;
+    private final Object renderLock;
     private int row;
     private int col;
     private String errorMessage;
@@ -49,13 +50,16 @@ public class ViewPlayerScene extends Scene implements Observer {
         this.row = 25;
         this.col = 25;
         this.errorMessage = "";
+        this.renderLock = new Object();
     }
 
     @Override
     public void play() {
         while (this.running) {
-            this.printView();
-            this.promptCommand();
+            synchronized (renderLock) {
+                this.printView();
+                this.promptCommand();
+            }
             String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
             if (parts.length == 0) {
                 System.out.println("Invalid command, please try again.");
@@ -206,10 +210,17 @@ public class ViewPlayerScene extends Scene implements Observer {
                 && this.game.getGameState() == GameStateType.PLACE_CARD;
     }
 
+    // APPROCCIO VECCHIO: update dell'interfaccia
     @Override
     public void update() {
-        this.printView();
-        this.promptCommand();
+        synchronized (renderLock) {
+            this.printView();
+            this.promptCommand();
+        }
+    }
+
+    public void handlePlayerUpdate() {
+
     }
 
     private void stop() {

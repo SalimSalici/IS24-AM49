@@ -24,6 +24,7 @@ public class GameOverviewScene extends Scene implements Observer {
     private final TuiDrawAreaRenderer tuiDrawAreaRenderer;
     private TuiPlayerRenderer focusedPlayerRenderer;
     private String errorMessage;
+    private final Object renderLock;
 
     public GameOverviewScene(SceneManager sceneManager, TuiApp tuiApp) {
         super(sceneManager, tuiApp);
@@ -32,13 +33,16 @@ public class GameOverviewScene extends Scene implements Observer {
         this.tuiDrawAreaRenderer = new TuiDrawAreaRenderer(this.game.getDrawableArea());
         this.focusedPlayerRenderer = new TuiPlayerRenderer(this.game.getPlayerByUsername(tuiApp.getUsername()), false, this.game.getCommonObjectives());
         this.errorMessage = "";
+        this.renderLock = new Object();
     }
 
     @Override
     public void play() {
         while (this.running) {
-            this.printContent();
-            this.promptCommand();
+            synchronized (renderLock) {
+                this.printContent();
+                this.promptCommand();
+            }
             String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
             if (parts.length == 0) {
                 System.out.println("Invalid command, please try again.");
@@ -260,11 +264,13 @@ public class GameOverviewScene extends Scene implements Observer {
 
     @Override
     public void update() {
-        if (this.game.getGameState() == GameStateType.END_GAME)
-            this.showRankings();
-        else
-            this.printContent();
-        this.promptCommand();
+        synchronized (renderLock) {
+            if (this.game.getGameState() == GameStateType.END_GAME)
+                this.showRankings();
+            else
+                this.printContent();
+            this.promptCommand();
+        }
     }
 
     private void stop() {
