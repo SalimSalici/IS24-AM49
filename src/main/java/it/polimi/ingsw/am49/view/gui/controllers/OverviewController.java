@@ -46,7 +46,6 @@ public class OverviewController extends GuiController implements Observer {
     private BoardController playerboardController;
     @FXML
     private Pane pointsPane;
-
     private VirtualGame game;
     private String myUsername;
     private List<VirtualPlayer> players;
@@ -208,7 +207,6 @@ public class OverviewController extends GuiController implements Observer {
         drawCurrentPlayerIndicator();
     }
 
-
     private void drawCurrentPlayerIndicator() {
         int index = 0;
         //ImageView indicatorImmageView = new ImageView(this.guiTextureManager.getTurnIndicator()); //TODO: MAKE THIS WORK
@@ -228,7 +226,6 @@ public class OverviewController extends GuiController implements Observer {
             index++;
         }
     }
-
 
     private void clearTurnIndicator() {
         for (VirtualPlayer player : this.players) {
@@ -305,7 +302,6 @@ public class OverviewController extends GuiController implements Observer {
         }
     }
 
-
     private void selectCard(ImageView selectedCardImageview, VirtualCard card){
         if (selectedCard != null) {
             selectedCard.second.setOpacity(1);
@@ -371,7 +367,6 @@ public class OverviewController extends GuiController implements Observer {
         }
     }
 
-
     private void setFocusedPlayer(VirtualPlayer player){
         if(!focusedPlayer.equals(player)) {
             this.focusedPlayer = player;
@@ -393,11 +388,9 @@ public class OverviewController extends GuiController implements Observer {
     }
 
     public void updateVisibleHand() {
-        List<VirtualCard> newVisibleHand = new ArrayList<>(this.game.getPlayerByUsername(myUsername).getHand().stream()
-                .map(elem -> new VirtualCard(elem, this.visibleHand.stream().filter(virtualCard -> virtualCard.id() == elem).findFirst().map(VirtualCard::flipped).orElse(false)))
-                .collect(Collectors.toList()));
 
-        this.visibleHand = newVisibleHand;
+        this.visibleHand = this.game.getPlayerByUsername(myUsername).getHand().stream()
+                .map(elem -> new VirtualCard(elem, this.visibleHand.stream().filter(virtualCard -> virtualCard.id() == elem).findFirst().map(VirtualCard::flipped).orElse(false))).collect(Collectors.toList());
 
         if(focusedPlayer.getUsername().equals(myUsername))
             drawHand(myUsername);

@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 
 import java.rmi.RemoteException;
 
@@ -25,9 +26,11 @@ public class RoomController extends GuiController {
     @FXML
     private Label titleLabel, playersLabel;
     @FXML
-    private ListView<String> playersListview;
+    private ListView<PlayerInfoItem> playersListview;
     @FXML
     private ImageView redImageview, greenImageview, blueImageview, yellowImageview, totemImageview;
+    @FXML
+    private HBox totemHBox;
 
     private Server server;
     private RoomInfo roomInfo;
@@ -41,6 +44,8 @@ public class RoomController extends GuiController {
     public void init() {
         this.server = this.app.getServer();
         this.roomInfo = this.manager.getRoomInfo();
+
+        totemHBox.setVisible(false);
 
         titleLabel.setText("Room: " + this.roomInfo.roomName());
 
@@ -88,7 +93,7 @@ public class RoomController extends GuiController {
     public void gameUpdate(GameUpdate gameUpdate) {
         if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
             GameStartedUpdate update = (GameStartedUpdate) gameUpdate;
-            this.manager.setStarterCardId(update.starterCardId()); //TODO: CAPIRE COME PASSARE INFO TRA UNA SCENA E L'ALTRA
+            this.manager.setStarterCardId(update.starterCardId());
             this.manager.changeScene(SceneTitle.STARTER_CARD);
         }
     }
@@ -108,7 +113,7 @@ public class RoomController extends GuiController {
 
     private void setColor(){
         try {
-            // se il colore è not set
+            // if color isn't set
             if(totemColor == null){
                 this.roomInfo = this.server.readyDown(this.app);
             }
@@ -117,16 +122,21 @@ public class RoomController extends GuiController {
                 this.manager.setRoomInfo(this.roomInfo);
             }
 
-            this.totemImageview.setImage(this.roomInfo.playersToColors().get(this.app.getUsername()) != null
-                ? this.guiTextureManager.getImageByTotemColor(this.totemColor)
-                : null
-            );
+            if(this.roomInfo.playersToColors().get(this.app.getUsername()) == null){
+                totemHBox.setVisible(false);
+
+            }else{
+                totemHBox.setVisible(true);
+                this.totemImageview.setImage(this.guiTextureManager.getImageByTotemColor(this.totemColor));
+            }
+
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid color. Please try again.");
             this.totemColor = null;
-        } catch (RemoteException | RoomException e) {
+        } catch (RemoteException e) {
             // TODO: Handle exception
             throw new RuntimeException(e);
+        } catch (RoomException e){
+            showErrorPopup(e.getMessage());
         }
     }
 
@@ -139,20 +149,20 @@ public class RoomController extends GuiController {
     private void drawPlayersList() {
         Platform.runLater(() -> {
             playersListview.getItems().clear();
+            playersListview.setCellFactory(param -> new PlayerInfoListCell());
 
-            // populates playersListView
+            // Populates playersListView with PlayerInfoItem objects
             playersListview.getItems().addAll(
                     this.roomInfo.playersToColors()
                             .entrySet()
                             .stream()
                             .filter(entry -> !entry.getKey().equals(this.app.getUsername()))
-                            .map(
-                                    entry -> entry.getKey() + " " + (entry.getValue() == null ? "not ready" : entry.getValue().toString().toLowerCase())
-                            )
+                            .map(entry -> new PlayerInfoItem(
+                                    entry.getKey(),
+                                    entry.getValue() == null ? null : this.guiTextureManager.getImageByTotemColor(entry.getValue())
+                            ))
                             .toList()
             );
-
-            System.out.println("Players List Updated: " + playersListview.getItems()); // Debug
         });
     }
 }

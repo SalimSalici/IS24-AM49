@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.controller.room.Room;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
@@ -24,9 +25,9 @@ public class MainMenuController extends GuiController {
     private Button joinroomButton, createroomButton, usernameButton, refreshButton;
 
     @FXML
-    private ListView<String> roomsListview;
+    private ListView<RoomInfoItem> roomsListview;
 
-    private String selectedRoom;
+    private RoomInfoItem selectedRoom;
     private Server server;
 
     private List<RoomInfo> rooms;
@@ -35,13 +36,12 @@ public class MainMenuController extends GuiController {
     public void init(){
         this.server = this.app.getServer();
         refreshRooms();
-        roomsListview.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+        roomsListview.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RoomInfoItem>() {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+            public void changed(ObservableValue<? extends RoomInfoItem> observableValue, RoomInfoItem oldItem, RoomInfoItem newItem) {
                 selectedRoom = roomsListview.getSelectionModel().getSelectedItem();
             }
         });
-
         usernameLabel.setText("Username: " + this.app.getUsername());
 
         refreshButton.setOnAction(e -> {
@@ -62,7 +62,7 @@ public class MainMenuController extends GuiController {
         });
     }
 
-    private void refreshRooms(){
+    private void refreshRooms() {
         roomsListview.getItems().clear();
         try {
             this.rooms = this.server.fetchRooms(this.app);
@@ -70,13 +70,22 @@ public class MainMenuController extends GuiController {
             throw new RuntimeException(e);
         }
 
-        roomsListview.getItems().addAll(rooms.stream().map(RoomInfo::roomName).toList()); //populates roomsListView
+        List<RoomInfoItem> roomItems = rooms.stream()
+                .map(room -> new RoomInfoItem(
+                        room.roomName(),
+                        room.maxPlayers(),
+                        room.playersToColors().size()
+                ))
+                .toList();
+
+        roomsListview.getItems().addAll(roomItems); // Populates roomsListView
+        roomsListview.setCellFactory(param -> new RoomInfoListCell());
     }
 
     private void joinRoom(){
         try {
             System.out.println("Joining room: " + selectedRoom);
-            RoomInfo roomInfo = this.server.joinRoom(this.app, selectedRoom, this.app.getUsername());
+            RoomInfo roomInfo = this.server.joinRoom(this.app, selectedRoom.getRoomName(), this.app.getUsername());
             this.manager.setRoomInfo(roomInfo);
             this.manager.changeScene(SceneTitle.ROOM);
             //this.manager.changeScene();

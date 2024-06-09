@@ -151,7 +151,7 @@ public class Room {
             throw new RoomException("Client is not in the room.");
 
         if(!this.isColorAvailale(color))
-            throw new RoomException("Color " + color + "is not available.");
+            throw new RoomException("Color " + color + " is not available.");
 
         this.usernamesToPlayers.get(username).setColor(color);
         this.usernamesToPlayers.get(username).setReadyToPlay(true);
