@@ -356,7 +356,6 @@ public class BoardController extends GuiController {
     public void switchPlayerBoard(VirtualPlayer player) {
         currentPlayer = player;
         loadBoardState(player);
-        this.overviewController.update();
         centerInnerPane();
     }
 
