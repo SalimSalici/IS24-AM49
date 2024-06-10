@@ -40,9 +40,7 @@ public class GuiManager {
     public void start(Stage stage) throws IOException {
         setup();
         this.stage = stage;
-        stage.setWidth(600);
-        stage.setHeight(400);
-        stage.setResizable(true);
+        stage.setResizable(false);
         run();
     }
 
@@ -64,21 +62,11 @@ public class GuiManager {
         titleToController.getValue(titleToScene.getKey(currentScene)).init();
 
         Platform.runLater(() -> {
-            if (newSceneTitle == SceneTitle.OVERVIEW) {
-                stage.setWidth(1500);
-                stage.setHeight(780);
-            } else {
-                stage.setWidth(600);
-                stage.setHeight(400);
-            }
+            stage.setResizable(false);
             stage.setScene(currentScene);
             stage.sizeToScene();
             stage.show();
         });
-    }
-
-    public void setFullScreen() {
-        stage.setFullScreen(true);
     }
 
     // PRIVATE METHODS
@@ -90,7 +78,7 @@ public class GuiManager {
                 //Creates actual scene for this scene name
                 Scene scene;
                 if (sceneTitle == SceneTitle.OVERVIEW) {
-                    scene = new Scene(loader.load(), 1500, 780);
+                    scene = new Scene(loader.load(), 1600, 780);
                 } else {
                     scene = new Scene(loader.load(), 600, 400);
                 }
