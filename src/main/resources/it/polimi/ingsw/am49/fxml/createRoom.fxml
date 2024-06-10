@@ -5,22 +5,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.am49.view.gui.controllers.CreateRoomController">
+<AnchorPane styleClass="mainBackground" stylesheets="@../css/preGame.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.am49.view.gui.controllers.CreateRoomController">
    <children>
-      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true">
-         <image>
-            <Image url="@../images/elements/Cornici-03.jpg" />
-         </image>
-      </ImageView>
       <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <top>
             <Label fx:id="createroomtitleLable" text="Create Room" BorderPane.alignment="CENTER">
@@ -33,19 +25,22 @@
             </Label>
          </top>
          <center>
-            <VBox alignment="CENTER" spacing="20.0" BorderPane.alignment="CENTER">
+            <VBox alignment="CENTER" spacing="50.0" BorderPane.alignment="CENTER">
                <children>
                   <HBox alignment="CENTER" spacing="20.0">
                      <children>
                         <Label fx:id="nameLable" text="Name:" />
-                        <TextField fx:id="nameTextfield" prefHeight="24.0" prefWidth="151.0" promptText="Enter room name" />
+                        <TextField fx:id="nameTextfield" prefHeight="24.0" prefWidth="151.0" promptText="Enter room name">
+                           <font>
+                              <Font name="System Italic" size="13.0" />
+                           </font></TextField>
                         <Label fx:id="numplayerLable" text="Number of player:" />
                         <Spinner fx:id="numplayerSpinner" editable="true" prefHeight="24.0" prefWidth="67.0" />
                      </children>
                   </HBox>
                   <HBox alignment="BOTTOM_CENTER">
                      <children>
-                        <Button fx:id="createButton" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="41.0" prefWidth="93.0" text="Create" textAlignment="CENTER">
+                        <Button fx:id="createButton" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Create" textAlignment="CENTER">
                            <font>
                               <Font size="18.0" />
                            </font>

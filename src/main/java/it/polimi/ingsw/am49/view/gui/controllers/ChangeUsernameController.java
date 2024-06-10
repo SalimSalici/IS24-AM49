@@ -12,13 +12,10 @@ public class ChangeUsernameController extends GuiController {
     private TextField usernameTextfield;
 
     @FXML
-    private Label newUsernameLabel;
-
-    @FXML
-    private Button confirmButton;
+    private Button confButton;
 
     public void initialize(){
-        confirmButton.setOnAction(e -> {
+        confButton.setOnAction(e -> {
             if(this.isUsernameValid(usernameTextfield.getText())) {
                 app.setUsername(usernameTextfield.getText());
                 this.manager.changeScene(SceneTitle.MAIN_MENU);

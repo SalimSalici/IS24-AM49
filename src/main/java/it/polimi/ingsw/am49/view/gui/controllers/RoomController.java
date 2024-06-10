@@ -47,7 +47,7 @@ public class RoomController extends GuiController {
 
         totemHBox.setVisible(false);
 
-        titleLabel.setText("Room: " + this.roomInfo.roomName());
+        titleLabel.setText(this.roomInfo.roomName());
 
         drawPlayersList();
         drawPlayersCount();

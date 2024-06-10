@@ -10,13 +10,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class StarterCardController extends GuiController{
+
     @FXML
-    private Label descriptionLabel;
+    private TextFlow descriptionTextflow;
     @FXML
     private ImageView frontImageview, backImageview;
 
@@ -26,7 +31,15 @@ public class StarterCardController extends GuiController{
     public void init() {
         this.server = this.app.getServer();
 
-        descriptionLabel.setText(this.app.getUsername() + " choose the side  of your starter card");
+        Text text1 = new Text("It's time to make a choice, ");
+        Text text2 = new Text(this.app.getUsername());
+        Text text3 = new Text(": which side of your starting card will you choose?");
+
+        text1.setFont(Font.font("DejaVu Sans Mono", FontWeight.NORMAL, 20));
+        text2.setFont(Font.font("DejaVu Sans Mono", FontWeight.EXTRA_BOLD, 22));
+        text3.setFont(Font.font("DejaVu Sans Mono", FontWeight.NORMAL, 20));
+
+        descriptionTextflow.getChildren().addAll(text1, text2, text3);
 
         int starterCardId = this.manager.getStarterCardId();
         
@@ -35,6 +48,9 @@ public class StarterCardController extends GuiController{
 
         frontImageview.setImage(frontImage);
         backImageview.setImage(backImage);
+
+        frontImageview.applyCss();
+        backImageview.applyCss();
 
         frontImageview.setOnMouseClicked(mouseEvent -> {
             chooseSide(false);
