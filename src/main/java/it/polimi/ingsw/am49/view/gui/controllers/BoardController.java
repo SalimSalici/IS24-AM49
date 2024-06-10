@@ -10,6 +10,7 @@ import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.util.Pair;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -65,7 +66,7 @@ public class BoardController extends GuiController {
 
         setupPanes();
         setupButtons();
-        setupPlayersStartingCards();
+        setupStartingCards();
     }
 
     private void setupPanes() {
@@ -95,58 +96,52 @@ public class BoardController extends GuiController {
         containerPane.getChildren().add(resetButton);
     }
 
-    private void setupPlayersStartingCards() {
+    private void setupStartingCards() {
+        //sets up the starting card of each player that is not me
         for (VirtualPlayer player : players) {
-            if(isNotMe(player))
-                setupStartingCard(player);
+            if(isNotMe(player)){
+                List<ImageView> board = new ArrayList<>();
+                VirtualCard startingCard = new VirtualCard(player.getStarterCard().id(), player.getStarterCard().flipped());
+                starterImageview = createCardImageView(initialX, initialY, player.getUsername(), startingCard);
+
+                board.add(starterImageview);
+                playerBoards.put(player, board);
+
+                imagePane.getChildren().add(starterImageview);
+            }
         }
-        setupMyStartingCard();
-        this.overviewController.update();
-    }
-
-    private void setupStartingCard(VirtualPlayer player) {
-        List<ImageView> board = new ArrayList<>();
-        VirtualCard startingCard = new VirtualCard(player.getStarterCard().id(), player.getStarterCard().flipped());
-        starterImageview = createCardImageView(initialX, initialY, player.getUsername(), startingCard);
-
-        board.add(starterImageview);
-        playerBoards.put(player, board);
-
-        imagePane.getChildren().add(starterImageview);
-    }
-
-    private void setupMyStartingCard() {
+        
+        //sets up my starting card 
         VirtualCard startingCard = new VirtualCard(myPlayer.getStarterCard().id(), myPlayer.getStarterCard().flipped());
         myBoard.add(createCardPane(initialX, initialY, myUsername, startingCard, 25, 25));
         starterImageview = (ImageView) myBoard.getFirst().stackPane().getChildren().getFirst();
         imagePane.getChildren().add(myBoard.getFirst().stackPane());
     }
 
+    public void updateSpecificBoard(VirtualPlayer player){
+        loadBoardFromVirtualBoard(player);
+        if(player.equals(currentPlayer))
+            drawBoard(currentPlayer);
+    }
+    
     public void updateBoards(){
         for(VirtualPlayer player : players){
             loadBoardFromVirtualBoard(player);
         }
         if(isNotMe(currentPlayer))
-            loadBoardState(currentPlayer);
+            drawBoard(currentPlayer);
     }
 
-    private void loadBoardState(VirtualPlayer player) {
-        if(isNotMe(player)) {
-            loadBoardFromVirtualBoard(player);
-            List<ImageView> board = playerBoards.get(player);
+    private void drawBoard(VirtualPlayer player) {
+        Platform.runLater(() -> {
             imagePane.getChildren().clear();
-            if (board != null) {
+            if(isNotMe(player)) {
                 imagePane.getChildren().addAll(playerBoards.get(player));
-            } else {
-                setupStartingCard(player);
+            } else{
+                for(CardPane cardpane : myBoard)
+                    imagePane.getChildren().add(cardpane.stackPane());
             }
-        } else loadMyBoardState();
-    }
-
-    private void loadMyBoardState(){
-        imagePane.getChildren().clear();
-        for(CardPane cardpane : myBoard)
-            imagePane.getChildren().add(cardpane.stackPane());
+        });
     }
 
     private void loadBoardFromVirtualBoard(VirtualPlayer player){
@@ -258,7 +253,6 @@ public class BoardController extends GuiController {
                 Pair<Integer, Integer> newCoords = VirtualBoard.getCoords(cornerPosition.toRelativePosition(), cardpane.row(), cardpane.col());
 
                 addCardPane(newX, newY, card,String.valueOf(card.id()), newCoords.first, newCoords.second);
-                this.overviewController.update();
                 this.overviewController.unselectCard();
             } catch (NumberFormatException | ArrayIndexOutOfBoundsException | NotInGameException |
                      NotYourTurnException | RemoteException | InvalidActionException e) {
@@ -355,7 +349,7 @@ public class BoardController extends GuiController {
 
     public void switchPlayerBoard(VirtualPlayer player) {
         currentPlayer = player;
-        loadBoardState(player);
+        drawBoard(player);
         centerInnerPane();
     }
 
