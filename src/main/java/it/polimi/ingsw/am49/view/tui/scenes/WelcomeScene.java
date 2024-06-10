@@ -1,48 +1,41 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
-import it.polimi.ingsw.am49.util.Log;
-
-import java.util.Random;
-import java.util.stream.IntStream;
+import it.polimi.ingsw.am49.view.tui.SceneManager;
+import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
 public class WelcomeScene extends Scene {
+
+    private String errorMessage = "";
 
     public WelcomeScene(SceneManager sceneManager, TuiApp tuiApp) {
         super(sceneManager, tuiApp);
     }
 
     @Override
-    public void play() {
+    public void printView() {
         this.clearScreen();
         System.out.println("*******************************");
         System.out.println("| Welcome to Codex Naturalis! |");
         System.out.println("*******************************");
-        System.out.println("\n\n\n");
+        System.out.println("\n\n");
+        System.out.println(AnsiColor.ANSI_RED + errorMessage + AnsiColor.ANSI_RESET);
+        System.out.print("Choose a username> ");
+    }
 
-        boolean valid = false;
-
-        String username = null;
-        while (!valid) {
-            System.out.print("Choose a username> ");
-            linesToClear = 2;
-            username = this.scanner.nextLine();
-            valid = this.isUsernameValid(username);
-            if (!valid) {
-                IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-                System.out.println("Invalid username, please choose a username between 2 and 20 characters.");
-            }
+    @Override
+    public void handleInput(String input) {
+        if (input.length() < 2 || input.length() > 20) {
+            this.errorMessage = "Username must be between 2 and 20 characters.";
+            return;
         }
-
-        // TODO: remove logger
-        Log.initializeLogger(username + new Random().nextInt(100000) + ".log", false);
-        Log.getLogger().info("Logging in with username '" + username + "'");
-
-        this.tuiApp.setUsername(username);
-        this.sceneManager.setScene(new MainMenuScene(this.sceneManager, this.tuiApp));
+        this.tuiApp.setUsername(input);
+        this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
     }
 
-    private boolean isUsernameValid(String username) {
-        return username.length() >= 2 && username.length() <= 20;
-    }
+    @Override
+    public void focus() {}
+
+    @Override
+    public void unfocus() {}
 }

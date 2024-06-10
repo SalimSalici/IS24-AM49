@@ -1,106 +1,80 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
-import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.Color;
-import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.RoomException;
+import it.polimi.ingsw.am49.util.Log;
+import it.polimi.ingsw.am49.view.tui.SceneManager;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
 import java.rmi.RemoteException;
 import java.util.Map;
 
 public class RoomScene extends Scene {
-    private Boolean running = true;
-    private final Server server;
-    private RoomInfo roomInfo;
-    private boolean isUserReady;
 
-    public RoomScene(SceneManager sceneManager, TuiApp tuiApp, RoomInfo roomInfo) {
+    private RoomInfo roomInfo;
+    private boolean isReady;
+
+    public RoomScene(SceneManager sceneManager, TuiApp tuiApp) {
         super(sceneManager, tuiApp);
-        this.server = this.tuiApp.getServer();
+        this.roomInfo = null;
+        this.isReady = false;
+    }
+
+    public void setRoomInfo(RoomInfo roomInfo) {
         this.roomInfo = roomInfo;
-        this.isUserReady = false;
     }
 
     @Override
-    public void play() {
+    public void printView() {
+        this.clearScreen();
         this.printHeader();
-        this.printRoomInfo();
-        this.linesToClear = 3;
+        System.out.println("\n\n\n");
+        this.printRoomDetails();
+        this.printPrompt();
+    }
 
-        while (this.running) {
-
-            if (!this.isUserReady) {
-                this.promptCommand();
-                String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
-                if (parts.length == 0) {
-                    this.showError("Invalid command, please try again.");
-                    continue;
-                }
-
-                this.clearLines(this.linesToClear);
-
-                String command = parts[0];
-                switch (command) {
-                    case "1":
-                        this.handleReady(parts);
-                        break;
-                    case "2":
-                        this.handleLeave();
-                        break;
-                    default:
-                        this.showError("Invalid command, please try again.");
-                }
-            } else {
-                this.promptReadyCommand();
-                String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
-                if (parts.length == 0) {
-                    this.showError("Invalid command, please try again.");
-                    continue;
-                }
-
-                String command = parts[0];
-                if (command.equals("1")) {
-                    this.handleLeave();
-                } else {
-                    this.showError("Invalid command, please try again.");
-                }
-            }
+    @Override
+    public void handleInput(String input) {
+        String[] parts = input.split(" ");
+        String command = parts[0];
+        switch (command) {
+            case "1":
+                if (this.isReady)
+                    this.handleUnready(parts);
+                else
+                    this.handleReady(parts);
+                break;
+            case "2":
+                this.handleLeave();
+                break;
+            case "":
+                this.refreshView();
+                break;
+            default:
+                this.showError("Invalid command, please try again.");
         }
+    }
 
-
+    private AnsiColor colorToAnsiColor(Color color) {
+        return switch (color) {
+            case YELLOW -> AnsiColor.ANSI_YELLOW;
+            case GREEN -> AnsiColor.ANSI_GREEN;
+            case BLUE -> AnsiColor.ANSI_BLUE;
+            case RED -> AnsiColor.ANSI_RED;
+        };
     }
 
     private void printHeader() {
-        this.clearScreen();
         System.out.println("*******************************");
         System.out.println("| Welcome to Codex Naturalis! |");
         System.out.println("*******************************");
         System.out.println("        |    Room    |          ");
         System.out.println("        **************          ");
-        System.out.println("\n\n\n");
     }
 
-    private void promptCommand() {
-        if (this.isUserReady) this.promptReadyCommand();
-        else this.promptNotReadyCommand();
-    }
-
-    private void promptNotReadyCommand() {
-        System.out.println("Available commands: (1) ready | (2) leave ");
-        System.out.print(">>> ");
-    }
-
-    private void promptReadyCommand() {
-        System.out.println("Available commands: (1) leave ");
-        System.out.print(">>> ");
-    }
-
-    private void printRoomInfo() {
+    private void printRoomDetails() {
         System.out.println("Room name: " + this.roomInfo.roomName());
         System.out.println("Players: " + this.roomInfo.playersToColors().size() + "/" + this.roomInfo.maxPlayers());
 
@@ -114,7 +88,7 @@ public class RoomScene extends Scene {
 
             System.out.print(username);
             if (color != null)
-                System.out.print(AnsiColor.ANSI_RESET.toString());
+                System.out.print(AnsiColor.ANSI_RESET);
 
             if (username.equals(this.tuiApp.getUsername()))
                 System.out.print(" (you)");
@@ -128,16 +102,16 @@ public class RoomScene extends Scene {
             System.out.print("\n");
 
         }
-        System.out.println("\n\n");
+        System.out.println("\n");
     }
 
-    private AnsiColor colorToAnsiColor(Color color) {
-        return switch (color) {
-            case YELLOW -> AnsiColor.ANSI_YELLOW;
-            case GREEN -> AnsiColor.ANSI_GREEN;
-            case BLUE -> AnsiColor.ANSI_BLUE;
-            case RED -> AnsiColor.ANSI_RED;
-        };
+    private void printPrompt() {
+        this.printInfoOrError();
+        if (this.isReady)
+            System.out.println("Available commands: (1) not ready | (2) leave ");
+        else
+            System.out.println("Available commands: (1) ready | (2) leave ");
+        System.out.print(">>> ");
     }
 
     private void handleReady(String[] args) {
@@ -146,15 +120,17 @@ public class RoomScene extends Scene {
             return;
         }
         if (args[1].equals("--help")) {
-            this.showHelp("The 'ready' command is to notify that you are ready to play. When readying up, you must specify the color of your game token.", "1 [red|blue|green|yellow]");
+            this.showHelpMessage("The 'ready' command is to notify that you are ready to play. When readying up, you must specify the color of your game token.", "1 [red|blue|green|yellow]");
             return;
         }
 
         String colorString = args[1];
         try {
+            this.showInfoMessage("Readying up...");
             Color color = Color.valueOf(colorString.toUpperCase());
-            this.roomInfo = this.server.readyUp(this.tuiApp, color);
-            this.isUserReady = true;
+            this.roomInfo = this.tuiApp.getServer().readyUp(this.tuiApp, color);
+            this.isReady = true;
+            this.refreshView();
         } catch (IllegalArgumentException e) {
             this.showError("Invalid color. Please try again.");
             return;
@@ -162,41 +138,38 @@ public class RoomScene extends Scene {
             // TODO: Handle exception
             throw new RuntimeException(e);
         }
+    }
 
-        this.printHeader();
-        this.printRoomInfo();
+    private void handleUnready(String[] args) {
+        if (args.length > 1 && args[1].equals("--help")) {
+            this.showInfoMessage("The 'Not ready' command is to notify that you are no longer ready to play.");
+            return;
+        }
+        try {
+            this.showInfoMessage("Unreadying...");
+            this.roomInfo = this.tuiApp.getServer().readyDown(this.tuiApp);
+            this.isReady = false;
+            this.refreshView();
+        }catch (RemoteException | RoomException e) {
+            // TODO: Handle exception
+            throw new RuntimeException(e);
+        }
     }
 
     private void handleLeave() {
-        try{
-            this.server.leaveRoom(this.tuiApp);
-            this.sceneManager.setScene(new MainMenuScene( this.sceneManager, this.tuiApp));
-            this.running = false;
-        } catch (RemoteException | RoomException e) {
-            // TODO: handle appropriately
-            System.out.println("Failed to leave the room");
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                this.tuiApp.getServer().leaveRoom(this.tuiApp);
+            } catch (RoomException | RemoteException e) {
+                Log.getLogger().severe("Exception while leaving room from RoomScene: " + e.getMessage());
+            }
+        }).start();
+        this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
     }
 
-    @Override
     public void roomUpdate(RoomInfo roomInfo, String message) {
         this.roomInfo = roomInfo;
-        this.printHeader();
-        this.printRoomInfo();
-        this.promptCommand();
-        this.linesToClear = 3;
-    }
-
-    @Override
-    public void gameUpdate(GameUpdate gameUpdate) {
-        if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
-            GameStartedUpdate update = (GameStartedUpdate) gameUpdate;
-            int starterCardId = update.starterCardId();
-            this.sceneManager.setScene(new StarterCardScene(this.sceneManager, this.tuiApp, starterCardId));
-            this.running = false;
-            this.clearLines(this.linesToClear - 1);
-            System.out.println(AnsiColor.ANSI_GREEN + "\rAll players are ready! Press ENTER to continue.");
-        }
+        this.showInfoMessage(message);
+//        this.refreshView();
     }
 }

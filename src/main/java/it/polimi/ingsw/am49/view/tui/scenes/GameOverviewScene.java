@@ -10,7 +10,9 @@ import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.server.exceptions.RoomException;
+import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.util.Observer;
+import it.polimi.ingsw.am49.view.tui.SceneManager;
 import it.polimi.ingsw.am49.view.tui.renderers.TuiDrawAreaRenderer;
 import it.polimi.ingsw.am49.view.tui.renderers.TuiPlayerRenderer;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
@@ -19,73 +21,18 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public class GameOverviewScene extends Scene implements Observer {
-    private final VirtualGame game;
-    private boolean running = true;
-    private final TuiDrawAreaRenderer tuiDrawAreaRenderer;
+
+    private VirtualGame game;
+    private TuiDrawAreaRenderer drawAreaRenderer;
     private TuiPlayerRenderer focusedPlayerRenderer;
-    private String errorMessage;
-    private final Object renderLock;
 
     public GameOverviewScene(SceneManager sceneManager, TuiApp tuiApp) {
         super(sceneManager, tuiApp);
-        this.game = tuiApp.getVirtualGame();
-        this.game.addObserver(this);
-        this.tuiDrawAreaRenderer = new TuiDrawAreaRenderer(this.game.getDrawableArea());
-        this.focusedPlayerRenderer = new TuiPlayerRenderer(this.game.getPlayerByUsername(tuiApp.getUsername()), false, this.game.getCommonObjectives());
-        this.errorMessage = "";
-        this.renderLock = new Object();
     }
 
     @Override
-    public void play() {
-        while (this.running) {
-            synchronized (renderLock) {
-                this.printContent();
-                this.promptCommand();
-            }
-            String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
-            if (parts.length == 0) {
-                System.out.println("Invalid command, please try again.");
-                continue;
-            }
-
-            String command = parts[0];
-            switch (command) {
-                case "1", "chat":
-                    this.errorMessage = "Not yet supported.";
-                    break;
-                case "2", "focus":
-                    this.handleFocusPlayer(parts);
-                    break;
-                case "3", "view":
-                    this.handleViewPlayer(parts);
-                    break;
-                case "4", "draw":
-                    if (this.canDraw())
-                        this.handleDrawCard(parts);
-                    else
-                        this.errorMessage = "You cannot do that action now.";
-                    break;
-                case "r", "rankings":
-                    this.handleRankings();
-                    break;
-                case "exit":
-                    try {
-//                        this.tuiApp.getServer().disconnect(this.tuiApp);
-                        this.tuiApp.getServer().leaveRoom(this.tuiApp);
-                    } catch (RemoteException | RoomException e) {
-                        throw new RuntimeException(e);
-                    }
-                    this.sceneManager.setScene(new MainMenuScene(this.sceneManager, this.tuiApp));
-                    this.stop();
-                    break;
-                default:
-                    this.errorMessage = "Invalid command, please try again.";
-            }
-        }
-    }
-
-    private void printContent() {
+    public void printView() {
+        this.clearScreen();
         this.printHeader();
         System.out.println();
         this.printPlayerList();
@@ -94,10 +41,10 @@ public class GameOverviewScene extends Scene implements Observer {
         System.out.println("\n");
         this.printFocusedPlayer();
         System.out.println("\n\n");
+        this.printPrompt();
     }
 
     private void printHeader() {
-        this.clearScreen();
         System.out.println("*******************************");
         System.out.println("| Welcome to Codex Naturalis! |");
         System.out.println("*******************************");
@@ -128,7 +75,7 @@ public class GameOverviewScene extends Scene implements Observer {
     private void printDrawArea() {
         System.out.println("------ Draw Area " + "-".repeat(95));
         System.out.println();
-        this.tuiDrawAreaRenderer.print();
+        this.drawAreaRenderer.print();
     }
 
     private void printFocusedPlayer() {
@@ -137,36 +84,49 @@ public class GameOverviewScene extends Scene implements Observer {
         this.focusedPlayerRenderer.print();
     }
 
-    private void promptCommand() {
-        System.out.println(AnsiColor.ANSI_RED + this.errorMessage + AnsiColor.ANSI_RESET);
+    private void printPrompt() {
+        this.printInfoOrError();
         System.out.print("Available commands: ");
         System.out.print("(1) chat | (2) focus player | (3) view player | ");
         if (this.canDraw())
             System.out.print("(4) draw card | ");
         if (this.game.getGameState() == GameStateType.END_GAME)
             System.out.print("(r) show ranking | ");
-        System.out.print("exit");
+        System.out.print("leave");
         System.out.print("\n>>> ");
-
-        this.errorMessage = "";
     }
 
-    private void handleViewPlayer(String[] args) {
-        try {
-            VirtualPlayer player = args.length < 2 ?
-                    this.getClientPlayer() :
-                    this.game.getPlayers().get(Integer.parseInt(args[1]) - 1);
-            if (player != null) {
-                this.sceneManager.setScene(new ViewPlayerScene(this.sceneManager, this.tuiApp, player));
-                this.stop();
-            } else
-                this.errorMessage = "Unexpected error occurred. If it persists, please restart the client.";
-        } catch (NumberFormatException e) {
-            this.errorMessage = "Argument must be a number. Please try again.";
-            return;
-        } catch (IndexOutOfBoundsException e) {
-            this.errorMessage = "Argument must be between 1 and " + this.game.getPlayers().size();
-            return;
+    @Override
+    public void handleInput(String input) {
+        String[] parts = input.split(" ");
+        String command = parts[0];
+        switch (command) {
+            case "1", "chat":
+                this.showError("Not yet supported.");
+                break;
+            case "2", "focus":
+                this.handleFocusPlayer(parts);
+                break;
+            case "3", "view":
+                this.handleViewPlayer(parts);
+                break;
+            case "4", "draw":
+                if (this.canDraw()) {
+                    this.handleDrawCard(parts);
+                }
+                else {
+                    this.showError("You cannot do that action now.");
+                }
+                break;
+            case "r", "rankings":
+                this.showError("Not yet supported.");
+//                this.handleRankings();
+                break;
+            case "leave":
+                this.handleLeave();
+                break;
+            default:
+                this.showError("Invalid command, please try again.");
         }
     }
 
@@ -179,45 +139,51 @@ public class GameOverviewScene extends Scene implements Observer {
                 boolean hidden = !player.getUsername().equals(this.tuiApp.getUsername());
                 this.focusedPlayerRenderer = new TuiPlayerRenderer(player, hidden, this.game.getCommonObjectives());
             } else
-                this.errorMessage = "Unexpected error occurred. If it persists, please restart the client.";
+                this.showError("Unexpected error occurred. If it persists, please restart the client.");
+            this.refreshView();
         } catch (NumberFormatException e) {
-            this.errorMessage = "Argument must be a number. Please try again.";
+            this.showError("Argument must be a number. Please try again.");
+        } catch (IndexOutOfBoundsException e) {
+            this.showError("Argument must be between 1 and " + this.game.getPlayers().size());
+        }
+    }
+
+    private void handleViewPlayer(String[] args) {
+        try {
+            VirtualPlayer player = args.length < 2 ?
+                    this.getClientPlayer() :
+                    this.game.getPlayers().get(Integer.parseInt(args[1]) - 1);
+            if (player != null) {
+                this.sceneManager.switchScene(player);
+            } else
+                this.showError("Unexpected error occurred. If it persists, please restart the client.");
+        } catch (NumberFormatException e) {
+            this.showError("Argument must be a number. Please try again.");
             return;
         } catch (IndexOutOfBoundsException e) {
-            this.errorMessage = "Argument must be between 1 and " + this.game.getPlayers().size();
+            this.showError("Argument must be between 1 and " + this.game.getPlayers().size());
             return;
         }
     }
 
-    /**
-     * @return the {@link VirtualPlayer} associated with this client
-     */
-    private VirtualPlayer getClientPlayer() {
-        for (VirtualPlayer p : this.game.getPlayers())
-            if (p.getUsername().equals(this.tuiApp.getUsername()))
-                return p;
-        return null;
-    }
-
     private void handleDrawCard(String[] args) {
         if (args.length < 2) {
-            this.errorMessage = "You must specify a card.";
+            this.showError("You must specify a card.");
             return;
         }
         try {
             int choice = Integer.parseInt(args[1]);
             DrawCardAction action = getDrawCardAction(choice);
             this.tuiApp.getServer().executeAction(this.tuiApp, action);
+            this.refreshView();
         } catch (NumberFormatException e) {
-            this.errorMessage = "Argument must be a number. Please try again.";
-            return;
+            this.showError("Argument must be a number. Please try again.");
         } catch (IndexOutOfBoundsException e) {
-            this.errorMessage = "Argument must be between 1 and 6.";
-            return;
+            this.showError("Argument must be between 1 and 6.");
         } catch (NotYourTurnException | InvalidActionException e) {
-            this.errorMessage = e.getMessage();
+            this.showError(e.getMessage());
         } catch (NotInGameException e) {
-            this.errorMessage = "It seems like you are not in a game. Please restart the application.";
+            this.showError("It seems like you are not in a game. Please restart the application.");
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -241,40 +207,48 @@ public class GameOverviewScene extends Scene implements Observer {
         return new DrawCardAction(this.tuiApp.getUsername(), drawPosition, drawId);
     }
 
-    private boolean canDraw() {
-        return  this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername())
-                && this.game.getGameState() == GameStateType.DRAW_CARD;
+    private void handleLeave() {
+        new Thread(() -> {
+            try {
+                this.tuiApp.getServer().leaveRoom(this.tuiApp);
+            } catch (RoomException | RemoteException e) {
+                Log.getLogger().severe("Exception while leaving room from RoomScene: " + e.getMessage());
+            }
+        }).start();
+        this.sceneManager.destroyPlayerScenes();
+        this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
     }
 
-    private void handleRankings() {
-        if (this.game.getGameState() != GameStateType.END_GAME) {
-            this.showError("Game is not over.");
-            return;
-        }
-        this.showRankings();
-        this.scanner.nextLine();
+    @Override
+    public void focus() {
+        this.game = this.tuiApp.getVirtualGame();
+        this.game.addObserver(this);
+        this.drawAreaRenderer = new TuiDrawAreaRenderer(this.game.getDrawableArea());
+        this.focusedPlayerRenderer = new TuiPlayerRenderer(this.game.getPlayerByUsername(tuiApp.getUsername()), false, this.game.getCommonObjectives());
     }
 
-    private void showRankings() {
-        this.printHeader();
-        System.out.println();
-        this.printEndGameContent();
-        System.out.println("\n\nPress enter to go back.");
+    @Override
+    public void unfocus() {
+        this.game.deleteObserver(this);
     }
 
     @Override
     public void update() {
-        synchronized (renderLock) {
-            if (this.game.getGameState() == GameStateType.END_GAME)
-                this.showRankings();
-            else
-                this.printContent();
-            this.promptCommand();
-        }
+        this.refreshView();
     }
 
-    private void stop() {
-        this.running = false;
-        this.game.deleteObserver(this);
+    /**
+     * @return the {@link VirtualPlayer} associated with this client
+     */
+    private VirtualPlayer getClientPlayer() {
+        for (VirtualPlayer p : this.game.getPlayers())
+            if (p.getUsername().equals(this.tuiApp.getUsername()))
+                return p;
+        return null;
+    }
+
+    private boolean canDraw() {
+        return  this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername())
+                && this.game.getGameState() == GameStateType.DRAW_CARD;
     }
 }

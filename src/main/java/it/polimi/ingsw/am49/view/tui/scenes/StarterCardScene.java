@@ -1,112 +1,83 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
-import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
-import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.server.exceptions.RoomException;
+import it.polimi.ingsw.am49.util.Log;
+import it.polimi.ingsw.am49.view.tui.SceneManager;
 import it.polimi.ingsw.am49.view.tui.renderers.TuiCardRenderer;
 import it.polimi.ingsw.am49.view.tui.textures.TuiTextureManager;
 
 import java.rmi.RemoteException;
-import java.util.stream.IntStream;
-import java.util.List;
 
 public class StarterCardScene extends Scene {
-    private boolean running = true;
-    private final Server server;
-    private final String username;
-    private boolean sideChosen = false;
-    private final int starterCardId;
-    private final TuiCardRenderer renderer;
 
-    public StarterCardScene(SceneManager sceneManager, TuiApp tuiApp, int starterCardId) {
+    private int starterCardId;
+    private final TuiCardRenderer renderer;
+    private boolean chosen = false;
+
+    public StarterCardScene(SceneManager sceneManager, TuiApp tuiApp) {
         super(sceneManager, tuiApp);
-        this.server = tuiApp.getServer();
-        this.username = tuiApp.getUsername();
-        this.starterCardId = starterCardId;
         this.renderer = new TuiCardRenderer(31, 5);
     }
 
-    @Override
-    public void play() {
-        this.printHeader();
-        linesToClear = 2;
-
-        while (!this.sideChosen) {
-            this.promptCommand();
-            String[] parts = scanner.nextLine().trim().toLowerCase().split(" ");
-            if (parts.length == 0) {
-                System.out.println("Empty command, please try again.");
-                linesToClear = 2;
-                continue;
-            }
-
-            IntStream.range(0, linesToClear).forEach(i -> clearLastLine());
-
-            String command = parts[0];
-            switch (command) {
-                case "1":
-                    this.handleStarterSideChosen(false);
-                    break;
-                case "2":
-                    this.handleStarterSideChosen(true);
-                    break;
-                default:
-                    System.out.println("Invalid command, please try again.");
-                    linesToClear = 5;
-            }
-        }
-
-        this.printHeader();
-        System.out.println("Waiting for other players...");
-        synchronized (this) {
-            while (this.running) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
+    public void setStarterCardId(int id) {
+        this.starterCardId = id;
     }
 
-    private void handleStarterSideChosen(boolean flipped) {
-        try {
-            this.server.executeAction(this.tuiApp, new ChooseStarterSideAction(this.username, flipped));
-            this.sideChosen = true;
-        } catch (InvalidActionException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
-        } catch (NotInGameException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
-        } catch (RemoteException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
-        } catch (NotYourTurnException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
+    @Override
+    public void printView() {
+        this.clearScreen();
+        this.printHeader();
+        System.out.println("\n\n\n");
+        this.printChoices();
+        this.printPrompt();
+    }
+
+    @Override
+    public void handleInput(String input) {
+        String[] parts = input.split(" ");
+        String command = parts[0];
+
+        if (this.chosen && !input.equals("leave")) {
+            this.showError("You have already made your choice. Please, wait while the other players are choosing.");
+            return;
+        }
+
+        switch (command) {
+            case "1":
+                this.handleChoice(false);
+                break;
+            case "2":
+                this.handleChoice(true);
+                break;
+            case "leave":
+                this.handleLeave();
+                break;
+            case "":
+                this.refreshView();
+                break;
+            default:
+                this.showError("Invalid command, please try again.");
         }
     }
 
     private void printHeader() {
-        this.clearScreen();
         System.out.println("*******************************");
         System.out.println("| Welcome to Codex Naturalis! |");
         System.out.println("*******************************");
         System.out.println("       | Starter card |        ");
         System.out.println("       ****************        ");
-        System.out.println("\n\n");
+    }
+
+    private void printChoices() {
         System.out.println("Choose if you want to flip your starter card:");
         System.out.println("\n");
         System.out.println("(1) No          (2) Yes");
         this.printStarterCard();
-        System.out.println("\n");
     }
 
     private void printStarterCard() {
@@ -114,21 +85,44 @@ public class StarterCardScene extends Scene {
         this.renderer.draw(textureManager.getTexture(this.starterCardId, false), 7, 2);
         this.renderer.draw(textureManager.getTexture(this.starterCardId, true), 23, 2);
         this.renderer.print();
+        System.out.println("\n");
     }
 
-    private void promptCommand() {
-        System.out.print("Your choice >>> ");
+    private void printPrompt() {
+        if (this.chosen)
+            this.infoMessage = "Please, wait while the other players are choosing.";
+        this.printInfoOrError();
+
+        if (this.chosen)
+            System.out.println("Available commands: leave");
+        else
+            System.out.println("Available commands: (1) Not flipped | (2) Flipped | leave ");
+        System.out.print(">>> ");
     }
 
-    public void gameUpdate(GameUpdate gameUpdate) {
-        if (gameUpdate.getType() == GameUpdateType.CHOOSABLE_OBJETIVES_UPDATE) {
-            ChoosableObjectivesUpdate update = (ChoosableObjectivesUpdate) gameUpdate;
-            List<Integer> objectiveCardIds = update.objectiveCards();
-            this.sceneManager.setScene(new ChooseObjectiveCardScene(this.sceneManager, this.tuiApp, objectiveCardIds));
-            synchronized (this) {
-                this.running = false;
-                this.notifyAll();
-            }
+    private void handleChoice(boolean flipped) {
+        try {
+            this.chosen = true;
+            this.tuiApp.getServer().executeAction(this.tuiApp, new ChooseStarterSideAction(this.tuiApp.getUsername(), flipped));
+            this.refreshView();
+        } catch (InvalidActionException | NotInGameException | NotYourTurnException e) {
+            this.chosen = false;
+            this.showError(e.getMessage());
+        } catch (RemoteException e) {
+            this.chosen = false;
+            // TODO: Handle exception
+            throw new RuntimeException(e);
         }
+    }
+
+    private void handleLeave() {
+        new Thread(() -> {
+            try {
+                this.tuiApp.getServer().leaveRoom(this.tuiApp);
+            } catch (RoomException | RemoteException e) {
+                Log.getLogger().severe("Exception while leaving room from RoomScene: " + e.getMessage());
+            }
+        }).start();
+        this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
     }
 }

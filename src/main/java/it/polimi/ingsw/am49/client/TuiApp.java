@@ -1,10 +1,11 @@
 package it.polimi.ingsw.am49.client;
 
+import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
-import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
-import it.polimi.ingsw.am49.view.tui.scenes.SceneManager;
-import it.polimi.ingsw.am49.view.tui.scenes.WelcomeScene;
+import it.polimi.ingsw.am49.view.tui.SceneManager;
 
 import java.rmi.RemoteException;
 
@@ -12,31 +13,30 @@ public class TuiApp extends ClientApp {
 
     private final SceneManager sceneManager;
     public TuiApp() throws RemoteException {
-        this.sceneManager = new SceneManager();
+        this.sceneManager = new SceneManager(this);
     }
 
     public void initialize() {
-        this.sceneManager.start(new WelcomeScene(this.sceneManager, this));
+        this.sceneManager.initialize();
     }
 
     @Override
     public void roomUpdate(RoomInfo roomInfo, String message) {
-        try {
-            this.sceneManager.getScene().roomUpdate(roomInfo, message);
-        } catch (InvalidSceneException e) {
-            System.out.println("Invalid Scene");
-            throw new RuntimeException(e);
-        }
+        this.sceneManager.roomUpdate(roomInfo, message);
     }
 
     @Override
     public void receiveGameUpdate(GameUpdate gameUpdate) {
         super.receiveGameUpdate(gameUpdate);
-        try {
-            this.sceneManager.getScene().gameUpdate(gameUpdate);
-        } catch (InvalidSceneException e) {
-            System.out.println("Game update received during wrong scene.");
-            throw new RuntimeException(e);
-        }
+        if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE)
+            this.sceneManager.gameStarted((GameStartedUpdate) gameUpdate);
+        else if (gameUpdate.getType() == GameUpdateType.CHOOSABLE_OBJETIVES_UPDATE)
+            this.sceneManager.chooseObjectiveCardUpdate(((ChoosableObjectivesUpdate) gameUpdate).objectiveCards());
+//        try {
+//            this.sceneManager.getScene().gameUpdate(gameUpdate);
+//        } catch (InvalidSceneException e) {
+//            System.out.println("Game update received during wrong scene.");
+//            throw new RuntimeException(e);
+//        }
     }
 }
