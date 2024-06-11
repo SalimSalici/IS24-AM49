@@ -54,7 +54,6 @@ public class VirtualView implements EventListener {
                             players.put(p.getUsername(), p.getColor());
                         GameStartedUpdate update = new GameStartedUpdate(this.username, starterCardId, players, commonObjectivesIds, resourceDeckTop, goldDeckTop, revealedResourcesIds, revealedGoldsIds);
                         this.client.receiveGameUpdate(update);
-                        Log.getLogger().info("Sent GameStartedUpdate to '" + username + "' - " + update.toString());
                     }
                 }
                 case CHOOSABLE_OBJECTIVES_EVENT -> {
@@ -71,7 +70,6 @@ public class VirtualView implements EventListener {
                 }
                 case DRAW_AREA_EVENT -> {
                     this.client.receiveGameUpdate(event.toGameUpdate());
-                    Log.getLogger().info("Sent DrawAreaUpdate to '" + username + "' - " + event.toGameUpdate());
                 }
                 case PLAYERS_ORDER_SET_EVENT -> {
                     // discard... Player order will be communicated to the client with a GameStartedUpdate

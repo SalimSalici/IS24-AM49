@@ -2,7 +2,7 @@ GP
 +-------------+
 |     1 Q   '-|
 |             |
-|-'   BBM   I |
+|-,   BBM   I |
 +-------------+
 MMMMMMMMMMMMMMM
 M     Y Y     M

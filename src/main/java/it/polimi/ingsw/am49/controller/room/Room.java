@@ -178,7 +178,7 @@ public class Room {
         this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                 .filter(c -> !c.equals(client))
                 .forEach(c -> {
-                    c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is not ready.");
+                    c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is no longer ready.");
                 });
     }
 

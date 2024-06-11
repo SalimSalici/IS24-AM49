@@ -58,7 +58,7 @@ public class ServerApp implements Server {
             throw new AlreadyInRoomException(this.clientsToRooms.get(client).getRoomName());
 
         if (this.getRoomByName(roomName) != null)
-            throw new CreateRoomException("The name of the room you are trying to create is not available,please " +
+            throw new CreateRoomException("The name of the room you are trying to create is not available, please " +
                     "choose a new room name.");
 
         ClientHandler clientHandler = new ClientHandler(client);
