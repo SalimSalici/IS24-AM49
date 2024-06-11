@@ -14,7 +14,14 @@ import it.polimi.ingsw.am49.model.players.Player;
  * @param round the current round number within the game
  * @param currentPlayer the {@link Player} who is currently active
  */
-public record GameStateChangedEvent(GameStateType gameStateType, int turn, int round, Player currentPlayer) implements GameEvent {
+public record GameStateChangedEvent(
+        GameStateType gameStateType,
+        Player currentPlayer,
+        int turn,
+        int round,
+        boolean endGame,
+        boolean finalRound
+) implements GameEvent {
 
     @Override
     public GameEventType getType() {
@@ -23,6 +30,6 @@ public record GameStateChangedEvent(GameStateType gameStateType, int turn, int r
 
     @Override
     public GameStateChangedUpdate toGameUpdate() {
-        return new GameStateChangedUpdate(gameStateType, turn, round, currentPlayer().getUsername());
+        return new GameStateChangedUpdate(gameStateType, currentPlayer().getUsername(), turn, round, endGame, finalRound);
     }
 }

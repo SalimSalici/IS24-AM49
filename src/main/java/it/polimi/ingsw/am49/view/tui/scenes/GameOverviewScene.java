@@ -52,6 +52,7 @@ public class GameOverviewScene extends Scene implements Observer {
         System.out.println("     *****************        ");
         System.out.println("\nCurrent state: " + this.game.getGameState());
         System.out.println("\nRound: " + this.game.getRound() + " - Turn: " + this.game.getTurn());
+        System.out.println("\nEnd game: " + this.game.getEndGame() + " - Final round: " + this.game.getFinalRound());
     }
 
     private void printPlayerList() {

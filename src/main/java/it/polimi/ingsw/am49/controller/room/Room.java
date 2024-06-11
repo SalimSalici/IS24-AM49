@@ -297,9 +297,12 @@ public class Room {
         );
         GameStateChangedUpdate gameStateUpdate = new GameStateChangedUpdate(
                 this.game.getGameState().getType(),
+                this.game.getCurrentPlayer().getUsername(),
                 this.game.getTurn(),
                 this.game.getRound(),
-                this.game.getCurrentPlayer().getUsername());
+                this.game.isEndGame(),
+                this.game.isFinalRound()
+        );
 
         return new CompleteGameInfo(
                 username,

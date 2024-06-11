@@ -17,6 +17,8 @@ public class VirtualGame extends Observable {
     private final List<VirtualPlayer> players;
     private int round;
     private int turn;
+    private boolean endGame;
+    private boolean finalRound;
     private GameStateType gameState;
     private VirtualPlayer currentPlayer;
     private List<Integer> commonObjectives;
@@ -90,6 +92,8 @@ public class VirtualGame extends Observable {
         this.gameState = update.gameStateType();
         this.turn = update.turn();
         this.round = update.round();
+        this.endGame = update.endGame();
+        this.finalRound = update.finalRound();
         this.currentPlayer = this.getPlayerByUsername(update.currentPlayer());
         this.notifyObservers();
     }
@@ -161,6 +165,12 @@ public class VirtualGame extends Observable {
     }
     public int getTurn() {
         return turn;
+    }
+    public boolean getEndGame() {
+        return endGame;
+    }
+    public boolean getFinalRound() {
+        return finalRound;
     }
     public GameStateType getGameState() {
         return gameState;

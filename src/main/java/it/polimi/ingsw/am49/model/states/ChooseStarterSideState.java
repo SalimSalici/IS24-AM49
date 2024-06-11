@@ -71,7 +71,14 @@ public class ChooseStarterSideState extends GameState {
             this.game.triggerEvent(new StarterCardAssignedEvent(p, card));
         }
 
-        this.game.triggerEvent(new GameStateChangedEvent(this.type, this.game.getTurn(), this.game.getRound(), this.game.getCurrentPlayer()));
+        this.game.triggerEvent(new GameStateChangedEvent(
+                this.type,
+                this.game.getCurrentPlayer(),
+                this.game.getTurn(),
+                this.game.getRound(),
+                this.game.isEndGame(),
+                this.game.isFinalRound()
+        ));
     }
 
     /**
