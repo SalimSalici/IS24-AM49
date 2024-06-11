@@ -53,6 +53,7 @@ public class OverviewController extends GuiController {
     private VirtualPlayer focusedPlayer;
     private List<VirtualCard> visibleHand;
     private Pair<VirtualCard, ImageView> selectedCard;
+    private Image rotationImage;
 
     @Override
     public void init() {
@@ -63,6 +64,8 @@ public class OverviewController extends GuiController {
         this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
         this.visibleHand = this.game.getPlayerByUsername(myUsername).getHand().stream()
                 .map(elem -> new VirtualCard(elem, false)).collect(Collectors.toList());
+
+        rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_Icon.png")));
 
         // draws every element of the scene
         loadPlayerBoard();
@@ -246,9 +249,6 @@ public class OverviewController extends GuiController {
             handGridpane.getChildren().clear();
             int index = 0;
             if(username.equals(myUsername)) {
-
-                Image rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_Icon.png")));
-
                 for (VirtualCard card : visibleHand) {
                     ImageView cardImageview = new ImageView(this.guiTextureManager.getCardImage(card.id(), card.flipped()));
                     ImageView rotationImageview = new ImageView(rotationImage);

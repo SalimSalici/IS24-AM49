@@ -50,6 +50,7 @@ public class BoardController extends GuiController {
     private final Random random = new Random();
     private final Map<VirtualPlayer, List<ImageView>> playerBoards = new HashMap<>();
     private final List<CardPane> myBoard = new ArrayList<>();
+    private final Map<VirtualPlayer, Pair<Double, Double>> playerToBoardCoords = new HashMap<>();
     String myUsername;
     private VirtualPlayer currentPlayer;
     private VirtualPlayer myPlayer;
@@ -92,7 +93,12 @@ public class BoardController extends GuiController {
         Button resetButton = new Button("Reset");
         resetButton.setLayoutX(10);
         resetButton.setLayoutY(50);
-        resetButton.setOnAction(e -> resetImageViews());
+        resetButton.setOnAction(e -> {
+            imagePane.setLayoutX(0);
+            imagePane.setLayoutY(0);
+            playerToBoardCoords.get(currentPlayer).first = 0.0;
+            playerToBoardCoords.get(currentPlayer).second = 0.0;
+        });
         containerPane.getChildren().add(resetButton);
     }
 
@@ -111,11 +117,16 @@ public class BoardController extends GuiController {
             }
         }
         
-        //sets up my starting card 
+        //sets up my starting card
         VirtualCard startingCard = new VirtualCard(myPlayer.getStarterCard().id(), myPlayer.getStarterCard().flipped());
         myBoard.add(createCardPane(initialX, initialY, myUsername, startingCard, 25, 25));
         starterImageview = (ImageView) myBoard.getFirst().stackPane().getChildren().getFirst();
         imagePane.getChildren().add(myBoard.getFirst().stackPane());
+
+        for(VirtualPlayer player : players){
+            // sets up the starting coordinates for all the boards
+            playerToBoardCoords.put(player, new Pair<>(0.0, 0.0));
+        }
     }
 
     public void updateSpecificBoard(VirtualPlayer player){
@@ -135,6 +146,9 @@ public class BoardController extends GuiController {
     private void drawBoard(VirtualPlayer player) {
         Platform.runLater(() -> {
             imagePane.getChildren().clear();
+            imagePane.setLayoutX(this.playerToBoardCoords.get(player).first);
+            imagePane.setLayoutY(this.playerToBoardCoords.get(player).second);
+
             if(isNotMe(player)) {
                 imagePane.getChildren().addAll(playerBoards.get(player));
             } else{
@@ -157,6 +171,12 @@ public class BoardController extends GuiController {
                 double posX = initialX - offX * (cardWidth - cornerWidth);
                 double posY = initialY - offY * (cardHeight - cornerHeight);
                 ImageView tileImageView = createCardImageView(posX, posY, String.valueOf(tile.getCard().id()), tile.getCard());
+                tileImageView.setOnMouseClicked((mouseEvent) -> {
+                    imagePane.setLayoutX(initialX - posX);
+                    imagePane.setLayoutY(initialY - posY);
+                    playerToBoardCoords.get(currentPlayer).first = initialX - posX;
+                    playerToBoardCoords.get(currentPlayer).second = initialY - posY;
+                });
                 board.add(tileImageView);
             }
 
@@ -188,6 +208,13 @@ public class BoardController extends GuiController {
         cardStackpane.setLayoutY(y);
         cardStackpane.setPrefSize(cardWidth, cardHeight);
         cardStackpane.getChildren().add(imageView);
+
+        cardStackpane.onMouseClickedProperty().set((mouseEvent) -> {
+            imagePane.setLayoutX(initialX - x);
+            imagePane.setLayoutY(initialY - y);
+            playerToBoardCoords.get(currentPlayer).first = initialX - x;
+            playerToBoardCoords.get(currentPlayer).second = initialY - y;
+        });
 
         CardPane cardpane = new CardPane(cardStackpane, card, row, col);
         addCornerButtons(cardpane);
@@ -282,18 +309,22 @@ public class BoardController extends GuiController {
 
     private void moveUp() {
         imagePane.setLayoutY(imagePane.getLayoutY() - 10);
+        playerToBoardCoords.get(currentPlayer).second -= 10;
     }
 
     private void moveDown() {
         imagePane.setLayoutY(imagePane.getLayoutY() + 10);
+        playerToBoardCoords.get(currentPlayer).second += 10;
     }
 
     private void moveLeft() {
         imagePane.setLayoutX(imagePane.getLayoutX() - 10);
+        playerToBoardCoords.get(currentPlayer).first -= 10;
     }
 
     private void moveRight() {
         imagePane.setLayoutX(imagePane.getLayoutX() + 10);
+        playerToBoardCoords.get(currentPlayer).first += 10;
     }
 
     private void addCardPane(double x, double y, VirtualCard card, String id, int row, int col) {
