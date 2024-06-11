@@ -116,13 +116,11 @@ public class StarterCardScene extends Scene {
     }
 
     private void handleLeave() {
-        new Thread(() -> {
-            try {
-                this.tuiApp.getServer().leaveRoom(this.tuiApp);
-            } catch (RoomException | RemoteException e) {
-                Log.getLogger().severe("Exception while leaving room from RoomScene: " + e.getMessage());
-            }
-        }).start();
-        this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
+        this.backToMainMenu(true);
+    }
+
+    @Override
+    public void focus() {
+        this.chosen = false;
     }
 }

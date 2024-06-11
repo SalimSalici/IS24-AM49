@@ -8,6 +8,7 @@ import it.polimi.ingsw.am49.model.Game;
 import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.cards.Card;
 import it.polimi.ingsw.am49.model.enumerations.Color;
+import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.ClientHandler;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
@@ -58,9 +59,7 @@ public class Room {
 
         this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                 .filter(c -> !c.equals(playerClient))
-                .forEach(c -> {
-                    c.roomUpdate(this.getRoomInfo(), "Player '" + playerUsername + "' joined your room.");
-                });
+                .forEach(c -> c.roomUpdate(this.getRoomInfo(), "Player '" + playerUsername + "' joined your room."));
 
         System.out.println("User '" + playerUsername + "' joined room '" + this.roomName
                 + "' | currentPlayers: " + this.currentPlayers
@@ -100,9 +99,7 @@ public class Room {
 
             this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                     .filter(c -> !c.equals(client) )
-                    .forEach(c -> {
-                        c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' left your room.");
-                    });
+                    .forEach(c -> c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' left your room."));
 
             return true;
         }
@@ -111,7 +108,9 @@ public class Room {
 
     private void removePlayerFromGame(PlayerInfo playerInfo) {
         playerInfo.getVirtualView().destroy();
-        this.game.disconnectPlayer(playerInfo.getUsername());
+
+        if (this.currentPlayers >= 1)
+            this.game.disconnectPlayer(playerInfo.getUsername());
 
         if (currentPlayers == 1) {
             System.out.println("Starting timer!");
@@ -158,9 +157,7 @@ public class Room {
 
         this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                 .filter(c -> !c.equals(client))
-                .forEach(c -> {
-                    c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is ready.");
-                });
+                .forEach(c -> c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is ready."));
 
         if (this.usernamesToPlayers.keySet().size() == maxPlayers && this.allPlayersReady()){
             this.startGame();
@@ -177,9 +174,11 @@ public class Room {
 
         this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                 .filter(c -> !c.equals(client))
-                .forEach(c -> {
-                    c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is no longer ready.");
-                });
+                .forEach(c -> c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is no longer ready."));
+    }
+
+    public boolean isGameOver() {
+        return this.game.getGameState().getType() == GameStateType.END_GAME;
     }
 
     private boolean allPlayersReady() {
@@ -189,8 +188,7 @@ public class Room {
     }
 
     private void startGame(){
-        // TODO: remove gameId (?) (maybe substitute with gameName for resilience to server crash?) //
-        this.game = new Game(0, maxPlayers);
+        this.game = new Game(maxPlayers);
         this.gameStarted = true;
 
         this.usernamesToPlayers.forEach((username, pInfo) -> {
@@ -269,14 +267,18 @@ public class Room {
 
     public RoomInfo getRoomInfo() {
         Map<String, Color> playersToColors = new HashMap<>();
-        this.usernamesToPlayers.forEach((username, pInfo) -> {
-            playersToColors.put(username, pInfo.getColor());
-        });
+        this.usernamesToPlayers.forEach((username, pInfo) -> playersToColors.put(username, pInfo.getColor()));
         return new RoomInfo(this.roomName, this.maxPlayers, playersToColors);
     }
 
     public int getCurrentPlayers() {
         return currentPlayers;
+    }
+
+    public void close() {
+        this.stopPauseTimer();
+        for (PlayerInfo pInfo : this.usernamesToPlayers.values())
+            pInfo.getVirtualView().destroy();
     }
 
     private CompleteGameInfo getCompleteGameInfo(String username) {

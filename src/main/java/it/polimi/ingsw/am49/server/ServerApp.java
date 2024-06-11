@@ -17,19 +17,16 @@ import java.rmi.registry.Registry;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ServerApp implements Server {
 
     List<Room> rooms;
     Map<ClientHandler, Room> clientsToRooms;
 
-    //TODO: remove this so that at the same username can be used for different rooms
-    Set<String> usernamesTaken;
-
     public ServerApp() {
         this.rooms = new LinkedList<>();
         this.clientsToRooms = new HashMap<>();
-        this.usernamesTaken = new HashSet<>();
     }
 
     @Override
@@ -71,27 +68,6 @@ public class ServerApp implements Server {
     @Override
     public RoomInfo joinRoom(Client client, String roomName, String username)
             throws AlreadyInRoomException, JoinRoomException {
-
-//        if (username == null)
-//            throw new JoinRoomException("Username is null.");
-//
-//        if (username.length() < 2 || username.length() > 15)
-//            throw new JoinRoomException("Invalid username. Your username should be between 2 and 15 charactes.");
-//
-//        ClientHandler clientHandler = this.getClientHandlerByClient(client);
-//
-//        if (clientHandler != null)
-//            throw new AlreadyInRoomException(this.clientsToRooms.get(clientHandler).getRoomName());
-//
-//        Room room = this.getRoomByName(roomName);
-//        if (room == null)
-//            throw new JoinRoomException("The room you tried to join doesn't exist.");
-//
-//        clientHandler = new ClientHandler(client);
-//        room.addNewPlayer(clientHandler, username);
-//        this.clientsToRooms.put(clientHandler, room);
-//        return room.getRoomInfo();
-
         Room room = this.validateNewClientAndGetRoom(client, roomName, username);
         ClientHandler clientHandler = new ClientHandler(client);
         room.addNewPlayer(clientHandler, username);
@@ -127,8 +103,8 @@ public class ServerApp implements Server {
             this.clientsToRooms.remove(clientHandler);
         }
 
-        if (room.getCurrentPlayers() == 0)
-            this.rooms.remove(room);
+        if (room.getCurrentPlayers() == 0 || room.isGameOver())
+            this.destroyRoom(room);
 
         return roomLeft;
     }
@@ -139,6 +115,8 @@ public class ServerApp implements Server {
         Room room = this.clientsToRooms.get(clientHandler);
         if (room != null) room.executeGameAction(clientHandler, action);
         else throw new NotInGameException();
+
+        if (room.isGameOver()) this.destroyRoom(room);
     }
 
     @Override
@@ -153,6 +131,12 @@ public class ServerApp implements Server {
     @Override
     public void ping(Client client) {
 
+    }
+
+    private void destroyRoom(Room room) {
+        room.close();
+        this.clientsToRooms.entrySet().removeIf(entry -> entry.getValue().equals(room));
+        this.rooms.remove(room);
     }
 
     private Room getRoomByName(String roomName) {

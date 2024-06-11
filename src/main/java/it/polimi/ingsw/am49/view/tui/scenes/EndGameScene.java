@@ -70,6 +70,6 @@ public class EndGameScene extends Scene {
     }
 
     private void handleLeave() {
-        this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
+        this.backToMainMenu(true);
     }
 }

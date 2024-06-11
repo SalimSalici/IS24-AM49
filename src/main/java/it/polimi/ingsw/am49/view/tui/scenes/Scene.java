@@ -1,8 +1,12 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.server.exceptions.RoomException;
+import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.view.tui.SceneManager;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
+
+import java.rmi.RemoteException;
 
 public abstract class Scene {
 
@@ -56,27 +60,20 @@ public abstract class Scene {
         this.errorMessage = "";
     }
 
-//    protected void clearLine() {
-//        System.out.print("\033[2K");
-//    }
-//
-//    protected void moveCursorUp(int n) {
-//        for (int i = 0; i < n; i++)
-//            System.out.print("\033[1A");
-//    }
-//
-//    protected void moveCursorUp() {
-//        this.moveCursorUp(1);
-//    }
-//
-//    protected void clearLines(int n) {
-//        if (n <= 0) return;
-//        this.clearLine();
-//        n--;
-//        while (n > 0) {
-//            this.moveCursorUp();
-//            this.clearLine();
-//            n--;
-//        }
-//    }
+    protected void backToMainMenu(boolean leaveRoom) {
+        this.unfocus();
+        if (leaveRoom) {
+            new Thread(() -> {
+                try {
+                    this.tuiApp.getServer().leaveRoom(this.tuiApp);
+                } catch (RoomException | RemoteException e) {
+                    Log.getLogger().severe("Exception while leaving room from RoomScene: " + e.getMessage());
+                }
+            }).start();
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException ignored) {}
+        }
+        this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
+    }
 }
