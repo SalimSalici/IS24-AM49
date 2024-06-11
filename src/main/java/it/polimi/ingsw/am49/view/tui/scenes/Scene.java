@@ -22,7 +22,7 @@ public abstract class Scene {
     public void unfocus() {}
 
     protected void clearScreen() {
-        System.out.println("-".repeat(150));
+        System.out.println("\n" + "-".repeat(150));
         System.out.println("\033[H\033[2J");
     }
 

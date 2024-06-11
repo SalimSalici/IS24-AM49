@@ -111,16 +111,10 @@ public class GameOverviewScene extends Scene implements Observer {
                 this.handleViewPlayer(parts);
                 break;
             case "4", "draw":
-                if (this.canDraw()) {
-                    this.handleDrawCard(parts);
-                }
-                else {
-                    this.showError("You cannot do that action now.");
-                }
+                this.handleDrawCard(parts);
                 break;
             case "r", "rankings":
-                this.showError("Not yet supported.");
-//                this.handleRankings();
+                this.handleRankings();
                 break;
             case "leave":
                 this.handleLeave();
@@ -167,6 +161,10 @@ public class GameOverviewScene extends Scene implements Observer {
     }
 
     private void handleDrawCard(String[] args) {
+        if (!this.canDraw()) {
+            this.showError("You cannot draw a card now.");
+            return;
+        }
         if (args.length < 2) {
             this.showError("You must specify a card.");
             return;
@@ -207,6 +205,10 @@ public class GameOverviewScene extends Scene implements Observer {
         return new DrawCardAction(this.tuiApp.getUsername(), drawPosition, drawId);
     }
 
+    private void handleRankings() {
+        this.sceneManager.switchScene(SceneType.END_GAME_SCENE);
+    }
+
     private void handleLeave() {
         new Thread(() -> {
             try {
@@ -234,7 +236,10 @@ public class GameOverviewScene extends Scene implements Observer {
 
     @Override
     public void update() {
-        this.refreshView();
+        if (this.game.getGameState() == GameStateType.END_GAME)
+            this.sceneManager.switchScene(SceneType.END_GAME_SCENE);
+        else
+            this.refreshView();
     }
 
     /**

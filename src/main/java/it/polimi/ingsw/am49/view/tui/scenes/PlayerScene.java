@@ -85,7 +85,7 @@ public class PlayerScene extends Scene implements Observer {
                 if (this.canPlace())
                     this.handlePlaceCard(parts);
                 else
-                    System.out.println("Invalid command, please try again.");
+                    this.showError("You cannot place a card now.");
             }
             case "b" -> {
                 this.sceneManager.switchScene(SceneType.OVERVIEW_SCENE);
@@ -196,6 +196,9 @@ public class PlayerScene extends Scene implements Observer {
 
     @Override
     public void update() {
-        this.refreshView();
+        if (this.game.getGameState() == GameStateType.END_GAME)
+            this.sceneManager.switchScene(SceneType.END_GAME_SCENE);
+        else
+            this.refreshView();
     }
 }

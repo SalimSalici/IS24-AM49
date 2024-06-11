@@ -19,7 +19,6 @@ public class RoomScene extends Scene {
     public RoomScene(SceneManager sceneManager, TuiApp tuiApp) {
         super(sceneManager, tuiApp);
         this.roomInfo = null;
-        this.isReady = false;
     }
 
     public void setRoomInfo(RoomInfo roomInfo) {
@@ -127,13 +126,18 @@ public class RoomScene extends Scene {
         String colorString = args[1];
         try {
             this.showInfoMessage("Readying up...");
-            Color color = Color.valueOf(colorString.toUpperCase());
+            Color color = switch (colorString) {
+                case "b", "blue" -> Color.BLUE;
+                case "g", "green" -> Color.GREEN;
+                case "y", "yellow" -> Color.YELLOW;
+                case "r", "red" -> Color.RED;
+                default -> throw new IllegalArgumentException("Invalid color");
+            };
             this.roomInfo = this.tuiApp.getServer().readyUp(this.tuiApp, color);
             this.isReady = true;
             this.refreshView();
         } catch (IllegalArgumentException e) {
             this.showError("Invalid color. Please try again.");
-            return;
         } catch (RemoteException | RoomException e) {
             // TODO: Handle exception
             throw new RuntimeException(e);
@@ -169,7 +173,12 @@ public class RoomScene extends Scene {
 
     public void roomUpdate(RoomInfo roomInfo, String message) {
         this.roomInfo = roomInfo;
-        this.showInfoMessage(message);
-//        this.refreshView();
+//        this.showInfoMessage(message);
+        this.refreshView();
+    }
+
+    @Override
+    public void focus() {
+        this.isReady = false;
     }
 }

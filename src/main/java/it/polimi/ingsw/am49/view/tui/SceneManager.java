@@ -38,6 +38,7 @@ public class SceneManager {
         this.scenes.put(SceneType.WELCOME_SCENE, new WelcomeScene(this, this.tuiApp));
         this.scenes.put(SceneType.MAIN_MENU_SCENE, new MainMenuScene(this, this.tuiApp));
         this.scenes.put(SceneType.OVERVIEW_SCENE, new GameOverviewScene(this, this.tuiApp));
+        this.scenes.put(SceneType.END_GAME_SCENE, new EndGameScene(this, this.tuiApp));
 
         this.roomScene = new RoomScene(this, this.tuiApp);
         this.starterCardScene = new StarterCardScene(this, this.tuiApp);
@@ -88,6 +89,7 @@ public class SceneManager {
     }
 
     public synchronized void gameStarted(GameStartedUpdate gameStartedUpdate) {
+        this.destroyPlayerScenes();
         for (VirtualPlayer player : this.tuiApp.getVirtualGame().getPlayers())
             this.playerScenes.put(player, new PlayerScene(this, this.tuiApp, player));
         this.starterCardScene.setStarterCardId(gameStartedUpdate.starterCardId());

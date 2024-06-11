@@ -32,11 +32,5 @@ public class TuiApp extends ClientApp {
             this.sceneManager.gameStarted((GameStartedUpdate) gameUpdate);
         else if (gameUpdate.getType() == GameUpdateType.CHOOSABLE_OBJETIVES_UPDATE)
             this.sceneManager.chooseObjectiveCardUpdate(((ChoosableObjectivesUpdate) gameUpdate).objectiveCards());
-//        try {
-//            this.sceneManager.getScene().gameUpdate(gameUpdate);
-//        } catch (InvalidSceneException e) {
-//            System.out.println("Game update received during wrong scene.");
-//            throw new RuntimeException(e);
-//        }
     }
 }
