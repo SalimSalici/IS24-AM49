@@ -211,15 +211,8 @@ public class GameOverviewScene extends Scene implements Observer {
     }
 
     private void handleLeave() {
-        new Thread(() -> {
-            try {
-                this.tuiApp.getServer().leaveRoom(this.tuiApp);
-            } catch (RoomException | RemoteException e) {
-                Log.getLogger().severe("Exception while leaving room from RoomScene: " + e.getMessage());
-            }
-        }).start();
         this.sceneManager.destroyPlayerScenes();
-        this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
+        this.backToMainMenu(true);
     }
 
     @Override

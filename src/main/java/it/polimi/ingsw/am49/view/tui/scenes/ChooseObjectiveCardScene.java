@@ -132,18 +132,12 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
     }
 
     private void handleLeave() {
-        new Thread(() -> {
-            try {
-                this.tuiApp.getServer().leaveRoom(this.tuiApp);
-            } catch (RoomException | RemoteException e) {
-                Log.getLogger().severe("Exception while leaving room from RoomScene: " + e.getMessage());
-            }
-        }).start();
-        this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
+        this.backToMainMenu(true);
     }
 
     @Override
     public void focus() {
+        this.chosen = false;
         this.game = this.tuiApp.getVirtualGame();
         this.game.addObserver(this);
     }

@@ -27,7 +27,6 @@ import java.util.*;
  * handling to manage game-related events dynamically.
  */
 public class Game implements Serializable, EventEmitter {
-    private final int gameId;
     private final int numPlayers;
     private int turn;
     private int round;
@@ -47,14 +46,12 @@ public class Game implements Serializable, EventEmitter {
 
     /**
      * Constructor of the Game class.
-     * @param gameId is unique to each game
      * @param numPlayers number of players that are playing the current game
      */
-    public Game(int gameId, int numPlayers) {
+    public Game(int numPlayers) {
 
         Log.getLogger().info("Creating new game with " + numPlayers + " players.");
 
-        this.gameId = gameId;
         this.numPlayers = numPlayers;
         this.eventManager = new EventManager();
         this.turn = 0;
@@ -180,13 +177,6 @@ public class Game implements Serializable, EventEmitter {
      */
     public ObjectiveCard[] getCommonObjectives() {
         return this.commonObjectives;
-    }
-
-    /**
-     * @return the unique identifier of the game
-     */
-    public int getGameId() {
-        return gameId;
     }
 
     /**
