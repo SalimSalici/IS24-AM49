@@ -183,7 +183,7 @@ public class GuiManager {
                 //Creates actual scene for this scene name
                 Scene scene;
                 if (sceneTitle == SceneTitle.OVERVIEW) {
-                    scene = new Scene(loader.load(), 1600, 780);
+                    scene = new Scene(loader.load(), 1620, 780);
                 } else {
                     scene = new Scene(loader.load(), 600, 400);
                 }

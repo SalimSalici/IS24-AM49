@@ -15,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -30,8 +31,7 @@ import java.util.Random;
 import java.util.ArrayList;
 
 public class BoardController extends GuiController {
-    @FXML
-    private Button upButton, downButton, leftButton, rightButton;
+
     @FXML
     private Pane containerPane;
     private OverviewController overviewController;
@@ -44,7 +44,7 @@ public class BoardController extends GuiController {
     private final double cardHeight = 82;
     private final double cornerWidth = cardWidth * 0.25;
     private final double cornerHeight = cardHeight * 0.44;
-    private final double innerPaneWidth = 650;
+    private final double innerPaneWidth = 887;
     private final double innerPaneHeight = 340;
     private final double initialX = (innerPaneWidth - cardWidth) / 2;
     private final double initialY = (innerPaneHeight - cardHeight) / 2;
@@ -52,6 +52,7 @@ public class BoardController extends GuiController {
     private final Map<VirtualPlayer, List<ImageView>> playerBoards = new HashMap<>();
     private final List<CardPane> myBoard = new ArrayList<>();
     private final Map<VirtualPlayer, Pair<Double, Double>> playerToBoardCoords = new HashMap<>();
+    private Label boardName;
     String myUsername;
     private VirtualPlayer currentPlayer;
     private VirtualPlayer myPlayer;
@@ -67,40 +68,56 @@ public class BoardController extends GuiController {
         this.currentPlayer = myPlayer;
 
         setupPanes();
+        setUpBoardName();
         setupButtons();
         setupStartingCards();
     }
 
     private void setupPanes() {
         innerPane = new Pane();
+        String css = this.getClass().getResource("/it/polimi/ingsw/am49/css/Overview..css").toExternalForm();
         innerPane.setPrefSize(innerPaneWidth, innerPaneHeight);
-        innerPane.setStyle("-fx-border-color: black;");
+        //innerPane.setStyle("-fx-background-image: url('../resources/it/polimi/ingsw/am49/images/elements/symbol_background.jpg');");
+        innerPane.getStyleClass().add("innerPaneBackground");
+        innerPane.getStylesheets().add(css);
+
+        innerPane.applyCss();
         innerPane.setClip(new Rectangle(innerPaneWidth, innerPaneHeight));
 
         imagePane = new Pane();
         innerPane.getChildren().add(imagePane);
         containerPane.getChildren().add(innerPane);
+        centerInnerPane();
 
         containerPane.widthProperty().addListener((obs, oldVal, newVal) -> centerInnerPane());
         containerPane.heightProperty().addListener((obs, oldVal, newVal) -> centerInnerPane());
     }
 
     private void setupButtons() {
-        upButton.setOnAction(e -> moveUp());
-        downButton.setOnAction(e -> moveDown());
-        leftButton.setOnAction(e -> moveLeft());
-        rightButton.setOnAction(e -> moveRight());
-
         Button resetButton = new Button("Reset");
-        resetButton.setLayoutX(10);
-        resetButton.setLayoutY(50);
+        resetButton.setLayoutX(5);
+        resetButton.setLayoutY(20);
         resetButton.setOnAction(e -> {
             imagePane.setLayoutX(0);
             imagePane.setLayoutY(0);
             playerToBoardCoords.get(currentPlayer).first = 0.0;
             playerToBoardCoords.get(currentPlayer).second = 0.0;
         });
+        resetButton.applyCss();
         containerPane.getChildren().add(resetButton);
+    }
+
+    private void setUpBoardName(){
+        Label boardNameInfo = new Label("Now seeing: ");
+        boardNameInfo.setLayoutX(90);
+        boardNameInfo.setLayoutY(25);
+
+        boardName = new Label();
+        boardName.setLayoutX(180);
+        boardName.setLayoutY(25);
+        boardName.setText(currentPlayer.getUsername());
+
+        containerPane.getChildren().addAll(boardNameInfo, boardName);
     }
 
     private void setupStartingCards() {
@@ -156,6 +173,8 @@ public class BoardController extends GuiController {
                 for(CardPane cardpane : myBoard)
                     imagePane.getChildren().add(cardpane.stackPane());
             }
+
+            boardName.setText(player.getUsername());
         });
     }
 
@@ -303,32 +322,12 @@ public class BoardController extends GuiController {
     }
 
     private void centerInnerPane() {
-        double paneWidth = containerPane.getWidth();
-        double paneHeight = containerPane.getHeight();
+        double paneWidth = containerPane.getPrefWidth();
+        double paneHeight = containerPane.getPrefHeight();
         double innerWidth = innerPane.getPrefWidth();
         double innerHeight = innerPane.getPrefHeight();
         innerPane.setLayoutX((paneWidth - innerWidth) / 2);
-        innerPane.setLayoutY((paneHeight - innerHeight) / 2);
-    }
-
-    private void moveUp() {
-        imagePane.setLayoutY(imagePane.getLayoutY() - 10);
-        playerToBoardCoords.get(currentPlayer).second -= 10;
-    }
-
-    private void moveDown() {
-        imagePane.setLayoutY(imagePane.getLayoutY() + 10);
-        playerToBoardCoords.get(currentPlayer).second += 10;
-    }
-
-    private void moveLeft() {
-        imagePane.setLayoutX(imagePane.getLayoutX() - 10);
-        playerToBoardCoords.get(currentPlayer).first -= 10;
-    }
-
-    private void moveRight() {
-        imagePane.setLayoutX(imagePane.getLayoutX() + 10);
-        playerToBoardCoords.get(currentPlayer).first += 10;
+        innerPane.setLayoutY(paneHeight - innerHeight);
     }
 
     private void addCardPane(double x, double y, VirtualCard card, String id, int row, int col) {

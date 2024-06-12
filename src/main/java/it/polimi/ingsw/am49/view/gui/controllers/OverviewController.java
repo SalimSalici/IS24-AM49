@@ -128,6 +128,8 @@ public class OverviewController extends GuiController {
             cardImageview.setFitHeight(88);
 
             objectivesGridpane.add(cardImageview, index, 0);
+            GridPane.setHalignment(cardImageview, HPos.CENTER);
+            GridPane.setValignment(cardImageview, VPos.CENTER);
             index++;
         }
 
@@ -136,7 +138,8 @@ public class OverviewController extends GuiController {
         cardImageview.setFitWidth(143);
         cardImageview.setFitHeight(88);
         objectivesGridpane.add(cardImageview, index, 0);
-        index++;
+        GridPane.setHalignment(cardImageview, HPos.CENTER);
+        GridPane.setValignment(cardImageview, VPos.CENTER);
     }
 
     private void drawDrawableArea(){
@@ -156,31 +159,40 @@ public class OverviewController extends GuiController {
             goldDeckImageview.setFitHeight(88);
 
             drawableGridpane.add(resourceDeckImageview, 0, 0);
+            GridPane.setHalignment(resourceDeckImageview, HPos.CENTER);
+            GridPane.setValignment(resourceDeckImageview, VPos.CENTER);
+
             drawableGridpane.add(goldDeckImageview, 1, 0);
+            GridPane.setHalignment(goldDeckImageview, HPos.CENTER);
+            GridPane.setValignment(goldDeckImageview, VPos.CENTER);
 
             // in this code the displaying of the resource and gold cards are managed apart, so that a different number for each type of card can be shown
             int index = 1;
             for(int cardId : drawableArea.getRevealedResourcesIds()){
                 ImageView cardImageview = new ImageView();
                 cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
-                cardImageview.setFitWidth(143);
-                cardImageview.setFitHeight(88);
+                cardImageview.setFitWidth(130);
+                cardImageview.setFitHeight(80);
 
                 cardImageview.setOnMouseClicked(mouseEvent -> drawCard(cardId, REVEALED));
 
                 drawableGridpane.add(cardImageview, 0, index);
+                GridPane.setHalignment(cardImageview, HPos.CENTER);
+                GridPane.setValignment(cardImageview, VPos.CENTER);
                 index++;
             }
             index = 1;
             for(int cardId : drawableArea.getRevealedGoldsIds()){
                 ImageView cardImageview = new ImageView();
                 cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
-                cardImageview.setFitWidth(143);
-                cardImageview.setFitHeight(88);
+                cardImageview.setFitWidth(130);
+                cardImageview.setFitHeight(80);
 
                 cardImageview.setOnMouseClicked(mouseEvent -> drawCard(cardId, REVEALED));
 
                 drawableGridpane.add(cardImageview, 1, index);
+                GridPane.setHalignment(cardImageview, HPos.CENTER);
+                GridPane.setValignment(cardImageview, VPos.CENTER);
                 index++;
             }
         });
@@ -190,7 +202,7 @@ public class OverviewController extends GuiController {
         playersGridpane.getChildren().clear();
         int index = 0;
         for (VirtualPlayer player : this.players) {
-            Button viewboardButton = new Button("View board");
+            Button viewboardButton = new Button("VIEW");
             ImageView totemImageview = new ImageView(this.guiTextureManager.getImageByTotemColor(player.getColor()));
             Label usernameLabel = new Label(player.getUsername());
 

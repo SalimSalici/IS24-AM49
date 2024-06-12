@@ -12,14 +12,24 @@ public class ChangeUsernameController extends GuiController {
     private TextField usernameTextfield;
 
     @FXML
-    private Button confButton;
+    private Button confButton, exitButton;
 
     public void initialize(){
         confButton.setOnAction(e -> {
             if(this.isUsernameValid(usernameTextfield.getText())) {
                 app.setUsername(usernameTextfield.getText());
                 this.manager.changeScene(SceneTitle.MAIN_MENU);
-            }else System.out.println("The username your trying to use is not allowed");
+            }else {
+                System.out.println("The username your trying to use is not allowed");
+                showErrorPopup("The username your trying to use is not allowed");
+            }
+
+            usernameTextfield.clear();
+        });
+
+        exitButton.setOnAction(x -> {
+            this.manager.changeScene(SceneTitle.MAIN_MENU);
+            usernameTextfield.clear();
         });
     }
 

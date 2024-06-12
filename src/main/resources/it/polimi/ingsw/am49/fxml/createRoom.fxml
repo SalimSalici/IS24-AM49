@@ -15,14 +15,18 @@
    <children>
       <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
          <top>
-            <Label fx:id="createroomtitleLable" text="Create Room" BorderPane.alignment="CENTER">
-               <font>
-                  <Font size="42.0" />
-               </font>
-               <padding>
-                  <Insets top="30.0" />
-               </padding>
-            </Label>
+            <HBox alignment="BOTTOM_CENTER" prefHeight="15.0" prefWidth="600.0" spacing="40.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="createroomtitleLable" prefHeight="37.0" prefWidth="276.0" text="Create Room">
+                     <font>
+                        <Font size="42.0" />
+                     </font>
+                     <padding>
+                        <Insets top="30.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </HBox>
          </top>
          <center>
             <VBox alignment="CENTER" spacing="50.0" BorderPane.alignment="CENTER">
@@ -38,7 +42,7 @@
                         <Spinner fx:id="numplayerSpinner" editable="true" prefHeight="24.0" prefWidth="67.0" />
                      </children>
                   </HBox>
-                  <HBox alignment="BOTTOM_CENTER">
+                  <HBox alignment="CENTER" spacing="50.0">
                      <children>
                         <Button fx:id="createButton" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Create" textAlignment="CENTER">
                            <font>
@@ -51,5 +55,6 @@
             </VBox>
          </center>
       </BorderPane>
+      <Button fx:id="exitButton" mnemonicParsing="false" text="EXIT" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="25.0" />
    </children>
 </AnchorPane>

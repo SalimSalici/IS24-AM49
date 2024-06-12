@@ -13,16 +13,6 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 
 public class CreateRoomController extends GuiController {
-
-    @FXML
-    private Label createroomtitleLable;
-
-    @FXML
-    private Label nameLable;
-
-    @FXML
-    private Label numplayerLable;
-
     @FXML
     private TextField nameTextfield;
 
@@ -30,7 +20,7 @@ public class CreateRoomController extends GuiController {
     private Spinner<Integer> numplayerSpinner;
 
     @FXML
-    private Button createButton;
+    private Button createButton, exitButton;
 
     private Server server;
 
@@ -43,23 +33,24 @@ public class CreateRoomController extends GuiController {
 
         createButton.setOnAction(x-> execute());
         nameTextfield.setOnAction(x-> execute());
+        exitButton.setOnAction(x -> {
+            this.nameTextfield.clear();
+            this.manager.changeScene(SceneTitle.MAIN_MENU);
+        }
+        );
     }
 
-    private boolean isRoomNameValid(String name){ return name.length()>=2 && name.length()<=15;}
-
-    private boolean isNumPlayerValid(int numplayer){ return numplayer >= 2 && numplayer <= 4;}
-
     private void execute(){
-        if(this.isRoomNameValid(nameTextfield.getText()) && this.isNumPlayerValid(numplayerSpinner.getValue())){
-            try {
-                RoomInfo roomInfo = this.server.createRoom(this.app, nameTextfield.getText(), numplayerSpinner.getValue(), this.app.getUsername());
-                this.manager.setRoomInfo(roomInfo);
-                this.manager.changeScene(SceneTitle.ROOM);
-            } catch (CreateRoomException | RemoteException | AlreadyInRoomException e){
-                System.out.println(e.getMessage());
-            }
-
+        try {
+            RoomInfo roomInfo = this.server.createRoom(this.app, nameTextfield.getText(), numplayerSpinner.getValue(), this.app.getUsername());
+            this.manager.setRoomInfo(roomInfo);
+            this.manager.changeScene(SceneTitle.ROOM);
+        } catch (CreateRoomException | RemoteException | AlreadyInRoomException e){
+            System.out.println(e.getMessage());
+            showErrorPopup(e.getMessage());
         }
+
+        nameTextfield.clear();
     }
 
 }

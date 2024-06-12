@@ -73,11 +73,6 @@
                               <Font name="DejaVu Sans Mono" size="13.0" />
                            </font>
                         </Button>
-                        <Button fx:id="leaveButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="105.0" text="Leave">
-                           <font>
-                              <Font name="DejaVu Sans Mono" size="13.0" />
-                           </font>
-                        </Button>
                      </children>
                      <padding>
                         <Insets bottom="20.0" />
@@ -90,5 +85,10 @@
             </VBox>
          </children>
       </AnchorPane>
+      <Button fx:id="leaveButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="50.5" text="EXIT" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="25.0">
+         <font>
+            <Font name="DejaVu Sans Mono" size="13.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

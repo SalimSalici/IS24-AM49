@@ -1,0 +1,48 @@
+.mainBackground {
+    -fx-background-image: url("../images/elements/background_with_outline.jpg");
+    -fx-background-size: stretch;
+}
+
+.decksBackground{
+    -fx-background-image: url("../images/elements/decks_background.png");
+    -fx-background-size: stretch;
+}
+
+.handBackground{
+    -fx-background-image: url("../images/elements/hand_background.jpg");
+    -fx-background-size: stretch;
+}
+
+.resourcesBackground{
+    -fx-background-image: url("../images/elements/resource_background.jpg");
+    -fx-background-size: stretch;
+}
+
+.symbolsBackground{
+    -fx-background-image: url("../images/elements/symbol_background.jpg");
+    -fx-background-size: stretch;
+}
+
+.innerPaneBackground{
+    -fx-background-image: url("../images/elements/background_with_outline.jpg");
+    -fx-background-size: stretch;
+}
+
+.button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-image: url("../images/elements/linearButton3-1.png");
+    -fx-background-size: stretch;
+    -fx-text-fill: #21130b;
+    -fx-font-family: "DejaVu Sans Mono";
+    -fx-font-size: 13px;
+    /*-fx-font-weight: book;  Imposta il peso del font */
+}
+
+.button:hover {
+    -fx-effect: dropshadow(one-pass-box, #72cfc5, 50, 0, 0, 0);
+}
+
+.button:pressed {
+    -fx-background-color: #21130b;
+}
