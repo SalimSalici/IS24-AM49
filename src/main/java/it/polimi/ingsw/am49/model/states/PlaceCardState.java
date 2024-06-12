@@ -34,6 +34,13 @@ public class PlaceCardState extends GameState {
         this.currentPlayer = game.getCurrentPlayer();
     }
 
+    @Override
+    public void setUp() {
+        super.setUp();
+        if (!this.currentPlayer.isOnline())
+            this.skipTurn();
+    }
+
     /**
      * Handles the placement of a card.
      * @param action tells witch type of {@link GameAction} neds to be handled.

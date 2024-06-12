@@ -46,9 +46,6 @@ public class Room {
 
         this.currentPlayers = 1;
         this.gameStarted = false;
-
-        System.out.println("User '" + creatorUsername + "' created room '" + this.roomName
-                + "' | maxPlayers: " + this.maxPlayers);
     }
 
     public void addNewPlayer(ClientHandler playerClient, String playerUsername) throws JoinRoomException {
@@ -61,11 +58,6 @@ public class Room {
         this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                 .filter(c -> !c.equals(playerClient))
                 .forEach(c -> c.roomUpdate(this.getRoomInfo(), "Player '" + playerUsername + "' joined your room."));
-
-        System.out.println("User '" + playerUsername + "' joined room '" + this.roomName
-                + "' | currentPlayers: " + this.currentPlayers
-                + " | maxPlayers: " + this.maxPlayers
-        );
     }
 
     public CompleteGameInfo reconnect(ClientHandler playerClient, String playerUsername) throws JoinRoomException {
@@ -180,7 +172,6 @@ public class Room {
     }
 
     public boolean isGameOver() {
-
         return this.gameStarted && this.game != null && this.game.getGameState().getType() == GameStateType.END_GAME;
     }
 
@@ -266,6 +257,10 @@ public class Room {
 
     public String getRoomName() {
         return roomName;
+    }
+
+    public boolean isGameStarted() {
+        return gameStarted;
     }
 
     public RoomInfo getRoomInfo() {

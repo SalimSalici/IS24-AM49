@@ -21,10 +21,10 @@ import java.util.*;
 /**
  * Rapresents the game state in witch every player selects his personal objective from a set of options.
  * The choosen objective will be the secret personal objective of the player for ste rest of the match.
- *
+ * <p>
  * This class is resposible for dealing the personal {@link ObjectiveCard} options to eatch {@link Player} and
  * handling the chosing process.
- *
+ * <p>
  * This class extends {@link GameState} and utilizes events such as {@link ChoosableObjectivesEvent},
  * {@link CommonObjectivesDrawnEvent}, and {@link PersonalObjectiveChosenEvent} to manage the flow of the game state
  * and communicate state changes.
@@ -72,6 +72,10 @@ public class ChooseObjectiveState extends GameState {
                 this.game.isEndGame(),
                 this.game.isFinalRound()
         ));
+
+        for (Player p : this.game.getPlayers())
+            if (!p.isOnline())
+                this.chooseRandomly(p);
     }
 
     /**
@@ -88,6 +92,9 @@ public class ChooseObjectiveState extends GameState {
         Player player = this.game.getPlayerByUsername(action.getUsername());
         int objectiveId = chooseObjectiveAction.getObjectiveId();
         List<ObjectiveCard> playerObjectives = this.playersToObjectives.get(player);
+        if (playerObjectives == null)
+            throw new InvalidActionException("You have alredy chosen your objective card.");
+
         ObjectiveCard chosenObjectiveCard = this.getObjectiveById(objectiveId, playerObjectives);
 
         if (chosenObjectiveCard == null)
@@ -125,12 +132,16 @@ public class ChooseObjectiveState extends GameState {
 
         player.setIsOnline(false);
 
+        this.chooseRandomly(player);
+    }
+
+    private void chooseRandomly(Player player) {
         List<ObjectiveCard> objectives = this.playersToObjectives.get(player);
         if (objectives == null) return;
 
         int randomObjectiveId = objectives.get(new Random().nextInt(objectives.size())).getId();
         try {
-            this.execute(new ChooseObjectiveAction(username, randomObjectiveId));
+            this.execute(new ChooseObjectiveAction(player.getUsername(), randomObjectiveId));
         } catch (InvalidActionException | NotYourTurnException e) {
             Log.getLogger().severe("Disconnect player anomaly... Exception message: " + e.getMessage());
         }

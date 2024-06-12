@@ -90,7 +90,7 @@ public abstract class GameState {
      * @throws NotYourTurnException if the player making the action is not the current player.
      */
     protected void checkActionValidity(GameAction action) throws InvalidActionException, NotYourTurnException {
-        if (this.game.isPaused())
+        if (this.game.isPaused() && !(this.type == GameStateType.CHOOSE_STARTER_SIDE || this.type == GameStateType.CHOOSE_OBJECTIVE))
             throw new InvalidActionException("You are the only player left. You cannot execute actions until someone else joins.");
         if (!this.acceptableActionTypes.contains(action.getType()))
             throw new InvalidActionException("You cannot do that now.");
