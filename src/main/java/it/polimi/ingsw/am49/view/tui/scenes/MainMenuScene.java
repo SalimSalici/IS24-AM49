@@ -208,12 +208,12 @@ public class MainMenuScene extends Scene {
             this.showInfoMessage("Loading game...");
             CompleteGameInfo completeGameInfo = this.server.reconnect(this.tuiApp, roomName, this.tuiApp.getUsername());
             this.tuiApp.loadGame(completeGameInfo);
-            this.showInfoMessage("Must be implemented...");
+            this.sceneManager.initializePlayerScenes();
             this.sceneManager.switchScene(SceneType.OVERVIEW_SCENE);
             this.isLoading = false;
         } catch (JoinRoomException | AlreadyInRoomException  e) {
             this.isLoading = false;
-            this.showError("Failed to join room." + e.getMessage());
+            this.showError("Failed to join room. " + e.getMessage());
         } catch (RemoteException e) {
             this.isLoading = false;
             this.showError("RemoteException. " + e.getMessage());

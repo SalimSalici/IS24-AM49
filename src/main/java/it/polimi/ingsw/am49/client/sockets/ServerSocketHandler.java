@@ -210,7 +210,11 @@ public class ServerSocketHandler extends SocketHandler implements Server {
      */
     @Override
     public void ping(Client c) throws RemoteException {
-        // TODO
+        try {
+            this.sendRequest(new PingMTS(this.getUniqueId()), Void.class);
+        }catch (Exception e) {
+            throw new RemoteException(e.getMessage());
+        }
     }
 
     /**
@@ -234,11 +238,10 @@ public class ServerSocketHandler extends SocketHandler implements Server {
     protected void handlePushMessage(SocketMessage pushMsg) {
         try {
             switch (pushMsg) {
-                case RoomUpdateMTC params ->
-                        this.client.roomUpdate(params.roomInfo(), params.message());
-                case ReceiveGameUpdateMTC params -> {
-                    this.client.receiveGameUpdate(params.gameUpdate());
-                }
+                case RoomUpdateMTC params -> this.client.roomUpdate(params.roomInfo(), params.message());
+                case ReceiveGameUpdateMTC params -> this.client.receiveGameUpdate(params.gameUpdate());
+                case StartHeartbeatMTC ignored -> this.client.startHeartbeat();
+                case StopHeartbeatMTC ignored -> this.client.stopHeartbeat();
                 default -> throw new RemoteException("Unexpected message received: " + pushMsg);
             }
         } catch (RemoteException e) {

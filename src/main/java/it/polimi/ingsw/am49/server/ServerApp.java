@@ -17,7 +17,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ServerApp implements Server {
 
@@ -51,17 +50,19 @@ public class ServerApp implements Server {
         if (creatorUsername.length() < 2 || creatorUsername.length() > 15)
             throw new CreateRoomException("Invalid username. Your username should be between 2 and 15 charactes.");
 
-        if (this.clientsToRooms.containsKey(client))
-            throw new AlreadyInRoomException(this.clientsToRooms.get(client).getRoomName());
+        ClientHandler ch = this.getClientHandlerByClient(client);
+        if (ch != null && this.clientsToRooms.containsKey(ch))
+            throw new AlreadyInRoomException(this.clientsToRooms.get(ch).getRoomName());
 
         if (this.getRoomByName(roomName) != null)
             throw new CreateRoomException("The name of the room you are trying to create is not available, please " +
                     "choose a new room name.");
 
-        ClientHandler clientHandler = new ClientHandler(client);
+        ClientHandler clientHandler = new ClientHandler(client, this);
         Room room = new Room(roomName, numPlayers, clientHandler, creatorUsername);
         this.rooms.add(room);
         this.clientsToRooms.put(clientHandler, room);
+        clientHandler.initializeHeartbeat();
         return room.getRoomInfo();
     }
 
@@ -69,10 +70,21 @@ public class ServerApp implements Server {
     public RoomInfo joinRoom(Client client, String roomName, String username)
             throws AlreadyInRoomException, JoinRoomException {
         Room room = this.validateNewClientAndGetRoom(client, roomName, username);
-        ClientHandler clientHandler = new ClientHandler(client);
+        ClientHandler clientHandler = new ClientHandler(client, this);
         room.addNewPlayer(clientHandler, username);
         this.clientsToRooms.put(clientHandler, room);
+        clientHandler.initializeHeartbeat();
         return room.getRoomInfo();
+    }
+
+    @Override
+    public CompleteGameInfo reconnect(Client client, String roomName, String username) throws AlreadyInRoomException, JoinRoomException {
+        Room room = this.validateNewClientAndGetRoom(client, roomName, username);
+        ClientHandler clientHandler = new ClientHandler(client, this);
+        CompleteGameInfo gameInfo = room.reconnect(clientHandler, username);
+        this.clientsToRooms.put(clientHandler, room);
+        clientHandler.initializeHeartbeat();
+        return gameInfo;
     }
 
     @Override
@@ -95,6 +107,9 @@ public class ServerApp implements Server {
     @Override
     public boolean leaveRoom(Client client) throws RemoteException {
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
+        if (clientHandler == null) return false;
+        clientHandler.close();
+
         Room room = this.clientsToRooms.get(clientHandler);
         if (room == null) return false;
 
@@ -120,21 +135,15 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public CompleteGameInfo reconnect(Client client, String roomName, String username) throws AlreadyInRoomException, JoinRoomException {
-        Room room = this.validateNewClientAndGetRoom(client, roomName, username);
-        ClientHandler clientHandler = new ClientHandler(client);
-        CompleteGameInfo gameInfo = room.reconnect(clientHandler, username);
-        this.clientsToRooms.put(clientHandler, room);
-        return gameInfo;
-    }
-
-    @Override
     public void ping(Client client) {
-
+        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+        if (clientHandler != null)
+            clientHandler.heartbeat();
     }
 
     private void destroyRoom(Room room) {
         room.close();
+        this.clientsToRooms.forEach((key, value) -> { if (value.equals(room)) key.close(); });
         this.clientsToRooms.entrySet().removeIf(entry -> entry.getValue().equals(room));
         this.rooms.remove(room);
     }

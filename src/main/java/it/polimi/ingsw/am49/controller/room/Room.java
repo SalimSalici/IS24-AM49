@@ -15,6 +15,7 @@ import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.server.exceptions.RoomException;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,7 +114,7 @@ public class Room {
             this.game.disconnectPlayer(playerInfo.getUsername());
 
         if (currentPlayers == 1) {
-            System.out.println("Starting timer!");
+            Log.getLogger().info("Starting game paused timer Room name: " + this.roomName);
             this.game.setPaused(true);
             this.startPauseTimer();
         }
@@ -126,13 +127,14 @@ public class Room {
             public void run() {
                 game.forfeitWinner(usernamesToPlayers.keySet().iterator().next());
             }
-        }, 1000 * 20); // 60 seconds
+        }, 1000 * 60); // 60 seconds
     }
 
     private void stopPauseTimer() {
         if (this.pauseTimer != null) {
             this.pauseTimer.cancel();
             this.pauseTimer = null;
+            Log.getLogger().info("Stopping game paused timer. Room name: " + this.roomName);
         }
     }
 
@@ -178,7 +180,8 @@ public class Room {
     }
 
     public boolean isGameOver() {
-        return this.game.getGameState().getType() == GameStateType.END_GAME;
+
+        return this.gameStarted && this.game != null && this.game.getGameState().getType() == GameStateType.END_GAME;
     }
 
     private boolean allPlayersReady() {

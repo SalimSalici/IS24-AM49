@@ -89,11 +89,15 @@ public class SceneManager {
     }
 
     public synchronized void gameStarted(GameStartedUpdate gameStartedUpdate) {
+        this.initializePlayerScenes();
+        this.starterCardScene.setStarterCardId(gameStartedUpdate.starterCardId());
+        this.switchScene(this.starterCardScene);
+    }
+
+    public synchronized void initializePlayerScenes() {
         this.destroyPlayerScenes();
         for (VirtualPlayer player : this.tuiApp.getVirtualGame().getPlayers())
             this.playerScenes.put(player, new PlayerScene(this, this.tuiApp, player));
-        this.starterCardScene.setStarterCardId(gameStartedUpdate.starterCardId());
-        this.switchScene(this.starterCardScene);
     }
 
     public synchronized void chooseObjectiveCardUpdate(List<Integer> objectiveCardIds) {

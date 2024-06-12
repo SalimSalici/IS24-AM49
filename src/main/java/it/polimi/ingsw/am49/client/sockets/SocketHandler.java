@@ -65,9 +65,14 @@ public class SocketHandler {
             Object msg = input.readObject();
             if (msg instanceof ReturnMessage returnMsg) {
                 Log.getLogger().info("Received return value from server: " + returnMsg);
-                CompletableFuture<Object> future = returnValues.get(returnMsg.id());
-                if (future != null) {
-                    future.complete(returnMsg.returnValue());
+                synchronized (returnValues) {
+                    CompletableFuture<Object> future = returnValues.get(returnMsg.id());
+                    if (future != null) {
+                        future.complete(returnMsg.returnValue());
+                    } else {
+                        CompletableFuture<Object> newFuture = CompletableFuture.completedFuture(returnMsg.returnValue());
+                        returnValues.put(returnMsg.id(), newFuture);
+                    }
                 }
             } else if (msg instanceof SocketMessage pushMsg) {
                 Log.getLogger().info("Received call from server: " + pushMsg);
@@ -91,9 +96,17 @@ public class SocketHandler {
             synchronized(output) {
                 output.writeObject(request);
             }
-            CompletableFuture<Object> future = new CompletableFuture<>();
-            returnValues.put(request.id(), future);
+
+            CompletableFuture<Object> future;
+            synchronized (this.returnValues) {
+                future = this.returnValues.computeIfAbsent(
+                        request.id(),
+                        k -> new CompletableFuture<>()
+                );
+            }
+
             Object result = future.get(10, TimeUnit.SECONDS);
+
             if (result instanceof Throwable) {
                 throw (Exception) result;
             }

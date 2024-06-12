@@ -116,7 +116,7 @@ public class Game implements Serializable, EventEmitter {
     public boolean reconnectPlayer(String username) {
         Player player = this.getPlayerByUsername(username);
         if (player == null) return false; // No player with the given username
-        if (player.isOnline()) return false; // Player with that username already online
+        if (player.isOnline()) return false; // Player with the given username already online
         player.setIsOnline(true);
         return true;
     }

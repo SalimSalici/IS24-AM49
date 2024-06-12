@@ -11,6 +11,7 @@ import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.util.Log;
+import it.polimi.ingsw.am49.util.IntervalTimer;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -19,14 +20,18 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
     protected VirtualGame game;
     protected Server server;
     protected String username;
+    private final IntervalTimer heartbeatInterval;
 
-    public ClientApp() throws RemoteException {}
+    public ClientApp() throws RemoteException {
+        this.heartbeatInterval = new IntervalTimer(this::pingServer, 10, 1000, TimeUnit.MILLISECONDS);
+    }
 
     @Override
     public void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException {
@@ -35,8 +40,10 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
     @Override
     public void receiveGameUpdate(GameUpdate gameUpdate) {
-        if (gameUpdate == null)
+        if (gameUpdate == null) {
             Log.getLogger().severe("Received a null GameUpdate from the server.");
+            return;
+        }
         if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
             this.game = VirtualGame.newGame((GameStartedUpdate)gameUpdate);
         } else
@@ -49,8 +56,25 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
     }
 
     @Override
-    public void ping() {
+    public void startHeartbeat() {
+        this.heartbeatInterval.start();
+    }
 
+    @Override
+    public void stopHeartbeat() {
+        this.heartbeatInterval.stop();
+        System.out.println("Heartbeat stopped");
+    }
+
+    private void pingServer() {
+        try {
+            this.server.ping(this);
+        } catch (Exception e) {
+            // TODO: handle
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public void loadGame(CompleteGameInfo completeGameInfo) {

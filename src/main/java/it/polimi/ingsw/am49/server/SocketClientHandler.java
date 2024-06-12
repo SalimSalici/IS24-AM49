@@ -44,7 +44,7 @@ public class SocketClientHandler implements Client {
                 this.disconnect();
                 break;
             }
-            Log.getLogger().info("Received message from " + this.clientSocket.getRemoteSocketAddress() + " - " + msg);
+//            Log.getLogger().info("Received message from " + this.clientSocket.getRemoteSocketAddress() + " - " + msg);
             if (msg instanceof SocketMessage)
                 this.handleMessage((SocketMessage) msg);
         }
@@ -94,7 +94,7 @@ public class SocketClientHandler implements Client {
                 }
                 this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
-            case ReadyDownMTS params -> {
+            case ReadyDownMTS ignored -> {
                 Object returnValue;
                 try{
                     returnValue = this.server.readyDown(this);
@@ -103,7 +103,7 @@ public class SocketClientHandler implements Client {
                 }
                 this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
-            case LeaveRoomMTS params -> {
+            case LeaveRoomMTS ignored -> {
                 Object returnValue;
                 try{
                     returnValue = this.server.leaveRoom(this);
@@ -121,7 +121,7 @@ public class SocketClientHandler implements Client {
                 }
                 this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
-            case FetchRoomsMTS params -> {
+            case FetchRoomsMTS ignored -> {
                 Object returnValue;
                 try {
                     returnValue = this.server.fetchRooms(this);
@@ -134,6 +134,15 @@ public class SocketClientHandler implements Client {
                 Object returnValue;
                 try {
                     returnValue = this.server.reconnect(this, params.roomName(), params.useraname());
+                } catch (Exception e) {
+                    returnValue = e;
+                }
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
+            }
+            case PingMTS ignored -> {
+                Object returnValue = null;
+                try {
+                    this.server.ping(this);
                 } catch (Exception e) {
                     returnValue = e;
                 }
@@ -153,9 +162,7 @@ public class SocketClientHandler implements Client {
     @Override
     public void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException {
         try {
-            this.writeToOutputStream(
-                    new RoomUpdateMTC(0, roomInfo, message)
-            );
+            this.writeToOutputStream(new RoomUpdateMTC(0, roomInfo, message));
         } catch (IOException e) {
             throw new RemoteException(
                     "SOCKETS: Could not send message to client through sockets (SocketClientHandler::playerLeftYourRoom)"
@@ -166,9 +173,7 @@ public class SocketClientHandler implements Client {
     @Override
     public void receiveGameUpdate(GameUpdate gameUpdate) throws RemoteException {
         try {
-            this.writeToOutputStream(
-                    new ReceiveGameUpdateMTC(0, gameUpdate)
-            );
+            this.writeToOutputStream(new ReceiveGameUpdateMTC(0, gameUpdate));
         } catch (IOException e) {
             throw new RemoteException(
                     "SOCKETS: Could not send message to client through sockets (SocketClientHandler::receiveGameUpdate)"
@@ -182,8 +187,25 @@ public class SocketClientHandler implements Client {
     }
 
     @Override
-    public void ping() throws RemoteException {
+    public void startHeartbeat() throws RemoteException {
+        try {
+            this.writeToOutputStream(new StartHeartbeatMTC(0));
+        } catch (IOException e) {
+            throw new RemoteException(
+                    "SOCKETS: Could not send message to client through sockets (SocketClientHandler::startHeartbeat)"
+            );
+        }
+    }
 
+    @Override
+    public void stopHeartbeat() throws RemoteException {
+        try {
+            this.writeToOutputStream(new StopHeartbeatMTC(0));
+        } catch (IOException e) {
+            throw new RemoteException(
+                    "SOCKETS: Could not send message to client through sockets (SocketClientHandler::stopHeartbeat)"
+            );
+        }
     }
 
     private void writeToOutputStream(Object obj) throws IOException {
