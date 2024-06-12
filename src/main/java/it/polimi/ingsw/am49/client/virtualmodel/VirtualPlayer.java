@@ -11,6 +11,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * Represents a virtual player in the game.
+ *
+ * The virtual player holds all necessary information that would be visible and
+ * manipulatable by the player during a game session.
+ *
+ * This class extends {@link Observable}, allowing it to notify observers when changes occur.
+ */
 public class VirtualPlayer extends Observable {
     private final String username;
     private int points;
@@ -22,6 +31,13 @@ public class VirtualPlayer extends Observable {
     private final Color color;
     private int personalObjectiveId;
 
+    /**
+     * Constructs a VirtualPlayer with a specified username and color.
+     * Initializes the hand, hidden hand, and active symbols collection.
+     *
+     * @param username the username of the player.
+     * @param color the color representing the player in the game.
+     */
     public VirtualPlayer(String username, Color color) {
         this.username = username;
         this.hand = new LinkedList<>();
@@ -34,42 +50,79 @@ public class VirtualPlayer extends Observable {
         }
     }
 
+    /**
+     * @return the username of the player.
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * @return the virtual board.
+     */
     public VirtualBoard getBoard() {
         return board;
     }
 
+    /**
+     * @return the current point total.
+     */
     public int getPoints() {
         return points;
     }
 
+    /**
+     * Sets the points of the player.
+     *
+     * @param points the new point total to set.
+     */
     public void setPoints(int points) {
         this.points = points;
     }
 
+    /**
+     * @return the number of completed objectives
+     */
     public int getCompletedObjectives() {
         return this.completedObjectives;
     }
 
+    /**
+     * Sets the number of objectives completed by the player.
+     *
+     * @param completedObjectives the new number of completed objectives
+     */
     public void setCompletedObjectives(int completedObjectives) {
         this.completedObjectives = completedObjectives;
     }
 
+    /**
+     * @return a map of active symbols and their counts
+     */
     public Map<Symbol, Integer> getActiveSymbols() {
         return activeSymbols;
     }
 
+
+    /**
+     * Sets the active symbols and their counts for the player.
+     *
+     * @param activeSymbols the new map of active symbols and their counts
+     */
     public void setActiveSymbols(Map<Symbol, Integer> activeSymbols) {
         this.activeSymbols = activeSymbols;
     }
 
+    /**
+     * @return the color of the player
+     */
     public Color getColor() {
         return color;
     }
 
+    /**
+     * @return the JavaFX color of the player
+     */
     public javafx.scene.paint.Color getJavaFXColor() {
         return switch (color) {
             case BLUE -> javafx.scene.paint.Color.BLUE;
@@ -79,34 +132,53 @@ public class VirtualPlayer extends Observable {
         };
     }
 
+    /**
+     * @return the hand of the player
+     */
     public List<Integer> getHand() {
         return hand;
     }
 
+    /**
+     * @return the ID of the personal objective card
+     */
     public int getPersonalObjectiveId() {return personalObjectiveId;}
 
+    /**
+     * Sets the hand of the player.
+     *
+     * @param hand the new hand of the player
+     */
     public void setHand(List<Integer> hand) {
         this.hand = hand;
     }
 
+    /**
+     * @return the hidden hand of the player
+     */
     public List<Pair<Resource, Boolean>> getHiddenHand() {
         return hiddenHand;
     }
 
-    public List<Resource> getHiddenHandAsResources() {  //TODO: DA ELIMINARE È UN FIX TEMPORANEO bisognerà cambiare l'implementazione della gestione del back delle carte nella TUI
-        List<Resource> resources = new LinkedList<>();
-        for (Pair<Resource, Boolean> pair : hiddenHand) {
-            resources.add(pair.first);
-        }
-        return resources;
-    }
-
+    /**
+     * Sets the hidden hand of the player.
+     *
+     * @param hiddenHand the new hidden hand of the player
+     */
     public void setHiddenHand(List<Pair<Resource, Boolean>> hiddenHand) {
         this.hiddenHand = hiddenHand;
     }
 
+    /**
+     * Sets the personal objective of the player.
+     *
+     * @param personalObjectiveId the new ID of the personal objective card
+     */
     public void setPersonalObjectiveId(int personalObjectiveId) {this.personalObjectiveId = personalObjectiveId;}
 
+    /**
+     * @return the starter card, or null if no starter tile is found
+     */
     public VirtualCard getStarterCard() {
         VirtualTile starterTile = this.board.getStarterTile();
         if (starterTile != null)

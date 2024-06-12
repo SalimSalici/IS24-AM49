@@ -18,6 +18,9 @@ import java.util.Map;
 import it.polimi.ingsw.am49.view.gui.controllers.GuiController;
 
 
+/**
+ * Manages the graphical user interface (GUI) for the application, handling scene transitions and stage setup.
+ */
 public class GuiManager {
 
     private Scene currentScene;
@@ -27,16 +30,29 @@ public class GuiManager {
     private RoomInfo roomInfo;
     private int starterCardId;
     private List<Integer> objectiveCardsIds;
-    private final Gson gson;
-    private GuiApp app;
+    private final GuiApp app;
   
     // CONSTRUCTOR
-    
+
+    /**
+     * Constructs a new GuiManager associated with the specified application.
+     *
+     * @param app the GuiApp instance associated with this manager
+     */
     public GuiManager(GuiApp app) {
         this.app = app;
-        gson = new Gson();
     }
 
+
+    // PUBLIC METHODS
+
+
+    /**
+     * Starts the GUI manager by setting up the stage and running the initial scene.
+     *
+     * @param stage the primary stage for this application
+     * @throws IOException if an I/O error occurs during setup
+     */
     public void start(Stage stage) throws IOException {
         setup();
         this.stage = stage;
@@ -44,12 +60,19 @@ public class GuiManager {
         run();
     }
 
+    /**
+     * Stops the GUI manager and exits the application.
+     */
     public void stop() {
         System.exit(0);
     }
 
-    // PUBLIC METHODS
 
+    /**
+     * Changes the current scene to the specified scene.
+     *
+     * @param newSceneTitle the title of the new scene to be displayed
+     */
     public void changeScene(SceneTitle newSceneTitle) {
         System.out.println("Changing scene to: " + newSceneTitle.getFileName());
 
@@ -69,8 +92,90 @@ public class GuiManager {
         });
     }
 
+
+    // GETTERS
+
+    /**
+     * @param sceneTitle the title of the scene
+     * @return the Scene associated with the specified title
+     */
+    public Scene getSceneBySceneTitle(SceneTitle sceneTitle) {
+        return titleToScene.getValue(sceneTitle);
+    }
+
+    /**
+     * @return the current scene
+     */
+    public Scene getCurrentScene() {
+        return currentScene;
+    }
+
+    /**
+     * @return the current GuiController
+     */
+    public GuiController getCurrentController(){
+        return titleToController.getValue(titleToScene.getKey(currentScene));
+    }
+
+    /**
+     * @return the room information
+     */
+    public RoomInfo getRoomInfo() {
+        return roomInfo;
+    }
+
+    /**
+     * @return the starter card ID
+     */
+    public int getStarterCardId() {
+        return starterCardId;
+    }
+
+    /**
+     * @return the list of objective cards IDs
+     */
+    public List<Integer> getObjectiveCardsIds() {
+        return objectiveCardsIds;
+    }
+
+
+    //SETTERS
+
+    /**
+     * Sets the room information.
+     *
+     * @param roomInfo the new room information
+     */
+    public void setRoomInfo(RoomInfo roomInfo) {
+        this.roomInfo = roomInfo;
+
+        System.out.println(this.roomInfo.playersToColors());;
+    }
+
+    /**
+     * Sets the starter card ID.
+     *
+     * @param starterCardId the new starter card ID
+     */
+    public void setStarterCardId(int starterCardId) {
+        this.starterCardId = starterCardId;
+    }
+
+    /**
+     * Sets the objective cards IDs.
+     *
+     * @param objectiveCardsIds the new list of objective cards IDs
+     */
+    public void setObjectiveCardsIds(List<Integer> objectiveCardsIds) {
+        this.objectiveCardsIds = objectiveCardsIds;
+    }
+
+
     // PRIVATE METHODS
 
+    /**
+     * Sets up the scenes and controllers for the application.
+     */
     private void setup() {
         try {
             for (SceneTitle sceneTitle : SceneTitle.values()) {
@@ -97,6 +202,9 @@ public class GuiManager {
         titleToController.getValue(titleToScene.getKey(currentScene)).init();
     }
 
+    /**
+     * Runs the initial scene for the application.
+     */
     private void run() {
         stage.setTitle("Codex Naturalis");
         stage.setScene(currentScene);
@@ -105,55 +213,4 @@ public class GuiManager {
         stage.show();
     }
 
-    // GETTERS
-
-    public Scene getSceneBySceneTitle(SceneTitle SceneTitle) {
-        return titleToScene.getValue(SceneTitle);
-    }
-
-    public Scene getCurrentScene() {
-        return currentScene;
-    }
-
-    /**
-     * Getter for a GuiController object corresponding to a given SceneTitle
-     *
-     * @param SceneTitle the name of the Scene
-     * @return the corresponding GuiController object
-     */
-    public GuiController getControllerBySceneTitle(SceneTitle SceneTitle) {
-        return titleToController.getValue(SceneTitle);
-    }
-
-    public GuiController getCurrentController(){
-        return titleToController.getValue(titleToScene.getKey(currentScene));
-    }
-
-    public RoomInfo getRoomInfo() {
-        return roomInfo;
-    }
-
-    public int getStarterCardId() {
-        return starterCardId;
-    }
-
-    public List<Integer> getObjectiveCardsIds() {
-        return objectiveCardsIds;
-    }
-
-    //SETTERS
-
-    public void setRoomInfo(RoomInfo roomInfo) {
-        this.roomInfo = roomInfo;
-
-        System.out.println(this.roomInfo.playersToColors());;
-    }
-
-    public void setStarterCardId(int starterCardId) {
-        this.starterCardId = starterCardId;
-    }
-
-    public void setObjectiveCardsIds(List<Integer> objectiveCardsIds) {
-        this.objectiveCardsIds = objectiveCardsIds;
-    }
 }

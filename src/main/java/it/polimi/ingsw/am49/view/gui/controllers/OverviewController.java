@@ -1,18 +1,13 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
-import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.model.actions.DrawCardAction;
 import it.polimi.ingsw.am49.model.enumerations.*;
-import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
-import it.polimi.ingsw.am49.util.Observer;
-import it.polimi.ingsw.am49.util.Pair;
 import it.polimi.ingsw.am49.view.gui.PointsCoordinates;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.application.Platform;
@@ -51,9 +46,11 @@ public class OverviewController extends GuiController {
     private List<VirtualPlayer> players;
     private VirtualDrawable drawableArea;
     private VirtualPlayer focusedPlayer;
-    private List<VirtualCard> visibleHand;
-    private Pair<VirtualCard, ImageView> selectedCard;
+    private List<MyCard> myHand = new ArrayList<>();
+    private final Map<VirtualPlayer, List<ImageView>> playersHands = new HashMap<>();
+    private MyCard selectedCard;
     private Image rotationImage;
+    private final List<Button> rotationButtonList = new ArrayList<>();
 
     @Override
     public void init() {
@@ -62,13 +59,13 @@ public class OverviewController extends GuiController {
         this.players = this.game.getPlayers();
         this.drawableArea = this.game.getDrawableArea();
         this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
-        this.visibleHand = this.game.getPlayerByUsername(myUsername).getHand().stream()
-                .map(elem -> new VirtualCard(elem, false)).collect(Collectors.toList());
-
         rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_Icon.png")));
+        for(VirtualPlayer player : players)
+            updateHand(player.getUsername());
 
         // draws every element of the scene
         loadPlayerBoard();
+        drawRotationButtons();
         drawHand(myUsername);
         drawSymbols(myUsername);
         drawObjectives();
@@ -90,13 +87,15 @@ public class OverviewController extends GuiController {
             player.getBoard().addObserver(() -> this.playerboardController.updateSpecificBoard(player));
             if(player.getUsername().equals(myUsername)) {
                 player.addObserver(() -> {
-                    this.updateVisibleHand();
+                    this.updateHand(myUsername);
+                    this.drawHand(myUsername);
                     this.drawSymbols(myUsername);
                 });
             }
             else {
                 player.addObserver(() -> {
                     if (this.focusedPlayer.equals(player)) {
+                        this.updateHand(player.getUsername());
                         this.drawHand(player.getUsername());
                         this.drawSymbols(player.getUsername());
                     }
@@ -235,56 +234,90 @@ public class OverviewController extends GuiController {
     }
 
     private void clearTurnIndicator() {
-        for (VirtualPlayer player : this.players) {
-            // only remove nodes that are in the second column of playersGridpane
-            playersGridpane.getChildren().removeIf(node -> {
-                Integer columnIndex = GridPane.getColumnIndex(node);
-                return columnIndex != null && columnIndex == 1;
-            });
+        // only remove nodes that are in the second column of playersGridpane
+        playersGridpane.getChildren().removeIf(node -> {Integer columnIndex = GridPane.getColumnIndex(node); return columnIndex != null && columnIndex == 1;});
+    }
+
+    public void drawRotationButtons() {
+        Platform.runLater(() -> {
+            for (int index = 0; index < this.myHand.size(); index++) {
+                ImageView rotationImageview = new ImageView(rotationImage);
+                Button rotationButton = new Button();
+                rotationImageview.setFitWidth(16);
+                rotationImageview.setFitHeight(16);
+                rotationButton.setPrefSize(24, 24);
+
+                rotationButton.setGraphic(rotationImageview);
+
+                this.rotationButtonList.add(rotationButton);
+                handGridpane.add(rotationButton, 0, index);
+            }
+        });
+    }
+
+    public void hideRotationButtons(){
+            for(Button button : rotationButtonList)
+                button.setVisible(false);
+    }
+
+    public void updateHand(String username){
+        Platform.runLater(() -> {
+            if(username.equals(myUsername)){
+                this.myHand = this.game.getPlayerByUsername(myUsername).getHand().stream()
+                        .map(elem -> {
+                            MyCard existingCard = getMyCardById(elem);
+                            boolean isFlipped = (existingCard != null) ? existingCard.isFlipped() : false;
+                            return new MyCard(elem, isFlipped, this);
+                        })
+                        .collect(Collectors.toList());
+            }
+            else{
+                VirtualPlayer player = this.game.getPlayerByUsername(username);
+                if(!player.getUsername().equals(myUsername))
+                    this.playersHands.put(player, this.game.getPlayerByUsername(player.getUsername()).getHiddenHand().stream().map((resourceBooleanPair -> {
+                        ImageView hiddenCard = new ImageView(this.guiTextureManager.getCardBackByResource(resourceBooleanPair.first, resourceBooleanPair.second));
+                        hiddenCard.setFitWidth(132);
+                        hiddenCard.setFitHeight(87);
+                        return hiddenCard;
+                    })).toList());
+            }
+        });
+    }
+
+    public MyCard getMyCardById(int id){
+        for(MyCard card : myHand){
+            if(card.getId() == id)
+                return card;
         }
+        return null;
     }
 
     public void drawHand(String username){
         Platform.runLater(()->{
-            handGridpane.getChildren().clear();
+            handGridpane.getChildren().removeIf(node -> {Integer columnIndex = GridPane.getColumnIndex(node); return columnIndex != null && columnIndex == 1;});
+            hideRotationButtons();
             int index = 0;
             if(username.equals(myUsername)) {
-                for (VirtualCard card : visibleHand) {
-                    ImageView cardImageview = new ImageView(this.guiTextureManager.getCardImage(card.id(), card.flipped()));
-                    ImageView rotationImageview = new ImageView(rotationImage);
-                    Button rotationButton = new Button();
+                for (MyCard card : myHand) {
+                    handGridpane.add(card.getImageView(), 1, index);
 
-                    cardImageview.setFitWidth(132);
-                    cardImageview.setFitHeight(87);
-                    rotationImageview.setFitWidth(16);
-                    rotationImageview.setFitHeight(16);
-                    rotationButton.setPrefSize(24, 24);
-
-                    rotationButton.setGraphic(rotationImageview);
-
-                    rotationButton.setOnAction(event -> {
-                        boolean side = !card.flipped();
-                        visibleHand.set(visibleHand.indexOf(card), new VirtualCard(card.id(), side));
+                    // sets the rotation action
+                    final int i = index;
+                    this.rotationButtonList.get(i).setVisible(true);
+                    this.rotationButtonList.get(i).setOnAction(event -> {
+                        if(card.equals(this.selectedCard))
+                            unselectCard();
+                        card.flip();
                         drawHand(myUsername);
-                        selectedCard = null;
                     });
-
-                    cardImageview.setOnMouseClicked(mouseEvent -> selectCard(cardImageview, card));
-
-                    handGridpane.add(cardImageview, 1, index);
-                    handGridpane.add(rotationButton, 0, index);
                     index++;
                 }
             }
             else{
-                List<Pair<Resource, Boolean>> hand = this.game.getPlayerByUsername(username).getHiddenHand();
-                for (Pair<Resource, Boolean> pair : hand) {
-                    ImageView cardImageview = new ImageView(this.guiTextureManager.getCardBackByResource(pair.first, pair.second)); //TODO: distingui gold e resource
+                List<ImageView> hiddenHand = this.playersHands.get(this.game.getPlayerByUsername(username));
+                for (ImageView hiddenCard : hiddenHand) {
 
-                    cardImageview.setFitWidth(132);
-                    cardImageview.setFitHeight(87);
-
-                    handGridpane.add(cardImageview, 1, index);
+                    handGridpane.add(hiddenCard, 1, index);
                     index++;
                 }
             }
@@ -360,6 +393,7 @@ public class OverviewController extends GuiController {
     private void drawCard(int cardId, DrawPosition drawPosition) {
         try {
             this.app.getServer().executeAction(this.app, new DrawCardAction(this.myUsername, drawPosition, cardId));
+            unselectCard();
         } catch (NotYourTurnException | InvalidActionException e) {
             showErrorPopup(e.getMessage());
         } catch (NotInGameException e) {
@@ -369,13 +403,11 @@ public class OverviewController extends GuiController {
         }
     }
 
-    private void selectCard(ImageView selectedCardImageview, VirtualCard card){
-        if (selectedCard != null) {
-            selectedCard.second.setOpacity(1);
-        }
-        selectedCard = new Pair<>(card, selectedCardImageview);
-        selectedCard.second.setOpacity(0.6);
-        System.out.println("Carta selezionata: " + selectedCard.first);
+    public void selectCard(MyCard card){
+        unselectCard();
+        selectedCard = card;
+        selectedCard.getImageView().setOpacity(0.6);
+        System.out.println("Carta selezionata: " + selectedCard.getId());
     }
 
     private void setFocusedPlayer(VirtualPlayer player){
@@ -387,24 +419,17 @@ public class OverviewController extends GuiController {
         }
     }
 
-    public VirtualCard getSelectedCard() {
+    public MyCard getSelectedCard() {
         if(selectedCard == null)
             return null;
         else
-            return selectedCard.first;
+            return selectedCard;
     }
 
     public void unselectCard() {
-        this.selectedCard = null;
-    }
-
-    public void updateVisibleHand() {
-        Platform.runLater(()->{
-            this.visibleHand = this.game.getPlayerByUsername(myUsername).getHand().stream()
-                    .map(elem -> new VirtualCard(elem, this.visibleHand.stream().filter(virtualCard -> virtualCard.id() == elem).findFirst().map(VirtualCard::flipped).orElse(false))).collect(Collectors.toList());
-
-            if(focusedPlayer.getUsername().equals(myUsername))
-                drawHand(myUsername);
-        });
+        if(selectedCard != null){
+            selectedCard.getImageView().setOpacity(1);
+            this.selectedCard = null;
+        }
     }
 }

@@ -21,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
+import java.lang.invoke.MutableCallSite;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
@@ -270,8 +271,10 @@ public class BoardController extends GuiController {
     }
 
     private void handleCornerButtonAction(CardPane cardpane, double offsetX, double offsetY, CornerPosition cornerPosition) {
-        VirtualCard card = overviewController.getSelectedCard();
-        if(card != null) {
+        MyCard myCard = overviewController.getSelectedCard();
+        if(myCard != null) {
+            VirtualCard card = new VirtualCard(myCard.getId(), myCard.isFlipped());
+
             double newX = cardpane.stackPane().getLayoutX() + offsetX;
             double newY = cardpane.stackPane().getLayoutY() + offsetY;
 
@@ -289,8 +292,9 @@ public class BoardController extends GuiController {
     }
 
     private void handleCornerButtonHover(StackPane cardStackpane, double offsetX, double offsetY) {
-        VirtualCard card = overviewController.getSelectedCard();
-        if(card != null) {
+        MyCard myCard = overviewController.getSelectedCard();
+        if(myCard != null) {
+            VirtualCard card = new VirtualCard(myCard.getId(), myCard.isFlipped());
             double newX = cardStackpane.getLayoutX() + offsetX;
             double newY = cardStackpane.getLayoutY() + offsetY;
 
@@ -352,30 +356,6 @@ public class BoardController extends GuiController {
 
     private void clearPreviewImageView() {
             imagePane.getChildren().removeIf(node -> "preview".equals(node.getId()));
-    }
-    private void resetImageViews() {
-        double initialX = (innerPaneWidth - cardWidth) / 2;
-        double initialY = (innerPaneHeight - cardHeight) / 2;
-
-        double deltaX = starterImageview.getLayoutX() - initialX;
-        double deltaY = starterImageview.getLayoutY() - initialY;
-
-        starterImageview.setLayoutX(initialX);
-        starterImageview.setLayoutY(initialY);
-
-        for (Node node : imagePane.getChildren()) {
-            if (node instanceof StackPane cardStackpane) {
-                for (Node child : cardStackpane.getChildren()) {
-                    if (child instanceof ImageView imageView && !currentPlayer.getUsername().equals(imageView.getId())) {
-                        imageView.setLayoutX(imageView.getLayoutX() - deltaX);
-                        imageView.setLayoutY(imageView.getLayoutY() - deltaY);
-                    }
-                }
-            }
-        }
-
-        imagePane.setLayoutX(0);
-        imagePane.setLayoutY(0);
     }
 
     public void switchPlayerBoard(VirtualPlayer player) {

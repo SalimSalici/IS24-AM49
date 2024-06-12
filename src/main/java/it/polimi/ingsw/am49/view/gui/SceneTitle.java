@@ -1,6 +1,12 @@
 package it.polimi.ingsw.am49.view.gui;
 
-
+/**
+ * Enumerates the different scenes used in the GUI
+ * Each enum constant corresponds to a specific scene in the game.
+ *
+ * This enum facilitates managing and accessing the file paths for the FXML files
+ * that define the layout of each scene.
+ */
 public enum SceneTitle {
     WELCOME,
     MAIN_MENU,
@@ -15,6 +21,9 @@ public enum SceneTitle {
 
 //    GAME_OVER;
 
+    /**
+     * @return The FXML filename corresponding to the scene, or null if no mapping is defined.
+     */
     public String getFileName() {
         String fileName = null;
 
@@ -34,6 +43,9 @@ public enum SceneTitle {
         return fileName;
     }
 
+    /**
+     * @return The full path of the FXML file
+     */
     public String getFilePath() {
         System.out.println("/it/polimi/ingsw/am49/fxml/" + getFileName());
         return "/it/polimi/ingsw/am49/fxml/" + getFileName();
