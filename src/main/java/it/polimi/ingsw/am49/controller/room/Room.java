@@ -68,6 +68,7 @@ public class Room {
         if (!success) throw new JoinRoomException("Invalid username. Could not reconnect to the game.");
 
         PlayerInfo pInfo = new PlayerInfo(playerUsername, playerClient);
+        pInfo.setColor(this.game.getPlayerByUsername(playerUsername).getColor());
         this.usernamesToPlayers.put(playerUsername, pInfo);
         this.currentPlayers++;
 
@@ -196,12 +197,10 @@ public class Room {
     }
 
     public void executeGameAction(ClientHandler client, GameAction action) throws InvalidActionException, NotYourTurnException {
-        if (!this.usernameCorrespondsToClient(action.getUsername(), client)) {
-            System.err.println("Username of action does not correspond to associated client."
-                    + "\nExpected: " + this.getUsernameByClient(client)
-                    + " - Received: " + action.getUsername());
+        if (this.game == null)
+            throw new InvalidActionException("Game hasn't started in this room");
+        if (!this.usernameCorrespondsToClient(action.getUsername(), client))
             throw new InvalidActionException("Client and username don't correspond. Aborting.");
-        }
         this.game.executeAction(action);
     }
 
