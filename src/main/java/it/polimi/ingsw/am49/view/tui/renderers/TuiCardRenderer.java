@@ -44,6 +44,9 @@ public class TuiCardRenderer {
      * @param y       the y-coordinate where the texture should be drawn
      */
     public void draw(ColoredChar[][] texture, int x, int y) {
+
+        if (texture == null) return;
+
         int textureHeight = texture.length;
         int textureWidth = texture[0].length;
 

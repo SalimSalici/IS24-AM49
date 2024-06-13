@@ -17,10 +17,14 @@ import java.util.Set;
 public abstract class GameState {
 
     /**
-     * This attribute indicates witch of the possibiel {@link GameStateType} is rapresented by the class that will
+     * This attribute indicates witch of the possible {@link GameStateType} is rapresented by the class that will
      * inherit from {@link GameState}
      */
     protected final GameStateType type;
+
+    /**
+     * The game instance
+     */
     protected final Game game;
 
     /**
@@ -98,10 +102,28 @@ public abstract class GameState {
             throw new NotYourTurnException(this.notYourTurnMessage);
     }
 
-    protected abstract boolean isYourTurn(GameAction action);
+    /**
+     * Checks if the action is being performed by the current player.
+     *
+     * @param action the action to be checked.
+     * @return true if the action is performed by the current player, false otherwise.
+     */
+    protected boolean isYourTurn(GameAction action) {
+        return this.game.getCurrentPlayer().getUsername().equals(action.getUsername());
+    }
 
+    /**
+     * Handles the disconnection of a player.
+     *
+     * @param username the username of the player to be disconnected.
+     */
     public abstract void disconnectPlayer(String username);
 
+    /**
+     * Gets the type of the current game state.
+     *
+     * @return the type of the current game state.
+     */
     public GameStateType getType() {
         return this.type;
     }

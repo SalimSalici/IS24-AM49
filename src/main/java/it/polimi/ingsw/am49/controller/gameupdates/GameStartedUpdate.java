@@ -14,7 +14,18 @@ import java.util.List;
  * @param starterCardId starter card received by the player with relative username.
  * @param playersToColors provides info about player ordering and player-color association.
  */
-public record GameStartedUpdate(String username, int starterCardId, LinkedHashMap<String, Color> playersToColors, List<Integer> commonObjectivesIds, Resource deckTopResource, Resource deckTopGold, List<Integer> revealedResourcesIds, List<Integer> revealedGoldsIds) implements GameUpdate {
+public record GameStartedUpdate(
+        String username,
+        int starterCardId,
+        LinkedHashMap<String, Color> playersToColors,
+        List<Integer> commonObjectivesIds,
+        int remainingResources,
+        int remainingGolds,
+        Resource deckTopResource,
+        Resource deckTopGold,
+        List<Integer> revealedResourcesIds,
+        List<Integer> revealedGoldsIds
+) implements GameUpdate {
     @Override
     public GameUpdateType getType() {
         return GameUpdateType.GAME_STARTED_UPDATE;

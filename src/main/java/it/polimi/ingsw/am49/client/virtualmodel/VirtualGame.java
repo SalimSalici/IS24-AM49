@@ -56,6 +56,8 @@ public class VirtualGame extends Observable {
         });
         game.commonObjectives = gameInfo.commonObjectiveIds();
         game.drawableArea = new VirtualDrawable(
+                gameInfo.drawArea().remainingResources(),
+                gameInfo.drawArea().remainingGolds(),
                 gameInfo.drawArea().deckTopResource(),
                 gameInfo.drawArea().deckTopGold(),
                 gameInfo.drawArea().revealedResources(),
@@ -122,13 +124,15 @@ public class VirtualGame extends Observable {
     }
 
     private void handleGameStartedUpdate(GameStartedUpdate update){
-        this.drawableArea = new VirtualDrawable(update.deckTopResource(), update.deckTopGold(), update.revealedResourcesIds(), update.revealedGoldsIds());
+        this.drawableArea = new VirtualDrawable(update.remainingResources(), update.remainingGolds(), update.deckTopResource(), update.deckTopGold(), update.revealedResourcesIds(), update.revealedGoldsIds());
         this.commonObjectives = update.commonObjectivesIds();
         this.notifyObservers();
         //this.drawableArea.notifyObservers();
     }
 
     private void handleDrawAreaUpdate(DrawAreaUpdate update){
+        this.drawableArea.setRemainingResources(update.remainingResources());
+        this.drawableArea.setRemainingGolds(update.remainingGolds());
         this.drawableArea.setDeckTopResource(update.deckTopResource());
         this.drawableArea.setDeckTopGold(update.deckTopGold());
         this.drawableArea.setRevealedResourcesIds(update.revealedResources());

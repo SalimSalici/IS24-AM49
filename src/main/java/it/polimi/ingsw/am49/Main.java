@@ -37,7 +37,7 @@ public class Main {
         TuiPlayerRenderer tuiPlayerRenderer = new TuiPlayerRenderer(player, false, List.of(98, 97));
         tuiPlayerRenderer.print();
 
-        VirtualDrawable drawArea = new VirtualDrawable(Resource.MUSHROOMS, Resource.LEAVES, List.of(2, 23), List.of(65, 54));
+        VirtualDrawable drawArea = new VirtualDrawable(40, 40, Resource.MUSHROOMS, Resource.LEAVES, List.of(2, 23), List.of(65, 54));
         TuiDrawAreaRenderer tuiDrawAreaRenderer = new TuiDrawAreaRenderer(drawArea);
         tuiDrawAreaRenderer.print();
     }

@@ -6,12 +6,16 @@ import it.polimi.ingsw.am49.util.Observable;
 import java.util.List;
 
 public class VirtualDrawable extends Observable {
+    private int remainingResources;
+    private int remainingGolds;
     private Resource deckTopResource;
     private Resource deckTopGold;
     private List<Integer> revealedResourcesIds;
     private List<Integer> revealedGoldsIds;
 
-    public VirtualDrawable(Resource deckTopResource, Resource deckTopGold,  List<Integer> revealedResourcesIds, List<Integer> revealedGoldsIds){
+    public VirtualDrawable(int remainingResources, int remainingGolds, Resource deckTopResource, Resource deckTopGold,  List<Integer> revealedResourcesIds, List<Integer> revealedGoldsIds){
+        this.remainingResources = remainingResources;
+        this.remainingGolds = remainingGolds;
         this.deckTopResource = deckTopResource;
         this.deckTopGold = deckTopGold;
         this.revealedResourcesIds = revealedResourcesIds;
@@ -40,5 +44,17 @@ public class VirtualDrawable extends Observable {
     }
     public void setRevealedResourcesIds(List<Integer> revealedResourcesIds) {
         this.revealedResourcesIds = revealedResourcesIds;
+    }
+    public int getRemainingResources() {
+        return remainingResources;
+    }
+    public void setRemainingResources(int remainingResources) {
+        this.remainingResources = remainingResources;
+    }
+    public int getRemainingGolds() {
+        return remainingGolds;
+    }
+    public void setRemainingGolds(int remainingGolds) {
+        this.remainingGolds = remainingGolds;
     }
 }

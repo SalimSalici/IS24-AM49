@@ -2,7 +2,6 @@ package it.polimi.ingsw.am49.model.events;
 
 import it.polimi.ingsw.am49.controller.gameupdates.DrawAreaUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
-import it.polimi.ingsw.am49.model.cards.Card;
 import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
 import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
@@ -42,8 +41,12 @@ public record DrawAreaEvent(
                 remainingGolds,
                 deckTopResource,
                 deckTopGold,
-                revealedResources.stream().map(Card::getId).collect(Collectors.toCollection(LinkedList::new)),
-                revealedGolds.stream().map(Card::getId).collect(Collectors.toCollection(LinkedList::new))
+                revealedResources.stream()
+                        .map(card -> card != null ? card.getId() : null)
+                        .collect(Collectors.toCollection(LinkedList::new)),
+                revealedGolds.stream()
+                        .map(card -> card != null ? card.getId() : null)
+                        .collect(Collectors.toCollection(LinkedList::new))
         );
     }
 }

@@ -52,7 +52,7 @@ public class VirtualView implements EventListener {
                         LinkedHashMap<String, Color> players = new LinkedHashMap<>();
                         for (Player p : this.game.getPlayers())
                             players.put(p.getUsername(), p.getColor());
-                        GameStartedUpdate update = new GameStartedUpdate(this.username, starterCardId, players, commonObjectivesIds, resourceDeckTop, goldDeckTop, revealedResourcesIds, revealedGoldsIds);
+                        GameStartedUpdate update = new GameStartedUpdate(this.username, starterCardId, players, commonObjectivesIds, this.game.getResourceGameDeck().size(), this.game.getGoldGameDeck().size(), resourceDeckTop, goldDeckTop, revealedResourcesIds, revealedGoldsIds);
                         this.client.receiveGameUpdate(update);
                     }
                 }

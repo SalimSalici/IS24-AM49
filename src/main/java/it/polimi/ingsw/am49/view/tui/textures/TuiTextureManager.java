@@ -98,6 +98,7 @@ public class TuiTextureManager {
     public ColoredChar[][] getTexture(int id, boolean flipped) {
         Log.getLogger().info("Texture requested. Id: " + id + " - flipped: " + flipped);
         TuiTexture texture = this.textures.get(id);
+        if (texture == null) return null;
         if (flipped) return texture.getBackBuffer();
         return texture.getFrontBuffer();
     }

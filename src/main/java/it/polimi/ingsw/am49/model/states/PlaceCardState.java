@@ -71,11 +71,10 @@ public class PlaceCardState extends GameState {
         this.goToNextState(new DrawCardState(this.game));
     }
 
-    @Override
-    protected boolean isYourTurn(GameAction action) {
-        return this.currentPlayer.getUsername().equals(action.getUsername());
-    }
-
+    /**
+     * Handles the disconnection of a player.
+     * @param username the username of the player to be disconnected.
+     */
     @Override
     public void disconnectPlayer(String username) {
         Player player = this.game.getPlayerByUsername(username);
@@ -87,6 +86,9 @@ public class PlaceCardState extends GameState {
             this.skipTurn();
     }
 
+    /**
+     * Skips the turn of the current player.
+     */
     private void skipTurn() {
         DrawCardState drawCardState = new DrawCardState(this.game);
         drawCardState.handleSwitchToNextTurn();

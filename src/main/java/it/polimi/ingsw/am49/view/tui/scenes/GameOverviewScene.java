@@ -172,7 +172,7 @@ public class GameOverviewScene extends Scene implements Observer {
         }
         try {
             int choice = Integer.parseInt(args[1]);
-            DrawCardAction action = getDrawCardAction(choice);
+            DrawCardAction action = this.getDrawCardAction(choice);
             this.tuiApp.getServer().executeAction(this.tuiApp, action);
             this.refreshView();
         } catch (NumberFormatException e) {
@@ -188,21 +188,27 @@ public class GameOverviewScene extends Scene implements Observer {
         }
     }
 
-    private DrawCardAction getDrawCardAction(int choice) {
+    private DrawCardAction getDrawCardAction(int choice) throws InvalidActionException {
         DrawPosition drawPosition = switch (choice) {
             case 1 -> DrawPosition.RESOURCE_DECK;
             case 4 -> DrawPosition.GOLD_DECK;
             case 2, 3, 5, 6 -> DrawPosition.REVEALED;
             default -> throw new IndexOutOfBoundsException("Unexpected value: " + choice);
         };
-        int drawId = switch (choice) {
-            case 1, 4 -> 0;
-            case 2 -> this.game.getDrawableArea().getRevealedResourcesIds().getFirst();
-            case 3 -> this.game.getDrawableArea().getRevealedResourcesIds().get(1);
-            case 5 -> this.game.getDrawableArea().getRevealedGoldsIds().getFirst();
-            case 6 -> this.game.getDrawableArea().getRevealedGoldsIds().get(1);
-            default -> throw new IndexOutOfBoundsException("Unexpected value: " + choice);
-        };
+
+        int drawId = 0;
+        try {
+            drawId = switch (choice) {
+                case 1, 4 -> 0;
+                case 2 -> this.game.getDrawableArea().getRevealedResourcesIds().getFirst();
+                case 3 -> this.game.getDrawableArea().getRevealedResourcesIds().get(1);
+                case 5 -> this.game.getDrawableArea().getRevealedGoldsIds().getFirst();
+                case 6 -> this.game.getDrawableArea().getRevealedGoldsIds().get(1);
+                default -> throw new IndexOutOfBoundsException("Unexpected value: " + choice);
+            };
+        } catch (NullPointerException e) {
+            throw new InvalidActionException("That revealed card slot is empty.");
+        }
         return new DrawCardAction(this.tuiApp.getUsername(), drawPosition, drawId);
     }
 
