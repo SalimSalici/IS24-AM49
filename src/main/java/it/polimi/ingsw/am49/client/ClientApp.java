@@ -122,8 +122,8 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
             System.out.println("Connected to socket server.");
         } else {
             server = ClientApp.getRMIServer(serverHost, serverPort);
-            client = ClientApp.getClient(args);
             System.setProperty("java.rmi.server.hostname", server.getClientHostAddress());
+            client = ClientApp.getClient(args);
             System.out.println("Connected to RMI server.");
         }
 

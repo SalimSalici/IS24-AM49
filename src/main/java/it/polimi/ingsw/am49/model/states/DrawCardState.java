@@ -129,7 +129,7 @@ public class DrawCardState extends GameState {
      * Handles the logic for determining if the end game phase or final round should start.
      */
     private void handleEndGameAndFinalRound() {
-        if (this.currentPlayer.getPoints() > 20 || (this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty()))
+        if (this.currentPlayer.getPoints() >= 20 || (this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty()))
             this.game.setEndGame(true);
 
         if (this.currentPlayer.equals(this.game.getLastPlayer())) {
