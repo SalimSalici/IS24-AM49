@@ -106,7 +106,7 @@ public class MainMenuController extends GuiController {
                 System.out.println("Joining room: " + selectedRoom);
                 RoomInfo roomInfo = this.server.joinRoom(this.app, selectedRoom.getRoomName(), this.app.getUsername());
                 this.manager.setRoomInfo(roomInfo);
-                this.manager.changeScene(SceneTitle.ROOM);
+                this.manager.changeScene(SceneTitle.ROOM, true);
                 //this.manager.changeScene();
             } catch (JoinRoomException | InvalidSceneException e) {
                     Platform.runLater(() -> showErrorPopup(e.getMessage()));
@@ -119,7 +119,7 @@ public class MainMenuController extends GuiController {
                 try {
                     CompleteGameInfo completeGameInfo = this.server.reconnect(this.app, selectedRoom.getRoomName(), this.app.getUsername());
                     this.app.loadGame(completeGameInfo);
-                    this.manager.changeScene(SceneTitle.OVERVIEW);
+                    this.manager.changeScene(SceneTitle.OVERVIEW, true);
                 } catch (AlreadyInRoomException | JoinRoomException | RemoteException | InvalidSceneException ex) {
                     Platform.runLater(() -> showErrorPopup(e.getMessage()));
                     throw new RuntimeException(e);
@@ -133,7 +133,7 @@ public class MainMenuController extends GuiController {
      */
     private void changeUsername(){
         try {
-            this.manager.changeScene(SceneTitle.CHANGE_USERNAME);
+            this.manager.changeScene(SceneTitle.CHANGE_USERNAME, true);
         } catch (InvalidSceneException e) {
             Platform.runLater(() -> showErrorPopup(e.getMessage()));
         }
@@ -144,7 +144,7 @@ public class MainMenuController extends GuiController {
      */
     private void createRoom(){
         try {
-            this.manager.changeScene(SceneTitle.CREATE_ROOM);
+            this.manager.changeScene(SceneTitle.CREATE_ROOM, true);
         } catch (InvalidSceneException e) {
             throw new RuntimeException(e);
         }

@@ -46,7 +46,7 @@ public class WelcomeController extends GuiController {
         if(this.isUsernameValid(usernameTextfield.getText())) {
             app.setUsername(usernameTextfield.getText());
             try {
-                this.manager.changeScene(SceneTitle.MAIN_MENU);
+                this.manager.changeScene(SceneTitle.MAIN_MENU, true);
             } catch (InvalidSceneException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
             }

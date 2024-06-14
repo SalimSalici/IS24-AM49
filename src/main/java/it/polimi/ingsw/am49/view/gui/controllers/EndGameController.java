@@ -33,11 +33,8 @@ public class EndGameController extends GuiController {
     @FXML
     private ListView<EndGameInfoItem> rankingListview;
 
-    private OverviewController overviewController;
-
     @Override
     public void init() {
-        this.overviewController = (OverviewController) this.manager.getControllerBySceneTitle(SceneTitle.OVERVIEW);
         leaveButton.setOnAction(e -> leave());
         viewboardsButton.setOnAction(e -> backToOverview());
 
@@ -71,7 +68,7 @@ public class EndGameController extends GuiController {
                 Thread.sleep(250);
             } catch (InterruptedException ignored) {}
             try {
-                this.manager.changeScene(SceneTitle.MAIN_MENU);
+                this.manager.changeScene(SceneTitle.MAIN_MENU, true);
             } catch (InvalidSceneException e) {
                 showErrorPopup(e.getMessage());
             }
@@ -80,8 +77,7 @@ public class EndGameController extends GuiController {
 
     private void backToOverview(){
         try{
-            this.manager.changeScene(SceneTitle.OVERVIEW);
-            overviewController.disableButtons();
+            this.manager.changeScene(SceneTitle.OVERVIEW, false);
         }
         catch (InvalidSceneException | NullPointerException e){
             showErrorPopup(e.getMessage());

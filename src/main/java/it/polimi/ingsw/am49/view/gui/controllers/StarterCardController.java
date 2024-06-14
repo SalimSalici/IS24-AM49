@@ -77,7 +77,7 @@ public class StarterCardController extends GuiController{
         this.manager.executorService.submit(() -> {
             try {
                 this.server.executeAction(this.app, new ChooseStarterSideAction(this.app.getUsername(), flipped));
-                this.manager.changeScene(SceneTitle.WAITING);
+                this.manager.changeScene(SceneTitle.WAITING, true);
             } catch (InvalidActionException | NotYourTurnException | NotInGameException | RemoteException | InvalidSceneException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 throw new RuntimeException(e);

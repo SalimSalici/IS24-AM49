@@ -63,7 +63,7 @@ public class ObjectiveCardsController extends GuiController{
             try {
                 this.server.executeAction(this.app, new ChooseObjectiveAction(this.app.getUsername(), objectiveId));
                 this.app.getVirtualGame().getPlayerByUsername(this.app.getUsername()).setPersonalObjectiveId(objectiveId);
-                this.manager.changeScene(SceneTitle.WAITING);
+                this.manager.changeScene(SceneTitle.WAITING, true);
             } catch (NotInGameException | InvalidActionException | NotYourTurnException | RemoteException | InvalidSceneException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 throw new RuntimeException(e);

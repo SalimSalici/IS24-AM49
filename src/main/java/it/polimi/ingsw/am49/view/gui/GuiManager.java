@@ -77,7 +77,7 @@ public class GuiManager {
      *
      * @param newSceneTitle the title of the new scene to be displayed
      */
-    public void changeScene(SceneTitle newSceneTitle) throws InvalidSceneException {
+    public void changeScene(SceneTitle newSceneTitle, boolean reload) throws InvalidSceneException {
         System.out.println("Changing scene to: " + newSceneTitle.getFileName());
 
         if (titleToScene.getValue(newSceneTitle) == null) {
@@ -87,7 +87,8 @@ public class GuiManager {
         }
 
         currentScene = titleToScene.getValue(newSceneTitle);
-        titleToController.getValue(titleToScene.getKey(currentScene)).init();
+        if(reload)
+            titleToController.getValue(titleToScene.getKey(currentScene)).init();
 
         Platform.runLater(() -> {
             stage.setResizable(false);

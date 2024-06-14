@@ -102,7 +102,8 @@ public class OverviewController extends GuiController {
             drawPointsTokens();
             if (this.game.getGameState() == GameStateType.END_GAME) {
                 try {
-                    this.manager.changeScene(SceneTitle.END_GAME);
+                    disableButtons();
+                    this.manager.changeScene(SceneTitle.END_GAME, true);
                 } catch (InvalidSceneException e) {
                     showErrorPopup(e.getMessage());
                 }
@@ -172,57 +173,72 @@ public class OverviewController extends GuiController {
 
     private void drawDrawableArea(){
         Platform.runLater(() -> {
-            if(!drawableGridpane.getChildren().isEmpty())
+            if (!drawableGridpane.getChildren().isEmpty())
                 drawableGridpane.getChildren().clear();
             //TODO: IMPLEMENTA CASO DI MAZZO VUOTO
-            ImageView resourceDeckImageview = new ImageView(this.guiTextureManager.getCardBackByResource(drawableArea.getDeckTopResource(), false));
-            resourceDeckImageview.setOnMouseClicked(mouseEvent -> drawCard(0,RESOURCE_DECK));
+        });
 
-            ImageView goldDeckImageview = new ImageView(this.guiTextureManager.getCardBackByResource(drawableArea.getDeckTopGold(), true));
-            goldDeckImageview.setOnMouseClicked(mouseEvent -> drawCard(0,GOLD_DECK));
+        Platform.runLater(() -> {
+            if (this.drawableArea.getDeckTopResource() != null){
+                ImageView resourceDeckImageview = new ImageView(this.guiTextureManager.getCardBackByResource(drawableArea.getDeckTopResource(), false));
+                resourceDeckImageview.setOnMouseClicked(mouseEvent -> drawCard(0,RESOURCE_DECK));
 
-            resourceDeckImageview.setFitWidth(143);
-            resourceDeckImageview.setFitHeight(88);
-            goldDeckImageview.setFitWidth(143);
-            goldDeckImageview.setFitHeight(88);
+                resourceDeckImageview.setFitWidth(143);
+                resourceDeckImageview.setFitHeight(88);
 
-            drawableGridpane.add(resourceDeckImageview, 0, 0);
-            GridPane.setHalignment(resourceDeckImageview, HPos.CENTER);
-            GridPane.setValignment(resourceDeckImageview, VPos.CENTER);
-
-            drawableGridpane.add(goldDeckImageview, 1, 0);
-            GridPane.setHalignment(goldDeckImageview, HPos.CENTER);
-            GridPane.setValignment(goldDeckImageview, VPos.CENTER);
-
-            // in this code the displaying of the resource and gold cards are managed apart, so that a different number for each type of card can be shown
-            int index = 1;
-            for(int cardId : drawableArea.getRevealedResourcesIds()){
-                ImageView cardImageview = new ImageView();
-                cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
-                cardImageview.setFitWidth(130);
-                cardImageview.setFitHeight(80);
-
-                cardImageview.setOnMouseClicked(mouseEvent -> drawCard(cardId, REVEALED));
-
-                drawableGridpane.add(cardImageview, 0, index);
-                GridPane.setHalignment(cardImageview, HPos.CENTER);
-                GridPane.setValignment(cardImageview, VPos.CENTER);
-                index++;
+                drawableGridpane.add(resourceDeckImageview, 0, 0);
+                GridPane.setHalignment(resourceDeckImageview, HPos.CENTER);
+                GridPane.setValignment(resourceDeckImageview, VPos.CENTER);
             }
-            index = 1;
-            for(int cardId : drawableArea.getRevealedGoldsIds()){
-                ImageView cardImageview = new ImageView();
-                cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
-                cardImageview.setFitWidth(130);
-                cardImageview.setFitHeight(80);
+        });
 
-                cardImageview.setOnMouseClicked(mouseEvent -> drawCard(cardId, REVEALED));
+        Platform.runLater(() -> {
+            if (this.drawableArea.getDeckTopGold() != null){
+                ImageView goldDeckImageview = new ImageView(this.guiTextureManager.getCardBackByResource(drawableArea.getDeckTopGold(), true));
+                goldDeckImageview.setOnMouseClicked(mouseEvent -> drawCard(0,GOLD_DECK));
 
-                drawableGridpane.add(cardImageview, 1, index);
-                GridPane.setHalignment(cardImageview, HPos.CENTER);
-                GridPane.setValignment(cardImageview, VPos.CENTER);
-                index++;
+                goldDeckImageview.setFitWidth(143);
+                goldDeckImageview.setFitHeight(88);
+
+                drawableGridpane.add(goldDeckImageview, 1, 0);
+                GridPane.setHalignment(goldDeckImageview, HPos.CENTER);
+                GridPane.setValignment(goldDeckImageview, VPos.CENTER);
             }
+        });
+
+        // in this code the displaying of the resource and gold cards are managed apart, so that a different number for each type of card can be shown
+        Platform.runLater(() -> {
+            for(int index = 0; index < drawableArea.getRevealedResourcesIds().size(); index++)
+                if(this.drawableArea.getRevealedResourcesIds().get(index) != null) {
+                    int cardId = this.drawableArea.getRevealedResourcesIds().get(index);
+                    ImageView cardImageview = new ImageView();
+                    cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
+                    cardImageview.setFitWidth(130);
+                    cardImageview.setFitHeight(80);
+
+                    cardImageview.setOnMouseClicked(mouseEvent -> drawCard(cardId, REVEALED));
+
+                    drawableGridpane.add(cardImageview, 0, index + 1);
+                    GridPane.setHalignment(cardImageview, HPos.CENTER);
+                    GridPane.setValignment(cardImageview, VPos.CENTER);
+                }
+        });
+
+        Platform.runLater(() -> {
+            for(int index = 0; index < drawableArea.getRevealedGoldsIds().size(); index++)
+                if(this.drawableArea.getRevealedGoldsIds().get(index) != null) {
+                    int cardId = this.drawableArea.getRevealedGoldsIds().get(index);
+                    ImageView cardImageview = new ImageView();
+                    cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
+                    cardImageview.setFitWidth(130);
+                    cardImageview.setFitHeight(80);
+
+                    cardImageview.setOnMouseClicked(mouseEvent -> drawCard(cardId, REVEALED));
+
+                    drawableGridpane.add(cardImageview, 1, index + 1);
+                    GridPane.setHalignment(cardImageview, HPos.CENTER);
+                    GridPane.setValignment(cardImageview, VPos.CENTER);
+                }
         });
     }
 
@@ -419,7 +435,7 @@ public class OverviewController extends GuiController {
                 Circle circle = new Circle(14 + this.players.indexOf(player)*4, Color.TRANSPARENT);
                 circle.setStroke(player.getJavaFXColor());
                 circle.setStrokeWidth(4);
-                PointsCoordinates point = PointsCoordinates.fromNumber(player.getPoints());
+                PointsCoordinates point = PointsCoordinates.fromNumber(Math.min(player.getPoints(), 29));
                 circle.setCenterX(point.getX());
                 circle.setCenterY(point.getY());
                 pointsPane.getChildren().add(circle);
@@ -495,7 +511,7 @@ public class OverviewController extends GuiController {
         this.manager.executorService.submit(() -> {
             try {
                 app.getServer().leaveRoom(this.app);
-                this.manager.changeScene(SceneTitle.MAIN_MENU);
+                this.manager.changeScene(SceneTitle.MAIN_MENU, true);
             } catch (RemoteException | RoomException | InvalidSceneException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 throw new RuntimeException(e);

@@ -42,7 +42,7 @@ public class CreateRoomController extends GuiController {
         exitButton.setOnAction(x -> {
             this.nameTextfield.clear();
                     try {
-                        this.manager.changeScene(SceneTitle.MAIN_MENU);
+                        this.manager.changeScene(SceneTitle.MAIN_MENU, true);
                     } catch (InvalidSceneException e) {
                         showErrorPopup(e.getMessage());
                     }
@@ -60,7 +60,7 @@ public class CreateRoomController extends GuiController {
             try {
                 RoomInfo roomInfo = this.server.createRoom(this.app, nameTextfield.getText(), numplayerSpinner.getValue(), this.app.getUsername());
                 this.manager.setRoomInfo(roomInfo);
-                this.manager.changeScene(SceneTitle.ROOM);
+                this.manager.changeScene(SceneTitle.ROOM, true);
             } catch (CreateRoomException | RemoteException | AlreadyInRoomException e){
                 System.out.println(e.getMessage());
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));

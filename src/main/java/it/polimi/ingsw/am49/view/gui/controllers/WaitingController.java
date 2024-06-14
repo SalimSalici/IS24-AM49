@@ -21,11 +21,11 @@ public class WaitingController extends GuiController{
             ChoosableObjectivesUpdate update = (ChoosableObjectivesUpdate) gameUpdate;
             List<Integer> objectiveCardIds = update.objectiveCards();
             this.manager.setObjectiveCardsIds(objectiveCardIds);
-            this.manager.changeScene(SceneTitle.OBJECTIVE_CARDS);
+            this.manager.changeScene(SceneTitle.OBJECTIVE_CARDS, true);
         }
         if (gameUpdate.getType() == GameUpdateType.GAME_STATE_UPDATE) {
             if (((GameStateChangedUpdate)gameUpdate).gameStateType() == GameStateType.PLACE_CARD) {
-                this.manager.changeScene(SceneTitle.OVERVIEW);
+                this.manager.changeScene(SceneTitle.OVERVIEW, true);
             }
         }
     }
