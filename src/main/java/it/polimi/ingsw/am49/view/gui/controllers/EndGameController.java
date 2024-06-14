@@ -10,10 +10,12 @@ import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.server.exceptions.RoomException;
 import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -26,14 +28,18 @@ import java.util.Map;
 
 public class EndGameController extends GuiController {
     @FXML
-    private Button leaveButton;
+    private Button leaveButton, viewboardsButton;
 
     @FXML
     private ListView<EndGameInfoItem> rankingListview;
 
+    private OverviewController overviewController;
+
     @Override
     public void init() {
+        this.overviewController = (OverviewController) this.manager.getControllerBySceneTitle(SceneTitle.OVERVIEW);
         leaveButton.setOnAction(e -> leave());
+        viewboardsButton.setOnAction(e -> backToOverview());
 
         List<VirtualPlayer> ranking = this.app.getVirtualGame().getRanking();
         List<EndGameInfoItem> endGameItems = new ArrayList<>();
@@ -64,7 +70,21 @@ public class EndGameController extends GuiController {
             try {
                 Thread.sleep(250);
             } catch (InterruptedException ignored) {}
-            this.manager.changeScene(SceneTitle.MAIN_MENU);
+            try {
+                this.manager.changeScene(SceneTitle.MAIN_MENU);
+            } catch (InvalidSceneException e) {
+                showErrorPopup(e.getMessage());
+            }
         });
+    }
+
+    private void backToOverview(){
+        try{
+            this.manager.changeScene(SceneTitle.OVERVIEW);
+            overviewController.disableButtons();
+        }
+        catch (InvalidSceneException | NullPointerException e){
+            showErrorPopup(e.getMessage());
+        }
     }
 }

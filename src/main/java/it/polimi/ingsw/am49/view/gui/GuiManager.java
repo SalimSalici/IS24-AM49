@@ -4,6 +4,7 @@ import it.polimi.ingsw.am49.client.GuiApp;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.util.BiMap;
+import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import com.google.gson.Gson;
@@ -76,12 +77,13 @@ public class GuiManager {
      *
      * @param newSceneTitle the title of the new scene to be displayed
      */
-    public void changeScene(SceneTitle newSceneTitle) {
+    public void changeScene(SceneTitle newSceneTitle) throws InvalidSceneException {
         System.out.println("Changing scene to: " + newSceneTitle.getFileName());
 
         if (titleToScene.getValue(newSceneTitle) == null) {
             System.err.println("Couldn't find the specified scene");
-            stop();
+            throw new InvalidSceneException();
+            //stop();
         }
 
         currentScene = titleToScene.getValue(newSceneTitle);
@@ -105,6 +107,12 @@ public class GuiManager {
     public Scene getSceneBySceneTitle(SceneTitle sceneTitle) {
         return titleToScene.getValue(sceneTitle);
     }
+
+    /**
+     * @param sceneTitle the title of the scene
+     * @return the Controller associated with the specified title
+     */
+    public GuiController getControllerBySceneTitle(SceneTitle sceneTitle){return titleToController.getValue(sceneTitle);}
 
     /**
      * @return the current scene

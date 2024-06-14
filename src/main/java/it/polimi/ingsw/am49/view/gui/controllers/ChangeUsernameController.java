@@ -1,6 +1,8 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,7 +29,11 @@ public class ChangeUsernameController extends GuiController {
         confButton.setOnAction(e -> {
             if(this.isUsernameValid(usernameTextfield.getText())) {
                 app.setUsername(usernameTextfield.getText());
-                this.manager.changeScene(SceneTitle.MAIN_MENU);
+                try {
+                    this.manager.changeScene(SceneTitle.MAIN_MENU);
+                } catch (InvalidSceneException ex) {
+                    Platform.runLater(() -> showErrorPopup(ex.getMessage()));
+                }
             }else {
                 System.out.println("The username your trying to use is not allowed");
                 showErrorPopup("The username your trying to use is not allowed");
@@ -37,7 +43,11 @@ public class ChangeUsernameController extends GuiController {
         });
 
         exitButton.setOnAction(x -> {
-            this.manager.changeScene(SceneTitle.MAIN_MENU);
+            try {
+                this.manager.changeScene(SceneTitle.MAIN_MENU);
+            } catch (InvalidSceneException e) {
+                Platform.runLater(() -> showErrorPopup(e.getMessage()));
+            }
             usernameTextfield.clear();
         });
     }

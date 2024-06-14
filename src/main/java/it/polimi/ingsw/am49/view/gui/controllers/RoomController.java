@@ -98,7 +98,11 @@ public class RoomController extends GuiController {
         if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
             GameStartedUpdate update = (GameStartedUpdate) gameUpdate;
             this.manager.setStarterCardId(update.starterCardId());
-            this.manager.changeScene(SceneTitle.STARTER_CARD);
+            try {
+                this.manager.changeScene(SceneTitle.STARTER_CARD);
+            } catch (InvalidSceneException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -113,7 +117,7 @@ public class RoomController extends GuiController {
                 roomInfo = this.server.readyDown(this.app);
                 this.server.leaveRoom(this.app);
                 this.manager.changeScene(SceneTitle.MAIN_MENU);
-            } catch (RemoteException | RoomException e) {
+            } catch (RemoteException | RoomException | InvalidSceneException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 throw new RuntimeException(e);
             }

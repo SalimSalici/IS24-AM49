@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -105,7 +106,7 @@ public class MainMenuController extends GuiController {
                 this.manager.setRoomInfo(roomInfo);
                 this.manager.changeScene(SceneTitle.ROOM);
                 //this.manager.changeScene();
-            } catch (JoinRoomException e) {
+            } catch (JoinRoomException | InvalidSceneException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 System.out.println(e.getMessage());
                 return;
@@ -120,13 +121,21 @@ public class MainMenuController extends GuiController {
      * Changes the scene to the change username screen.
      */
     private void changeUsername(){
-        this.manager.changeScene(SceneTitle.CHANGE_USERNAME);
+        try {
+            this.manager.changeScene(SceneTitle.CHANGE_USERNAME);
+        } catch (InvalidSceneException e) {
+            Platform.runLater(() -> showErrorPopup(e.getMessage()));
+        }
     }
 
     /**
      * Changes the scene to the create room screen.
      */
     private void createRoom(){
-        this.manager.changeScene(SceneTitle.CREATE_ROOM);
+        try {
+            this.manager.changeScene(SceneTitle.CREATE_ROOM);
+        } catch (InvalidSceneException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

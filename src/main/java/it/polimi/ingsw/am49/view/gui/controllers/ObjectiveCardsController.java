@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -63,7 +64,7 @@ public class ObjectiveCardsController extends GuiController{
                 this.server.executeAction(this.app, new ChooseObjectiveAction(this.app.getUsername(), objectiveId));
                 this.app.getVirtualGame().getPlayerByUsername(this.app.getUsername()).setPersonalObjectiveId(objectiveId);
                 this.manager.changeScene(SceneTitle.WAITING);
-            } catch (NotInGameException | InvalidActionException | NotYourTurnException | RemoteException e) {
+            } catch (NotInGameException | InvalidActionException | NotYourTurnException | RemoteException | InvalidSceneException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 throw new RuntimeException(e);
             }

@@ -10,6 +10,7 @@ import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.util.Pair;
+import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -61,9 +62,9 @@ public class BoardController extends GuiController {
     private VirtualPlayer myPlayer;
 
 
-    public void init(List<VirtualPlayer> players, OverviewController overviewController) {
-        this.overviewController = overviewController;
-        this.players = players;
+    public void init() {
+        this.overviewController = (OverviewController) this.manager.getControllerBySceneTitle(SceneTitle.OVERVIEW);
+        this.players = this.app.getVirtualGame().getPlayers();
         this.myUsername = this.app.getUsername();
         this.myPlayer = players.stream()
                 .filter(player -> player.getUsername().equals(myUsername))
@@ -372,6 +373,14 @@ public class BoardController extends GuiController {
         currentPlayer = player;
         drawBoard(player);
         centerInnerPane();
+    }
+
+    public void disableCornerButtons(){
+        myBoard.forEach(cardPane -> {
+            cardPane.stackPane().getChildren().stream()
+                    .filter(node -> node instanceof Button)
+                    .forEach(node -> ((Button) node).setVisible(false));
+        });
     }
 
     private boolean isNotMe(VirtualPlayer player){

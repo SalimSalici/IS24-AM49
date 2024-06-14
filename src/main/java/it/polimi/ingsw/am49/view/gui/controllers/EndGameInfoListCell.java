@@ -8,6 +8,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
+
+/**
+ * Represents a custom list cell for displaying end game information in a ListView.
+ * This cell includes the player's rank, totem image, username, points, and completed objectives.
+ */
 public class EndGameInfoListCell extends ListCell<EndGameInfoItem> {
     private final HBox hbox = new HBox();
 
@@ -16,8 +21,11 @@ public class EndGameInfoListCell extends ListCell<EndGameInfoItem> {
     private final Label username = new Label();
     private final Label points = new Label();
     private final Label completedOb = new Label();
-    private final Button viewButton = new Button("VIEW");
 
+    /**
+     * Constructs a new EndGameInfoListCell.
+     * Initializes the HBox layout and the Text nodes for rank, username, points, completed objectives, and totem image.
+     */
     public EndGameInfoListCell() {
         super();
         completedOb.setPrefWidth(130);
@@ -28,9 +36,9 @@ public class EndGameInfoListCell extends ListCell<EndGameInfoItem> {
         totemImage.setFitWidth(35);
         totemImage.setFitHeight(35);
         hbox.setAlignment(Pos.CENTER_LEFT);
-        hbox.setSpacing(18);
+        hbox.setSpacing(35);
         hbox.setPrefHeight(38.5);
-        hbox.getChildren().addAll(rank, username, totemImage, points, completedOb, viewButton);
+        hbox.getChildren().addAll(rank, username, totemImage, points, completedOb);
     }
 
     @Override

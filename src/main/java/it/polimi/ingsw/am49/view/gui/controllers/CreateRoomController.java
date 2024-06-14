@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.CreateRoomException;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -40,8 +41,12 @@ public class CreateRoomController extends GuiController {
         nameTextfield.setOnAction(x-> execute());
         exitButton.setOnAction(x -> {
             this.nameTextfield.clear();
-            this.manager.changeScene(SceneTitle.MAIN_MENU);
-        }
+                    try {
+                        this.manager.changeScene(SceneTitle.MAIN_MENU);
+                    } catch (InvalidSceneException e) {
+                        showErrorPopup(e.getMessage());
+                    }
+                }
         );
     }
 
@@ -58,6 +63,8 @@ public class CreateRoomController extends GuiController {
                 this.manager.changeScene(SceneTitle.ROOM);
             } catch (CreateRoomException | RemoteException | AlreadyInRoomException e){
                 System.out.println(e.getMessage());
+                Platform.runLater(() -> showErrorPopup(e.getMessage()));
+            } catch (InvalidSceneException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
             }
 

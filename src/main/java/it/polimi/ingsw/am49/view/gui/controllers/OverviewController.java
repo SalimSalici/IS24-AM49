@@ -10,8 +10,10 @@ import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.view.gui.PointsCoordinates;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
 import it.polimi.ingsw.am49.view.tui.scenes.SceneType;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
@@ -38,6 +40,7 @@ public class OverviewController extends GuiController {
     private GridPane drawableGridpane, playersGridpane, objectivesGridpane, handGridpane, resourcesGridpane, itemsGridpane;
     @FXML
     private AnchorPane playerboardAnchorpane;
+
     @FXML
     private BoardController playerboardController;
     @FXML
@@ -52,6 +55,7 @@ public class OverviewController extends GuiController {
     private MyCard selectedCard;
     private Image rotationImage;
     private final List<Button> rotationButtonList = new ArrayList<>();
+    private boolean buttonDisabled = false;
 
     @Override
     public void init() {
@@ -75,15 +79,20 @@ public class OverviewController extends GuiController {
         drawPointsBoard();
         drawPointsTokens();
         if (playerboardController != null) {
-            playerboardController.init(players, this);
+            playerboardController.init();
         }
 
         // links all the observers
         this.game.addObserver(() -> {
             drawCurrentPlayerIndicator();
             drawPointsTokens();
-            if (this.game.getGameState() == GameStateType.END_GAME)
-                this.manager.changeScene(SceneTitle.END_GAME);
+            if (this.game.getGameState() == GameStateType.END_GAME) {
+                try {
+                    this.manager.changeScene(SceneTitle.END_GAME);
+                } catch (InvalidSceneException e) {
+                    showErrorPopup(e.getMessage());
+                }
+            }
         });
         this.game.getDrawableArea().addObserver(this::drawDrawableArea);
         for(VirtualPlayer player : this.game.getPlayers()){
@@ -91,8 +100,10 @@ public class OverviewController extends GuiController {
             if(player.getUsername().equals(myUsername)) {
                 player.addObserver(() -> {
                     this.updateHand(myUsername);
-                    this.drawHand(myUsername);
-                    this.drawSymbols(myUsername);
+                    if(this.focusedPlayer.getUsername().equals(myUsername)){
+                        this.drawHand(myUsername);
+                        this.drawSymbols(myUsername);
+                    }
                 });
             }
             else {
@@ -318,13 +329,15 @@ public class OverviewController extends GuiController {
 
                     // sets the rotation action
                     final int i = index;
-                    this.rotationButtonList.get(i).setVisible(true);
-                    this.rotationButtonList.get(i).setOnAction(event -> {
-                        if(card.equals(this.selectedCard))
-                            unselectCard();
-                        card.flip();
-                        drawHand(myUsername);
-                    });
+                    if (!buttonDisabled){
+                        this.rotationButtonList.get(i).setVisible(true);
+                        this.rotationButtonList.get(i).setOnAction(event -> {
+                            if (card.equals(this.selectedCard))
+                                unselectCard();
+                            card.flip();
+                            drawHand(myUsername);
+                        });
+                    }
                     index++;
                 }
             }
@@ -448,5 +461,19 @@ public class OverviewController extends GuiController {
             selectedCard.getImageView().setOpacity(1);
             this.selectedCard = null;
         }
+    }
+
+    public void disableButtons(){
+        this.buttonDisabled = true;
+
+        rotationButtonList.forEach(button -> button.setVisible(false));
+
+        myHand.forEach(card -> {card.getImageView().setOnMouseClicked(event -> {});});
+
+        drawableGridpane.getChildren().stream()
+                .filter(node -> node instanceof ImageView)
+                .forEach(node -> ((ImageView) node).setOnMouseClicked(event -> {}));
+
+        playerboardController.disableCornerButtons();
     }
 }
