@@ -11,10 +11,7 @@ import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.ClientHandler;
-import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
-import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
-import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
-import it.polimi.ingsw.am49.server.exceptions.RoomException;
+import it.polimi.ingsw.am49.server.exceptions.*;
 import it.polimi.ingsw.am49.util.Log;
 
 import java.util.*;
@@ -48,7 +45,7 @@ public class Room {
         this.gameStarted = false;
     }
 
-    public void addNewPlayer(ClientHandler playerClient, String playerUsername) throws JoinRoomException {
+    public void addNewPlayer(ClientHandler playerClient, String playerUsername) throws JoinRoomException, GameAlreadyStartedException {
 
         this.checkIfNewPlayerCanJoin(playerClient, playerUsername); // If not, JoinRoomException is thrown
 
@@ -211,7 +208,7 @@ public class Room {
      * @param playerUsername the username that the client chose.
      * @throws JoinRoomException if the client cannot join the room
      */
-    private void checkIfNewPlayerCanJoin(ClientHandler playerClient, String playerUsername) throws JoinRoomException {
+    private void checkIfNewPlayerCanJoin(ClientHandler playerClient, String playerUsername) throws JoinRoomException, GameAlreadyStartedException {
         if (!this.isUsernameAvailable(playerUsername))
             throw new JoinRoomException("Username already taken. Please choose another username.");
 
@@ -219,7 +216,7 @@ public class Room {
             throw new JoinRoomException("Client is already in the room.");
 
         if (this.gameStarted)
-            throw new JoinRoomException("Game already started.");
+            throw new GameAlreadyStartedException();
 
         if (this.currentPlayers >= this.maxPlayers)
             throw new JoinRoomException("Room is full.");

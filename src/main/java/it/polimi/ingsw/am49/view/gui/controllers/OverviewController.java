@@ -8,6 +8,8 @@ import it.polimi.ingsw.am49.model.enumerations.*;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.server.exceptions.RoomException;
+import it.polimi.ingsw.am49.util.BiMap;
 import it.polimi.ingsw.am49.view.gui.PointsCoordinates;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
@@ -18,13 +20,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -45,6 +47,12 @@ public class OverviewController extends GuiController {
     private BoardController playerboardController;
     @FXML
     private Pane pointsPane;
+    @FXML
+    private ChatController chatController;
+    @FXML
+    private Button leaveButton;
+
+
     private VirtualGame game;
     private String myUsername;
     private List<VirtualPlayer> players;
@@ -78,8 +86,14 @@ public class OverviewController extends GuiController {
         drawDrawableArea();
         drawPointsBoard();
         drawPointsTokens();
+
+        this.leaveButton.setOnMouseClicked(mouseEvent -> leaveGame());
+
         if (playerboardController != null) {
             playerboardController.init();
+        }
+        if (chatController != null){
+            chatController.init();
         }
 
         // links all the observers
@@ -475,5 +489,17 @@ public class OverviewController extends GuiController {
                 .forEach(node -> ((ImageView) node).setOnMouseClicked(event -> {}));
 
         playerboardController.disableCornerButtons();
+    }
+
+    public void leaveGame(){
+        this.manager.executorService.submit(() -> {
+            try {
+                app.getServer().leaveRoom(this.app);
+                this.manager.changeScene(SceneTitle.MAIN_MENU);
+            } catch (RemoteException | RoomException | InvalidSceneException e) {
+                Platform.runLater(() -> showErrorPopup(e.getMessage()));
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

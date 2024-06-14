@@ -77,7 +77,7 @@ public class SocketClientHandler implements Client {
                             params.roomName(),
                             params.username()
                     );
-                } catch (JoinRoomException | RemoteException | AlreadyInRoomException | IllegalArgumentException e) {
+                } catch (JoinRoomException | RemoteException | AlreadyInRoomException | IllegalArgumentException | GameAlreadyStartedException e) {
                     returnValue = e;
                 }
                 this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));

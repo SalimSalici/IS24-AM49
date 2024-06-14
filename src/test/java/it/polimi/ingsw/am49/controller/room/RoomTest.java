@@ -5,10 +5,7 @@ import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.ClientHandler;
-import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
-import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
-import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
-import it.polimi.ingsw.am49.server.exceptions.RoomException;
+import it.polimi.ingsw.am49.server.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -40,7 +37,7 @@ class RoomTest {
     }
 
     @Test
-    void testAddNewPlayer() throws JoinRoomException {
+    void testAddNewPlayer() throws JoinRoomException, GameAlreadyStartedException {
         room.addNewPlayer(mock(ClientHandler.class), "player2");
 
         assertEquals(2, room.getCurrentPlayers());
@@ -79,7 +76,7 @@ class RoomTest {
     }
 
     @Test
-    void testGameStarted() throws JoinRoomException, RoomException {
+    void testGameStarted() throws JoinRoomException, RoomException, GameAlreadyStartedException {
         HashMap<String, Color> players = new HashMap<>();
         players.put("player2", Color.RED);
         players.put("player3", Color.GREEN);
@@ -90,7 +87,7 @@ class RoomTest {
     }
 
     @Test
-    void testReconnectPlayer() throws JoinRoomException, RoomException, InterruptedException, InvalidActionException, NotYourTurnException {
+    void testReconnectPlayer() throws JoinRoomException, RoomException, InterruptedException, InvalidActionException, NotYourTurnException, GameAlreadyStartedException {
 
         ClientHandler player1 = mock(ClientHandler.class);
         ClientHandler player2 = mock(ClientHandler.class);
@@ -133,7 +130,7 @@ class RoomTest {
     }
 
     @Test
-    void testRemovePlayer() throws JoinRoomException {
+    void testRemovePlayer() throws JoinRoomException, GameAlreadyStartedException {
         room.addNewPlayer(mockAnotherClient, anotherUsername);
         boolean removed = room.removePlayer(mockAnotherClient);
 
@@ -143,7 +140,7 @@ class RoomTest {
     }
 
     @Test
-    void testClientReadyWhenColorNotAvailable() throws RoomException, JoinRoomException {
+    void testClientReadyWhenColorNotAvailable() throws RoomException, JoinRoomException, GameAlreadyStartedException {
         room.addNewPlayer(mockAnotherClient, anotherUsername);
         room.clientReady(mockAnotherClient, Color.RED);
 
@@ -151,7 +148,7 @@ class RoomTest {
     }
 
     @Test
-    void testClientNoMoreReady() throws RoomException, JoinRoomException {
+    void testClientNoMoreReady() throws RoomException, JoinRoomException, GameAlreadyStartedException {
         room.addNewPlayer(mockAnotherClient, anotherUsername);
         room.clientReady(mockAnotherClient, Color.RED);
         room.clientNoMoreReady(mockAnotherClient);
@@ -168,7 +165,7 @@ class RoomTest {
     }
 
     @Test
-    void testExecuteGameAction() throws JoinRoomException, RoomException {
+    void testExecuteGameAction() throws JoinRoomException, RoomException, GameAlreadyStartedException {
 
         assertThrows(InvalidActionException.class,
                 () -> room.executeGameAction(mockCreatorClient, new ChooseStarterSideAction("wrongUsername", true)));
@@ -191,7 +188,7 @@ class RoomTest {
                 () -> room.executeGameAction(mockCreatorClient, new ChooseStarterSideAction(creatorUsername, true)));
     }
 
-    private List<ClientHandler> addPlayersAndMakeThemReady(Room room, HashMap<String, Color> players) throws JoinRoomException, RoomException {
+    private List<ClientHandler> addPlayersAndMakeThemReady(Room room, HashMap<String, Color> players) throws JoinRoomException, RoomException, GameAlreadyStartedException {
         List<ClientHandler> clients = new LinkedList<>();
         for (Map.Entry<String, Color> player : players.entrySet()) {
             ClientHandler client = mock(ClientHandler.class);

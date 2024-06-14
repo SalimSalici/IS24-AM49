@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.time.LocalTime;
+import java.util.*;
 
 
 /**
@@ -30,6 +32,7 @@ public class VirtualPlayer extends Observable {
     private Map<Symbol, Integer> activeSymbols;
     private final Color color;
     private int personalObjectiveId;
+    private final List<VirtualChatMessage> messages;
 
     /**
      * Constructs a VirtualPlayer with a specified username and color.
@@ -48,6 +51,7 @@ public class VirtualPlayer extends Observable {
             this.activeSymbols.put(s, 0);
         }
         this.board = new VirtualBoard();
+        this.messages = new ArrayList<>();
     }
 
     /**
@@ -185,4 +189,25 @@ public class VirtualPlayer extends Observable {
             return starterTile.getCard();
         return null;
     }
+
+    public void setMessage(String text, String sender, String recipient, LocalTime time) {
+        messages.add( new VirtualChatMessage(text, sender, recipient, time));
+    }
+
+    public List<VirtualChatMessage> getMessages() { return messages; }
+
+    public List<String> getGlobalChat(){
+        return messages.stream()
+                .filter(m -> !m.isPrivate())
+                .map(m -> m.getTimeAsString() + m.getSender() +": "+ m.getText())
+                .toList();
+    }
+
+    public List<String> getPrivateChat(VirtualPlayer recipient){
+        return messages.stream()
+                .filter(m -> m.getRecipient().equals(recipient.username))
+                .map(m -> m.getTimeAsString() + " " + m.getText())
+                .toList();
+    }
+
 }

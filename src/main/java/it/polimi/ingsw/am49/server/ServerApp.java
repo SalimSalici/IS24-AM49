@@ -68,7 +68,7 @@ public class ServerApp implements Server {
 
     @Override
     public RoomInfo joinRoom(Client client, String roomName, String username)
-            throws AlreadyInRoomException, JoinRoomException {
+            throws AlreadyInRoomException, JoinRoomException, GameAlreadyStartedException {
         Room room = this.validateNewClientAndGetRoom(client, roomName, username);
         ClientHandler clientHandler = new ClientHandler(client, this);
         room.addNewPlayer(clientHandler, username);

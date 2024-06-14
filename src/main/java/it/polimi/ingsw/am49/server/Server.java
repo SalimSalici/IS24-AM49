@@ -42,7 +42,7 @@ public interface Server extends Remote {
      * @throws IllegalArgumentException if username is invalid (too short or too long)
      */
     public RoomInfo joinRoom(Client client, String roomName, String username)
-            throws RemoteException, AlreadyInRoomException, JoinRoomException;
+            throws RemoteException, AlreadyInRoomException, JoinRoomException, GameAlreadyStartedException;
 
     public RoomInfo readyUp(Client client, Color color) throws RemoteException, RoomException;
 

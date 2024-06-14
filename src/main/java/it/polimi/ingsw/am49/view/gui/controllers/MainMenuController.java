@@ -1,9 +1,11 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.room.Room;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
+import it.polimi.ingsw.am49.server.exceptions.GameAlreadyStartedException;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
@@ -107,12 +109,21 @@ public class MainMenuController extends GuiController {
                 this.manager.changeScene(SceneTitle.ROOM);
                 //this.manager.changeScene();
             } catch (JoinRoomException | InvalidSceneException e) {
-                Platform.runLater(() -> showErrorPopup(e.getMessage()));
-                System.out.println(e.getMessage());
-                return;
+                    Platform.runLater(() -> showErrorPopup(e.getMessage()));
+                    System.out.println(e.getMessage());
+                    return;
             } catch (AlreadyInRoomException | RemoteException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 throw new RuntimeException(e);
+            } catch (GameAlreadyStartedException e) {
+                try {
+                    CompleteGameInfo completeGameInfo = this.server.reconnect(this.app, selectedRoom.getRoomName(), this.app.getUsername());
+                    this.app.loadGame(completeGameInfo);
+                    this.manager.changeScene(SceneTitle.OVERVIEW);
+                } catch (AlreadyInRoomException | JoinRoomException | RemoteException | InvalidSceneException ex) {
+                    Platform.runLater(() -> showErrorPopup(e.getMessage()));
+                    throw new RuntimeException(e);
+                }
             }
         });
     }

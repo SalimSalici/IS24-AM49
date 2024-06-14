@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.CreateRoomException;
+import it.polimi.ingsw.am49.server.exceptions.GameAlreadyStartedException;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.view.tui.SceneManager;
 
@@ -185,7 +186,7 @@ public class MainMenuScene extends Scene {
         } catch (JoinRoomException | AlreadyInRoomException  e) {
             this.isLoading = false;
             this.showError("Failed to join room. " + e.getMessage());
-        } catch (RemoteException e) {
+        } catch (RemoteException | GameAlreadyStartedException e) {
             this.isLoading = false;
             this.showError("RemoteException. " + e.getMessage());
         }
