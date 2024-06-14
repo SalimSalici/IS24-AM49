@@ -43,11 +43,11 @@ public class VirtualPlayer extends Observable {
         this.hand = new LinkedList<>();
         this.hiddenHand = new LinkedList<>();
         this.color = color;
-        this.board = new VirtualBoard();
         this.activeSymbols = new HashMap<>();
         for (Symbol s : Symbol.values()) {
             this.activeSymbols.put(s, 0);
         }
+        this.board = new VirtualBoard();
     }
 
     /**

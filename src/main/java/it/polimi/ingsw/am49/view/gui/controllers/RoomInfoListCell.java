@@ -6,11 +6,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
+/**
+ * Represents a custom list cell for displaying room information in a ListView.
+ * This cell includes the room name and its capacity.
+ */
 public class RoomInfoListCell extends ListCell<RoomInfoItem> {
     private final HBox hbox = new HBox();
     private final Text roomName = new Text();
     private final Text capacity = new Text();
 
+    /**
+     * Constructs a new RoomInfoListCell.
+     * Initializes the HBox layout and the Text nodes for the room name and capacity.
+     */
     public RoomInfoListCell() {
         super();
         hbox.setAlignment(Pos.CENTER_LEFT);

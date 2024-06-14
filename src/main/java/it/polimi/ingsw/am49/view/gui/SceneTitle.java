@@ -17,9 +17,8 @@ public enum SceneTitle {
     OBJECTIVE_CARDS,
     WAITING,
     BOARD,
-    OVERVIEW;
-
-//    GAME_OVER;
+    OVERVIEW,
+    END_GAME;
 
     /**
      * @return The FXML filename corresponding to the scene, or null if no mapping is defined.
@@ -38,6 +37,7 @@ public enum SceneTitle {
             case CREATE_ROOM -> fileName = "createRoom.fxml";
             case OVERVIEW -> fileName = "overview.fxml";
             case BOARD -> fileName = "board.fxml";
+            case END_GAME -> fileName = "endGame.fxml";
         }
 
         return fileName;

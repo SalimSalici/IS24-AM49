@@ -29,6 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class BoardController extends GuiController {
 
@@ -56,6 +59,7 @@ public class BoardController extends GuiController {
     String myUsername;
     private VirtualPlayer currentPlayer;
     private VirtualPlayer myPlayer;
+
 
     public void init(List<VirtualPlayer> players, OverviewController overviewController) {
         this.overviewController = overviewController;
@@ -297,16 +301,20 @@ public class BoardController extends GuiController {
             double newX = cardpane.stackPane().getLayoutX() + offsetX;
             double newY = cardpane.stackPane().getLayoutY() + offsetY;
 
-            try {
-                this.app.getServer().executeAction(this.app, new PlaceCardAction(this.app.getUsername(), card.id(), cardpane.row(), cardpane.col(), cornerPosition, card.flipped()));
-                Pair<Integer, Integer> newCoords = VirtualBoard.getCoords(cornerPosition.toRelativePosition(), cardpane.row(), cardpane.col());
+            this.manager.executorService.submit( () -> {
+                try {
+                    this.app.getServer().executeAction(this.app, new PlaceCardAction(this.app.getUsername(), card.id(), cardpane.row(), cardpane.col(), cornerPosition, card.flipped()));
+                    Pair<Integer, Integer> newCoords = VirtualBoard.getCoords(cornerPosition.toRelativePosition(), cardpane.row(), cardpane.col());
 
-                addCardPane(newX, newY, card,String.valueOf(card.id()), newCoords.first, newCoords.second);
-                this.overviewController.unselectCard();
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException | NotInGameException |
-                     NotYourTurnException | RemoteException | InvalidActionException e) {
-                showErrorPopup(e.getMessage());
-            }
+                    Platform.runLater(() -> {
+                        addCardPane(newX, newY, card, String.valueOf(card.id()), newCoords.first, newCoords.second);
+                        this.overviewController.unselectCard();
+                    });
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException | NotInGameException |
+                         NotYourTurnException | RemoteException | InvalidActionException e) {
+                    Platform.runLater(() -> showErrorPopup(e.getMessage()));
+                }
+            });
         }
     }
 
@@ -338,23 +346,26 @@ public class BoardController extends GuiController {
 
     private void previewImageView(double x, double y, VirtualCard card) {
         clearPreviewImageView();
+        Platform.runLater(() -> {
+            ImageView previewImage = new ImageView();
+            previewImage.setFitWidth(cardWidth);
+            previewImage.setFitHeight(cardHeight);
+            previewImage.setImage(this.guiTextureManager.getCardImageByVirtualCard(card));
+            previewImage.setOpacity(0.5); // Imposta l'opacità per l'anteprima
+            previewImage.setMouseTransparent(true);
 
-        ImageView previewImage = new ImageView();
-        previewImage.setFitWidth(cardWidth);
-        previewImage.setFitHeight(cardHeight);
-        previewImage.setImage(this.guiTextureManager.getCardImageByVirtualCard(card));
-        previewImage.setOpacity(0.5); // Imposta l'opacità per l'anteprima
-        previewImage.setMouseTransparent(true);
+            previewImage.setLayoutX(x);
+            previewImage.setLayoutY(y);
+            previewImage.setId("preview");
 
-        previewImage.setLayoutX(x);
-        previewImage.setLayoutY(y);
-        previewImage.setId("preview");
-
-        imagePane.getChildren().add(previewImage);
+            imagePane.getChildren().add(previewImage);
+        });
     }
 
     private void clearPreviewImageView() {
+        Platform.runLater(() -> {
             imagePane.getChildren().removeIf(node -> "preview".equals(node.getId()));
+        });
     }
 
     public void switchPlayerBoard(VirtualPlayer player) {

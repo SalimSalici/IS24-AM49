@@ -10,6 +10,10 @@ import it.polimi.ingsw.am49.view.gui.SceneTitle;
 
 import java.util.List;
 
+/**
+ * Controller class for the waiting screen in the GUI.
+ * Handles game updates to transition to appropriate scenes based on game state changes.
+ */
 public class WaitingController extends GuiController{
     @Override
     public void gameUpdate(GameUpdate gameUpdate) throws InvalidSceneException {
