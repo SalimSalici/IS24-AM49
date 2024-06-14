@@ -14,6 +14,8 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import it.polimi.ingsw.am49.view.gui.controllers.GuiController;
 
@@ -31,6 +33,7 @@ public class GuiManager {
     private int starterCardId;
     private List<Integer> objectiveCardsIds;
     private final GuiApp app;
+    public final ExecutorService executorService = Executors.newSingleThreadExecutor();
   
     // CONSTRUCTOR
 

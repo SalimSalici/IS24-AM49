@@ -52,6 +52,7 @@ public class PlayerBoard implements Serializable {
         for (Symbol s : Symbol.values()) {
             this.availableResources.put(s, 0);
         }
+        this.updateAvailableResources();
     }
 
     /**

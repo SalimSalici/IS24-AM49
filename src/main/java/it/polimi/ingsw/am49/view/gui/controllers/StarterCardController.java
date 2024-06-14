@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -18,6 +19,10 @@ import javafx.scene.text.TextFlow;
 import java.rmi.RemoteException;
 import java.util.Objects;
 
+/**
+ * Controller class for the starter card selection GUI screen.
+ * Handles user interactions for selecting the side of the starter card.
+ */
 public class StarterCardController extends GuiController{
 
     @FXML
@@ -61,22 +66,21 @@ public class StarterCardController extends GuiController{
         });
     }
 
+    /**
+     * Sends the chosen side of the starter card to the server.
+     * If an error occurs, shows an error popup with the appropriate message.
+     *
+     * @param flipped whether the back side of the card is chosen
+     */
     private void chooseSide(boolean flipped){
-        try {
-            this.server.executeAction(this.app, new ChooseStarterSideAction(this.app.getUsername(), flipped));
-            this.manager.changeScene(SceneTitle.WAITING);
-        } catch (InvalidActionException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
-        } catch (NotInGameException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
-        } catch (RemoteException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
-        } catch (NotYourTurnException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
-        }
+        this.manager.executorService.submit(() -> {
+            try {
+                this.server.executeAction(this.app, new ChooseStarterSideAction(this.app.getUsername(), flipped));
+                this.manager.changeScene(SceneTitle.WAITING);
+            } catch (InvalidActionException | NotYourTurnException | NotInGameException | RemoteException e) {
+                Platform.runLater(() -> showErrorPopup(e.getMessage()));
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

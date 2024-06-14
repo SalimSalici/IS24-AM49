@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -16,6 +17,10 @@ import javafx.scene.control.ListView;
 import java.rmi.RemoteException;
 import java.util.List;
 
+/**
+ * Controller class for the main menu GUI screen.
+ * Handles user interactions for joining, creating rooms, and changing username.
+ */
 public class MainMenuController extends GuiController {
 
     @FXML
@@ -62,50 +67,65 @@ public class MainMenuController extends GuiController {
         });
     }
 
+    /**
+     * Refreshes the list of rooms by fetching room data from the server.
+     */
     private void refreshRooms() {
-        roomsListview.getItems().clear();
-        try {
-            this.rooms = this.server.fetchRooms(this.app);
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        this.manager.executorService.submit(() -> {
+            roomsListview.getItems().clear();
+            try {
+                this.rooms = this.server.fetchRooms(this.app);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
 
-        List<RoomInfoItem> roomItems = rooms.stream()
-                .map(room -> new RoomInfoItem(
-                        room.roomName(),
-                        room.maxPlayers(),
-                        room.playersToColors().size()
-                ))
-                .toList();
+            List<RoomInfoItem> roomItems = rooms.stream()
+                    .map(room -> new RoomInfoItem(
+                            room.roomName(),
+                            room.maxPlayers(),
+                            room.playersToColors().size()
+                    ))
+                    .toList();
 
-        roomsListview.getItems().addAll(roomItems); // Populates roomsListView
-        roomsListview.setCellFactory(param -> new RoomInfoListCell());
+            roomsListview.getItems().addAll(roomItems); // Populates roomsListView
+            roomsListview.setCellFactory(param -> new RoomInfoListCell());
+        });
     }
 
+    /**
+     * Attempts to join the selected room.
+     * If successful, changes the scene to the room view.
+     * If an exception occurs, shows an error popup with the appropriate message.
+     */
     private void joinRoom(){
-        try {
-            System.out.println("Joining room: " + selectedRoom);
-            RoomInfo roomInfo = this.server.joinRoom(this.app, selectedRoom.getRoomName(), this.app.getUsername());
-            this.manager.setRoomInfo(roomInfo);
-            this.manager.changeScene(SceneTitle.ROOM);
-            //this.manager.changeScene();
-        } catch (JoinRoomException e) {
-            // TODO: Handle exception
-            System.out.println(e.getMessage());
-            return;
-        } catch (AlreadyInRoomException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
-        } catch (RemoteException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
-        }
+        this.manager.executorService.submit(() -> {
+            try {
+                System.out.println("Joining room: " + selectedRoom);
+                RoomInfo roomInfo = this.server.joinRoom(this.app, selectedRoom.getRoomName(), this.app.getUsername());
+                this.manager.setRoomInfo(roomInfo);
+                this.manager.changeScene(SceneTitle.ROOM);
+                //this.manager.changeScene();
+            } catch (JoinRoomException e) {
+                Platform.runLater(() -> showErrorPopup(e.getMessage()));
+                System.out.println(e.getMessage());
+                return;
+            } catch (AlreadyInRoomException | RemoteException e) {
+                Platform.runLater(() -> showErrorPopup(e.getMessage()));
+                throw new RuntimeException(e);
+            }
+        });
     }
 
+    /**
+     * Changes the scene to the change username screen.
+     */
     private void changeUsername(){
         this.manager.changeScene(SceneTitle.CHANGE_USERNAME);
     }
 
+    /**
+     * Changes the scene to the create room screen.
+     */
     private void createRoom(){
         this.manager.changeScene(SceneTitle.CREATE_ROOM);
     }

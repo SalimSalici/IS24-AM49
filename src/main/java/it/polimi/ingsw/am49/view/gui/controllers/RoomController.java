@@ -19,6 +19,10 @@ import javafx.scene.layout.HBox;
 
 import java.rmi.RemoteException;
 
+/**
+ * Controller class for the room GUI screen.
+ * Handles user interactions within a game room, such as selecting a totem color, leaving the room, and updating room state.
+ */
 public class RoomController extends GuiController {
 
     @FXML
@@ -98,54 +102,71 @@ public class RoomController extends GuiController {
         }
     }
 
+    /**
+     * Leaves the current room and changes the scene to the main menu.
+     * If an error occurs, shows an error popup with the appropriate message.
+     */
     private void leaveRoom(){
-        this.totemColor = null;
-        try{
-            roomInfo = this.server.readyDown(this.app);
-            this.server.leaveRoom(this.app);
-            this.manager.changeScene(SceneTitle.MAIN_MENU);
-        } catch (RemoteException | RoomException e) {
-            //TODO: handle exeption
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    private void setColor(){
-        try {
-            // if color isn't set
-            if(totemColor == null){
-                this.roomInfo = this.server.readyDown(this.app);
-            }
-            else{
-                this.roomInfo = this.server.readyUp(this.app, totemColor);
-                this.manager.setRoomInfo(this.roomInfo);
-            }
-
-            if(this.roomInfo.playersToColors().get(this.app.getUsername()) == null){
-                totemHBox.setVisible(false);
-
-            }else{
-                totemHBox.setVisible(true);
-                this.totemImageview.setImage(this.guiTextureManager.getImageByTotemColor(this.totemColor));
-            }
-
-        } catch (IllegalArgumentException e) {
+        this.manager.executorService.submit(() -> {
             this.totemColor = null;
-        } catch (RemoteException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
-        } catch (RoomException e){
-            showErrorPopup(e.getMessage());
-        }
+            try{
+                roomInfo = this.server.readyDown(this.app);
+                this.server.leaveRoom(this.app);
+                this.manager.changeScene(SceneTitle.MAIN_MENU);
+            } catch (RemoteException | RoomException e) {
+                Platform.runLater(() -> showErrorPopup(e.getMessage()));
+                throw new RuntimeException(e);
+            }
+        });
     }
 
+    /**
+     * Sets the totem color for the player and updates the room state.
+     * If an error occurs, shows an error popup with the appropriate message.
+     */
+    private void setColor(){
+        this.manager.executorService.submit(() -> {
+            try {
+                // if color isn't set
+                if(totemColor == null){
+                    this.roomInfo = this.server.readyDown(this.app);
+                }
+                else{
+                    this.roomInfo = this.server.readyUp(this.app, totemColor);
+                    this.manager.setRoomInfo(this.roomInfo);
+                }
+
+                if(this.roomInfo.playersToColors().get(this.app.getUsername()) == null){
+                    totemHBox.setVisible(false);
+
+                }else{
+                    totemHBox.setVisible(true);
+                    this.totemImageview.setImage(this.guiTextureManager.getImageByTotemColor(this.totemColor));
+                }
+
+            } catch (IllegalArgumentException e) {
+                this.totemColor = null;
+            } catch (RemoteException e) {
+                Platform.runLater(() -> showErrorPopup(e.getMessage()));
+                throw new RuntimeException(e);
+            } catch (RoomException e){
+                Platform.runLater(() -> showErrorPopup(e.getMessage()));
+            }
+        });
+    }
+
+    /**
+     * Updates the players count label in the room.
+     */
     private void drawPlayersCount(){
         Platform.runLater(() -> {
             playersLabel.setText("Players: " + this.roomInfo.playersToColors().size() + "/" + this.roomInfo.maxPlayers());
         });
     }
 
+    /**
+     * Updates the players list in the room.
+     */
     private void drawPlayersList() {
         Platform.runLater(() -> {
             playersListview.getItems().clear();

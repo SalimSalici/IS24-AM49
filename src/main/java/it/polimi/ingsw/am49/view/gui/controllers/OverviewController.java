@@ -10,6 +10,7 @@ import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.view.gui.PointsCoordinates;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
+import it.polimi.ingsw.am49.view.tui.scenes.SceneType;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -81,6 +82,8 @@ public class OverviewController extends GuiController {
         this.game.addObserver(() -> {
             drawCurrentPlayerIndicator();
             drawPointsTokens();
+            if (this.game.getGameState() == GameStateType.END_GAME)
+                this.manager.changeScene(SceneTitle.END_GAME);
         });
         this.game.getDrawableArea().addObserver(this::drawDrawableArea);
         for(VirtualPlayer player : this.game.getPlayers()){
@@ -403,16 +406,18 @@ public class OverviewController extends GuiController {
      * @param drawPosition
      */
     private void drawCard(int cardId, DrawPosition drawPosition) {
-        try {
-            this.app.getServer().executeAction(this.app, new DrawCardAction(this.myUsername, drawPosition, cardId));
-            unselectCard();
-        } catch (NotYourTurnException | InvalidActionException e) {
-            showErrorPopup(e.getMessage());
-        } catch (NotInGameException e) {
-            showErrorPopup("It seems like you are not in a game. Please restart the application.");
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        this.manager.executorService.submit(() -> {
+            try {
+                this.app.getServer().executeAction(this.app, new DrawCardAction(this.myUsername, drawPosition, cardId));
+                unselectCard();
+            } catch (NotYourTurnException | InvalidActionException e) {
+                Platform.runLater(() -> showErrorPopup(e.getMessage()));
+            } catch (NotInGameException e) {
+                Platform.runLater(() -> showErrorPopup("It seems like you are not in a game. Please restart the application."));
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void selectCard(MyCard card){
