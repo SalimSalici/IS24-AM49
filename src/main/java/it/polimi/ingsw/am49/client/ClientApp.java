@@ -2,14 +2,13 @@ package it.polimi.ingsw.am49.client;
 
 import it.polimi.ingsw.am49.client.sockets.ServerSocketHandler;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
+import it.polimi.ingsw.am49.config.StaticConfig;
 import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.server.Server;
-import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
-import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.util.IntervalTimer;
 
@@ -103,36 +102,56 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
     protected abstract void initialize();
 
-    public static void main(String[] args) throws IOException, NotBoundException, AlreadyInRoomException, NotInGameException {
+    // TODO: handle exceptions
+    public static void main(String[] args) throws IOException, NotBoundException {
 //        String serverHost = "10.147.20.145";
         String serverHost = "127.0.0.1";
         int serverPort = 8458;
 
-        ClientApp client = null;
-        Server server = null;
+        ClientApp client;
+        Server server;
 
-        // In case of RMI, system property hostname must be set before instantiating the client Remote object
+        List<String> argsList = List.of(args);
 
-        if (!List.of(args).contains("--socket")) {
+        if (argsList.contains("--disable-tui-colors"))
+            StaticConfig.disableTuiColors();
+
+        if (argsList.contains("--socket")) {
+            client = ClientApp.getClient(args);
+            server = ClientApp.getSocketServer(serverHost, serverPort + 1, client);
+            System.out.println("Connected to socket server.");
+        } else {
             server = ClientApp.getRMIServer(serverHost, serverPort);
+            client = ClientApp.getClient(args);
             System.setProperty("java.rmi.server.hostname", server.getClientHostAddress());
             System.out.println("Connected to RMI server.");
         }
 
-        if(List.of(args).contains("--gui")) {
-            client = new GuiApp(args);
-        }
-        else {
-            client = new TuiApp();
-        }
-
-        if (List.of(args).contains("--socket")) {
-            server = ClientApp.getSocketServer(serverHost, serverPort + 1, client);
-            System.out.println("Connected to socket server.");
-        }
-
         client.setServer(server);
         client.initialize();
+
+        // In case of RMI, system property hostname must be set before instantiating the client Remote object
+
+//        if (!List.of(args).contains("--socket")) {
+//            server = ClientApp.getRMIServer(serverHost, serverPort);
+//            System.setProperty("java.rmi.server.hostname", server.getClientHostAddress());
+//            System.out.println("Connected to RMI server.");
+//        }
+//
+//        if(List.of(args).contains("--gui")) {
+//            client = new GuiApp(args);
+//        }
+//        else {
+//            client = new TuiApp();
+//        }
+//
+//        if (List.of(args).contains("--socket")) {
+//            server = ClientApp.getSocketServer(serverHost, serverPort + 1, client);
+//            System.out.println("Connected to socket server.");
+//        }
+//
+//        client.setServer(server);
+//        client.initialize();
     }
 
     private static Server getRMIServer(String host, int port) throws RemoteException, NotBoundException {
@@ -142,5 +161,9 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
     private static Server getSocketServer(String host, int port, Client client) throws IOException {
         return new ServerSocketHandler(host, port, client);
+    }
+
+    private static ClientApp getClient(String[] args) throws RemoteException {
+        return List.of(args).contains("--gui") ? new GuiApp(args) : new TuiApp();
     }
 }

@@ -66,7 +66,7 @@ public class GameOverviewScene extends Scene implements Observer {
             System.out.print(" (" + (i+1) + ") ");
             if (this.tuiApp.getUsername().equals(p.getUsername())) System.out.print("you->");
             if (isCurrentPlayer) System.out.print("*");
-            System.out.print(AnsiColor.fromColor(p.getColor()) + p.getUsername() + AnsiColor.ANSI_RESET);
+            System.out.print(this.getColoredUsername(p.getUsername(), p.getColor()));
             if (isCurrentPlayer) System.out.print("*");
             System.out.print(" [" + p.getPoints() + "]    ");
         }

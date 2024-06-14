@@ -1,5 +1,7 @@
 package it.polimi.ingsw.am49.view.tui.textures;
 
+import it.polimi.ingsw.am49.config.StaticConfig;
+
 public class TuiTexture {
     private ColoredChar[][] frontBuffer;
     private ColoredChar[][] backBuffer;
@@ -7,6 +9,11 @@ public class TuiTexture {
     public TuiTexture(ColoredChar[][] frontBuffer, ColoredChar[][] backBuffer) {
         this.frontBuffer = frontBuffer;
         this.backBuffer = backBuffer;
+
+        if (!StaticConfig.tuiColors) {
+            this.textualColorOnBuffer(frontBuffer);
+            this.textualColorOnBuffer(backBuffer);
+        }
     }
 
     public ColoredChar[][] getFrontBuffer() {
@@ -23,5 +30,14 @@ public class TuiTexture {
 
     public void setBackBuffer(ColoredChar[][] backBuffer) {
         this.backBuffer = backBuffer;
+    }
+
+    private void textualColorOnBuffer(ColoredChar[][] buffer) {
+        String textualColor = buffer[0][0].getAnsiColor().toTextualColor();
+        int row = 0;
+        int col = 5;
+        for (int i = 0; i < textualColor.length() && i < buffer[row].length; i++) {
+            buffer[row][col + i] = new ColoredChar(textualColor.charAt(i), AnsiColor.ANSI_RESET);
+        }
     }
 }

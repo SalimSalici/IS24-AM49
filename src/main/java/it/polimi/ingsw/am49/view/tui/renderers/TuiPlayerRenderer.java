@@ -1,6 +1,8 @@
 package it.polimi.ingsw.am49.view.tui.renderers;
 
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
+import it.polimi.ingsw.am49.config.StaticConfig;
+import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.util.Pair;
@@ -52,7 +54,7 @@ public class TuiPlayerRenderer {
                 + "Q(" + this.player.getActiveSymbols().get(Symbol.QUILL) + ")";
 
         System.out.println(
-                "Player: " + AnsiColor.fromColor(this.player.getColor()) + this.player.getUsername() + AnsiColor.ANSI_RESET
+                "Player: " + getColoredUsername(this.player.getUsername(), this.player.getColor())
                 + "     Points: " + this.player.getPoints()
                 + "     Available symbols: " + availableSymbols
         );
@@ -161,5 +163,13 @@ public class TuiPlayerRenderer {
         this.printHandAndObjectives();
         System.out.println();
         this.printInfo();
+    }
+
+    private String getColoredUsername(String username, Color color) {
+        if (color == null) return username;
+        if (StaticConfig.tuiColors)
+            return AnsiColor.fromColor(color) + username + AnsiColor.ANSI_RESET;
+        else
+            return username + "[" + color.name() + "]";
     }
 }

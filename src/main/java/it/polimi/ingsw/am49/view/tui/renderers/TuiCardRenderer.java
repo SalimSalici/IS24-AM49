@@ -71,6 +71,17 @@ public class TuiCardRenderer {
     }
 
     /**
+     * Draws a single {@link ColoredChar } at the given postion.
+     * @param c   the colored character
+     * @param row the row where to print the character
+     * @param col the column where to print the character
+     */
+    public void drawPixel(ColoredChar c, int row, int col) {
+        if (row < this.height && col < this.width)
+            this.buffer[row][col] = c;
+    }
+
+    /**
      * Prints the buffer to the console.
      */
     public void print() {

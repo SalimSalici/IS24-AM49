@@ -1,6 +1,8 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.config.StaticConfig;
+import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.exceptions.RoomException;
 import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.view.tui.SceneManager;
@@ -27,7 +29,9 @@ public abstract class Scene {
 
     protected void clearScreen() {
         System.out.println("\n" + "-".repeat(150));
-        System.out.println("\033[H\033[2J");
+        if (StaticConfig.tuiColors)
+            System.out.println("\033[H\033[2J");
+        else System.out.print("\n".repeat(60));
     }
 
     protected void refreshView() {
@@ -54,8 +58,10 @@ public abstract class Scene {
     protected void printInfoOrError() {
         if (this.errorMessage.isEmpty())
             System.out.println(this.infoMessage);
-        else
+        else if (StaticConfig.tuiColors)
             System.out.println(AnsiColor.ANSI_RED + errorMessage + AnsiColor.ANSI_RESET);
+        else
+            System.out.println(errorMessage);
         this.infoMessage = "";
         this.errorMessage = "";
     }
@@ -75,5 +81,13 @@ public abstract class Scene {
             } catch (InterruptedException ignored) {}
         }
         this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
+    }
+
+    protected String getColoredUsername(String username, Color color) {
+        if (color == null) return username;
+        if (StaticConfig.tuiColors)
+            return AnsiColor.fromColor(color) + username + AnsiColor.ANSI_RESET;
+        else
+            return username + "[" + color.name() + "]";
     }
 }

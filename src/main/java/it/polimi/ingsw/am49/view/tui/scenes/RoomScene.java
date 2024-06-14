@@ -4,7 +4,6 @@ import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.exceptions.RoomException;
-import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.view.tui.SceneManager;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
@@ -82,12 +81,8 @@ public class RoomScene extends Scene {
         for (Map.Entry<String, Color> player : this.roomInfo.playersToColors().entrySet()) {
             String username = player.getKey();
             Color color = player.getValue();
-            if (color != null)
-                System.out.print(this.colorToAnsiColor(color).toString());
 
-            System.out.print(username);
-            if (color != null)
-                System.out.print(AnsiColor.ANSI_RESET);
+            System.out.print(this.getColoredUsername(username, color));
 
             if (username.equals(this.tuiApp.getUsername()))
                 System.out.print(" (you)");

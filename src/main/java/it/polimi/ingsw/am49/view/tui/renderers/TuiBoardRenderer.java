@@ -4,6 +4,8 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualTile;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
+import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
+import it.polimi.ingsw.am49.view.tui.textures.ColoredChar;
 import it.polimi.ingsw.am49.view.tui.textures.TuiTextureManager;
 
 import java.util.ArrayList;
@@ -61,6 +63,8 @@ public class TuiBoardRenderer {
                     centerDisplayRow + rowOffset * 3
             );
         });
+
+        this.renderer.drawPixel(new ColoredChar('^', AnsiColor.ANSI_WHITE), centerDisplayRow + 2, centerDisplayCol);
     }
 
     /**

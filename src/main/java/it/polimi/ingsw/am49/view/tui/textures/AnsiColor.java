@@ -56,5 +56,18 @@ public enum AnsiColor {
         };
     }
 
+    public String toTextualColor() {
+        return switch (this) {
+            case ANSI_RESET -> "[NUL]";
+            case ANSI_RED, ANSI_BRIGHT_RED -> "[RED]";
+            case ANSI_GREEN -> "[GRE]";
+            case ANSI_YELLOW -> "[YEL]";
+            case ANSI_BLUE -> "[BLU]";
+            case ANSI_MAGENTA, ANSI_BRIGHT_MAGENTA -> "[MAG]";
+            case ANSI_CYAN, ANSI_BRIGHT_CYAN -> "[CYA]";
+            case ANSI_WHITE -> "[WHI]";
+        };
+    }
+
 }
 
