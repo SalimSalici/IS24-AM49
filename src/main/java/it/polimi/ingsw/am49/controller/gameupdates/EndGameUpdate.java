@@ -8,7 +8,7 @@ import java.util.Map;
  *                       the second element represents the amount of completed objective cards (for playoffs), while
  *                       the third element rapresents the id of the personal objective of the player
  */
-public record EndGameUpdate(Map<String, Integer[]> playerToPoints) implements GameUpdate {
+public record EndGameUpdate(Map<String, Integer[]> playerToPoints, String forfeitWinner) implements GameUpdate {
     @Override
     public GameUpdateType getType() {
         return GameUpdateType.END_GAME_UPDATE;

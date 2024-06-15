@@ -12,6 +12,7 @@ import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.ClientHandler;
+import it.polimi.ingsw.am49.server.ServerApp;
 import it.polimi.ingsw.am49.server.exceptions.*;
 import it.polimi.ingsw.am49.util.Log;
 
@@ -25,6 +26,8 @@ public class Room {
      * Name of the room. This should be unique within the server.
      */
     private final String roomName;
+
+    private final ServerApp server;
 
     /**
      * Number of players of the game being played in this room. This number is not equal to the number of
@@ -44,11 +47,12 @@ public class Room {
      * @param creatorClient the client handler of the room creator
      * @param creatorUsername the username of the room creator
      */
-    public Room(String roomName, int maxPlayers, ClientHandler creatorClient, String creatorUsername) {
+    public Room(String roomName, int maxPlayers, ClientHandler creatorClient, String creatorUsername, ServerApp server) {
         this.roomName = roomName;
         this.maxPlayers = maxPlayers;
         this.usernamesToPlayers = new HashMap<>();
         this.usernamesToPlayers.put(creatorUsername, new PlayerInfo(creatorUsername, creatorClient));
+        this.server = server;
 
         this.currentPlayers = 1;
         this.gameStarted = false;
@@ -145,20 +149,26 @@ public class Room {
     /**
      * Starts the pause timer for the game.
      */
-    private void startPauseTimer() {
+    private synchronized void startPauseTimer() {
+        Room self = this;
         this.pauseTimer = new Timer();
         this.pauseTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                game.forfeitWinner(usernamesToPlayers.keySet().iterator().next());
+                self.declareforfeitWinnerAndDestroy();
             }
-        }, 1000 * 60); // 60 seconds
+        }, 1000 * 10); // 60 seconds
+    }
+
+    private synchronized void declareforfeitWinnerAndDestroy() {
+        this.game.forfeitWinner(usernamesToPlayers.keySet().iterator().next());
+        this.server.destroyRoom(this);
     }
 
     /**
      * Stops the pause timer for the game.
      */
-    private void stopPauseTimer() {
+    private synchronized void stopPauseTimer() {
         if (this.pauseTimer != null) {
             this.pauseTimer.cancel();
             this.pauseTimer = null;

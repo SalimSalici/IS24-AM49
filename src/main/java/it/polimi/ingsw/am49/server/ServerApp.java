@@ -60,7 +60,7 @@ public class ServerApp implements Server {
                     "choose a new room name.");
 
         ClientHandler clientHandler = new ClientHandler(client, this);
-        Room room = new Room(roomName, numPlayers, clientHandler, creatorUsername);
+        Room room = new Room(roomName, numPlayers, clientHandler, creatorUsername, this);
         this.rooms.add(room);
         this.clientsToRooms.put(clientHandler, room);
         clientHandler.initializeHeartbeat();
@@ -144,7 +144,7 @@ public class ServerApp implements Server {
             clientHandler.heartbeat();
     }
 
-    private void destroyRoom(Room room) {
+    public void destroyRoom(Room room) {
         room.close();
         this.clientsToRooms.forEach((key, value) -> { if (value.equals(room)) key.close(); });
         this.clientsToRooms.entrySet().removeIf(entry -> entry.getValue().equals(room));

@@ -65,7 +65,6 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
     @Override
     public void stopHeartbeat() {
         this.heartbeatInterval.stop();
-        System.out.println("Heartbeat stopped");
     }
 
     @Override

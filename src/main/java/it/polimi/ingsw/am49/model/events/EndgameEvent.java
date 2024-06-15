@@ -8,7 +8,7 @@ import it.polimi.ingsw.am49.model.players.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-public record EndgameEvent(Map<Player, Integer> playersToAchievedObjectives) implements GameEvent {
+public record EndgameEvent(Map<Player, Integer> playersToAchievedObjectives, Player forfeitWinner) implements GameEvent {
 
     @Override
     public GameEventType getType() {
@@ -26,6 +26,6 @@ public record EndgameEvent(Map<Player, Integer> playersToAchievedObjectives) imp
             pointsAndObjectives[2] = p.getPersonalObjective().getId();
             updateMap.put(entry.getKey().getUsername(), pointsAndObjectives);
         }
-        return new EndGameUpdate(updateMap);
+        return new EndGameUpdate(updateMap, forfeitWinner.getUsername());
     }
 }

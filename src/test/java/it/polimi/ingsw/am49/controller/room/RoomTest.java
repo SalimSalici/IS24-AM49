@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.ClientHandler;
+import it.polimi.ingsw.am49.server.ServerApp;
 import it.polimi.ingsw.am49.server.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class RoomTest {
     @BeforeEach
     void setUp() {
         int maxPlayers = 4;
-        room = new Room("testRoom", maxPlayers, mockCreatorClient, creatorUsername);
+        room = new Room("testRoom", maxPlayers, mockCreatorClient, creatorUsername, mock(ServerApp.class));
     }
 
     @Test
@@ -91,7 +92,7 @@ class RoomTest {
 
         ClientHandler player1 = mock(ClientHandler.class);
         ClientHandler player2 = mock(ClientHandler.class);
-        Room room = new Room("testRoom", 2, player1, "player1");
+        Room room = new Room("testRoom", 2, player1, "player1", mock(ServerApp.class));
 
         assertThrows(JoinRoomException.class, () -> room.reconnect(player2, "player2"));
 

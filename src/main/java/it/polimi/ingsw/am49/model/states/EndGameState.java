@@ -17,6 +17,8 @@ public class EndGameState extends GameState {
 
     private final List<Player> players;
 
+    private final Player forfeitWinner;
+
     /**
      * Stores how many objectives every player has completed.
      */
@@ -26,12 +28,21 @@ public class EndGameState extends GameState {
      * Constructs the EndGameState.
      * @param game istance of the {@link Game} class.
      */
-    protected EndGameState(Game game) {
+    public EndGameState(Game game, Player forfeitWinner) {
         super(GameStateType.END_GAME, game, Set.of());
         this.players = game.getPlayers();
         this.notYourTurnMessage =
                 "The game is over. If you want to keep playing you must create a new game.";
         this.playersToAchievedObjectives = new HashMap<>();
+        this.forfeitWinner = forfeitWinner;
+    }
+
+    /**
+     * Constructs the EndGameState.
+     * @param game istance of the {@link Game} class.
+     */
+    public EndGameState(Game game) {
+        this(game, null);
     }
 
     /**
@@ -43,7 +54,7 @@ public class EndGameState extends GameState {
             int achievedObjectives = player.calculateFinalPoints(Arrays.asList(this.game.getCommonObjectives()));
             playersToAchievedObjectives.put(player, achievedObjectives);
         }
-        this.game.triggerEvent(new EndgameEvent(playersToAchievedObjectives));
+        this.game.triggerEvent(new EndgameEvent(playersToAchievedObjectives, forfeitWinner));
     }
 
     /**

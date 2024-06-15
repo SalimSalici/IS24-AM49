@@ -23,7 +23,6 @@ public class IntervalTimer {
     public void start() {
         if (scheduledFuture == null || scheduledFuture.isCancelled()) {
             scheduledFuture = scheduler.scheduleAtFixedRate(task, initialDelay, period, unit);
-            System.out.println("Task started");
         }
     }
 
@@ -31,12 +30,10 @@ public class IntervalTimer {
         if (scheduledFuture != null) {
             scheduledFuture.cancel(false);
             scheduledFuture = null;
-            System.out.println("Task stopped");
         }
     }
 
     public void shutdown() {
         scheduler.shutdown();
-        System.out.println("Scheduler shutdown");
     }
 }

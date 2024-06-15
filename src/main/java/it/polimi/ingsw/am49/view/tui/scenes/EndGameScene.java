@@ -32,6 +32,11 @@ public class EndGameScene extends Scene {
     }
 
     private void printLeaderBoard() {
+        VirtualPlayer forfeitWinner = this.tuiApp.getVirtualGame().getforfeitWinner();
+        if (forfeitWinner != null) {
+            System.out.println(this.getColoredUsername(forfeitWinner) + " wins by forfeit!\n");
+        }
+
         List<VirtualPlayer> ranking = this.tuiApp.getVirtualGame().getRanking();
         for (int i = 0; i < ranking.size(); i++) {
             VirtualPlayer player = ranking.get(i);

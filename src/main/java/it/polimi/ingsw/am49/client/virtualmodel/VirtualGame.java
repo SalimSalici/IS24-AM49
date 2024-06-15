@@ -23,6 +23,8 @@ public class VirtualGame extends Observable {
     private VirtualPlayer currentPlayer;
     private List<Integer> commonObjectives;
     private VirtualDrawable drawableArea;
+    private VirtualPlayer forfeitWinner;
+
     private VirtualGame() {
         this.players = new ArrayList<>();
     }
@@ -161,6 +163,7 @@ public class VirtualGame extends Observable {
                 player.setPoints(pointsAndObjectives[0]);
                 player.setCompletedObjectives(pointsAndObjectives[1]);
                 player.setPersonalObjectiveId(pointsAndObjectives[2]);
+                forfeitWinner = this.getPlayerFromUsername(update.forfeitWinner());
             }
         }
         this.notifyObservers();
@@ -211,5 +214,9 @@ public class VirtualGame extends Observable {
 
     public VirtualPlayer getVirtualPlayerByColor( Color color ){
         return this.players.stream().filter(p -> p.getColor().equals(color)).findFirst().orElse(null);
+    }
+
+    public VirtualPlayer getforfeitWinner() {
+        return forfeitWinner;
     }
 }

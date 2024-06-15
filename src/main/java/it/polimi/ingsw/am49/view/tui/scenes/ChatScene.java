@@ -2,7 +2,10 @@ package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
+import it.polimi.ingsw.am49.model.enumerations.GameStateType;
+import it.polimi.ingsw.am49.util.Observer;
 import it.polimi.ingsw.am49.view.tui.SceneManager;
 
 import java.rmi.RemoteException;
@@ -11,8 +14,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChatScene extends Scene {
+public class ChatScene extends Scene implements Observer {
 
+    private VirtualGame game;
     private final List<TimedChatMessage> chatMessages;
 
     public ChatScene(SceneManager sceneManager, TuiApp tuiApp) {
@@ -115,6 +119,25 @@ public class ChatScene extends Scene {
 
     public void clearMessages() {
         this.chatMessages.clear();
+    }
+
+    @Override
+    public void focus() {
+        this.game = this.tuiApp.getVirtualGame();
+        this.game.addObserver(this);
+    }
+
+    @Override
+    public void unfocus() {
+        this.game.deleteObserver(this);
+    }
+
+    @Override
+    public void update() {
+        if (this.game.getGameState() == GameStateType.END_GAME)
+            this.sceneManager.switchScene(SceneType.END_GAME_SCENE);
+        else
+            this.refreshView();
     }
 
     private record TimedChatMessage(ChatMSG chatMSG, LocalDateTime timestamp) {}

@@ -12,6 +12,7 @@ import it.polimi.ingsw.am49.model.events.EventManager;
 import it.polimi.ingsw.am49.model.events.GameEvent;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.model.states.ChooseStarterSideState;
+import it.polimi.ingsw.am49.model.states.EndGameState;
 import it.polimi.ingsw.am49.model.states.GameState;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
@@ -198,8 +199,7 @@ public class Game implements Serializable, EventEmitter {
      * @param username the username of the player who won by forfeit
      */
     public synchronized void forfeitWinner(String username) {
-        // TODO: implement this
-        System.out.println(username + " won by forfeit.");
+        this.gameState.goToNextState(new EndGameState(this, this.getPlayerByUsername(username)));
     }
 
     /**
