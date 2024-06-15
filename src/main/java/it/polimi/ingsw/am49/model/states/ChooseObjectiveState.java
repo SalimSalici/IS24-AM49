@@ -130,6 +130,11 @@ public class ChooseObjectiveState extends GameState {
         return null;
     }
 
+    /**
+     * Handles the disconnection of a player.
+     * 
+     * @param username the username of the player to be disconnected.
+     */
     public void disconnectPlayer(String username) {
         Player player = this.game.getPlayerByUsername(username);
         if (player == null || !player.isOnline()) return;
@@ -139,6 +144,12 @@ public class ChooseObjectiveState extends GameState {
         this.chooseRandomly(player);
     }
 
+    /**
+     * Chooses an objective card randomly for the given player.
+     * This method is used when a player disconnects and cannot choose an objective card manually.
+     *
+     * @param player the player for whom an objective card is to be chosen randomly.
+     */
     private void chooseRandomly(Player player) {
         List<ObjectiveCard> objectives = this.playersToObjectives.get(player);
         if (objectives == null) return;

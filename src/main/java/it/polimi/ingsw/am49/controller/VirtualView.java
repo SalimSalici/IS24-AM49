@@ -34,6 +34,8 @@ public class VirtualView implements EventListener {
 
     @Override
     public void onEventTrigger(GameEvent event) {
+        GameUpdate update = event.toGameUpdate();
+        if (update == null) return;
         try {
             switch (event.getType()) {
                 case STARTER_CARD_ASSIGNED_EVENT -> {
@@ -52,36 +54,24 @@ public class VirtualView implements EventListener {
                         LinkedHashMap<String, Color> players = new LinkedHashMap<>();
                         for (Player p : this.game.getPlayers())
                             players.put(p.getUsername(), p.getColor());
-                        GameStartedUpdate update = new GameStartedUpdate(this.username, starterCardId, players, commonObjectivesIds, this.game.getResourceGameDeck().size(), this.game.getGoldGameDeck().size(), resourceDeckTop, goldDeckTop, revealedResourcesIds, revealedGoldsIds);
-                        this.client.receiveGameUpdate(update);
+                        GameStartedUpdate gameStartedUpdate
+                                = new GameStartedUpdate(this.username, starterCardId, players, commonObjectivesIds, this.game.getResourceGameDeck().size(), this.game.getGoldGameDeck().size(), resourceDeckTop, goldDeckTop, revealedResourcesIds, revealedGoldsIds);
+                        this.client.receiveGameUpdate(gameStartedUpdate);
                     }
                 }
                 case CHOOSABLE_OBJECTIVES_EVENT -> {
                     ChoosableObjectivesEvent evt = (ChoosableObjectivesEvent) event;
                     if (evt.player().getUsername().equals(this.username))
-                        this.client.receiveGameUpdate(event.toGameUpdate());
+                        this.client.receiveGameUpdate(update);
                 }
                 case HAND_UPDATE_EVENT -> {
                     HandEvent evt = (HandEvent) event;
                     if (evt.player().getUsername().equals(this.username))
-                        this.client.receiveGameUpdate(event.toGameUpdate());
+                        this.client.receiveGameUpdate(update);
                     else
                         this.client.receiveGameUpdate(((HandEvent) event).toHiddenHandUpdate());
                 }
-                case DRAW_AREA_EVENT -> {
-                    this.client.receiveGameUpdate(event.toGameUpdate());
-                }
-                case PLAYERS_ORDER_SET_EVENT -> {
-                    // discard... Player order will be communicated to the client with a GameStartedUpdate
-                }
-                case PERSONAL_OBJECTIVE_CHOSEN_EVENT -> {
-                    // discard...
-                }
-                default -> {
-                    GameUpdate update = event.toGameUpdate();
-                    if (update != null)
-                        this.client.receiveGameUpdate(event.toGameUpdate());
-                }
+                default -> this.client.receiveGameUpdate(update);
             }
         } catch (NullPointerException ex) {
             // TODO: handle exception properly

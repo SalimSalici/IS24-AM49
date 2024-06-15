@@ -67,7 +67,7 @@ public abstract class GameState {
 
     /**
      * Handles the main task of the State.
-     * @param action tells witch type of {@link GameAction} neds to be handled.
+     * @param action tells witch type of {@link GameAction} needs to be handled.
      * @throws InvalidActionException if the action is not supported by this state.
      * @throws NotYourTurnException if the player making the action is not the current player.
      */

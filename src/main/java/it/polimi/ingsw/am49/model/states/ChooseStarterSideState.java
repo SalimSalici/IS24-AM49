@@ -132,6 +132,11 @@ public class ChooseStarterSideState extends GameState {
         ));
     }
 
+    /**
+     * Handles the disconnection of a player.
+     * 
+     * @param username the username of the player to be disconnected.
+     */
     public void disconnectPlayer(String username) {
         Player player = this.game.getPlayerByUsername(username);
         if (player == null || !player.isOnline()) return;
