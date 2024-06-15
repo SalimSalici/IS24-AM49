@@ -192,6 +192,7 @@ public class VirtualPlayer extends Observable {
 
     public void setMessage(String text, String sender, String recipient, LocalTime time) {
         messages.add( new VirtualChatMessage(text, sender, recipient, time));
+        this.notifyObservers();
     }
 
     public List<VirtualChatMessage> getMessages() { return messages; }
@@ -199,7 +200,7 @@ public class VirtualPlayer extends Observable {
     public List<String> getGlobalChat(){
         return messages.stream()
                 .filter(m -> !m.isPrivate())
-                .map(m -> m.getTimeAsString() + m.getSender() +": "+ m.getText())
+                .map(m -> m.getTimeAsString()+ " " + m.getSender() +": "+ m.getText())
                 .toList();
     }
 

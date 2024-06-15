@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.server;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
@@ -207,6 +208,9 @@ public class SocketClientHandler implements Client {
             );
         }
     }
+
+    @Override
+    public void receiveChatMessage(ChatMSG msg) throws RemoteException {}
 
     private void writeToOutputStream(Object obj) throws IOException {
         synchronized (this.objectOutputStream) {

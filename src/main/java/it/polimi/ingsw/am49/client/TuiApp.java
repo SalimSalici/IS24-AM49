@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
@@ -32,5 +33,10 @@ public class TuiApp extends ClientApp {
             this.sceneManager.gameStarted((GameStartedUpdate) gameUpdate);
         else if (gameUpdate.getType() == GameUpdateType.CHOOSABLE_OBJETIVES_UPDATE)
             this.sceneManager.chooseObjectiveCardUpdate(((ChoosableObjectivesUpdate) gameUpdate).objectiveCards());
+    }
+
+    @Override
+    public void receiveChatMessage(ChatMSG msg) {
+
     }
 }

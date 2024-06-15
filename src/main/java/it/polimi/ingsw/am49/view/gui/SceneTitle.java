@@ -18,6 +18,7 @@ public enum SceneTitle {
     WAITING,
     BOARD,
     OVERVIEW,
+    CHAT,
     END_GAME;
 
     /**
@@ -37,6 +38,7 @@ public enum SceneTitle {
             case CREATE_ROOM -> fileName = "createRoom.fxml";
             case OVERVIEW -> fileName = "overview.fxml";
             case BOARD -> fileName = "board.fxml";
+            case CHAT -> fileName = "chat.fxml";
             case END_GAME -> fileName = "endGame.fxml";
         }
 

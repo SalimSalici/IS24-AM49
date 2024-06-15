@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.am49.view.gui.controllers.ChatController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="333.0" prefWidth="293.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.am49.view.gui.controllers.ChatController">
     <children>
         <TabPane fx:id="chatTabpane" prefHeight="333.0" prefWidth="293.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <Tab fx:id="chatglobalTab">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
                                 <ScrollPane fx:id="chatglobalScrollpane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
                                     <content>
@@ -31,7 +26,7 @@
                                     </children>
                                 </HBox>
                             </children>
-                        </AnchorPane>
+                        </AnchorPane>-->
                     </content>
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -43,7 +38,7 @@
                 </Tab>
                 <Tab fx:id="chatredTab">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
                                 <ScrollPane fx:id="chatredScrollpane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
                                     <content>
@@ -57,7 +52,7 @@
                                     </children>
                                 </HBox>
                             </children>
-                        </AnchorPane>
+                        </AnchorPane>-->
                     </content>
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -69,7 +64,7 @@
                 </Tab>
                 <Tab fx:id="chatblueTab">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
                                 <ScrollPane fx:id="chatblueScrollpane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
                                     <content>
@@ -83,7 +78,7 @@
                                     </children>
                                 </HBox>
                             </children>
-                        </AnchorPane>
+                        </AnchorPane>-->
                     </content>
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -95,7 +90,7 @@
                 </Tab>
                 <Tab fx:id="chatyellowTab">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
                                 <ScrollPane fx:id="chatyellowScrollpane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
                                     <content>
@@ -109,7 +104,7 @@
                                     </children>
                                 </HBox>
                             </children>
-                        </AnchorPane>
+                        </AnchorPane>-->
                     </content>
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -121,7 +116,7 @@
                 </Tab>
                 <Tab fx:id="chatgreenTab">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
                                 <ScrollPane fx:id="chatgreenScrollpane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
                                     <content>
@@ -135,7 +130,7 @@
                                     </children>
                                 </HBox>
                             </children>
-                        </AnchorPane>
+                        </AnchorPane>-->
                     </content>
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">

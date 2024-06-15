@@ -42,5 +42,4 @@ public enum GameUpdateType {
 
     /** Update for the end of the game */
     END_GAME_UPDATE,
-    NEW_CHAT_MESSAGE_UPDATE
 }

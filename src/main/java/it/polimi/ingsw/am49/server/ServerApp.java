@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.server;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.room.Room;
@@ -172,6 +173,14 @@ public class ServerApp implements Server {
             Log.getLogger().severe("Couldn't get client host address.");
             return null;
         }
+    }
+
+    @Override
+    public void chatMessage(Client client, ChatMSG msg) throws RemoteException { //TODO: create custom exeption
+        ClientHandler clientHandler = this.getClientHandlerByClient(client);
+        Room room = this.clientsToRooms.get(clientHandler);
+        room.newChatMSG(msg);
+
     }
 
     private Room validateNewClientAndGetRoom(Client client, String roomName, String username) throws AlreadyInRoomException, JoinRoomException {

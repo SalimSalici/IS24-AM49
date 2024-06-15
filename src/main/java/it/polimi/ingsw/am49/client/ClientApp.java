@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.client.sockets.ServerSocketHandler;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.config.StaticConfig;
@@ -18,8 +19,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.time.LocalTime;
 
 public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
@@ -65,6 +68,12 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
         System.out.println("Heartbeat stopped");
     }
 
+    @Override
+    public void receiveChatMessage(ChatMSG msg){
+        game.getPlayerByUsername(username).setMessage(msg.text(), msg.sender(), msg.recipient(), LocalTime.now().truncatedTo(ChronoUnit.MINUTES));
+//        System.out.println("ARRIVATO!!!" + msg);
+    }
+
     private void pingServer() {
         try {
             this.server.ping(this);
@@ -104,7 +113,7 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
     // TODO: handle exceptions
     public static void main(String[] args) throws IOException, NotBoundException {
-//        String serverHost = "10.147.20.145";
+        //String serverHost = "10.147.20.145";
         String serverHost = "127.0.0.1";
         int serverPort = 8458;
 

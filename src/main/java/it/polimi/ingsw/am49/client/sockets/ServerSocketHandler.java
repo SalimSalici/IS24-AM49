@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.sockets;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
@@ -248,4 +249,7 @@ public class ServerSocketHandler extends SocketHandler implements Server {
             Log.getLogger().severe("Error handling RMI call from server in handlePushMessage(...): " + e.getMessage());
         }
     }
+
+    @Override
+    public void chatMessage(Client client, ChatMSG msg){}
 }

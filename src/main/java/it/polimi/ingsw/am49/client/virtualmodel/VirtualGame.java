@@ -2,7 +2,6 @@ package it.polimi.ingsw.am49.client.virtualmodel;
 
 import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.*;
-import it.polimi.ingsw.am49.model.chat.ChatMessage;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.util.Log;
@@ -88,7 +87,6 @@ public class VirtualGame extends Observable {
             case HIDDEN_HAND_UPDATE -> this.handleHiddenHandUpdate((HiddenHandUpdate) gameUpdate);
             case DRAW_AREA_UPDATE -> this.handleDrawAreaUpdate((DrawAreaUpdate) gameUpdate);
             case END_GAME_UPDATE -> this.handleEndGameUpdate((EndGameUpdate) gameUpdate);
-            case NEW_CHAT_MESSAGE_UPDATE -> this.handleChatMessageUpdate((NewChatMessageUpdate) gameUpdate);
         }
     }
 
@@ -140,22 +138,6 @@ public class VirtualGame extends Observable {
         this.drawableArea.setRevealedResourcesIds(update.revealedResources());
         this.drawableArea.setRevealedGoldsIds(update.revealedGolds());
         this.drawableArea.notifyObservers();
-    }
-
-    private void handleChatMessageUpdate(NewChatMessageUpdate update) {
-        if(update.receiver().equals("*")){
-            for(VirtualPlayer p : this.players){
-                p.setMessage(update.text(), update.sender(), update.receiver(), update.time());
-                p.notifyObservers();
-            }
-        } else{
-            VirtualPlayer sender = this.getPlayerByUsername(update.sender());
-            VirtualPlayer receiver = this.getPlayerByUsername(update.receiver());
-            sender.setMessage(update.text(), update.sender(), update.receiver(), update.time());
-            sender.notifyObservers();
-            receiver.setMessage(update.text(), update.sender(), update.receiver(), update.time());
-            receiver.notifyObservers();
-        }
     }
 
     private void handleEndGameUpdate(EndGameUpdate update){

@@ -42,7 +42,7 @@ public class OverviewController extends GuiController {
     @FXML
     private GridPane drawableGridpane, playersGridpane, objectivesGridpane, handGridpane, resourcesGridpane, itemsGridpane;
     @FXML
-    private AnchorPane playerboardAnchorpane;
+    private AnchorPane playerboardAnchorpane, chatframeAnchorpane;
 
     @FXML
     private BoardController playerboardController;
@@ -80,6 +80,7 @@ public class OverviewController extends GuiController {
 
         // draws every element of the scene
         loadPlayerBoard();
+        loadChat();
         drawRotationButtons();
         drawHand(myUsername);
         drawSymbols();
@@ -147,6 +148,24 @@ public class OverviewController extends GuiController {
             // Gets the controller of board.fxml
             playerboardController = loader.getController();
             playerboardController.setGui(this.app, this.manager);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadChat() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneTitle.CHAT.getFilePath()));
+            AnchorPane chatFrame = loader.load();
+
+            chatFrame.setLayoutX(7);
+            chatFrame.setLayoutY(10);
+
+            chatframeAnchorpane.getChildren().setAll(chatFrame);
+
+            // Gets the controller of board.fxml
+            chatController = loader.getController();
+            chatController.setGui(this.app, this.manager);
         } catch (IOException e) {
             e.printStackTrace();
         }

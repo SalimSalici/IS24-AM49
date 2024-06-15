@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import java.rmi.RemoteException;

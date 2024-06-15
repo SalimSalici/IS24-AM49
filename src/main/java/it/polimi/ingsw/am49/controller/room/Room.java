@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.controller.room;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.CompletePlayerInfo;
 import it.polimi.ingsw.am49.controller.VirtualView;
@@ -14,6 +15,7 @@ import it.polimi.ingsw.am49.server.ClientHandler;
 import it.polimi.ingsw.am49.server.exceptions.*;
 import it.polimi.ingsw.am49.util.Log;
 
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -416,5 +418,33 @@ public class Room {
                 commonObjectivesIds,
                 players
         );
+    }
+    public void newChatMSG(ChatMSG msg){
+        if(msg.recipient().equals("*")){
+            for (PlayerInfo pInfo : this.usernamesToPlayers.values()){
+                ClientHandler client = pInfo.getClient();
+                try {
+                    client.receiveChatMessage(msg);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } else{
+            ClientHandler clientRecipient = this.getClientByUsername(msg.recipient());
+            ClientHandler clientSender = this.getClientByUsername(msg.sender());
+            try {
+                if(clientRecipient != null)
+                    clientRecipient.receiveChatMessage(msg);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                if(clientSender != null)
+                    clientSender.receiveChatMessage(msg);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
 }

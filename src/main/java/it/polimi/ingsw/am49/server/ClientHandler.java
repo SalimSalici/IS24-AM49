@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.server;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
@@ -74,6 +75,15 @@ public class ClientHandler implements Client {
         executorService.submit(() -> {
             try {
                 client.stopHeartbeat();
+            } catch (RemoteException e) {}
+        });
+    }
+
+    @Override
+    public void receiveChatMessage(ChatMSG msg) throws RemoteException {
+        executorService.submit(() -> {
+            try {
+                client.receiveChatMessage(msg);
             } catch (RemoteException e) {}
         });
     }

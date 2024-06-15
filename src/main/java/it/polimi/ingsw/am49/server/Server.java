@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.server;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.client.Client;
 import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
@@ -64,4 +65,6 @@ public interface Server extends Remote {
     public void ping(Client c) throws RemoteException;
 
     public String getClientHostAddress() throws RemoteException;
+
+    public void chatMessage(Client client , ChatMSG msg) throws RemoteException;
 }
