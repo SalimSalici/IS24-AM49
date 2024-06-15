@@ -4,6 +4,10 @@ import it.polimi.ingsw.am49.controller.VirtualView;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.ClientHandler;
 
+/**
+ * This class is used by the {@link Room} to store information about a specific client, like it's username, color and
+ * ready state. It halso manages the {@link VirtualView} of the client.
+ */
 public class PlayerInfo {
     private final String username;
     private final ClientHandler client;
@@ -34,6 +38,7 @@ public class PlayerInfo {
     public void setColor(Color color) {
         this.color = color;
     }
+
     public void setNullColor(){
         this.color = null;
     }

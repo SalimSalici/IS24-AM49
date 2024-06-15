@@ -27,21 +27,79 @@ import java.util.*;
  * handling to manage game-related events dynamically.
  */
 public class Game implements Serializable, EventEmitter {
+    /**
+     * The number of players in the game.
+     */
     private final int numPlayers;
+    
+    /**
+     * The current turn number.
+     */
     private int turn;
+    
+    /**
+     * The current round number.
+     */
     private int round;
+    
+    /**
+     * A list of all players in the game.
+     */
     private final List<Player> players;
+    
+    /**
+     * The player whose turn it is currently.
+     */
     private Player currentPlayer;
-    private Player winner;
+    
+    /**
+     * Whether the game has entered the end game phase.
+     */
     private boolean endGame;
+    
+    /**
+     * Whether the game is paused.
+     */
     private boolean paused;
+    
+    /**
+     * Whether this is the final round of the game.
+     */
     private boolean finalRound;
+    
+    /**
+     * The event manager for the game.
+     */
     private final EventManager eventManager;
+    
+    /**
+     * The common objectives for the game.
+     */
     private final ObjectiveCard[] commonObjectives;
+    
+    /**
+     * The current game state.
+     */
     private GameState gameState;
+    
+    /**
+     * The revealed resource cards.
+     */
     private final ResourceCard[] revealedResources;
+    
+    /**
+     * The revealed gold cards.
+     */
     private final GoldCard[] revealedGolds;
+    
+    /**
+     * The deck of resource cards.
+     */
     private final GameDeck<ResourceCard> resourceGameDeck;
+    
+    /**
+     * The deck of gold cards.
+     */
     private final GameDeck<GoldCard> goldGameDeck;
 
     /**
@@ -75,15 +133,19 @@ public class Game implements Serializable, EventEmitter {
         Log.getLogger().info("Game created.");
     }
 
-    public void startGame(){
+    /**
+     * Starts the game by setting the initial game state.
+     */
+    public synchronized void startGame(){
         this.gameState = new ChooseStarterSideState(this);
         this.gameState.setUp();
     }
 
     /**
-     * @param state sets the new state of the game
+     * Sets the new state of the game.
+     * @param state the new game state
      */
-    public void setGameState(GameState state) {
+    public synchronized void setGameState(GameState state) {
         this.gameState = state;
     }
 
@@ -93,7 +155,7 @@ public class Game implements Serializable, EventEmitter {
      * @param username the username of the player to retrieve.
      * @return the player if found, null otherwise.
      */
-    public Player getPlayerByUsername(String username) {
+    public synchronized Player getPlayerByUsername(String username) {
         for (Player p : this.players)
             if (p.getUsername().equals(username)) return p;
         return null;
@@ -103,17 +165,27 @@ public class Game implements Serializable, EventEmitter {
      * Executes a game action based on the received message.
      *
      * @param action the action received from a player.
-     * @throws Exception if the action cannot be executed.
+     * @throws InvalidActionException if the action is invalid.
+     * @throws NotYourTurnException if it's not the player's turn.
      */
-    public void executeAction(GameAction action) throws InvalidActionException, NotYourTurnException {
+    public synchronized void executeAction(GameAction action) throws InvalidActionException, NotYourTurnException {
         this.gameState.execute(action);
     }
 
-    public void disconnectPlayer(String username) {
+    /**
+     * Disconnects a player from the game.
+     * @param username the username of the player to disconnect
+     */
+    public synchronized void disconnectPlayer(String username) {
         this.gameState.disconnectPlayer(username);
     }
 
-    public boolean reconnectPlayer(String username) {
+    /**
+     * Reconnects a player to the game.
+     * @param username the username of the player to reconnect
+     * @return true if the player was successfully reconnected, false otherwise
+     */
+    public synchronized boolean reconnectPlayer(String username) {
         Player player = this.getPlayerByUsername(username);
         if (player == null) return false; // No player with the given username
         if (player.isOnline()) return false; // Player with the given username already online
@@ -121,7 +193,11 @@ public class Game implements Serializable, EventEmitter {
         return true;
     }
 
-    public void forfeitWinner(String username) {
+    /**
+     * Ends the game and forfeits the victory to the specified player.
+     * @param username the username of the player who won by forfeit
+     */
+    public synchronized void forfeitWinner(String username) {
         // TODO: implement this
         System.out.println(username + " won by forfeit.");
     }
@@ -129,35 +205,36 @@ public class Game implements Serializable, EventEmitter {
     /**
      * @return the game deck containing resource cards
      */
-    public GameDeck<ResourceCard> getResourceGameDeck() {
+    public synchronized GameDeck<ResourceCard> getResourceGameDeck() {
         return this.resourceGameDeck;
     }
 
     /**
      * @return the game deck containing gold cards
      */
-    public GameDeck<GoldCard> getGoldGameDeck() {
+    public synchronized GameDeck<GoldCard> getGoldGameDeck() {
         return this.goldGameDeck;
     }
 
     /**
      * Increments the turn counter for the game.
      */
-    public void incrementTurn() {
+    public synchronized void incrementTurn() {
         this.turn++;
     }
 
     /**
      * Increments the round counter for the game.
      */
-    public void incrementRound() {
+    public synchronized void incrementRound() {
         this.round++;
     }
 
     /**
-     * @param player sets the player who is currently taking their turn
+     * Sets the current player
+     * @param player the player who is currently taking their turn
      */
-    public void setCurrentPlayer(Player player) {
+    public synchronized void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
     }
 
@@ -166,7 +243,7 @@ public class Game implements Serializable, EventEmitter {
      *
      * @return the next player in the turn order
      */
-    public Player getNextPlayer() {
+    public synchronized Player getNextPlayer() {
         if (this.currentPlayer.equals(this.players.getLast()))
             return this.players.getFirst();
         return players.get(players.indexOf(currentPlayer) + 1);
@@ -175,7 +252,7 @@ public class Game implements Serializable, EventEmitter {
     /**
      * @return the array of common objectives
      */
-    public ObjectiveCard[] getCommonObjectives() {
+    public synchronized ObjectiveCard[] getCommonObjectives() {
         return this.commonObjectives;
     }
 
@@ -189,14 +266,14 @@ public class Game implements Serializable, EventEmitter {
     /**
      * @return the current round number of the game
      */
-    public int getRound() {
+    public synchronized int getRound() {
         return round;
     }
 
     /**
      * @return the current turn number within the current round
      */
-    public int getTurn() {
+    public synchronized int getTurn() {
         return turn;
     }
 
@@ -217,80 +294,109 @@ public class Game implements Serializable, EventEmitter {
     /**
      * @return the player who is currently taking their turn
      */
-    public Player getCurrentPlayer() {
+    public synchronized Player getCurrentPlayer() {
         return currentPlayer;
     }
 
     /**
      * @return the list of all players currently in the game
      */
-    public List<Player> getPlayers() {
+    public synchronized List<Player> getPlayers() {
         return this.players;
     }
 
     /**
      * @return the current state of the game
      */
-    public GameState getGameState() {
+    public synchronized GameState getGameState() {
         return gameState;
     }
 
+    /**
+     * Adds an event listener for a specific game event type.
+     * @param gameEventType the type of game event
+     * @param eventListener the event listener to add
+     */
     @Override
-    public void addEventListener(GameEventType gameEventType, EventListener eventListener) {
+    public synchronized void addEventListener(GameEventType gameEventType, EventListener eventListener) {
         this.eventManager.addEventListener(gameEventType, eventListener);
     }
 
+    /**
+     * Removes an event listener for a specific game event type.
+     * @param gameEventType the type of game event
+     * @param eventListener the event listener to remove
+     */
     @Override
-    public void removeEventListener(GameEventType gameEventType, EventListener eventListener) {
+    public synchronized void removeEventListener(GameEventType gameEventType, EventListener eventListener) {
         this.eventManager.removeEventListener(gameEventType, eventListener);
     }
 
+    /**
+     * Triggers a game event.
+     * @param gameEvent the game event to trigger
+     */
     @Override
-    public void triggerEvent(GameEvent gameEvent) {
+    public synchronized void triggerEvent(GameEvent gameEvent) {
         this.eventManager.triggerEvent(gameEvent);
     }
 
     /**
      * @return true if the game has ended, false otherwise
      */
-    public boolean isEndGame() {
+    public synchronized boolean isEndGame() {
         return endGame;
     }
 
     /**
-     * @param endGame sets true to mark the game as finished, false otherwise
+     * Sets the end game status.
+     * @param endGame true to mark the game as finished, false otherwise
      */
-    public void setEndGame(boolean endGame) {
+    public synchronized void setEndGame(boolean endGame) {
         this.endGame = endGame;
     }
 
     /**
      * @return true if the current round is the final round of the game, false otherwise
      */
-    public boolean isFinalRound() {
+    public synchronized boolean isFinalRound() {
         return finalRound;
     }
 
     /**
-     * @param finalRound sets true if this should be the final round, false otherwise
+     * Sets the final round status.
+     * @param finalRound true if this should be the final round, false otherwise
      */
-    public void setFinalRound(boolean finalRound) {
+    public synchronized void setFinalRound(boolean finalRound) {
         this.finalRound = finalRound;
     }
 
-    public ResourceCard[] getRevealedResources() {
+    /**
+     * @return the array of revealed resource cards
+     */
+    public synchronized ResourceCard[] getRevealedResources() {
         return revealedResources;
     }
 
-    public GoldCard[] getRevealedGolds() {
+    /**
+     * @return the array of revealed gold cards
+     */
+    public synchronized GoldCard[] getRevealedGolds() {
         return revealedGolds;
     }
 
-    public boolean isPaused() {
+    /**
+     * @return true if the game is paused, false otherwise
+     */
+    public synchronized boolean isPaused() {
         return paused;
     }
 
-    public void setPaused(boolean paused) {
+    /**
+     * Sets the paused status of the game.
+     * @param paused true to pause the game, false otherwise
+     */
+    public synchronized void setPaused(boolean paused) {
         this.paused = paused;
     }
 }

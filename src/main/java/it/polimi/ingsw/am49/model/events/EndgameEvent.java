@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public record EndgameEvent(Map<Player, Integer> playersToAchievedObjectives) implements GameEvent {
+
     @Override
     public GameEventType getType() {
         return GameEventType.END_GAME;
