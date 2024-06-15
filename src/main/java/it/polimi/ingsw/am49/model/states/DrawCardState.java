@@ -108,10 +108,10 @@ public class DrawCardState extends GameState {
         do {
 
 //            // TODO: REMOVE THIS IF STATEMENT (here only for debugging purposes)
-//            if (this.game.getTurn() > 4) {
-//                this.goToNextState(new EndGameState(this.game));
-//                return;
-//            }
+            if (this.game.getTurn() > 2) {
+                this.goToNextState(new EndGameState(this.game));
+                return;
+            }
 
             if (this.game.isFinalRound() && this.currentPlayer.equals(this.game.getLastPlayer())) {
                 this.goToNextState(new EndGameState(this.game));

@@ -21,7 +21,8 @@ public class TuiPlayerRenderer {
 
     private final TuiCardRenderer renderer;
     private final VirtualPlayer player;
-    private final boolean hidden;
+    private final boolean hiddenHand;
+    private final boolean hiddenPersonalObjective;
     private final List<Integer> commonObjectives;
     private final TuiTextureManager textureManager;
 
@@ -29,13 +30,15 @@ public class TuiPlayerRenderer {
      * Constructs a TuiPlayerRenderer with the specified virtual player, visibility, and common objectives.
      *
      * @param player the virtual player to render
-     * @param hidden whether the player's hand and personal objective should be hidden
+     * @param hiddenHand whether the player's hand should be hidden
+     * @param hiddenPersonalObjective whether the player's personal objective should be hidden
      * @param commonObjectives the list of common objectives
      */
-    public TuiPlayerRenderer(VirtualPlayer player, boolean hidden, List<Integer> commonObjectives) {
+    public TuiPlayerRenderer(VirtualPlayer player, boolean hiddenHand, boolean hiddenPersonalObjective, List<Integer> commonObjectives) {
         this.player = player;
         this.renderer = new TuiCardRenderer(110, 5);
-        this.hidden = hidden;
+        this.hiddenHand = hiddenHand;
+        this.hiddenPersonalObjective = hiddenPersonalObjective;
         this.commonObjectives = commonObjectives;
         this.textureManager = TuiTextureManager.getInstance();
     }
@@ -67,47 +70,77 @@ public class TuiPlayerRenderer {
         System.out.println("Hand" + " ".repeat(51) + "Personal obj." + " ".repeat(10) + "Common objectives");
         this.renderer.clear();
 
-        if (!this.hidden) {
-            this.drawVisibleHandAndObjective();
-        } else {
-            this.drawHiddenHandAndObjective();
-        }
+//        if (!this.hidden) {
+//            this.drawVisibleHandAndObjective();
+//        } else {
+//            this.drawHiddenHandAndObjective();
+//        }
+        this.drawHand();
+        this.drawPersonalObjective();
 
         this.drawCommonObjectives();
         this.renderer.print();
     }
 
-    /**
-     * Draws the player's visible hand and personal objective.
-     */
-    private void drawVisibleHandAndObjective() {
-        List<Integer> hand = this.player.getHand();
-
-        for (int i = 0; i < hand.size(); i++) {
-            drawCard(hand.get(i), 7 + i * 16);
-        }
-
-        Integer personalObjectiveId = this.player.getPersonalObjectiveId();
-        drawCard(personalObjectiveId, 62);
-    }
-
-    /**
-     * Draws the player's hidden hand and personal objective.
-     */
-    private void drawHiddenHandAndObjective() {
-        List<Pair<Resource, Boolean>> hiddenHand = this.player.getHiddenHand();
-
-        for (int i = 0; i < hiddenHand.size(); i++) {
-            Pair<Resource, Boolean> pair = hiddenHand.get(i);
-            ColoredChar[][] texture = getBackPlaceableTexture(pair.first, pair.second);
-            if (texture != null) {
-                this.renderer.draw(texture, 7 + i * 16, 2);
+    private void drawHand() {
+        if (!this.hiddenHand) {
+            List<Integer> hand = this.player.getHand();
+            for (int i = 0; i < hand.size(); i++) {
+                drawCard(hand.get(i), 7 + i * 16);
+            }
+        } else {
+            List<Pair<Resource, Boolean>> hiddenHand = this.player.getHiddenHand();
+            for (int i = 0; i < hiddenHand.size(); i++) {
+                Pair<Resource, Boolean> pair = hiddenHand.get(i);
+                ColoredChar[][] texture = this.getBackPlaceableTexture(pair.first, pair.second);
+                if (texture != null) {
+                    this.renderer.draw(texture, 7 + i * 16, 2);
+                }
             }
         }
-
-        ColoredChar[][] obTexture = textureManager.getBackTexture(BackTexture.OB);
-        this.renderer.draw(obTexture, 62, 2);
     }
+
+    private void drawPersonalObjective() {
+        if (!this.hiddenPersonalObjective) {
+            Integer personalObjectiveId = this.player.getPersonalObjectiveId();
+            drawCard(personalObjectiveId, 62);
+        } else {
+            ColoredChar[][] obTexture = this.textureManager.getBackTexture(BackTexture.OB);
+            this.renderer.draw(obTexture, 62, 2);
+        }
+    }
+
+//    /**
+//     * Draws the player's visible hand and personal objective.
+//     */
+//    private void drawVisibleHandAndObjective() {
+//        List<Integer> hand = this.player.getHand();
+//
+//        for (int i = 0; i < hand.size(); i++) {
+//            drawCard(hand.get(i), 7 + i * 16);
+//        }
+//
+//        Integer personalObjectiveId = this.player.getPersonalObjectiveId();
+//        drawCard(personalObjectiveId, 62);
+//    }
+//
+//    /**
+//     * Draws the player's hidden hand and personal objective.
+//     */
+//    private void drawHiddenHandAndObjective() {
+//        List<Pair<Resource, Boolean>> hiddenHand = this.player.getHiddenHand();
+//
+//        for (int i = 0; i < hiddenHand.size(); i++) {
+//            Pair<Resource, Boolean> pair = hiddenHand.get(i);
+//            ColoredChar[][] texture = this.getBackPlaceableTexture(pair.first, pair.second);
+//            if (texture != null) {
+//                this.renderer.draw(texture, 7 + i * 16, 2);
+//            }
+//        }
+//
+//        ColoredChar[][] obTexture = this.textureManager.getBackTexture(BackTexture.OB);
+//        this.renderer.draw(obTexture, 62, 2);
+//    }
 
     /**
      * Draws the common objectives.

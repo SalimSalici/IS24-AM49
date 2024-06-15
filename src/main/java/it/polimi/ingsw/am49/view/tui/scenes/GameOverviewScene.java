@@ -131,8 +131,9 @@ public class GameOverviewScene extends Scene implements Observer {
                     this.getClientPlayer() :
                     this.game.getPlayers().get(Integer.parseInt(args[1]) - 1);
             if (player != null) {
-                boolean hidden = !player.getUsername().equals(this.tuiApp.getUsername());
-                this.focusedPlayerRenderer = new TuiPlayerRenderer(player, hidden, this.game.getCommonObjectives());
+                boolean hiddenHand = !player.getUsername().equals(tuiApp.getUsername());
+                boolean hiddenPersonalObjective = this.game.getGameState() != GameStateType.END_GAME;
+                this.focusedPlayerRenderer = new TuiPlayerRenderer(player, hiddenHand, hiddenPersonalObjective, this.game.getCommonObjectives());
             } else
                 this.showError("Unexpected error occurred. If it persists, please restart the client.");
             this.refreshView();
@@ -226,7 +227,7 @@ public class GameOverviewScene extends Scene implements Observer {
         this.game = this.tuiApp.getVirtualGame();
         this.game.addObserver(this);
         this.drawAreaRenderer = new TuiDrawAreaRenderer(this.game.getDrawableArea());
-        this.focusedPlayerRenderer = new TuiPlayerRenderer(this.game.getPlayerByUsername(tuiApp.getUsername()), false, this.game.getCommonObjectives());
+        this.focusedPlayerRenderer = new TuiPlayerRenderer(this.game.getPlayerByUsername(tuiApp.getUsername()), false, false, this.game.getCommonObjectives());
     }
 
     @Override

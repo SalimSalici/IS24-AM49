@@ -122,36 +122,13 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
             System.out.println("Connected to socket server.");
         } else {
             server = ClientApp.getRMIServer(serverHost, serverPort);
-            client = ClientApp.getClient(args);
             System.setProperty("java.rmi.server.hostname", server.getClientHostAddress());
+            client = ClientApp.getClient(args);
             System.out.println("Connected to RMI server.");
         }
 
         client.setServer(server);
         client.initialize();
-
-        // In case of RMI, system property hostname must be set before instantiating the client Remote object
-
-//        if (!List.of(args).contains("--socket")) {
-//            server = ClientApp.getRMIServer(serverHost, serverPort);
-//            System.setProperty("java.rmi.server.hostname", server.getClientHostAddress());
-//            System.out.println("Connected to RMI server.");
-//        }
-//
-//        if(List.of(args).contains("--gui")) {
-//            client = new GuiApp(args);
-//        }
-//        else {
-//            client = new TuiApp();
-//        }
-//
-//        if (List.of(args).contains("--socket")) {
-//            server = ClientApp.getSocketServer(serverHost, serverPort + 1, client);
-//            System.out.println("Connected to socket server.");
-//        }
-//
-//        client.setServer(server);
-//        client.initialize();
     }
 
     private static Server getRMIServer(String host, int port) throws RemoteException, NotBoundException {

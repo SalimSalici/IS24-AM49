@@ -38,7 +38,7 @@ public class ServerApp implements Server {
     }
 
     @Override
-    public RoomInfo createRoom(Client client, String roomName, int numPlayers, String creatorUsername)
+    public synchronized RoomInfo createRoom(Client client, String roomName, int numPlayers, String creatorUsername)
             throws AlreadyInRoomException, CreateRoomException {
 
         if (roomName.length() < 2 || roomName.length() > 15)

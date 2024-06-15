@@ -34,7 +34,7 @@ public class Main {
         VirtualPlayer player = new VirtualPlayer("Salim", Color.RED);
         player.setHand(List.of(1, 34, 65));
         player.setPersonalObjectiveId(101);
-        TuiPlayerRenderer tuiPlayerRenderer = new TuiPlayerRenderer(player, false, List.of(98, 97));
+        TuiPlayerRenderer tuiPlayerRenderer = new TuiPlayerRenderer(player, false, false, List.of(98, 97));
         tuiPlayerRenderer.print();
 
         VirtualDrawable drawArea = new VirtualDrawable(40, 40, Resource.MUSHROOMS, Resource.LEAVES, List.of(2, 23), List.of(65, 54));
