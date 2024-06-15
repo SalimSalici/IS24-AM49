@@ -61,6 +61,11 @@ public class GuiManager {
         setup();
         this.stage = stage;
         stage.setResizable(false);
+        // Add listener for when closing the window
+        this.stage.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
         run();
     }
 

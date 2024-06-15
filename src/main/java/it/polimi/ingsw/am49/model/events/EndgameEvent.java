@@ -20,9 +20,10 @@ public record EndgameEvent(Map<Player, Integer> playersToAchievedObjectives) imp
         HashMap<String, Integer[]> updateMap = new HashMap<>();
         for (Map.Entry<Player, Integer> entry : this.playersToAchievedObjectives.entrySet()) {
             Player p = entry.getKey();
-            Integer[] pointsAndObjectives = new Integer[2];
+            Integer[] pointsAndObjectives = new Integer[3];
             pointsAndObjectives[0] = p.getPoints();
             pointsAndObjectives[1] = entry.getValue();
+            pointsAndObjectives[2] = p.getPersonalObjective().getId();
             updateMap.put(entry.getKey().getUsername(), pointsAndObjectives);
         }
         return new EndGameUpdate(updateMap);

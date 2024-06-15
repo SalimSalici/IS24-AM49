@@ -170,13 +170,15 @@ public class VirtualGame extends Observable {
                 continue;
             }
 
-            if (pointsAndObjectives.length < 2) {
+            if (pointsAndObjectives.length < 3) {
                 Log.getLogger().severe("Received invalid EndGameUpdate: missing points and/or completed objectives");
                 player.setPoints(0);
                 player.setCompletedObjectives(0);
+                player.setPersonalObjectiveId(0);
             } else {
                 player.setPoints(pointsAndObjectives[0]);
                 player.setCompletedObjectives(pointsAndObjectives[1]);
+                player.setPersonalObjectiveId(pointsAndObjectives[2]);
             }
         }
         this.notifyObservers();
