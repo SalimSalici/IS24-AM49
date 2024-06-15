@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 public enum SceneType {
+    CHAT_SCENE,
     WELCOME_SCENE,
     MAIN_MENU_SCENE,
     ROOM_SCENE,

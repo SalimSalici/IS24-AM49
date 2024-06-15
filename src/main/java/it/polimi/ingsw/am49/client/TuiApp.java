@@ -37,6 +37,7 @@ public class TuiApp extends ClientApp {
 
     @Override
     public void receiveChatMessage(ChatMSG msg) {
-
+        super.receiveChatMessage(msg);
+        this.sceneManager.chatMessage(msg);
     }
 }

@@ -103,7 +103,7 @@ public class GameOverviewScene extends Scene implements Observer {
         String command = parts[0];
         switch (command) {
             case "1", "chat":
-                this.showError("Not yet supported.");
+                this.sceneManager.switchScene(SceneType.CHAT_SCENE);
                 break;
             case "2", "focus":
                 this.handleFocusPlayer(parts);

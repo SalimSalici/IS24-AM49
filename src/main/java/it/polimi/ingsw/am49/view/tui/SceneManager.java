@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.view.tui;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
@@ -18,6 +19,7 @@ public class SceneManager {
     private final HashMap<SceneType, Scene> scenes;
     private final HashMap<VirtualPlayer, Scene> playerScenes;
     private RoomScene roomScene;
+    private ChatScene chatScene;
     private StarterCardScene starterCardScene;
     private ChooseObjectiveCardScene chooseObjectiveCardScene;
     private Scene currentScene;
@@ -35,14 +37,18 @@ public class SceneManager {
     }
 
     public void initialize() {
-        this.scenes.put(SceneType.WELCOME_SCENE, new WelcomeScene(this, this.tuiApp));
-        this.scenes.put(SceneType.MAIN_MENU_SCENE, new MainMenuScene(this, this.tuiApp));
-        this.scenes.put(SceneType.OVERVIEW_SCENE, new GameOverviewScene(this, this.tuiApp));
-        this.scenes.put(SceneType.END_GAME_SCENE, new EndGameScene(this, this.tuiApp));
 
         this.roomScene = new RoomScene(this, this.tuiApp);
         this.starterCardScene = new StarterCardScene(this, this.tuiApp);
         this.chooseObjectiveCardScene = new ChooseObjectiveCardScene(this, this.tuiApp);
+        this.chatScene = new ChatScene(this, this.tuiApp);
+
+        this.scenes.put(SceneType.WELCOME_SCENE, new WelcomeScene(this, this.tuiApp));
+        this.scenes.put(SceneType.MAIN_MENU_SCENE, new MainMenuScene(this, this.tuiApp));
+        this.scenes.put(SceneType.OVERVIEW_SCENE, new GameOverviewScene(this, this.tuiApp));
+        this.scenes.put(SceneType.END_GAME_SCENE, new EndGameScene(this, this.tuiApp));
+        this.scenes.put(SceneType.CHAT_SCENE, chatScene);
+
 
         this.switchScene(SceneType.WELCOME_SCENE);
 
@@ -83,6 +89,10 @@ public class SceneManager {
         this.switchScene(roomScene);
     }
 
+    public synchronized void chatMessage(ChatMSG chatMSG) {
+        this.chatScene.addChatMessage(chatMSG);
+    }
+
     public synchronized void roomUpdate(RoomInfo roomInfo, String message) {
         if (this.currentScene.equals(this.roomScene))
             this.roomScene.roomUpdate(roomInfo, message);
@@ -92,6 +102,7 @@ public class SceneManager {
         this.initializePlayerScenes();
         this.starterCardScene.setStarterCardId(gameStartedUpdate.starterCardId());
         this.switchScene(this.starterCardScene);
+        this.chatScene.clearMessages();
     }
 
     public synchronized void initializePlayerScenes() {

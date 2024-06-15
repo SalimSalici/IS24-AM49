@@ -92,7 +92,8 @@ public class ServerApp implements Server {
     public RoomInfo readyUp(Client client, Color color) throws RoomException {
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
         Room room = this.clientsToRooms.get(clientHandler);
-        room.clientReady(clientHandler, color);
+        if (room != null) room.clientReady(clientHandler, color);
+        else throw new RoomException("You are not in a room.");
         return room.getRoomInfo();
     }
 
@@ -100,7 +101,8 @@ public class ServerApp implements Server {
     public RoomInfo readyDown(Client client) throws RoomException {
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
         Room room = this.clientsToRooms.get(clientHandler);
-        room.clientNoMoreReady(clientHandler);
+        if (room != null) room.clientNoMoreReady(clientHandler);
+        else throw new RoomException("You are not in a room.");
         return room.getRoomInfo();
     }
 
@@ -179,8 +181,8 @@ public class ServerApp implements Server {
     public void chatMessage(Client client, ChatMSG msg) throws RemoteException { //TODO: create custom exeption
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
         Room room = this.clientsToRooms.get(clientHandler);
-        room.newChatMSG(msg);
-
+        if (room != null) room.newChatMSG(msg);
+        // TODO: throw exception
     }
 
     private Room validateNewClientAndGetRoom(Client client, String roomName, String username) throws AlreadyInRoomException, JoinRoomException {

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.config.StaticConfig;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.exceptions.RoomException;
@@ -81,6 +82,11 @@ public abstract class Scene {
             } catch (InterruptedException ignored) {}
         }
         this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
+    }
+
+    protected String getColoredUsername(VirtualPlayer player) {
+        if (player == null) return null;
+        return this.getColoredUsername(player.getUsername(), player.getColor());
     }
 
     protected String getColoredUsername(String username, Color color) {

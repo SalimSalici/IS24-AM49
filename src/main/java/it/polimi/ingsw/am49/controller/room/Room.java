@@ -432,15 +432,15 @@ public class Room {
         } else{
             ClientHandler clientRecipient = this.getClientByUsername(msg.recipient());
             ClientHandler clientSender = this.getClientByUsername(msg.sender());
+            if (clientSender == null || clientRecipient == null)
+                return;
             try {
-                if(clientRecipient != null)
-                    clientRecipient.receiveChatMessage(msg);
+                clientRecipient.receiveChatMessage(msg);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
             try {
-                if(clientSender != null)
-                    clientSender.receiveChatMessage(msg);
+                clientSender.receiveChatMessage(msg);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
