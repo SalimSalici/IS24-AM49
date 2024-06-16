@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.server.exceptions.RoomException;
 import it.polimi.ingsw.am49.util.IntervalTimer;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +19,7 @@ public class ClientHandler implements Client {
     private final ExecutorService executorService;
     private long lastHeartbeat;
     private final IntervalTimer hearbeatCheckerTimer;
+    @SuppressWarnings("FieldCanBeLocal")
     private final int timeoutInSeconds = 5;
 
     public ClientHandler(Client client, Server server) {
@@ -39,7 +41,11 @@ public class ClientHandler implements Client {
 
     public void roomUpdate(RoomInfo roomInfo, String message) {
         executorService.submit(() -> {
-            try { client.roomUpdate(roomInfo, message); } catch (RemoteException ignored) {}
+            try {
+                client.roomUpdate(roomInfo, message);
+            } catch (RemoteException ignored) {
+                this.disonnectAndClose();
+            }
         });
     }
 
@@ -48,26 +54,18 @@ public class ClientHandler implements Client {
             try {
                 client.receiveGameUpdate(gameUpdate);
             } catch (RemoteException e) {
-                System.err.println("Error sending game update");
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public void playerDisconnected(String username) {
-        executorService.submit(() -> {
-            try {
-                client.playerDisconnected(username);
-            } catch (RemoteException e) {
-                System.err.println("Error notifying client of player disconnection");
-                e.printStackTrace();
+                this.disonnectAndClose();
             }
         });
     }
 
     public void startHeartbeat() {
         executorService.submit(() -> {
-            try { client.startHeartbeat(); } catch (RemoteException ignored) {}
+            try {
+                client.startHeartbeat();
+            } catch (RemoteException ignored) {
+                this.disonnectAndClose();
+            }
         });
     }
 
@@ -76,7 +74,7 @@ public class ClientHandler implements Client {
         executorService.submit(() -> {
             try {
                 client.stopHeartbeat();
-            } catch (RemoteException e) {}
+            } catch (RemoteException ignored) {}
         });
     }
 
@@ -85,7 +83,9 @@ public class ClientHandler implements Client {
         executorService.submit(() -> {
             try {
                 client.receiveChatMessage(msg);
-            } catch (RemoteException e) {}
+            } catch (RemoteException e) {
+                this.disonnectAndClose();
+            }
         });
     }
 
@@ -93,20 +93,30 @@ public class ClientHandler implements Client {
         return client;
     }
 
-    private void checkHeartbeat() {
-        if (System.currentTimeMillis() - this.lastHeartbeat > this.timeoutInSeconds * 1000) {
-            System.out.println("Client failed heartbeat check. Disconnecting now.");
-            this.close();
-            try {
-                this.server.leaveRoom(this.client);
-            } catch (RemoteException | RoomException ignored) {}
-        }
+    public void leaveRoom() {
+        try {
+            this.server.leaveRoom(this.client);
+        } catch (RemoteException | RoomException ignored) {}
     }
 
     public void close() {
         this.stopHeartbeat();
         this.hearbeatCheckerTimer.stop();
         this.hearbeatCheckerTimer.shutdown();
+    }
+
+    public void disonnectAndClose() {
+        System.out.println("Disconnect and close client.");
+        this.close();
+        this.leaveRoom();
+
+    }
+
+    private void checkHeartbeat() {
+        if (System.currentTimeMillis() - this.lastHeartbeat > this.timeoutInSeconds * 1000) {
+            Log.getLogger().warning("Client failed heartbeat check. Disconnecting now.");
+            this.disonnectAndClose();
+        }
     }
 }
 

@@ -76,10 +76,6 @@ public class ChooseObjectiveState extends GameState {
         for (Player p : this.game.getPlayers())
             if (!p.isOnline())
                 this.chooseRandomly(p);
-
-        // TODO: REMOVE!!
-//        for (int i = 0; i < 33; i++)
-//            this.game.getResourceGameDeck().draw();
     }
 
     /**

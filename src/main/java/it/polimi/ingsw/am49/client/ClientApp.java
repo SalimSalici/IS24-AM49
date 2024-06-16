@@ -48,13 +48,8 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
         }
         if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
             this.game = VirtualGame.newGame((GameStartedUpdate)gameUpdate);
-        } else
+        } else if (this.game != null)
             this.game.processGameUpdate(gameUpdate);
-    }
-
-    @Override
-    public void playerDisconnected(String username) throws RemoteException {
-
     }
 
     @Override
@@ -70,18 +65,10 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
     @Override
     public void receiveChatMessage(ChatMSG msg){
         game.getPlayerByUsername(username).setMessage(msg.text(), msg.sender(), msg.recipient(), LocalTime.now().truncatedTo(ChronoUnit.MINUTES));
-//        System.out.println("ARRIVATO!!!" + msg);
     }
 
     private void pingServer() {
-        try {
-            this.server.ping(this);
-        } catch (Exception e) {
-            // TODO: handle
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        try { this.server.ping(this); } catch (Exception ignored) {}
     }
 
     public void loadGame(CompleteGameInfo completeGameInfo) {

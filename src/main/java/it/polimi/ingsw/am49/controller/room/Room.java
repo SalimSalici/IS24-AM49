@@ -157,7 +157,7 @@ public class Room {
             public void run() {
                 self.declareforfeitWinnerAndDestroy();
             }
-        }, 1000 * 10); // 60 seconds
+        }, 1000 * 10); // 10 seconds
     }
 
     private synchronized void declareforfeitWinnerAndDestroy() {

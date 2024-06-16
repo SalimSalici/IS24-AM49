@@ -237,15 +237,4 @@ public class PlayerBoard implements Serializable {
         }
         return new Pair<>(row, col);
     }
-
-    // TODO: this method was added mainly for debugging... could be removed in future
-    public void printSimpleBoard() {
-        for (int r = 0; r < this.board.length; r++) {
-            for (int c = 0; c < this.board[r].length; c++) {
-                char toPrint = this.board[r][c] == null ? '-' : 'O';
-                System.out.print(toPrint);
-            }
-            System.out.print("\n");
-        }
-    }
 }

@@ -27,8 +27,7 @@ public class ServerSocketManager {
                 this.socketClientHandlers.add(new SocketClientHandler(clientSocket, this.server));
                 Log.getLogger().info("Accepted new client with address: " + clientSocket.getRemoteSocketAddress());
             } catch (IOException e) {
-                System.out.println("Error accpeting a client...");
-                throw new RuntimeException(e);
+                Log.getLogger().severe("Error accpeting a client...");
             }
 
         }

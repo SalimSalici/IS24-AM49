@@ -203,6 +203,15 @@ public class ServerSocketHandler extends SocketHandler implements Server {
         }
     }
 
+    @Override
+    public void chatMessage(Client client, ChatMSG msg) throws RemoteException {
+        try {
+            this.sendRequest(new ChatMessageMTS(this.getUniqueId(), msg), Void.class);
+        }catch (Exception e) {
+            throw new RemoteException(e.getMessage());
+        }
+    }
+
     /**
      * Pings the server to check connectivity.
      *
@@ -226,8 +235,11 @@ public class ServerSocketHandler extends SocketHandler implements Server {
      */
     @Override
     public String getClientHostAddress() throws RemoteException {
-        // TODO
-        return null;
+        try {
+            return this.sendRequest(new GetClientHostAddressMTS(this.getUniqueId()), String.class);
+        }catch (Exception e) {
+            throw new RemoteException(e.getMessage());
+        }
     }
 
     /**
@@ -243,13 +255,11 @@ public class ServerSocketHandler extends SocketHandler implements Server {
                 case ReceiveGameUpdateMTC params -> this.client.receiveGameUpdate(params.gameUpdate());
                 case StartHeartbeatMTC ignored -> this.client.startHeartbeat();
                 case StopHeartbeatMTC ignored -> this.client.stopHeartbeat();
+                case ReceiveChatMessageMTC params -> this.client.receiveChatMessage(params.chatMSG());
                 default -> throw new RemoteException("Unexpected message received: " + pushMsg);
             }
         } catch (RemoteException e) {
             Log.getLogger().severe("Error handling RMI call from server in handlePushMessage(...): " + e.getMessage());
         }
     }
-
-    @Override
-    public void chatMessage(Client client, ChatMSG msg){}
 }

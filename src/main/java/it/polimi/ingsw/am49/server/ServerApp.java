@@ -169,7 +169,6 @@ public class ServerApp implements Server {
     @Override
     public String getClientHostAddress() throws RemoteException {
         try {
-            System.out.println(UnicastRemoteObject.getClientHost());
             return UnicastRemoteObject.getClientHost();
         } catch (ServerNotActiveException e) {
             Log.getLogger().severe("Couldn't get client host address.");

@@ -140,10 +140,28 @@ public class SocketClientHandler implements Client {
                 }
                 this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
+            case ChatMessageMTS params -> {
+                Object returnValue = null;
+                try {
+                    this.server.chatMessage(this, params.chatMSG());
+                } catch (Exception e) {
+                    returnValue = e;
+                }
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
+            }
             case PingMTS ignored -> {
                 Object returnValue = null;
                 try {
                     this.server.ping(this);
+                } catch (Exception e) {
+                    returnValue = e;
+                }
+                this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
+            }
+            case GetClientHostAddressMTS ignored -> {
+                Object returnValue;
+                try {
+                    returnValue = this.clientSocket.getInetAddress().getHostAddress();
                 } catch (Exception e) {
                     returnValue = e;
                 }
@@ -183,11 +201,6 @@ public class SocketClientHandler implements Client {
     }
 
     @Override
-    public void playerDisconnected(String username) throws RemoteException {
-
-    }
-
-    @Override
     public void startHeartbeat() throws RemoteException {
         try {
             this.writeToOutputStream(new StartHeartbeatMTC(0));
@@ -210,7 +223,15 @@ public class SocketClientHandler implements Client {
     }
 
     @Override
-    public void receiveChatMessage(ChatMSG msg) throws RemoteException {}
+    public void receiveChatMessage(ChatMSG msg) throws RemoteException {
+        try {
+            this.writeToOutputStream(new ReceiveChatMessageMTC(0, msg));
+        } catch (IOException e) {
+            throw new RemoteException(
+                    "SOCKETS: Could not send message to client through sockets (SocketClientHandler::stopHeartbeat)"
+            );
+        }
+    }
 
     private void writeToOutputStream(Object obj) throws IOException {
         synchronized (this.objectOutputStream) {
