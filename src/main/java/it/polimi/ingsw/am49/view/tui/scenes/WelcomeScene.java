@@ -32,10 +32,4 @@ public class WelcomeScene extends Scene {
         this.tuiApp.setUsername(input);
         this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
     }
-
-    @Override
-    public void focus() {}
-
-    @Override
-    public void unfocus() {}
 }

@@ -26,6 +26,7 @@ public record EndgameEvent(Map<Player, Integer> playersToAchievedObjectives, Pla
             pointsAndObjectives[2] = p.getPersonalObjective().getId();
             updateMap.put(entry.getKey().getUsername(), pointsAndObjectives);
         }
-        return new EndGameUpdate(updateMap, forfeitWinner.getUsername());
+        String forfeitWinnerUsername = forfeitWinner == null ? null : forfeitWinner().getUsername();
+        return new EndGameUpdate(updateMap, forfeitWinnerUsername);
     }
 }
