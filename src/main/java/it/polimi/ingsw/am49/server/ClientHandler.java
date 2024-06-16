@@ -18,6 +18,7 @@ public class ClientHandler implements Client {
     private final ExecutorService executorService;
     private long lastHeartbeat;
     private final IntervalTimer hearbeatCheckerTimer;
+    private final int timeoutInSeconds = 5;
 
     public ClientHandler(Client client, Server server) {
         this.client = client;
@@ -93,7 +94,7 @@ public class ClientHandler implements Client {
     }
 
     private void checkHeartbeat() {
-        if (System.currentTimeMillis() - this.lastHeartbeat > 5000) {
+        if (System.currentTimeMillis() - this.lastHeartbeat > this.timeoutInSeconds * 1000) {
             System.out.println("Client failed heartbeat check. Disconnecting now.");
             this.close();
             try {

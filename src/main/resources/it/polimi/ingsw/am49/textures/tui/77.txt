@@ -2,7 +2,7 @@ GP
 +-------------+
 | I    3      |
 |             |
-|     MMM     |
+|     BBB     |
 +-------------+
 MMMMMMMMMMMMMMM
 M Y    Y      M

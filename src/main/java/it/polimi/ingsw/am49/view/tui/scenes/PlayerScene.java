@@ -41,7 +41,7 @@ public class PlayerScene extends Scene implements Observer {
         this.board = player.getBoard();
         this.boardRenderer = new TuiBoardRenderer(player.getBoard());
         boolean hiddenHand = !player.getUsername().equals(tuiApp.getUsername());
-        boolean hiddenPersonalObjective = this.game.getGameState() != GameStateType.END_GAME;
+        boolean hiddenPersonalObjective = this.game.getGameState() != GameStateType.END_GAME && hiddenHand;
         this.tuiPlayerRenderer = new TuiPlayerRenderer(player, hiddenHand, hiddenPersonalObjective, this.game.getCommonObjectives());
     }
 
