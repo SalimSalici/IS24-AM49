@@ -11,8 +11,10 @@ import it.polimi.ingsw.am49.view.tui.SceneManager;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChatScene extends Scene implements Observer {
 
@@ -110,7 +112,8 @@ public class ChatScene extends Scene implements Observer {
             return;
         }
         try {
-            this.tuiApp.getServer().chatMessage(this.tuiApp, new ChatMSG(parts[2], this.tuiApp.getUsername(), parts[1]));
+            String message = Arrays.stream(parts).skip(2).collect(Collectors.joining(" "));
+            this.tuiApp.getServer().chatMessage(this.tuiApp, new ChatMSG(message, this.tuiApp.getUsername(), parts[1]));
             this.refreshView();
         } catch (RemoteException e) {
             throw new RuntimeException(e);
