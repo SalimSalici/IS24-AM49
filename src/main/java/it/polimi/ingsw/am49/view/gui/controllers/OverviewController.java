@@ -20,7 +20,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -43,16 +45,14 @@ public class OverviewController extends GuiController {
     private GridPane drawableGridpane, playersGridpane, objectivesGridpane, handGridpane, resourcesGridpane, itemsGridpane;
     @FXML
     private AnchorPane playerboardAnchorpane, chatframeAnchorpane;
-
     @FXML
     private BoardController playerboardController;
     @FXML
-    private Pane pointsPane;
+    private Pane pointsPane, playersContainerPane, objectivesContainerPane, handContainerPane, drawablesContainerPane , generalHandContainerPane, resourceContainerPane, itemsContainerPane;
     @FXML
     private ChatController chatController;
     @FXML
     private Button leaveButton;
-
 
     private VirtualGame game;
     private String myUsername;
@@ -66,6 +66,7 @@ public class OverviewController extends GuiController {
     private Image rotationImage;
     private final List<Button> rotationButtonList = new ArrayList<>();
     private boolean endGame = false;
+    private boolean finalRoundAlreadyShown = false;
 
     @Override
     public void init() {
@@ -103,16 +104,32 @@ public class OverviewController extends GuiController {
         this.game.addObserver(() -> {
             drawCurrentPlayerIndicator();
             drawPointsTokens();
+            if(this.game.getFinalRound() && !finalRoundAlreadyShown){
+                Platform.runLater(this::showFinalRoundPopUp);
+                changeBorderColor("#a33420");
+            }
+            // sets the scene for when the game has ended
             if (this.game.getGameState() == GameStateType.END_GAME) {
                 try {
                     endGame = true;
                     setPersonalObjectives();
                     disableButtons();
+                    Platform.runLater(() -> {
+                        leaveButton.setText("RESULTS");
+                        leaveButton.setOnMouseClicked(actionEvent -> {
+                            try {
+                                this.manager.changeScene(SceneTitle.END_GAME, false);
+                            } catch (InvalidSceneException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+                    });
                     this.manager.changeScene(SceneTitle.END_GAME, true);
                 } catch (InvalidSceneException e) {
                     showErrorPopup(e.getMessage());
                 }
             }
+            this.playerboardController.setBoardRound(this.game.getRound());
         });
         this.game.getDrawableArea().addObserver(this::drawDrawableArea);
         for(VirtualPlayer player : this.game.getPlayers()){
@@ -172,7 +189,7 @@ public class OverviewController extends GuiController {
     }
 
     private void drawObjectives(){
-        int index = 0;
+        int index = 2;
         for(int cardId : this.game.getCommonObjectives()){
             ImageView cardImageview = new ImageView();
             cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
@@ -184,7 +201,7 @@ public class OverviewController extends GuiController {
         ImageView cardImageview = new ImageView();
         cardImageview.setImage(this.guiTextureManager.getCardImage(this.game.getPlayerByUsername(myUsername).getPersonalObjectiveId(), false));
         setCardStyle(cardImageview);
-        objectivesGridpane.add(cardImageview, index, 0);
+        objectivesGridpane.add(cardImageview, 0, 0);
     }
 
     private void drawPersonalObjective(){
@@ -192,7 +209,7 @@ public class OverviewController extends GuiController {
             objectivesGridpane.getChildren().removeLast();
             ImageView personalObImageview = this.playersPersonalObjectives.get(this.focusedPlayer);
             setCardStyle(personalObImageview);
-            objectivesGridpane.add(personalObImageview, this.game.getCommonObjectives().size(), 0);
+            objectivesGridpane.add(personalObImageview, 0, 0);
         });
     }
 
@@ -262,6 +279,7 @@ public class OverviewController extends GuiController {
         int index = 0;
         for (VirtualPlayer player : this.players) {
             Button viewboardButton = new Button("VIEW");
+            GridPane.setHalignment(viewboardButton, HPos.CENTER);
             ImageView totemImageview = new ImageView(this.guiTextureManager.getImageByTotemColor(player.getColor()));
             Label usernameLabel = new Label(player.getUsername());
 
@@ -314,6 +332,7 @@ public class OverviewController extends GuiController {
             for (int index = 0; index < this.myHand.size(); index++) {
                 ImageView rotationImageview = new ImageView(rotationImage);
                 Button rotationButton = new Button();
+                GridPane.setHalignment(rotationButton, HPos.CENTER);
                 rotationImageview.setFitWidth(16);
                 rotationImageview.setFitHeight(16);
                 rotationButton.setPrefSize(24, 24);
@@ -543,10 +562,34 @@ public class OverviewController extends GuiController {
         });
     }
 
+    public void showFinalRoundPopUp(){
+        System.out.println("debug");
+        finalRoundAlreadyShown = true;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Final Round");
+        alert.setHeaderText(null);
+        alert.setContentText("After the end of the current round there will be one final round!");
+
+        String css = this.getClass().getResource("/it/polimi/ingsw/am49/css/alert.css").toExternalForm();
+        alert.getDialogPane().getStylesheets().add(css);
+        alert.getDialogPane().getStyleClass().add("alert");
+
+        alert.showAndWait();
+    }
+
     private void setCardStyle(ImageView cardImage){
         cardImage.setFitWidth(143);
         cardImage.setFitHeight(88);
         GridPane.setHalignment(cardImage, HPos.CENTER);
         GridPane.setValignment(cardImage, VPos.CENTER);
+    }
+
+    private void changeBorderColor(String newColor) {
+        String style = String.format("-fx-border-color: %s; -fx-border-width: 5;", newColor);
+        Platform.runLater(() -> {
+            for (Pane pane : Arrays.asList(playersContainerPane, generalHandContainerPane, drawablesContainerPane, handContainerPane, objectivesContainerPane, resourceContainerPane, itemsContainerPane, playerboardController.getInnerPane())) {
+                pane.setStyle(style);
+            }
+        });
     }
 }

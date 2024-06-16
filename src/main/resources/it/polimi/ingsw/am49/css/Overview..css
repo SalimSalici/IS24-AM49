@@ -24,8 +24,14 @@
 }
 
 .innerPaneBackground{
-    -fx-background-image: url("../images/elements/background_with_outline.jpg");
-    -fx-background-size: stretch;
+    -fx-background-image: url("../images/elements/background.jpeg");
+    -fx-border-color: #A39E20;
+    -fx-border-width: 5;
+}
+
+.containerPane{
+    -fx-border-color: #A39E20;
+    -fx-border-width: 5;
 }
 
 .button {

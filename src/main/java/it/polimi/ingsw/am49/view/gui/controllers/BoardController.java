@@ -17,6 +17,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -56,7 +57,7 @@ public class BoardController extends GuiController {
     private final Map<VirtualPlayer, List<ImageView>> playerBoards = new HashMap<>();
     private final List<CardPane> myBoard = new ArrayList<>();
     private final Map<VirtualPlayer, Pair<Double, Double>> playerToBoardCoords = new HashMap<>();
-    private Label boardName;
+    private Label boardName, boardRound;
     String myUsername;
     private VirtualPlayer currentPlayer;
     private VirtualPlayer myPlayer;
@@ -73,7 +74,7 @@ public class BoardController extends GuiController {
         this.currentPlayer = myPlayer;
 
         setupPanes();
-        setUpBoardName();
+        setUpBoardInfo();
         setupButtons();
         setupStartingCards();
     }
@@ -112,17 +113,31 @@ public class BoardController extends GuiController {
         containerPane.getChildren().add(resetButton);
     }
 
-    private void setUpBoardName(){
+    private void setUpBoardInfo(){
         Label boardNameInfo = new Label("Now seeing: ");
+        Label boardRoundInfo = new Label("ROUND: ");
+
         boardNameInfo.setLayoutX(90);
         boardNameInfo.setLayoutY(25);
+
+        boardRoundInfo.setLayoutX(600);
+        boardRoundInfo.setLayoutY(25);
 
         boardName = new Label();
         boardName.setLayoutX(180);
         boardName.setLayoutY(25);
         boardName.setText(currentPlayer.getUsername());
 
-        containerPane.getChildren().addAll(boardNameInfo, boardName);
+        boardRound = new Label();
+        boardRound.setLayoutX(670);
+        boardRound.setLayoutY(25);
+        boardRound.setText(Integer.toString(0));
+
+        containerPane.getChildren().addAll(boardNameInfo, boardName, boardRoundInfo, boardRound);
+    }
+
+    public void setBoardRound(int round) {
+        Platform.runLater(() -> this.boardRound.setText(Integer.toString(round)));
     }
 
     private void setupStartingCards() {
@@ -373,6 +388,10 @@ public class BoardController extends GuiController {
         currentPlayer = player;
         drawBoard(player);
         centerInnerPane();
+    }
+
+    public Pane getInnerPane() {
+        return innerPane;
     }
 
     public void disableCornerButtons(){

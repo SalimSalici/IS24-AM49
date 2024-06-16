@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
@@ -28,14 +29,16 @@ public class RoomInfoListCell extends ListCell<RoomInfoItem> {
 
     @Override
     protected void updateItem(RoomInfoItem item, boolean empty) {
-        super.updateItem(item, empty);
-        if (empty || item == null) {
-            setText(null);
-            setGraphic(null);
-        } else {
-            roomName.setText(item.getRoomName());
-            capacity.setText(item.getPlayersInside() + "/" + item.getMaxCapacity());
-            setGraphic(hbox);
-        }
+        Platform.runLater(() -> {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                roomName.setText(item.getRoomName());
+                capacity.setText(item.getPlayersInside() + "/" + item.getMaxCapacity());
+                setGraphic(hbox);
+            }
+        });
     }
 }

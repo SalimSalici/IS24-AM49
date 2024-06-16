@@ -69,6 +69,10 @@ public abstract class GuiController {
         alert.setHeaderText(null);
         alert.setContentText(errorMessage);
 
+        String css = this.getClass().getResource("/it/polimi/ingsw/am49/css/alert.css").toExternalForm();
+        alert.getDialogPane().getStylesheets().add(css);
+        alert.getDialogPane().getStyleClass().add("alert");
+
         alert.showAndWait();
     }
 }
