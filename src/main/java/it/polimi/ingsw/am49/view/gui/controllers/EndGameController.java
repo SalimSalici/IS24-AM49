@@ -15,28 +15,57 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Controller class for the game over GUI screen.
+ * Handles user interactions at the end of the game, such as viewing the final rank and navigating back to the game scene to review the boards.
+ */
 public class EndGameController extends GuiController {
     @FXML
     private Button leaveButton, viewboardsButton;
-
     @FXML
     private ListView<EndGameInfoItem> rankingListview;
+    @FXML
+    private VBox rankingVbox;
+    @FXML
+    private HBox labelsHbox;
+    @FXML
+    private ImageView totemforfImageview;
+    @FXML
+    private Label winnerforfLabel, forfeitLabel;
 
     @Override
     public void init() {
         leaveButton.setOnAction(e -> leave());
         viewboardsButton.setOnAction(e -> backToOverview());
+
+        VirtualPlayer forfeitWinner = this.app.getVirtualGame().getforfeitWinner();
+        if (forfeitWinner != null) {
+            rankingVbox.getChildren().remove(labelsHbox);
+            rankingVbox.getChildren().remove(rankingListview);
+
+            winnerforfLabel.setText(forfeitWinner.getUsername());
+            totemforfImageview.setImage(this.guiTextureManager.getImageByTotemColor(forfeitWinner.getColor()));
+
+            return;
+        }
+
+        rankingVbox.getChildren().remove(forfeitLabel);
+        rankingVbox.getChildren().remove(totemforfImageview);
 
         List<VirtualPlayer> ranking = this.app.getVirtualGame().getRanking();
         List<EndGameInfoItem> endGameItems = new ArrayList<>();
@@ -56,6 +85,10 @@ public class EndGameController extends GuiController {
         rankingListview.setCellFactory(param -> new EndGameInfoListCell());
     }
 
+    /**
+     * Handles the action of leaving the game room and navigating back to the main menu.
+     * If an error occurs, shows an error popup with the appropriate message.
+     */
     private void leave(){
         this.manager.executorService.submit(() -> {
             try {
@@ -75,6 +108,10 @@ public class EndGameController extends GuiController {
         });
     }
 
+    /**
+     * Handles the action of navigating back to the overview screen.
+     * If an error occurs, shows an error popup with the appropriate message.
+     */
     private void backToOverview(){
         try{
             this.manager.changeScene(SceneTitle.OVERVIEW, false);

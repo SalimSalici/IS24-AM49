@@ -99,7 +99,7 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
     // TODO: handle exceptions
     public static void main(String[] args) throws IOException, NotBoundException {
-        //String serverHost = "10.147.20.145";
+//        String serverHost = "10.147.20.145";
         String serverHost = "127.0.0.1";
         int serverPort = 8458;
 

@@ -9,14 +9,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents a virtual board in the game. Manages the placement of virtual tiles and cards, and provides methods for retrieving and manipulating the board state.
+ */
 public class VirtualBoard extends Observable {
-
     private final VirtualTile[][] board;
     private int lastZIndex;
     private int lastPlacedRow;
     private int lastPlacedCol;
     private VirtualTile starterTile;
 
+    /**
+     * Constructs a new VirtualBoard with a default size.
+     * Initializes the board and other state variables.
+     */
     public VirtualBoard() {
         this.board = new VirtualTile[50][50];
         this.lastZIndex = 0;
@@ -25,6 +31,14 @@ public class VirtualBoard extends Observable {
         this.starterTile = null;
     }
 
+    /**
+     * Places a card on the board at the specified position.
+     *
+     * @param card the card to place
+     * @param row  the row position to place the card
+     * @param col  the column position to place the card
+     * @return the newly created VirtualTile representing the placed card
+     */
     public VirtualTile placeCard(VirtualCard card, int row, int col) {
         this.lastZIndex++;
         VirtualTile tile = new VirtualTile(card, row, col, this.lastZIndex, this);
@@ -35,15 +49,33 @@ public class VirtualBoard extends Observable {
         return tile;
     }
 
+    /**
+     * Retrieves the tile at the specified position on the board.
+     *
+     * @param row the row position
+     * @param col the column position
+     * @return the VirtualTile at the specified position, or null if no tile is present
+     */
     public VirtualTile getTile(int row, int col) {
         return this.board[row][col];
     }
 
+    /**
+     * @return the starter tile, or null if no starter tile has been placed
+     */
     public VirtualTile getStarterTile() {
         return this.starterTile;
     }
 
     // TODO: instead of code duplication, consider making this method static in PlayerBoard.java
+    /**
+     * Given the coordinates of a card and a relative position, returns the coordinates of the card in the specified relative position.
+     *
+     * @param relativePosition the relative position to convert
+     * @param row              the current row position of the card
+     * @param col              the current column position of the card
+     * @return a Pair representing the new coordinates of the card in the specified relative position
+     */
     public static Pair<Integer, Integer> getCoords(RelativePosition relativePosition, int row, int col) {
         switch (relativePosition) {
             case TOP -> {
@@ -82,7 +114,10 @@ public class VirtualBoard extends Observable {
         return new Pair<>(row, col);
     }
 
-    public List<VirtualTile> getOrderedTilesList(){ //TODO: consider another option since this one could be inefficient
+    /**
+     * @return a list of all tiles, ordered by Z-index
+     */
+    public List<VirtualTile> getOrderedTilesList(){
         return Arrays.stream(this.board)
                 .flatMap(Arrays::stream)
                 .filter(Objects::nonNull)
