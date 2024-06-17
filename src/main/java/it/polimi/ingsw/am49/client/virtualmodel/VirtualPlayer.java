@@ -206,9 +206,8 @@ public class VirtualPlayer extends Observable {
 
     public List<String> getPrivateChat(VirtualPlayer recipient){
         return messages.stream()
-                .filter(m -> m.getRecipient().equals(recipient.username))
-                .map(m -> m.getTimeAsString() + " " + m.getText())
+                .filter(m -> m.getRecipient().equals(recipient.username) || (m.getSender().equals(recipient.username)&& m.getRecipient().equals(username)))
+                .map(m -> m.getSender().equals(username) ? m.getTimeAsString() + " " + m.getText() : m.getTimeAsString() +" " + m.getSender() + ": "+ m.getText())
                 .toList();
     }
-
 }

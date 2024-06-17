@@ -12,21 +12,6 @@
             <tabs>
                 <Tab fx:id="chatglobalTab">
                     <content>
-                        <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                            <children>
-                                <ScrollPane fx:id="chatglobalScrollpane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
-                                    <content>
-                                        <VBox fx:id="chatglobalVbox" prefHeight="275.0" prefWidth="278.0" />
-                                    </content>
-                                </ScrollPane>
-                                <HBox fx:id="chatglobalHbox" layoutY="275.0">
-                                    <children>
-                                        <TextField fx:id="chatglobalTextfield" prefHeight="26.0" prefWidth="265.0" />
-                                        <Button fx:id="chatglobalButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="↵" />
-                                    </children>
-                                </HBox>
-                            </children>
-                        </AnchorPane>-->
                     </content>
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -38,21 +23,6 @@
                 </Tab>
                 <Tab fx:id="chatredTab">
                     <content>
-                        <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                            <children>
-                                <ScrollPane fx:id="chatredScrollpane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
-                                    <content>
-                                        <VBox fx:id="chatredVbox" prefHeight="275.0" prefWidth="278.0" />
-                                    </content>
-                                </ScrollPane>
-                                <HBox fx:id="chatredHbox" layoutY="275.0">
-                                    <children>
-                                        <TextField fx:id="chatredTextfield" prefHeight="26.0" prefWidth="265.0" />
-                                        <Button fx:id="chatredButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="↵" />
-                                    </children>
-                                </HBox>
-                            </children>
-                        </AnchorPane>-->
                     </content>
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -64,21 +34,6 @@
                 </Tab>
                 <Tab fx:id="chatblueTab">
                     <content>
-                        <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                            <children>
-                                <ScrollPane fx:id="chatblueScrollpane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
-                                    <content>
-                                        <VBox fx:id="chatblueVbox" prefHeight="275.0" prefWidth="278.0" />
-                                    </content>
-                                </ScrollPane>
-                                <HBox fx:id="chatblueHbox" layoutY="275.0">
-                                    <children>
-                                        <TextField fx:id="chatblueTextfield" prefHeight="26.0" prefWidth="265.0" />
-                                        <Button fx:id="chatblueButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="↵" />
-                                    </children>
-                                </HBox>
-                            </children>
-                        </AnchorPane>-->
                     </content>
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -90,21 +45,6 @@
                 </Tab>
                 <Tab fx:id="chatyellowTab">
                     <content>
-                        <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                            <children>
-                                <ScrollPane fx:id="chatyellowScrollpane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
-                                    <content>
-                                        <VBox fx:id="chatyellowVbox" prefHeight="275.0" prefWidth="278.0" />
-                                    </content>
-                                </ScrollPane>
-                                <HBox fx:id="chatyellowHbox" layoutY="275.0">
-                                    <children>
-                                        <TextField fx:id="chatyellowTextfield" prefHeight="26.0" prefWidth="265.0" />
-                                        <Button fx:id="chatyellowButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="↵" />
-                                    </children>
-                                </HBox>
-                            </children>
-                        </AnchorPane>-->
                     </content>
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -116,21 +56,6 @@
                 </Tab>
                 <Tab fx:id="chatgreenTab">
                     <content>
-                        <!--<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                            <children>
-                                <ScrollPane fx:id="chatgreenScrollpane" hbarPolicy="NEVER" vbarPolicy="ALWAYS">
-                                    <content>
-                                        <VBox fx:id="chatgreenVbox" prefHeight="275.0" prefWidth="278.0" />
-                                    </content>
-                                </ScrollPane>
-                                <HBox fx:id="chatgreenHbox" layoutY="275.0">
-                                    <children>
-                                        <TextField fx:id="chatgreenTextfield" prefHeight="26.0" prefWidth="265.0" />
-                                        <Button fx:id="chatgreenButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="↵" />
-                                    </children>
-                                </HBox>
-                            </children>
-                        </AnchorPane>-->
                     </content>
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
