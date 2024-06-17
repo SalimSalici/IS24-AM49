@@ -29,7 +29,7 @@ public class PlaceCardState extends GameState {
      * Constructor for the PlaceCardState.
      * @param game istance of the {@link Game} class.
      */
-    protected PlaceCardState(Game game) {
+    public PlaceCardState(Game game) {
         super(GameStateType.PLACE_CARD, game, Set.of(GameActionType.PLACE_CARD));
         this.currentPlayer = game.getCurrentPlayer();
     }
@@ -37,7 +37,7 @@ public class PlaceCardState extends GameState {
     @Override
     public void setUp() {
         super.setUp();
-        if (!this.currentPlayer.isOnline())
+        if (!this.currentPlayer.isOnline() || this.currentPlayer.getBoard().isDeadlocked())
             this.skipTurn();
     }
 
@@ -90,7 +90,6 @@ public class PlaceCardState extends GameState {
      * Skips the turn of the current player.
      */
     private void skipTurn() {
-        DrawCardState drawCardState = new DrawCardState(this.game);
-        drawCardState.handleSwitchToNextTurn();
+        this.game.handleSwitchToNextTurn();
     }
 }

@@ -14,6 +14,7 @@ import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.model.states.ChooseStarterSideState;
 import it.polimi.ingsw.am49.model.states.EndGameState;
 import it.polimi.ingsw.am49.model.states.GameState;
+import it.polimi.ingsw.am49.model.states.PlaceCardState;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.util.Log;
@@ -171,6 +172,47 @@ public class Game implements Serializable, EventEmitter {
      */
     public synchronized void executeAction(GameAction action) throws InvalidActionException, NotYourTurnException {
         this.gameState.execute(action);
+    }
+
+    /**
+     * Handles the transition to the next turn, including checking for end game conditions and setting the next player.
+     */
+    public void handleSwitchToNextTurn() {
+        this.incrementTurn();
+
+        do {
+
+//            // TODO: REMOVE THIS IF STATEMENT (here only for debugging purposes)
+//            if (this.game.getTurn() > 2) {
+//                this.goToNextState(new EndGameState(this.game));
+//                return;
+//            }
+
+            if (this.isFinalRound() && this.currentPlayer.equals(this.getLastPlayer())
+                    || this.allPlayersDeadlocked()) {
+                this.gameState.goToNextState(new EndGameState(this));
+                return;
+            }
+
+            this.handleEndGameAndFinalRound();
+            this.setCurrentPlayer(this.getNextPlayer());
+        } while (!this.getCurrentPlayer().isOnline());
+
+        this.gameState.goToNextState(new PlaceCardState(this));
+    }
+
+    /**
+     * Handles the logic for determining if the end game phase or final round should start.
+     */
+    private synchronized void handleEndGameAndFinalRound() {
+        if (this.currentPlayer.getPoints() >= 20 || (this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty()))
+            this.setEndGame(true);
+
+        if (this.currentPlayer.equals(this.getLastPlayer())) {
+            this.incrementRound();
+            if (this.isEndGame())
+                this.setFinalRound(true);
+        }
     }
 
     /**
@@ -398,5 +440,11 @@ public class Game implements Serializable, EventEmitter {
      */
     public synchronized void setPaused(boolean paused) {
         this.paused = paused;
+    }
+
+    public synchronized boolean allPlayersDeadlocked() {
+        for (Player p : this.players)
+            if (!p.getBoard().isDeadlocked()) return false;
+        return true;
     }
 }

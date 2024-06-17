@@ -193,6 +193,20 @@ public class PlayerBoard implements Serializable {
     }
 
     /**
+     * @return true if the board is deadlocked, meaning that no cards can be placed (any placement
+     * would cover a forbidden corner), false otherwise
+     */
+    public boolean isDeadlocked() {
+        for (BoardTile tile : this.getPlacementOrder()) {
+            for (RelativePosition pos : RelativePosition.values()) {
+                Pair<Integer, Integer> coords = this.getCoords(pos, tile.getRow(), tile.getCol());
+                if (this.isPlaceableTile(coords.first, coords.second)) return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Calculates and returns the coordinates of a card based on a specified relative position to another card's coordinates.
      *
      * @param relativePosition the relative position to the current card
