@@ -43,6 +43,9 @@ public class ChatController extends GuiController {
     private final BiMap<Tab, TextField> tabToTextField = new BiMap<>();
     private final BiMap<Tab, Button> tabToButton = new BiMap<>();
     private final Map<Tab, VBox> tabToVBox = new HashMap<>();
+    private final Map<Tab, ScrollPane> tabToScrollPane = new HashMap<>();
+    private final Map<Tab, Integer> readMessageCount = new HashMap<>();
+    private final Map<Tab, String> initialTabTitles = new HashMap<>();
 
     /**
      * Initializes the chat controller.
@@ -64,7 +67,14 @@ public class ChatController extends GuiController {
         });
 
         // Update the chat whenever it changes
-        this.myVirtualPlayer.addObserver(() -> Platform.runLater(this::updateCurrentTab));
+        this.myVirtualPlayer.addObserver(() -> Platform.runLater(() -> {
+            updateCurrentTab();
+            for (Tab tab : chatTabs) {
+                if (!tab.isSelected()) {
+                    updateUnreadMessagesCount(tab, tab == chatglobalTab ? myVirtualPlayer.getGlobalChat().size() : myVirtualPlayer.getPrivateChat(playerToChatTab.getKey(tab)).size());
+                }
+            }
+        }));
     }
 
     /**
@@ -106,7 +116,7 @@ public class ChatController extends GuiController {
     }
 
     /**
-     * Displays the conversation in the given tab.
+     * Displays the conversation in the given tab and marks the tab as read.
      *
      * @param conversation the list of messages to display
      * @param selectedTab the tab to display the conversation in
@@ -116,9 +126,18 @@ public class ChatController extends GuiController {
         vBox.getChildren().clear();
         for (String text : conversation) {
             Label message = new Label(text);
-            message.setWrapText(true);
-            message.setMaxWidth(vBox.getPrefWidth());
+            message.setWrapText(true); // Enable text wrapping
+            message.setMaxWidth(vBox.getPrefWidth() - 10); // Ensure text wraps within the available space
+            message.setStyle("-fx-padding: 3px;"); // Add some padding for better readability
             vBox.getChildren().add(message);
+        }
+        readMessageCount.put(selectedTab, conversation.size());
+        updateTabTitle(selectedTab, 0);
+
+        // Scroll to the bottom
+        ScrollPane scrollPane = tabToScrollPane.get(selectedTab);
+        if (scrollPane != null) {
+            Platform.runLater(() -> scrollPane.setVvalue(1.0));
         }
     }
 
@@ -172,7 +191,7 @@ public class ChatController extends GuiController {
             scrollPane.setPrefHeight(275);
 
             VBox vBox = new VBox();
-            vBox.setSpacing(2);
+//            vBox.setSpacing(2);
             vBox.setPrefWidth(275);
             vBox.setPrefHeight(275);
             scrollPane.setContent(vBox);
@@ -193,7 +212,13 @@ public class ChatController extends GuiController {
             anchorInTab.getChildren().addAll(scrollPane, hBox);
 
             tab.setContent(anchorInTab);
-            fillChildrenMap(tab, vBox, textField, sendButton);
+            fillChildrenMap(tab, vBox, textField, sendButton, scrollPane);
+
+            // Initialize unread messages count
+            readMessageCount.put(tab, 0);
+
+            // Set initial tab titles to empty values
+            initialTabTitles.put(tab, "");
         }
     }
 
@@ -204,11 +229,13 @@ public class ChatController extends GuiController {
      * @param vBox the VBox for the tab
      * @param textField the TextField for the tab
      * @param button the Button for the tab
+     * @param scrollPane the ScrollPane for the tab
      */
-    private void fillChildrenMap(Tab tab, VBox vBox, TextField textField, Button button) {
+    private void fillChildrenMap(Tab tab, VBox vBox, TextField textField, Button button, ScrollPane scrollPane) {
         tabToTextField.put(tab, textField);
         tabToButton.put(tab, button);
         tabToVBox.put(tab, vBox);
+        tabToScrollPane.put(tab, scrollPane);
     }
 
     /**
@@ -250,6 +277,36 @@ public class ChatController extends GuiController {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Updates the unread messages count for a given tab.
+     *
+     * @param tab the tab to update the count for
+     * @param currentSize the current count of messages
+     */
+    private void updateUnreadMessagesCount(Tab tab, int currentSize) {
+        if (!tab.isSelected()) {
+            int unread = currentSize - readMessageCount.get(tab);
+            if (unread > 0) {
+                updateTabTitle(tab, unread);
+            }
+        }
+    }
+
+    /**
+     * Updates the title of a tab to reflect the number of unread messages.
+     *
+     * @param tab the tab to update the title for
+     * @param unread the number of unread messages
+     */
+    private void updateTabTitle(Tab tab, int unread) {
+        String tabTitle = initialTabTitles.get(tab);
+        if (unread > 0) {
+            tab.setText(tabTitle + " (" + unread + ")");
+        } else {
+            tab.setText(tabTitle);
         }
     }
 }
