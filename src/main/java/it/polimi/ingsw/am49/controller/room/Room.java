@@ -20,6 +20,10 @@ import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The Room class represents a game room where players can join, leave, and play a game.
+ * It manages player information, game state, and communication with clients.
+ */
 public class Room {
 
     /**
@@ -31,7 +35,7 @@ public class Room {
 
     /**
      * Number of players of the game being played in this room. This number is not equal to the number of
-     * connected clients (some clients may have crashed)
+     * connected clients (some clients may have crashed).
      */
     private final int maxPlayers;
     private int currentPlayers;
@@ -42,10 +46,12 @@ public class Room {
 
     /**
      * Constructor for the Room class.
+     *
      * @param roomName the name of the room
      * @param maxPlayers the maximum number of players allowed in the room
      * @param creatorClient the client handler of the room creator
      * @param creatorUsername the username of the room creator
+     * @param server the server application
      */
     public Room(String roomName, int maxPlayers, ClientHandler creatorClient, String creatorUsername, ServerApp server) {
         this.roomName = roomName;
@@ -60,13 +66,13 @@ public class Room {
 
     /**
      * Adds a new player to the room.
+     *
      * @param playerClient the client handler of the new player
      * @param playerUsername the username of the new player
      * @throws JoinRoomException if the player cannot join the room
      * @throws GameAlreadyStartedException if the game has already started
      */
     public synchronized void addNewPlayer(ClientHandler playerClient, String playerUsername) throws JoinRoomException, GameAlreadyStartedException {
-
         this.checkIfNewPlayerCanJoin(playerClient, playerUsername); // If not, JoinRoomException is thrown
 
         this.usernamesToPlayers.put(playerUsername, new PlayerInfo(playerUsername, playerClient));
@@ -79,6 +85,7 @@ public class Room {
 
     /**
      * Reconnects a player to the game.
+     *
      * @param playerClient the client handler of the player
      * @param playerUsername the username of the player
      * @return the complete game information for the player
@@ -108,6 +115,7 @@ public class Room {
 
     /**
      * Removes a player from the room.
+     *
      * @param client the client handler of the player to be removed
      * @return true if the player was successfully removed, false otherwise
      */
@@ -121,7 +129,7 @@ public class Room {
                 this.removePlayerFromGame(playerInfo);
 
             this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
-                    .filter(c -> !c.equals(client) )
+                    .filter(c -> !c.equals(client))
                     .forEach(c -> c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' left your room."));
 
             return true;
@@ -131,6 +139,7 @@ public class Room {
 
     /**
      * Removes a player from the game.
+     *
      * @param playerInfo the player information of the player to be removed
      */
     private synchronized void removePlayerFromGame(PlayerInfo playerInfo) {
@@ -177,14 +186,14 @@ public class Room {
     }
 
     /**
-     * The Server will call this method to communicate the room that the specified client is ready to play the game
-     * with the chosen color
+     * The Server will call this method to communicate to the room that the specified client is ready to play the game
+     * with the chosen color.
+     *
      * @param client the client readying up
      * @param color the chosen color of the client
      * @throws RoomException if something goes wrong
      */
     public synchronized void clientReady(ClientHandler client, Color color) throws RoomException {
-
         String username = this.getUsernameByClient(client);
         if (username == null)
             throw new RoomException("Client is not in the room.");
@@ -199,13 +208,14 @@ public class Room {
                 .filter(c -> !c.equals(client))
                 .forEach(c -> c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' is ready."));
 
-        if (this.usernamesToPlayers.keySet().size() == maxPlayers && this.allPlayersReady()){
+        if (this.usernamesToPlayers.keySet().size() == maxPlayers && this.allPlayersReady()) {
             this.startGame();
         }
     }
 
     /**
      * Marks a client as no longer ready to play.
+     *
      * @param client the client handler of the player
      * @throws RoomException if something goes wrong
      */
@@ -224,6 +234,7 @@ public class Room {
 
     /**
      * Checks if the game is over.
+     *
      * @return true if the game is over, false otherwise
      */
     public synchronized boolean isGameOver() {
@@ -232,6 +243,7 @@ public class Room {
 
     /**
      * Checks if all players are ready to play.
+     *
      * @return true if all players are ready, false otherwise
      */
     private synchronized boolean allPlayersReady() {
@@ -243,7 +255,7 @@ public class Room {
     /**
      * Starts the game.
      */
-    private synchronized void startGame(){
+    private synchronized void startGame() {
         this.game = new Game(maxPlayers);
         this.gameStarted = true;
 
@@ -259,6 +271,7 @@ public class Room {
 
     /**
      * Executes a game action.
+     *
      * @param client the client handler of the player
      * @param action the game action to be executed
      * @throws InvalidActionException if the action is invalid
@@ -273,11 +286,13 @@ public class Room {
     }
 
     /**
-     * Checks if a client attempting to join the room is allowed to do so. Throws a {@link JoinRoomException} if not
-     * This method is mainly used by {@link Room#addNewPlayer(ClientHandler, String)}
-     * @param playerClient the client trying to join.
-     * @param playerUsername the username that the client chose.
+     * Checks if a client attempting to join the room is allowed to do so. Throws a {@link JoinRoomException} if not.
+     * This method is mainly used by {@link Room#addNewPlayer(ClientHandler, String)}.
+     *
+     * @param playerClient the client trying to join
+     * @param playerUsername the username that the client chose
      * @throws JoinRoomException if the client cannot join the room
+     * @throws GameAlreadyStartedException if the game has already started
      */
     private synchronized void checkIfNewPlayerCanJoin(ClientHandler playerClient, String playerUsername) throws JoinRoomException, GameAlreadyStartedException {
         if (!this.isUsernameAvailable(playerUsername))
@@ -295,6 +310,7 @@ public class Room {
 
     /**
      * Gets the client handler by username.
+     *
      * @param username the username of the player
      * @return the client handler of the player
      */
@@ -306,6 +322,7 @@ public class Room {
 
     /**
      * Gets the username by client handler.
+     *
      * @param client the client handler of the player
      * @return the username of the player
      */
@@ -318,6 +335,7 @@ public class Room {
 
     /**
      * Checks if a username is available.
+     *
      * @param username the username to check
      * @return true if the username is available, false otherwise
      */
@@ -327,6 +345,7 @@ public class Room {
 
     /**
      * Checks if a color is available.
+     *
      * @param color the color to check
      * @return true if the color is available, false otherwise
      */
@@ -338,6 +357,7 @@ public class Room {
 
     /**
      * Checks if a username corresponds to a client handler.
+     *
      * @param username the username to check
      * @param client the client handler to check
      * @return true if the username corresponds to the client handler, false otherwise
@@ -350,6 +370,7 @@ public class Room {
 
     /**
      * Gets the name of the room.
+     *
      * @return the name of the room
      */
     public String getRoomName() {
@@ -358,6 +379,7 @@ public class Room {
 
     /**
      * Checks if the game has started.
+     *
      * @return true if the game has started, false otherwise
      */
     public synchronized boolean isGameStarted() {
@@ -366,6 +388,7 @@ public class Room {
 
     /**
      * Gets the room information.
+     *
      * @return the room information
      */
     public synchronized RoomInfo getRoomInfo() {
@@ -376,6 +399,7 @@ public class Room {
 
     /**
      * Gets the current number of players in the room.
+     *
      * @return the current number of players
      */
     public synchronized int getCurrentPlayers() {
@@ -393,6 +417,7 @@ public class Room {
 
     /**
      * Gets the complete game information for a player.
+     *
      * @param username the username of the player
      * @return the complete game information for the player
      */
@@ -429,9 +454,15 @@ public class Room {
                 players
         );
     }
-    public void newChatMSG(ChatMSG msg){
-        if(msg.recipient().equals("*")){
-            for (PlayerInfo pInfo : this.usernamesToPlayers.values()){
+
+    /**
+     * Sends a new chat message.
+     *
+     * @param msg the chat message to be sent
+     */
+    public void newChatMSG(ChatMSG msg) {
+        if (msg.recipient().equals("*")) {
+            for (PlayerInfo pInfo : this.usernamesToPlayers.values()) {
                 ClientHandler client = pInfo.getClient();
                 try {
                     client.receiveChatMessage(msg);
@@ -439,7 +470,7 @@ public class Room {
                     throw new RuntimeException(e);
                 }
             }
-        } else{
+        } else {
             ClientHandler clientRecipient = this.getClientByUsername(msg.recipient());
             ClientHandler clientSender = this.getClientByUsername(msg.sender());
             if (clientSender == null || clientRecipient == null)
@@ -454,7 +485,6 @@ public class Room {
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
-
         }
     }
 }

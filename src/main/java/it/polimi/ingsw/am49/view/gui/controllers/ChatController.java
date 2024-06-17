@@ -54,10 +54,14 @@ public class ChatController extends GuiController {
     public void init() {
         this.game = app.getVirtualGame();
         this.myVirtualPlayer = game.getPlayerByUsername(this.app.getUsername());
-        configureTabs();
+        removeUnusedTabs();
+        initializeTabs();
 
         for (Tab tab : chatTabs) {
-            handleChat(tab);
+            TextField textField = tabToTextField.getValue(tab);
+
+            textField.setOnAction(e -> sendMessage(textField.getText(), myVirtualPlayer, tab));
+            tabToButton.getValue(tab).setOnAction(e -> sendMessage(textField.getText(), myVirtualPlayer, tab));
         }
 
         chatTabpane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
@@ -68,7 +72,7 @@ public class ChatController extends GuiController {
 
         // Update the chat whenever it changes
         this.myVirtualPlayer.addObserver(() -> Platform.runLater(() -> {
-            updateCurrentTab();
+            updateSelectedTab(chatTabpane.getSelectionModel().getSelectedItem());
             for (Tab tab : chatTabs) {
                 if (!tab.isSelected()) {
                     updateUnreadMessagesCount(tab, tab == chatglobalTab ? myVirtualPlayer.getGlobalChat().size() : myVirtualPlayer.getPrivateChat(playerToChatTab.getKey(tab)).size());
@@ -91,28 +95,6 @@ public class ChatController extends GuiController {
                 displayConversation(myVirtualPlayer.getPrivateChat(player), selectedTab);
             }
         }
-    }
-
-    /**
-     * Updates the conversation display for the currently selected tab.
-     */
-    private void updateCurrentTab() {
-        Tab selectedTab = chatTabpane.getSelectionModel().getSelectedItem();
-        if (selectedTab != null) {
-            updateSelectedTab(selectedTab);
-        }
-    }
-
-    /**
-     * Sets up the chat functionality for a given tab.
-     *
-     * @param selectedTab the tab to handle chat for
-     */
-    private void handleChat(Tab selectedTab) {
-        TextField textField = tabToTextField.getValue(selectedTab);
-
-        textField.setOnAction(e -> sendMessage(textField.getText(), myVirtualPlayer, selectedTab));
-        tabToButton.getValue(selectedTab).setOnAction(e -> sendMessage(textField.getText(), myVirtualPlayer, selectedTab));
     }
 
     /**
@@ -168,14 +150,6 @@ public class ChatController extends GuiController {
     }
 
     /**
-     * Configures the chat tabs by removing unused tabs and initializing the remaining ones.
-     */
-    private void configureTabs() {
-        removeUnusedTabs();
-        initializeTabs();
-    }
-
-    /**
      * Initializes the remaining chat tabs with the necessary components.
      */
     private void initializeTabs() {
@@ -185,29 +159,29 @@ public class ChatController extends GuiController {
             anchorInTab.setPrefWidth(293);
             anchorInTab.setPrefHeight(333);
 
-            ScrollPane scrollPane = new ScrollPane();
-            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-            scrollPane.setPrefWidth(293);
-            scrollPane.setPrefHeight(275);
+                ScrollPane scrollPane = new ScrollPane();
+                scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                scrollPane.setPrefWidth(293);
+                scrollPane.setPrefHeight(275);
 
-            VBox vBox = new VBox();
-//            vBox.setSpacing(2);
-            vBox.setPrefWidth(275);
-            vBox.setPrefHeight(275);
-            scrollPane.setContent(vBox);
+                    VBox vBox = new VBox();
+        //            vBox.setSpacing(2);
+                    vBox.setPrefWidth(275);
+                    vBox.setPrefHeight(275);
+                    scrollPane.setContent(vBox);
 
-            HBox hBox = new HBox();
-            hBox.setLayoutY(275);
+                HBox hBox = new HBox();
+                hBox.setLayoutY(275);
 
-            TextField textField = new TextField();
-            textField.setPrefWidth(265);
-            textField.setPrefHeight(26);
-            hBox.getChildren().add(textField);
+                    TextField textField = new TextField();
+                    textField.setPrefWidth(265);
+                    textField.setPrefHeight(26);
+                    hBox.getChildren().add(textField);
 
-            Button sendButton = new Button("↵");
-            sendButton.setPrefWidth(25);
-            sendButton.setPrefHeight(26);
-            hBox.getChildren().add(sendButton);
+                    Button sendButton = new Button("↵");
+                    sendButton.setPrefWidth(25);
+                    sendButton.setPrefHeight(26);
+                hBox.getChildren().add(sendButton);
 
             anchorInTab.getChildren().addAll(scrollPane, hBox);
 
@@ -277,6 +251,10 @@ public class ChatController extends GuiController {
                     }
                 }
             }
+        }
+        //Removes the global chat if there are only two player because it's presence is reduntant
+        if(game.getPlayers().size()<3){
+            chatTabpane.getTabs().remove(chatglobalTab);
         }
     }
 
