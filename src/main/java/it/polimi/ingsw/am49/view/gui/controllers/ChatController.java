@@ -11,6 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -107,11 +109,13 @@ public class ChatController extends GuiController {
         VBox vBox = tabToVBox.get(selectedTab);
         vBox.getChildren().clear();
         for (String text : conversation) {
-            Label message = new Label(text);
-            message.setWrapText(true); // Enable text wrapping
-            message.setMaxWidth(vBox.getPrefWidth() - 10); // Ensure text wraps within the available space
-            message.setStyle("-fx-padding: 3px;"); // Add some padding for better readability
-            vBox.getChildren().add(message);
+            Text message = new Text(text);
+            message.setStyle("-fx-padding: 3px;");
+            TextFlow textFlow = new TextFlow(message);
+            textFlow.setMaxWidth(vBox.getPrefWidth() - 10);
+            vBox.getChildren().add(textFlow);
+            Separator separator = new Separator();
+            vBox.getChildren().add(separator);
         }
         readMessageCount.put(selectedTab, conversation.size());
         updateTabTitle(selectedTab, 0);
@@ -165,7 +169,7 @@ public class ChatController extends GuiController {
                 scrollPane.setPrefHeight(275);
 
                     VBox vBox = new VBox();
-        //            vBox.setSpacing(2);
+                    vBox.setSpacing(1);
                     vBox.setPrefWidth(275);
                     vBox.setPrefHeight(275);
                     scrollPane.setContent(vBox);

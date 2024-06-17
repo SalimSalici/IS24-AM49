@@ -53,7 +53,7 @@ public class MyCard {
         ImageView interactiveCard = new ImageView(this.controller.guiTextureManager.getCardImage(id, flipped));
         interactiveCard.setFitWidth(132);
         interactiveCard.setFitHeight(87);
-
+        interactiveCard.getStyleClass().add("clickableImage");
         interactiveCard.setOnMouseClicked(mouseEvent -> {
             if (this.controller.getSelectedCard() == null || !this.equals(this.controller.getSelectedCard())) {
                 this.controller.selectCard(this);

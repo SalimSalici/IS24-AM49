@@ -63,3 +63,7 @@
 .button:pressed {
     -fx-background-color: #21130b;
 }
+
+.clickableImage:hover{
+    -fx-effect: dropshadow(one-pass-box, #72cfc5, 50, 0, 0, 0);
+}

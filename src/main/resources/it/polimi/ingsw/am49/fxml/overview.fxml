@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Rectangle?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="780.0" prefWidth="1620.0" styleClass="mainBackground" stylesheets="@../css/Overview..css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.am49.view.gui.controllers.OverviewController">
@@ -74,6 +75,17 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
+                           <children>
+                              <StackPane prefHeight="150.0" prefWidth="200.0" styleClass="clickableImage" GridPane.columnIndex="1">
+                                 <children>
+                                    <ImageView fitHeight="99.0" fitWidth="168.0" pickOnBounds="true" preserveRatio="true" styleClass="clickableImage">
+                                       <image>
+                                          <Image url="@../images/gold_card_back/076.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </StackPane>
+                           </children>
                         </GridPane>
                         <AnchorPane fx:id="resourceContainerPane" layoutX="272.0" layoutY="23.0" prefHeight="155.0" prefWidth="107.0" styleClass="containerPane">
                            <children>

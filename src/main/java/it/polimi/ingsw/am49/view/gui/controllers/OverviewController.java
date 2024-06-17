@@ -224,6 +224,7 @@ public class OverviewController extends GuiController {
         Platform.runLater(() -> {
             if (this.drawableArea.getDeckTopResource() != null){
                 ImageView resourceDeckImageview = new ImageView(this.guiTextureManager.getCardBackByResource(drawableArea.getDeckTopResource(), false));
+                resourceDeckImageview.getStyleClass().add("clickableImage");
                 resourceDeckImageview.setOnMouseClicked(mouseEvent -> drawCard(0,RESOURCE_DECK));
                 setCardStyle(resourceDeckImageview);
                 drawableGridpane.add(resourceDeckImageview, 0, 0);
@@ -233,6 +234,7 @@ public class OverviewController extends GuiController {
         Platform.runLater(() -> {
             if (this.drawableArea.getDeckTopGold() != null){
                 ImageView goldDeckImageview = new ImageView(this.guiTextureManager.getCardBackByResource(drawableArea.getDeckTopGold(), true));
+                goldDeckImageview.getStyleClass().add("clickableImage");
                 goldDeckImageview.setOnMouseClicked(mouseEvent -> drawCard(0,GOLD_DECK));
                 this.setCardStyle(goldDeckImageview);
                 drawableGridpane.add(goldDeckImageview, 1, 0);
@@ -245,6 +247,7 @@ public class OverviewController extends GuiController {
                 if(this.drawableArea.getRevealedResourcesIds().get(index) != null) {
                     int cardId = this.drawableArea.getRevealedResourcesIds().get(index);
                     ImageView cardImageview = new ImageView();
+                    cardImageview.getStyleClass().add("clickableImage");
                     cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
                     cardImageview.setFitWidth(130);
                     cardImageview.setFitHeight(80);
@@ -262,6 +265,7 @@ public class OverviewController extends GuiController {
                 if(this.drawableArea.getRevealedGoldsIds().get(index) != null) {
                     int cardId = this.drawableArea.getRevealedGoldsIds().get(index);
                     ImageView cardImageview = new ImageView();
+                    cardImageview.getStyleClass().add("clickableImage");
                     cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
                     cardImageview.setFitWidth(130);
                     cardImageview.setFitHeight(80);
