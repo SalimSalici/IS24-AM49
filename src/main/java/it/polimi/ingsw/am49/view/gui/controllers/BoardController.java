@@ -41,19 +41,15 @@ public class BoardController extends GuiController {
     private Pane containerPane;
     private OverviewController overviewController;
     private List<VirtualPlayer> players;
-    private Pane innerPane;
-    private Pane imagePane;
-    private ImageView starterImageview;
-    private ImageView selectedImageView;
+    private Pane innerPane, imagePane, borderPane;
     private final double cardWidth = 135;
     private final double cardHeight = 82;
     private final double cornerWidth = cardWidth * 0.25;
     private final double cornerHeight = cardHeight * 0.44;
-    private final double innerPaneWidth = 887;
-    private final double innerPaneHeight = 340;
+    private final double innerPaneWidth = 877;
+    private final double innerPaneHeight = 330;
     private final double initialX = (innerPaneWidth - cardWidth) / 2;
     private final double initialY = (innerPaneHeight - cardHeight) / 2;
-    private final Random random = new Random();
     private final Map<VirtualPlayer, List<ImageView>> playerBoards = new HashMap<>();
     private final List<CardPane> myBoard = new ArrayList<>();
     private final Map<VirtualPlayer, Pair<Double, Double>> playerToBoardCoords = new HashMap<>();
@@ -80,29 +76,35 @@ public class BoardController extends GuiController {
     }
 
     private void setupPanes() {
-        innerPane = new Pane();
+        borderPane = new Pane();
+        borderPane.setPrefSize(innerPaneWidth + 10, innerPaneHeight + 10);
         String css = this.getClass().getResource("/it/polimi/ingsw/am49/css/Overview..css").toExternalForm();
-        innerPane.setPrefSize(innerPaneWidth, innerPaneHeight);
-        //innerPane.setStyle("-fx-background-image: url('../resources/it/polimi/ingsw/am49/images/elements/symbol_background.jpg');");
+        borderPane.getStyleClass().add("containerPane");
+        borderPane.getStylesheets().add(css);
+        borderPane.applyCss();
+
+        innerPane = new Pane();
         innerPane.getStyleClass().add("innerPaneBackground");
         innerPane.getStylesheets().add(css);
-
         innerPane.applyCss();
+        innerPane.setPrefSize(innerPaneWidth, innerPaneHeight);
         innerPane.setClip(new Rectangle(innerPaneWidth, innerPaneHeight));
 
         imagePane = new Pane();
         innerPane.getChildren().add(imagePane);
-        containerPane.getChildren().add(innerPane);
+        borderPane.getChildren().add(innerPane);
+        containerPane.getChildren().add(borderPane);
+        centerBorderPane();
         centerInnerPane();
 
-        containerPane.widthProperty().addListener((obs, oldVal, newVal) -> centerInnerPane());
-        containerPane.heightProperty().addListener((obs, oldVal, newVal) -> centerInnerPane());
+        containerPane.widthProperty().addListener((obs, oldVal, newVal) -> centerBorderPane());
+        containerPane.heightProperty().addListener((obs, oldVal, newVal) -> centerBorderPane());
     }
 
     private void setupButtons() {
         Button resetButton = new Button("Reset");
         resetButton.setLayoutX(5);
-        resetButton.setLayoutY(20);
+        resetButton.setLayoutY(15);
         resetButton.setOnAction(e -> {
             imagePane.setLayoutX(0);
             imagePane.setLayoutY(0);
@@ -116,21 +118,22 @@ public class BoardController extends GuiController {
     private void setUpBoardInfo(){
         Label boardNameInfo = new Label("Now seeing: ");
         Label boardRoundInfo = new Label("ROUND: ");
+        int yDistance = 20;
 
         boardNameInfo.setLayoutX(90);
-        boardNameInfo.setLayoutY(25);
+        boardNameInfo.setLayoutY(yDistance);
 
         boardRoundInfo.setLayoutX(600);
-        boardRoundInfo.setLayoutY(25);
+        boardRoundInfo.setLayoutY(yDistance);
 
         boardName = new Label();
         boardName.setLayoutX(180);
-        boardName.setLayoutY(25);
+        boardName.setLayoutY(yDistance);
         boardName.setText(currentPlayer.getUsername());
 
         boardRound = new Label();
         boardRound.setLayoutX(670);
-        boardRound.setLayoutY(25);
+        boardRound.setLayoutY(yDistance);
         boardRound.setText(Integer.toString(0));
 
         containerPane.getChildren().addAll(boardNameInfo, boardName, boardRoundInfo, boardRound);
@@ -142,6 +145,7 @@ public class BoardController extends GuiController {
 
     private void setupStartingCards() {
         //sets up the starting card of each player that is not me
+        ImageView starterImageview;
         for (VirtualPlayer player : players) {
             if(isNotMe(player)){
                 List<ImageView> board = new ArrayList<>();
@@ -158,7 +162,6 @@ public class BoardController extends GuiController {
         //sets up my starting card
         VirtualCard startingCard = new VirtualCard(myPlayer.getStarterCard().id(), myPlayer.getStarterCard().flipped());
         myBoard.add(createCardPane(initialX, initialY, myUsername, startingCard, 25, 25));
-        starterImageview = (ImageView) myBoard.getFirst().stackPane().getChildren().getFirst();
         imagePane.getChildren().add(myBoard.getFirst().stackPane());
 
         for(VirtualPlayer player : players){
@@ -170,14 +173,6 @@ public class BoardController extends GuiController {
     public void updateSpecificBoard(VirtualPlayer player){
         loadBoardFromVirtualBoard(player);
         if(player.equals(currentPlayer))
-            drawBoard(currentPlayer);
-    }
-    
-    public void updateBoards(){
-        for(VirtualPlayer player : players){
-            loadBoardFromVirtualBoard(player);
-        }
-        if(isNotMe(currentPlayer))
             drawBoard(currentPlayer);
     }
 
@@ -346,13 +341,23 @@ public class BoardController extends GuiController {
     }
 
     private void centerInnerPane() {
-        double paneWidth = containerPane.getPrefWidth();
-        double paneHeight = containerPane.getPrefHeight();
+        double paneWidth = borderPane.getPrefWidth();
+        double paneHeight = borderPane.getPrefHeight();
         double innerWidth = innerPane.getPrefWidth();
         double innerHeight = innerPane.getPrefHeight();
         innerPane.setLayoutX((paneWidth - innerWidth) / 2);
-        innerPane.setLayoutY(paneHeight - innerHeight);
+        innerPane.setLayoutY(5);
     }
+
+    private void centerBorderPane() {
+        double paneWidth = containerPane.getPrefWidth();
+        double paneHeight = containerPane.getPrefHeight();
+        double innerWidth = borderPane.getPrefWidth();
+        double innerHeight = borderPane.getPrefHeight();
+        borderPane.setLayoutX((paneWidth - innerWidth) / 2);
+        borderPane.setLayoutY(paneHeight - innerHeight);
+    }
+
 
     private void addCardPane(double x, double y, VirtualCard card, String id, int row, int col) {
         CardPane cardPane = createCardPane(x, y, "NEW", card, row, col);
@@ -387,7 +392,7 @@ public class BoardController extends GuiController {
     public void switchPlayerBoard(VirtualPlayer player) {
         currentPlayer = player;
         drawBoard(player);
-        centerInnerPane();
+        centerBorderPane();
     }
 
     public Pane getInnerPane() {

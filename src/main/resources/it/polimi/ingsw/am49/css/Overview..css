@@ -25,8 +25,6 @@
 
 .innerPaneBackground{
     -fx-background-image: url("../images/elements/background.jpeg");
-    -fx-border-color: #A39E20;
-    -fx-border-width: 5;
 }
 
 .containerPane{
@@ -34,11 +32,24 @@
     -fx-border-width: 5;
 }
 
-.button {
+.viewButton {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-background-image: url("../images/elements/linearButton3-1.png");
-    -fx-background-size: stretch;
+    -fx-border-color: #21130b;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: #21130b;
+    -fx-font-family: "DejaVu Sans Mono";
+    -fx-font-size: 13px;
+    /*-fx-font-weight: book;  Imposta il peso del font */
+}
+
+.button {
+    -fx-background-color: linear-gradient(#A39E20, #b6b51f);
+    -fx-border-color: #21130b;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
     -fx-text-fill: #21130b;
     -fx-font-family: "DejaVu Sans Mono";
     -fx-font-size: 13px;

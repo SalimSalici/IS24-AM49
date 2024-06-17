@@ -15,7 +15,7 @@
    <children>
       <AnchorPane layoutX="11.0" layoutY="12.0" prefHeight="757.0" prefWidth="1598.0">
          <children>
-            <AnchorPane fx:id="chatframeAnchorpane" layoutX="15.0" layoutY="41.0" prefHeight="352.0" prefWidth="308.0" style="-fx-background-color: ED6A5A;">
+            <AnchorPane fx:id="chatframeAnchorpane" layoutX="15.0" layoutY="41.0" prefHeight="352.0" prefWidth="308.0" styleClass="containerPane">
                <children>
                    <fx:include source="chat.fxml" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="10.0" />
                </children></AnchorPane>

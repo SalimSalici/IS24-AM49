@@ -24,11 +24,7 @@
                         <Font name="DejaVu Sans Mono Oblique" size="13.0" />
                      </font>
                   </TextField>
-                  <Button fx:id="confirmButton" alignment="CENTER" mnemonicParsing="false" prefHeight="75.0" prefWidth="187.0" text="Confirm" textAlignment="CENTER" textFill="WHITE">
-                     <font>
-                        <Font name="Gebetbuch Fraktur" size="25.0" />
-                     </font>
-                  </Button>
+                  <Button fx:id="confirmButton" mnemonicParsing="false" prefHeight="75.0" prefWidth="187.0" text="Confirm" />
                </children>
                <padding>
                   <Insets left="100.0" right="100.0" />

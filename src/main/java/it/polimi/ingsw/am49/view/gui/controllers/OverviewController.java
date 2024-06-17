@@ -67,6 +67,7 @@ public class OverviewController extends GuiController {
     private final List<Button> rotationButtonList = new ArrayList<>();
     private boolean endGame = false;
     private boolean finalRoundAlreadyShown = false;
+    private Button activeViewButton;
 
     @Override
     public void init() {
@@ -112,6 +113,7 @@ public class OverviewController extends GuiController {
             if (this.game.getGameState() == GameStateType.END_GAME) {
                 try {
                     endGame = true;
+                    unselectCard();
                     setPersonalObjectives();
                     disableButtons();
                     Platform.runLater(() -> {
@@ -145,8 +147,8 @@ public class OverviewController extends GuiController {
             }
             else {
                 player.addObserver(() -> {
+                    this.updateHand(player.getUsername());
                     if (this.focusedPlayer.equals(player)) {
-                        this.updateHand(player.getUsername());
                         this.drawHand(player.getUsername());
                         this.drawSymbols();
                     }
@@ -217,7 +219,6 @@ public class OverviewController extends GuiController {
         Platform.runLater(() -> {
             if (!drawableGridpane.getChildren().isEmpty())
                 drawableGridpane.getChildren().clear();
-            //TODO: IMPLEMENTA CASO DI MAZZO VUOTO
         });
 
         Platform.runLater(() -> {
@@ -279,6 +280,9 @@ public class OverviewController extends GuiController {
         int index = 0;
         for (VirtualPlayer player : this.players) {
             Button viewboardButton = new Button("VIEW");
+            String existingStyle = viewboardButton.getStyle();
+            String newBackgroundStyle = "-fx-background-color: transparent;";
+            viewboardButton.setStyle(existingStyle + " " + newBackgroundStyle);
             GridPane.setHalignment(viewboardButton, HPos.CENTER);
             ImageView totemImageview = new ImageView(this.guiTextureManager.getImageByTotemColor(player.getColor()));
             Label usernameLabel = new Label(player.getUsername());
@@ -286,13 +290,19 @@ public class OverviewController extends GuiController {
             totemImageview.setFitWidth(33);
             totemImageview.setFitHeight(36);
 
-            if(player.getUsername().equals(myUsername)) usernameLabel.setStyle("-fx-font-weight: bold;");;
+            if(player.getUsername().equals(myUsername)) {
+                usernameLabel.setStyle("-fx-font-weight: bold;");
+                setActiveButton(viewboardButton);
+            };
 
             playersGridpane.add(viewboardButton, 0, index);
             playersGridpane.add(totemImageview, 2, index);
             playersGridpane.add(usernameLabel,3,  index);
 
-            viewboardButton.setOnAction(actionEvent ->  setFocusedPlayer(player));
+            viewboardButton.setOnAction(actionEvent -> {
+                setFocusedPlayer(player);
+                setActiveButton(viewboardButton);
+            });
 
             index++;
         }
@@ -300,21 +310,31 @@ public class OverviewController extends GuiController {
         drawCurrentPlayerIndicator();
     }
 
+    private void setActiveButton(Button viewboardButton) {
+        // Reset the style of the previously active button
+        if (activeViewButton != null) {
+            activeViewButton.setStyle("-fx-background-color: transparent;");
+        }
+
+        // Set the new active button and apply the active style
+        activeViewButton = viewboardButton;
+        activeViewButton.setStyle("-fx-background-color: linear-gradient(#e8e02b, #A39E20); -fx-border-color: #21130b; -fx-border-width: 2; -fx-text-fill: #21130b; -fx-font-family: 'DejaVu Sans Mono'; -fx-font-size: 13px; -fx-background-radius: 10; -fx-border-radius: 10;");
+    }
+
     private void drawCurrentPlayerIndicator() {
         Platform.runLater(() -> {
             int index = 0;
-            //ImageView indicatorImmageView = new ImageView(this.guiTextureManager.getTurnIndicator()); //TODO: MAKE THIS WORK
-            ImageView indicatorImageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/turnIndicator.png"))));
+            ImageView indicatorImageView = new ImageView(this.guiTextureManager.getTurnIndicator());
             indicatorImageView.setFitWidth(130);
             indicatorImageView.setFitHeight(83);
 
-            GridPane.setHalignment(indicatorImageView, HPos.CENTER); // Allineamento orizzontale
-            GridPane.setValignment(indicatorImageView, VPos.CENTER); // Allineamento verticale
+            GridPane.setHalignment(indicatorImageView, HPos.CENTER);
+            GridPane.setValignment(indicatorImageView, VPos.CENTER);
 
             clearTurnIndicator();
             for (VirtualPlayer player : this.players) {
                 if (this.game.getCurrentPlayer().getUsername().equals(player.getUsername())) { //if is the turn of player
-                    playersGridpane.add(indicatorImageView, 1, index); //TODO: SOMEHOW THE INDICATOR IS SHOWN ON TOP OF THE TOTEM
+                    playersGridpane.add(indicatorImageView, 1, index);
                     return;
                 }
                 index++;
@@ -363,13 +383,12 @@ public class OverviewController extends GuiController {
             }
             else{
                 VirtualPlayer player = this.game.getPlayerByUsername(username);
-                if(!player.getUsername().equals(myUsername))
-                    this.playersHands.put(player, this.game.getPlayerByUsername(player.getUsername()).getHiddenHand().stream().map((resourceBooleanPair -> {
-                        ImageView hiddenCard = new ImageView(this.guiTextureManager.getCardBackByResource(resourceBooleanPair.first, resourceBooleanPair.second));
-                        hiddenCard.setFitWidth(132);
-                        hiddenCard.setFitHeight(87);
-                        return hiddenCard;
-                    })).toList());
+                this.playersHands.put(player, this.game.getPlayerByUsername(player.getUsername()).getHiddenHand().stream().map((resourceBooleanPair -> {
+                    ImageView hiddenCard = new ImageView(this.guiTextureManager.getCardBackByResource(resourceBooleanPair.first, resourceBooleanPair.second));
+                    hiddenCard.setFitWidth(132);
+                    hiddenCard.setFitHeight(87);
+                    return hiddenCard;
+                })).toList());
             }
         });
     }
@@ -408,7 +427,6 @@ public class OverviewController extends GuiController {
             else{
                 List<ImageView> hiddenHand = this.playersHands.get(this.game.getPlayerByUsername(username));
                 for (ImageView hiddenCard : hiddenHand) {
-
                     handGridpane.add(hiddenCard, 1, index);
                     index++;
                 }
@@ -587,7 +605,7 @@ public class OverviewController extends GuiController {
     private void changeBorderColor(String newColor) {
         String style = String.format("-fx-border-color: %s; -fx-border-width: 5;", newColor);
         Platform.runLater(() -> {
-            for (Pane pane : Arrays.asList(playersContainerPane, generalHandContainerPane, drawablesContainerPane, handContainerPane, objectivesContainerPane, resourceContainerPane, itemsContainerPane, playerboardController.getInnerPane())) {
+            for (Pane pane : Arrays.asList(playersContainerPane, generalHandContainerPane, drawablesContainerPane, handContainerPane, objectivesContainerPane, resourceContainerPane, itemsContainerPane, playerboardController.getInnerPane(), chatframeAnchorpane)) {
                 pane.setStyle(style);
             }
         });

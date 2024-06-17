@@ -32,7 +32,7 @@ public class ObjectiveCardsController extends GuiController{
         int starterCardId = this.manager.getStarterCardId();
         List<Integer> objectiveCardIds = this.manager.getObjectiveCardsIds();
 
-        Image startingImage = this.guiTextureManager.getCardImage(starterCardId, false); //TODO : INSERIRE IL LATO GIUSTO DELLA STARTER CARD
+        Image startingImage = this.guiTextureManager.getCardImage(starterCardId, this.app.getVirtualGame().getPlayerByUsername(this.app.getUsername()).getStarterCard().flipped());
         starterImageview.setImage(startingImage);
 
         int firstObj = objectiveCardIds.get(0);
