@@ -94,10 +94,10 @@ public class ServerSocketHandler extends SocketHandler implements Server {
      * @throws JoinRoomException if there is an error joining the room
      */
     @Override
-    public RoomInfo joinRoom(Client client, String roomName, String username) throws RemoteException, AlreadyInRoomException, JoinRoomException {
+    public RoomInfo joinRoom(Client client, String roomName, String username) throws RemoteException, AlreadyInRoomException, JoinRoomException, GameAlreadyStartedException {
         try {
             return this.sendRequest(new JoinRoomMTS(this.getUniqueId(), roomName, username), RoomInfo.class);
-        } catch (AlreadyInRoomException | JoinRoomException e) {
+        } catch (AlreadyInRoomException | JoinRoomException | GameAlreadyStartedException e) {
             throw e;
         } catch (Exception e) {
             throw new RemoteException(e.getMessage());
