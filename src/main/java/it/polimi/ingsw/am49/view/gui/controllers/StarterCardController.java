@@ -76,11 +76,17 @@ public class StarterCardController extends GuiController{
     private void chooseSide(boolean flipped){
         this.manager.executorService.submit(() -> {
             try {
-                this.server.executeAction(this.app, new ChooseStarterSideAction(this.app.getUsername(), flipped));
                 this.manager.changeScene(SceneTitle.WAITING, true);
+                this.server.executeAction(this.app, new ChooseStarterSideAction(this.app.getUsername(), flipped));
             } catch (InvalidActionException | NotYourTurnException | NotInGameException | RemoteException | InvalidSceneException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
-                throw new RuntimeException(e);
+                Platform.runLater(() -> {
+                    try {
+                        this.manager.changeScene(SceneTitle.MAIN_MENU, true);
+                    } catch (InvalidSceneException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
             }
         });
     }

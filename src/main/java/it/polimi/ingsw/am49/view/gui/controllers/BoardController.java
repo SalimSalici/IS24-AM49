@@ -69,10 +69,19 @@ public class BoardController extends GuiController {
                 .orElse(null);
         this.currentPlayer = myPlayer;
 
+        // sets the starting postiions for the boards
+        for(VirtualPlayer player : players){
+            // sets up the starting coordinates for all the boards
+            playerToBoardCoords.put(player, new Pair<>(0.0, 0.0));
+        }
+
         setupPanes();
         setUpBoardInfo();
         setupButtons();
-        setupStartingCards();
+        //setupStartingCards();
+        loadAllBoards();
+
+        drawBoard(this.currentPlayer);
     }
 
     private void setupPanes() {
@@ -193,7 +202,14 @@ public class BoardController extends GuiController {
         });
     }
 
+    private void loadAllBoards(){
+        for(VirtualPlayer player : players){
+            loadBoardFromVirtualBoard(player);
+        }
+    }
+
     private void loadBoardFromVirtualBoard(VirtualPlayer player){
+        //for all the other players (the corners are not clickable)
         if(isNotMe(player)){
             List<ImageView> board = new ArrayList<ImageView>();
             int startingRow = player.getBoard().getStarterTile().getExpandedRow();
@@ -216,6 +232,21 @@ public class BoardController extends GuiController {
             }
 
             playerBoards.put(player, board);
+        }
+        //for the player running the gui (all the corners must be clickable)
+        else {
+            int startingRow = player.getBoard().getStarterTile().getExpandedRow();
+            int startingCol = player.getBoard().getStarterTile().getExpandedCol();
+
+            for(VirtualTile tile : player.getBoard().getOrderedTilesList()){
+                int offX = startingCol - tile.getExpandedCol() ;
+                int offY = startingRow - tile.getExpandedRow() ;
+
+                double posX = initialX - offX * (cardWidth - cornerWidth);
+                double posY = initialY - offY * (cardHeight - cornerHeight);
+
+                myBoard.add(createCardPane(posX, posY, myUsername, tile.getCard(), tile.getRow(), tile.getCol()));
+            }
         }
     }
 
