@@ -29,10 +29,29 @@ import java.util.stream.Collectors;
  */
 public class DrawCardState extends GameState {
 
+    /**
+     * The current player in the game.
+     */
     private final Player currentPlayer;
+
+    /**
+     * The game deck containing resource cards.
+     */
     private final GameDeck<ResourceCard> resourceGameDeck;
+
+    /**
+     * The game deck containing gold cards.
+     */
     private final GameDeck<GoldCard> goldGameDeck;
+
+    /**
+     * The revealed resource cards.
+     */
     private final ResourceCard[] revealedResources;
+
+    /**
+     * The revealed gold cards.
+     */
     private final GoldCard[] revealedGolds;
 
     /**
@@ -119,9 +138,19 @@ public class DrawCardState extends GameState {
      * @param player the player who is AFK.
      */
     private void afkAction(Player player) {
-        // TODO: make sure that the drawn card is actually there (deck is not empty etc...)
         try {
-            this.execute(new DrawCardAction(player.getUsername(), DrawPosition.RESOURCE_DECK, 0));
+            if (!this.resourceGameDeck.isEmpty())
+                this.execute(new DrawCardAction(player.getUsername(), DrawPosition.RESOURCE_DECK, 0));
+            else if (!this.goldGameDeck.isEmpty())
+                this.execute(new DrawCardAction(player.getUsername(), DrawPosition.GOLD_DECK, 0));
+            else if (this.revealedResources[0] != null)
+                this.execute(new DrawCardAction(player.getUsername(), DrawPosition.REVEALED, this.revealedResources[0].getId()));
+            else if (this.revealedResources[1] != null)
+                this.execute(new DrawCardAction(player.getUsername(), DrawPosition.REVEALED, this.revealedResources[1].getId()));
+            else if (this.revealedGolds[0] != null)
+                this.execute(new DrawCardAction(player.getUsername(), DrawPosition.REVEALED, this.revealedGolds[0].getId()));
+            else if (this.revealedGolds[1] != null)
+                this.execute(new DrawCardAction(player.getUsername(), DrawPosition.REVEALED, this.revealedGolds[1].getId()));
         } catch (NotYourTurnException | InvalidActionException e) {
             Log.getLogger().severe("Disconnect player anomaly... Exception message: " + e.getMessage());
         }

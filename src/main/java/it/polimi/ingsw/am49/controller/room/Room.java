@@ -43,6 +43,7 @@ public class Room {
     private Game game;
     private boolean gameStarted;
     private Timer pauseTimer;
+    private final int forwaitTimeoutInSecond = 60;
 
     /**
      * Constructor for the Room class.
@@ -166,7 +167,7 @@ public class Room {
             public void run() {
                 self.declareforfeitWinnerAndDestroy();
             }
-        }, 1000 * 10); // 10 seconds
+        }, 1000 * forwaitTimeoutInSecond);
     }
 
     private synchronized void declareforfeitWinnerAndDestroy() {
