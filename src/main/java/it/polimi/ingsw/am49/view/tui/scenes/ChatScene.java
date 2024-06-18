@@ -1,7 +1,9 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.chat.ChatMSG;
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
@@ -20,10 +22,12 @@ public class ChatScene extends Scene implements Observer {
 
     private VirtualGame game;
     private final List<TimedChatMessage> chatMessages;
+    private final GameController gameController;
 
-    public ChatScene(SceneManager sceneManager, TuiApp tuiApp) {
+    public ChatScene(SceneManager sceneManager, TuiApp tuiApp, GameController gameController) {
         super(sceneManager, tuiApp);
         this.chatMessages = new LinkedList<>();
+        this.gameController = gameController;
     }
 
     @Override
@@ -58,7 +62,7 @@ public class ChatScene extends Scene implements Observer {
         VirtualPlayer senderPlayer = this.tuiApp.getVirtualGame().getPlayerByUsername(sender);
         toPrint += this.getColoredUsername(senderPlayer) + " (" + senderPlayer.getPoints() + " points)";
         if (!recipient.equals("*")) {
-            if (recipient.equals(this.tuiApp.getUsername()))
+            if (recipient.equals(ClientApp.getUsername()))
                 toPrint += " whispered you";
             else {
                 VirtualPlayer recipientPlayer = this.tuiApp.getVirtualGame().getPlayerByUsername(recipient);
@@ -98,7 +102,7 @@ public class ChatScene extends Scene implements Observer {
 
     private void handleSendMessage(String message) {
         try {
-            this.tuiApp.getServer().chatMessage(this.tuiApp, new ChatMSG(message, this.tuiApp.getUsername(), "*"));
+            this.gameController.chatMessage(message, "*");
             this.refreshView();
         } catch (RemoteException e) {
             this.showError("Network error");
@@ -113,7 +117,7 @@ public class ChatScene extends Scene implements Observer {
         }
         try {
             String message = Arrays.stream(parts).skip(2).collect(Collectors.joining(" "));
-            this.tuiApp.getServer().chatMessage(this.tuiApp, new ChatMSG(message, this.tuiApp.getUsername(), parts[1]));
+            this.gameController.chatMessage(message, parts[1]);
             this.refreshView();
         } catch (RemoteException e) {
             throw new RuntimeException(e);

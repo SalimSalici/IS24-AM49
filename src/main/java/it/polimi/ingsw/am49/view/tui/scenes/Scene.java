@@ -72,7 +72,7 @@ public abstract class Scene {
         if (leaveRoom) {
             new Thread(() -> {
                 try {
-                    this.tuiApp.getServer().leaveRoom(this.tuiApp);
+                    this.sceneManager.getRoomController().leaveRoom();
                 } catch (RoomException | RemoteException e) {
                     Log.getLogger().severe("Exception while leaving room from RoomScene: " + e.getMessage());
                 }
@@ -81,6 +81,7 @@ public abstract class Scene {
                 Thread.sleep(250);
             } catch (InterruptedException ignored) {}
         }
+        this.tuiApp.stopHeartbeat();
         this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
     }
 

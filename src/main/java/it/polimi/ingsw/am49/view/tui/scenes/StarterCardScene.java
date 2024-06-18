@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
@@ -18,9 +19,11 @@ public class StarterCardScene extends Scene {
     private int starterCardId;
     private final TuiCardRenderer renderer;
     private boolean chosen = false;
+    private final GameController gameController;
 
-    public StarterCardScene(SceneManager sceneManager, TuiApp tuiApp) {
+    public StarterCardScene(SceneManager sceneManager, TuiApp tuiApp, GameController gameController) {
         super(sceneManager, tuiApp);
+        this.gameController = gameController;
         this.renderer = new TuiCardRenderer(31, 5);
     }
 
@@ -103,7 +106,7 @@ public class StarterCardScene extends Scene {
     private void handleChoice(boolean flipped) {
         try {
             this.chosen = true;
-            this.tuiApp.getServer().executeAction(this.tuiApp, new ChooseStarterSideAction(this.tuiApp.getUsername(), flipped));
+            this.gameController.chooseStarterSide(flipped);
             this.refreshView();
         } catch (InvalidActionException | NotInGameException | NotYourTurnException e) {
             this.chosen = false;

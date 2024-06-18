@@ -6,6 +6,7 @@ import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
+import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.view.tui.SceneManager;
 
 import java.rmi.RemoteException;
@@ -39,5 +40,11 @@ public class TuiApp extends ClientApp {
     public void receiveChatMessage(ChatMSG msg) {
         super.receiveChatMessage(msg);
         this.sceneManager.chatMessage(msg);
+    }
+
+    @Override
+    protected void setServer(Server server) {
+        super.setServer(server);
+        this.sceneManager.setServer(server);
     }
 }

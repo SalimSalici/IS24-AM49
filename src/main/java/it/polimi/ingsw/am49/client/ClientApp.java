@@ -28,7 +28,7 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
 
     protected VirtualGame game;
     protected Server server;
-    protected String username;
+    protected static String username;
     private final IntervalTimer heartbeatInterval;
 
     public ClientApp() throws RemoteException {
@@ -75,15 +75,15 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
         this.game = VirtualGame.loadGame(completeGameInfo);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public static void setUsername(String username) {
+        ClientApp.username = username;
     }
 
-    public String getUsername() {
-        return this.username;
+    public static String getUsername() {
+        return username;
     }
 
-    private void setServer(Server server) {
+    protected void setServer(Server server) {
         this.server = server;
     }
 

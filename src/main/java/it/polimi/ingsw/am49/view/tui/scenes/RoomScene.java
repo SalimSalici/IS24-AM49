@@ -1,11 +1,12 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.controller.RoomController;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.exceptions.RoomException;
 import it.polimi.ingsw.am49.view.tui.SceneManager;
-import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -14,10 +15,12 @@ public class RoomScene extends Scene {
 
     private RoomInfo roomInfo;
     private boolean isReady;
+    private final RoomController roomController;
 
-    public RoomScene(SceneManager sceneManager, TuiApp tuiApp) {
+    public RoomScene(SceneManager sceneManager, TuiApp tuiApp, RoomController roomController) {
         super(sceneManager, tuiApp);
         this.roomInfo = null;
+        this.roomController = roomController;
     }
 
     public void setRoomInfo(RoomInfo roomInfo) {
@@ -55,15 +58,6 @@ public class RoomScene extends Scene {
         }
     }
 
-    private AnsiColor colorToAnsiColor(Color color) {
-        return switch (color) {
-            case YELLOW -> AnsiColor.ANSI_YELLOW;
-            case GREEN -> AnsiColor.ANSI_GREEN;
-            case BLUE -> AnsiColor.ANSI_BLUE;
-            case RED -> AnsiColor.ANSI_RED;
-        };
-    }
-
     private void printHeader() {
         System.out.println("*******************************");
         System.out.println("| Welcome to Codex Naturalis! |");
@@ -84,7 +78,7 @@ public class RoomScene extends Scene {
 
             System.out.print(this.getColoredUsername(username, color));
 
-            if (username.equals(this.tuiApp.getUsername()))
+            if (username.equals(ClientApp.getUsername()))
                 System.out.print(" (you)");
 
             if (color == null) {
@@ -128,7 +122,7 @@ public class RoomScene extends Scene {
                 case "r", "red" -> Color.RED;
                 default -> throw new IllegalArgumentException("Invalid color");
             };
-            this.roomInfo = this.tuiApp.getServer().readyUp(this.tuiApp, color);
+            this.roomInfo = this.roomController.readyUp(color);
             this.isReady = true;
             this.refreshView();
         } catch (IllegalArgumentException e) {
@@ -146,7 +140,7 @@ public class RoomScene extends Scene {
         }
         try {
             this.showInfoMessage("Unreadying...");
-            this.roomInfo = this.tuiApp.getServer().readyDown(this.tuiApp);
+            this.roomInfo = this.roomController.readyDown();
             this.isReady = false;
             this.refreshView();
         }catch (RemoteException | RoomException e) {
@@ -159,7 +153,7 @@ public class RoomScene extends Scene {
         this.backToMainMenu(true);
     }
 
-    public void roomUpdate(RoomInfo roomInfo, String message) {
+    public void roomUpdate(RoomInfo roomInfo, String ignored) {
         this.roomInfo = roomInfo;
         this.refreshView();
     }

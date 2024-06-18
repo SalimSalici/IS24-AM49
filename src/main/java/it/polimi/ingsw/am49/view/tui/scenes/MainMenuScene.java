@@ -1,7 +1,8 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.TuiApp;
-import it.polimi.ingsw.am49.controller.CompleteGameInfo;
+import it.polimi.ingsw.am49.client.controller.MenuController;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
@@ -16,12 +17,14 @@ import java.util.List;
 public class MainMenuScene extends Scene {
 
     private final Server server;
+    private final MenuController menuController;
     private List<RoomInfo> rooms;
     private boolean isLoading = false;
 
-    public MainMenuScene(SceneManager sceneManager, TuiApp tuiApp) {
+    public MainMenuScene(SceneManager sceneManager, TuiApp tuiApp, MenuController menuController) {
         super(sceneManager, tuiApp);
         this.server = tuiApp.getServer();
+        this.menuController = menuController;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class MainMenuScene extends Scene {
         this.clearScreen();
         this.printHeader();
         System.out.println("\n\n\n");
-        System.out.println("You username is: " + this.tuiApp.getUsername()) ;
+        System.out.println("You username is: " + ClientApp.getUsername()) ;
         System.out.println("\n\n\n");
         this.printRoomList();
         System.out.println("\n\n");
@@ -128,7 +131,7 @@ public class MainMenuScene extends Scene {
             this.showError("Username must be between 2 and 20 characters, please try again.");
             return;
         }
-        this.tuiApp.setUsername(username);
+        this.menuController.changeUsername(username);
         this.refreshView();
     }
 
@@ -154,7 +157,7 @@ public class MainMenuScene extends Scene {
         try {
             this.isLoading = true;
             this.showInfoMessage("Loading room...");
-            RoomInfo roomInfo = this.server.createRoom(this.tuiApp, roomName, numPlayers, this.tuiApp.getUsername());
+            RoomInfo roomInfo = this.menuController.createRoom(roomName, numPlayers);
             this.isLoading = false;
             this.sceneManager.switchScene(roomInfo);
         } catch (CreateRoomException | AlreadyInRoomException e) {
@@ -180,7 +183,7 @@ public class MainMenuScene extends Scene {
         try {
             this.isLoading = true;
             this.showInfoMessage("Loading room...");
-            RoomInfo roomInfo = this.server.joinRoom(this.tuiApp, roomName, this.tuiApp.getUsername());
+            RoomInfo roomInfo = this.menuController.joinRoom(roomName);
             this.isLoading = false;
             this.sceneManager.switchScene(roomInfo);
         } catch (JoinRoomException | AlreadyInRoomException | GameAlreadyStartedException  e) {
@@ -207,8 +210,7 @@ public class MainMenuScene extends Scene {
         try {
             this.isLoading = true;
             this.showInfoMessage("Loading game...");
-            CompleteGameInfo completeGameInfo = this.server.reconnect(this.tuiApp, roomName, this.tuiApp.getUsername());
-            this.tuiApp.loadGame(completeGameInfo);
+            this.menuController.reconnect(roomName);
             this.sceneManager.initializePlayerScenes();
             this.sceneManager.switchScene(SceneType.OVERVIEW_SCENE);
             this.isLoading = false;

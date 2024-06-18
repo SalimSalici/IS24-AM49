@@ -1,6 +1,8 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
@@ -25,9 +27,11 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
     private List<Integer> objectiveCardIds;
     private final TuiCardRenderer renderer;
     private boolean chosen = false;
+    private final GameController gameController;
 
-    public ChooseObjectiveCardScene(SceneManager sceneManager, TuiApp tuiApp) {
+    public ChooseObjectiveCardScene(SceneManager sceneManager, TuiApp tuiApp, GameController gameController) {
         super(sceneManager, tuiApp);
+        this.gameController = gameController;
         this.renderer = new TuiCardRenderer(31, 5);
         this.server = tuiApp.getServer();
     }
@@ -118,8 +122,8 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
     private void handleObjectiveChosen(int objectiveId) {
         try {
             this.chosen = true;
-            this.server.executeAction(this.tuiApp, new ChooseObjectiveAction(this.tuiApp.getUsername(), objectiveId));
-            this.tuiApp.getVirtualGame().getPlayerByUsername(this.tuiApp.getUsername()).setPersonalObjectiveId(objectiveId);
+            this.tuiApp.getVirtualGame().getPlayerByUsername(ClientApp.getUsername()).setPersonalObjectiveId(objectiveId);
+            this.gameController.chooseObjective(objectiveId);
             this.refreshView();
         } catch (InvalidActionException | NotInGameException | NotYourTurnException e) {
             this.chosen = false;

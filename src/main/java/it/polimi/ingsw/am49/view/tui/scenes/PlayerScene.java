@@ -1,10 +1,11 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
-import it.polimi.ingsw.am49.model.actions.PlaceCardAction;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
@@ -32,15 +33,17 @@ public class PlayerScene extends Scene implements Observer {
     private final VirtualBoard board;
     private int row = 25;
     private int col = 25;
+    private final GameController gameController;
 
-    public PlayerScene(SceneManager sceneManager, TuiApp tuiApp, VirtualPlayer player) {
+    public PlayerScene(SceneManager sceneManager, TuiApp tuiApp, VirtualPlayer player, GameController gameController) {
         super(sceneManager, tuiApp);
         this.server = tuiApp.getServer();
         this.game = tuiApp.getVirtualGame();
         this.player = player;
         this.board = player.getBoard();
         this.boardRenderer = new TuiBoardRenderer(player.getBoard());
-        boolean hiddenHand = !player.getUsername().equals(tuiApp.getUsername());
+        this.gameController = gameController;
+        boolean hiddenHand = !player.getUsername().equals(ClientApp.getUsername());
         boolean hiddenPersonalObjective = this.game.getGameState() != GameStateType.END_GAME && hiddenHand;
         this.tuiPlayerRenderer = new TuiPlayerRenderer(player, hiddenHand, hiddenPersonalObjective, this.game.getCommonObjectives());
     }
@@ -128,7 +131,7 @@ public class PlayerScene extends Scene implements Observer {
     }
 
     private void handlePlaceCard(String[] args) {
-        String username = this.tuiApp.getUsername();
+        String username = ClientApp.getUsername();
         VirtualPlayer player = this.game.getPlayerByUsername(username);
         if (player == null) {
             this.showError("Not your turn.");
@@ -158,7 +161,7 @@ public class PlayerScene extends Scene implements Observer {
                     return;
                 }
             }
-            this.server.executeAction(this.tuiApp, new PlaceCardAction(username, cardId, this.row, this.col, cornerPosition, flipped));
+            this.gameController.placeCard(cardId, this.row, this.col, cornerPosition, flipped);
             this.refreshView();
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             this.showError("Invalid card chosen.");
@@ -175,7 +178,7 @@ public class PlayerScene extends Scene implements Observer {
     }
 
     private boolean canPlace() {
-        return  this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername())
+        return  this.game.getCurrentPlayer().getUsername().equals(ClientApp.getUsername())
                 && this.game.getGameState() == GameStateType.PLACE_CARD;
     }
 

@@ -2,9 +2,13 @@ package it.polimi.ingsw.am49.view.tui;
 
 import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.controller.GameController;
+import it.polimi.ingsw.am49.client.controller.MenuController;
+import it.polimi.ingsw.am49.client.controller.RoomController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
+import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.view.tui.scenes.*;
 
 import java.util.HashMap;
@@ -25,6 +29,11 @@ public class SceneManager {
     private Scene currentScene;
     private boolean running;
     private final Scanner scanner;
+
+    private final MenuController menuController;
+    private final RoomController roomController;
+    private final GameController gameController;
+
     private final ExecutorService executor;
 
     public SceneManager(TuiApp tuiApp) {
@@ -33,19 +42,24 @@ public class SceneManager {
         this.playerScenes = new HashMap<>();
         this.running = true;
         this.scanner =new Scanner(System.in);
+
+        this.menuController = new MenuController(tuiApp.getServer(), tuiApp);
+        this.roomController = new RoomController(tuiApp.getServer(), tuiApp);
+        this.gameController = new GameController(tuiApp.getServer(), tuiApp);
+
         this.executor = Executors.newFixedThreadPool(10);
     }
 
     public void initialize() {
 
-        this.roomScene = new RoomScene(this, this.tuiApp);
-        this.starterCardScene = new StarterCardScene(this, this.tuiApp);
-        this.chooseObjectiveCardScene = new ChooseObjectiveCardScene(this, this.tuiApp);
-        this.chatScene = new ChatScene(this, this.tuiApp);
+        this.roomScene = new RoomScene(this, this.tuiApp, roomController);
+        this.starterCardScene = new StarterCardScene(this, this.tuiApp, gameController);
+        this.chooseObjectiveCardScene = new ChooseObjectiveCardScene(this, this.tuiApp, gameController);
+        this.chatScene = new ChatScene(this, this.tuiApp, gameController);
 
         this.scenes.put(SceneType.WELCOME_SCENE, new WelcomeScene(this, this.tuiApp));
-        this.scenes.put(SceneType.MAIN_MENU_SCENE, new MainMenuScene(this, this.tuiApp));
-        this.scenes.put(SceneType.OVERVIEW_SCENE, new GameOverviewScene(this, this.tuiApp));
+        this.scenes.put(SceneType.MAIN_MENU_SCENE, new MainMenuScene(this, this.tuiApp, this.menuController));
+        this.scenes.put(SceneType.OVERVIEW_SCENE, new GameOverviewScene(this, this.tuiApp, gameController));
         this.scenes.put(SceneType.END_GAME_SCENE, new EndGameScene(this, this.tuiApp));
         this.scenes.put(SceneType.CHAT_SCENE, chatScene);
 
@@ -108,7 +122,7 @@ public class SceneManager {
     public synchronized void initializePlayerScenes() {
         this.destroyPlayerScenes();
         for (VirtualPlayer player : this.tuiApp.getVirtualGame().getPlayers())
-            this.playerScenes.put(player, new PlayerScene(this, this.tuiApp, player));
+            this.playerScenes.put(player, new PlayerScene(this, this.tuiApp, player, gameController));
     }
 
     public synchronized void chooseObjectiveCardUpdate(List<Integer> objectiveCardIds) {
@@ -124,5 +138,15 @@ public class SceneManager {
         for (VirtualPlayer player : this.playerScenes.keySet())
             this.playerScenes.get(player).unfocus();
         this.playerScenes.clear();
+    }
+
+    public synchronized void setServer(Server server){
+        this.menuController.setServer(server);
+        this.roomController.setServer(server);
+        this.gameController.setServer(server);
+    }
+
+    public RoomController getRoomController() {
+        return this.roomController;
     }
 }

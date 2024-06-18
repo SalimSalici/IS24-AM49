@@ -1,6 +1,8 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.actions.DrawCardAction;
@@ -25,9 +27,11 @@ public class GameOverviewScene extends Scene implements Observer {
     private VirtualGame game;
     private TuiDrawAreaRenderer drawAreaRenderer;
     private TuiPlayerRenderer focusedPlayerRenderer;
+    private final GameController gameController;
 
-    public GameOverviewScene(SceneManager sceneManager, TuiApp tuiApp) {
+    public GameOverviewScene(SceneManager sceneManager, TuiApp tuiApp, GameController gameController) {
         super(sceneManager, tuiApp);
+        this.gameController = gameController;
     }
 
     @Override
@@ -64,7 +68,7 @@ public class GameOverviewScene extends Scene implements Observer {
             boolean isCurrentPlayer = p.equals(this.game.getCurrentPlayer());
 
             System.out.print(" (" + (i+1) + ") ");
-            if (this.tuiApp.getUsername().equals(p.getUsername())) System.out.print("you->");
+            if (ClientApp.getUsername().equals(p.getUsername())) System.out.print("you->");
             if (isCurrentPlayer) System.out.print("*");
             System.out.print(this.getColoredUsername(p.getUsername(), p.getColor()));
             if (isCurrentPlayer) System.out.print("*");
@@ -131,7 +135,7 @@ public class GameOverviewScene extends Scene implements Observer {
                     this.getClientPlayer() :
                     this.game.getPlayers().get(Integer.parseInt(args[1]) - 1);
             if (player != null) {
-                boolean hiddenHand = !player.getUsername().equals(tuiApp.getUsername());
+                boolean hiddenHand = !player.getUsername().equals(ClientApp.getUsername());
                 boolean hiddenPersonalObjective = this.game.getGameState() != GameStateType.END_GAME;
                 this.focusedPlayerRenderer = new TuiPlayerRenderer(player, hiddenHand, hiddenPersonalObjective, this.game.getCommonObjectives());
             } else
@@ -173,8 +177,7 @@ public class GameOverviewScene extends Scene implements Observer {
         }
         try {
             int choice = Integer.parseInt(args[1]);
-            DrawCardAction action = this.getDrawCardAction(choice);
-            this.tuiApp.getServer().executeAction(this.tuiApp, action);
+            this.gameController.drawCard(this.getDrawPosition(choice), this.getDrawId(choice));
             this.refreshView();
         } catch (NumberFormatException e) {
             this.showError("Argument must be a number. Please try again.");
@@ -189,17 +192,18 @@ public class GameOverviewScene extends Scene implements Observer {
         }
     }
 
-    private DrawCardAction getDrawCardAction(int choice) throws InvalidActionException {
-        DrawPosition drawPosition = switch (choice) {
+    private DrawPosition getDrawPosition(int choice) throws IndexOutOfBoundsException {
+        return switch (choice) {
             case 1 -> DrawPosition.RESOURCE_DECK;
             case 4 -> DrawPosition.GOLD_DECK;
             case 2, 3, 5, 6 -> DrawPosition.REVEALED;
             default -> throw new IndexOutOfBoundsException("Unexpected value: " + choice);
         };
+    }
 
-        int drawId = 0;
+    private int getDrawId(int choice) throws IndexOutOfBoundsException, InvalidActionException {
         try {
-            drawId = switch (choice) {
+            return switch (choice) {
                 case 1, 4 -> 0;
                 case 2 -> this.game.getDrawableArea().getRevealedResourcesIds().getFirst();
                 case 3 -> this.game.getDrawableArea().getRevealedResourcesIds().get(1);
@@ -210,8 +214,31 @@ public class GameOverviewScene extends Scene implements Observer {
         } catch (NullPointerException e) {
             throw new InvalidActionException("That revealed card slot is empty.");
         }
-        return new DrawCardAction(this.tuiApp.getUsername(), drawPosition, drawId);
     }
+
+//    private DrawCardAction getDrawCardAction(int choice) throws InvalidActionException {
+//        DrawPosition drawPosition = switch (choice) {
+//            case 1 -> DrawPosition.RESOURCE_DECK;
+//            case 4 -> DrawPosition.GOLD_DECK;
+//            case 2, 3, 5, 6 -> DrawPosition.REVEALED;
+//            default -> throw new IndexOutOfBoundsException("Unexpected value: " + choice);
+//        };
+//
+//        int drawId = 0;
+//        try {
+//            drawId = switch (choice) {
+//                case 1, 4 -> 0;
+//                case 2 -> this.game.getDrawableArea().getRevealedResourcesIds().getFirst();
+//                case 3 -> this.game.getDrawableArea().getRevealedResourcesIds().get(1);
+//                case 5 -> this.game.getDrawableArea().getRevealedGoldsIds().getFirst();
+//                case 6 -> this.game.getDrawableArea().getRevealedGoldsIds().get(1);
+//                default -> throw new IndexOutOfBoundsException("Unexpected value: " + choice);
+//            };
+//        } catch (NullPointerException e) {
+//            throw new InvalidActionException("That revealed card slot is empty.");
+//        }
+//        return new DrawCardAction(ClientApp.getUsername(), drawPosition, drawId);
+//    }
 
     private void handleRankings() {
         this.sceneManager.switchScene(SceneType.END_GAME_SCENE);
@@ -227,7 +254,7 @@ public class GameOverviewScene extends Scene implements Observer {
         this.game = this.tuiApp.getVirtualGame();
         this.game.addObserver(this);
         this.drawAreaRenderer = new TuiDrawAreaRenderer(this.game.getDrawableArea());
-        this.focusedPlayerRenderer = new TuiPlayerRenderer(this.game.getPlayerByUsername(tuiApp.getUsername()), false, false, this.game.getCommonObjectives());
+        this.focusedPlayerRenderer = new TuiPlayerRenderer(this.game.getPlayerByUsername(ClientApp.getUsername()), false, false, this.game.getCommonObjectives());
     }
 
     @Override
@@ -248,13 +275,13 @@ public class GameOverviewScene extends Scene implements Observer {
      */
     private VirtualPlayer getClientPlayer() {
         for (VirtualPlayer p : this.game.getPlayers())
-            if (p.getUsername().equals(this.tuiApp.getUsername()))
+            if (p.getUsername().equals(ClientApp.getUsername()))
                 return p;
         return null;
     }
 
     private boolean canDraw() {
-        return  this.game.getCurrentPlayer().getUsername().equals(this.tuiApp.getUsername())
+        return  this.game.getCurrentPlayer().getUsername().equals(ClientApp.getUsername())
                 && this.game.getGameState() == GameStateType.DRAW_CARD;
     }
 }
