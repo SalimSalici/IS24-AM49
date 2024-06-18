@@ -19,7 +19,7 @@
 }
 
 .button {
-    -fx-background-color: linear-gradient(#A39E20, #b6b51f);
+    -fx-background-color: A39E20;
     -fx-border-color: #21130b;
     -fx-border-width: 1;
     -fx-border-radius: 10;
@@ -27,7 +27,7 @@
     -fx-text-fill: #21130b;
     -fx-font-family: "DejaVu Sans Mono";
     -fx-font-size: 13px;
-    /*-fx-font-weight: book;  Imposta il peso del font */
+    -fx-font-weight: bold;
 }
 
 .button:hover {

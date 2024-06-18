@@ -23,6 +23,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 import java.lang.invoke.MutableCallSite;
 import java.rmi.RemoteException;
@@ -56,18 +58,16 @@ public class BoardController extends GuiController {
     private Label boardName, boardRound;
     String myUsername;
     private VirtualPlayer currentPlayer;
-    private VirtualPlayer myPlayer;
 
 
     public void init() {
         this.overviewController = (OverviewController) this.manager.getControllerBySceneTitle(SceneTitle.OVERVIEW);
         this.players = this.app.getVirtualGame().getPlayers();
         this.myUsername = this.app.getUsername();
-        this.myPlayer = players.stream()
-                .filter(player -> player.getUsername().equals(myUsername))
+        this.currentPlayer = players.stream()
+                .filter(player1 -> player1.getUsername().equals(myUsername))
                 .findFirst()
                 .orElse(null);
-        this.currentPlayer = myPlayer;
 
         // sets the starting postiions for the boards
         for(VirtualPlayer player : players){
@@ -78,7 +78,6 @@ public class BoardController extends GuiController {
         setupPanes();
         setUpBoardInfo();
         setupButtons();
-        //setupStartingCards();
         loadAllBoards();
 
         drawBoard(this.currentPlayer);
@@ -111,9 +110,9 @@ public class BoardController extends GuiController {
     }
 
     private void setupButtons() {
-        Button resetButton = new Button("Reset");
+        Button resetButton = new Button("RESET");
         resetButton.setLayoutX(5);
-        resetButton.setLayoutY(15);
+        resetButton.setLayoutY(10);
         resetButton.setOnAction(e -> {
             imagePane.setLayoutX(0);
             imagePane.setLayoutY(0);
@@ -125,23 +124,27 @@ public class BoardController extends GuiController {
     }
 
     private void setUpBoardInfo(){
-        Label boardNameInfo = new Label("Now seeing: ");
+        Label boardNameInfo = new Label("BOARD OF: ");
         Label boardRoundInfo = new Label("ROUND: ");
-        int yDistance = 20;
+        int yDistance = 10;
 
-        boardNameInfo.setLayoutX(90);
+        boardNameInfo.setLayoutX(85);
+        boardNameInfo.setFont(Font.font("DejaVu Sans Mono", FontWeight.NORMAL, 25));
         boardNameInfo.setLayoutY(yDistance);
 
-        boardRoundInfo.setLayoutX(600);
+        boardRoundInfo.setLayoutX(750);
+        boardRoundInfo.setFont(Font.font("DejaVu Sans Mono", FontWeight.NORMAL, 25));
         boardRoundInfo.setLayoutY(yDistance);
 
         boardName = new Label();
-        boardName.setLayoutX(180);
+        boardName.setLayoutX(230);
+        boardName.setFont(Font.font("DejaVu Sans Mono", FontWeight.EXTRA_BOLD, 25));
         boardName.setLayoutY(yDistance);
         boardName.setText(currentPlayer.getUsername());
 
         boardRound = new Label();
-        boardRound.setLayoutX(670);
+        boardRound.setLayoutX(850);
+        boardRound.setFont(Font.font("DejaVu Sans Mono", FontWeight.EXTRA_BOLD, 25));
         boardRound.setLayoutY(yDistance);
         boardRound.setText(Integer.toString(0));
 
@@ -150,33 +153,6 @@ public class BoardController extends GuiController {
 
     public void setBoardRound(int round) {
         Platform.runLater(() -> this.boardRound.setText(Integer.toString(round)));
-    }
-
-    private void setupStartingCards() {
-        //sets up the starting card of each player that is not me
-        ImageView starterImageview;
-        for (VirtualPlayer player : players) {
-            if(isNotMe(player)){
-                List<ImageView> board = new ArrayList<>();
-                VirtualCard startingCard = new VirtualCard(player.getStarterCard().id(), player.getStarterCard().flipped());
-                starterImageview = createCardImageView(initialX, initialY, player.getUsername(), startingCard);
-
-                board.add(starterImageview);
-                playerBoards.put(player, board);
-
-                imagePane.getChildren().add(starterImageview);
-            }
-        }
-        
-        //sets up my starting card
-        VirtualCard startingCard = new VirtualCard(myPlayer.getStarterCard().id(), myPlayer.getStarterCard().flipped());
-        myBoard.add(createCardPane(initialX, initialY, myUsername, startingCard, 25, 25));
-        imagePane.getChildren().add(myBoard.getFirst().stackPane());
-
-        for(VirtualPlayer player : players){
-            // sets up the starting coordinates for all the boards
-            playerToBoardCoords.put(player, new Pair<>(0.0, 0.0));
-        }
     }
 
     public void updateSpecificBoard(VirtualPlayer player){

@@ -53,6 +53,8 @@ public class OverviewController extends GuiController {
     private ChatController chatController;
     @FXML
     private Button leaveButton;
+    @FXML
+    private Label roomnameLabel;
 
     private VirtualGame game;
     private String myUsername;
@@ -81,6 +83,7 @@ public class OverviewController extends GuiController {
             updateHand(player.getUsername());
 
         // draws every element of the scene
+        roomnameLabel.setText(this.manager.getRoomInfo().roomName());
         loadPlayerBoard();
         loadChat();
         drawRotationButtons();
@@ -322,7 +325,7 @@ public class OverviewController extends GuiController {
 
         // Set the new active button and apply the active style
         activeViewButton = viewboardButton;
-        activeViewButton.setStyle("-fx-background-color: linear-gradient(#e8e02b, #A39E20); -fx-border-color: #21130b; -fx-border-width: 2; -fx-text-fill: #21130b; -fx-font-family: 'DejaVu Sans Mono'; -fx-font-size: 13px; -fx-background-radius: 10; -fx-border-radius: 10;");
+        activeViewButton.setStyle("-fx-background-color: A39E20; -fx-border-color: #21130b; -fx-border-width: 2; -fx-text-fill: #21130b; -fx-font-family: 'DejaVu Sans Mono'; -fx-font-size: 13px; -fx-background-radius: 10; -fx-border-radius: 10;");
     }
 
     private void drawCurrentPlayerIndicator() {
