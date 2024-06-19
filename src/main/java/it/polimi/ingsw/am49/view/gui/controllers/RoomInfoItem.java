@@ -1,6 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
-import javafx.scene.image.Image;
+import it.polimi.ingsw.am49.controller.room.RoomInfo;
 
 /**
  * Represents information about a game room, including the room name, the number of players inside, and the maximum capacity.
@@ -42,6 +42,10 @@ public class RoomInfoItem {
      */
     public int getMaxCapacity() {
         return maxCapacity;
+    }
+
+    public RoomInfo toRoomInfo() {
+        return new RoomInfo(roomName, maxCapacity, null);
     }
 }
 

@@ -117,6 +117,7 @@ public class MainMenuController extends GuiController {
                 throw new RuntimeException(e);
             } catch (GameAlreadyStartedException e) {
                 try {
+                    this.manager.setRoomInfo(selectedRoom.toRoomInfo());
                     CompleteGameInfo completeGameInfo = this.server.reconnect(this.app, selectedRoom.getRoomName(), this.app.getUsername());
                     this.app.loadGame(completeGameInfo);
                     this.manager.changeScene(SceneTitle.OVERVIEW, true);
