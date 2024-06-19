@@ -4,6 +4,7 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
+import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.actions.DrawCardAction;
 import it.polimi.ingsw.am49.model.enumerations.*;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
@@ -70,6 +71,7 @@ public class OverviewController extends GuiController {
     private boolean endGame = false;
     private boolean finalRoundAlreadyShown = false;
     private Button activeViewButton;
+//    private Map<VirtualPlayer, Integer> playerToTotem = new HashMap<>();
 
     @Override
     public void init() {
@@ -282,7 +284,7 @@ public class OverviewController extends GuiController {
         });
     }
 
-    private void drawPlayers(){
+    private void drawPlayers() {
         playersGridpane.getChildren().clear();
         int index = 0;
         for (VirtualPlayer player : this.players) {
@@ -294,17 +296,25 @@ public class OverviewController extends GuiController {
             ImageView totemImageview = new ImageView(this.guiTextureManager.getImageByTotemColor(player.getColor()));
             Label usernameLabel = new Label(player.getUsername());
 
+            int finalIndex = index;
+            player.addObserver(() -> Platform.runLater(() -> {
+                playersGridpane.getChildren().removeIf(node -> {Integer columnIndex = GridPane.getColumnIndex(node); Integer rowIndex = GridPane.getRowIndex(node); return columnIndex != null && rowIndex != null && columnIndex == 1 && rowIndex == finalIndex;});
+                //TODO: replace black totem with gray one
+                totemImageview.setImage(player.getPlaying()? this.guiTextureManager.getImageByTotemColor(player.getColor()) : new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/CODEX_pion_noir.png"))));
+                totemImageview.setFitWidth(33);
+                totemImageview.setFitHeight(36);
+            }));
             totemImageview.setFitWidth(33);
             totemImageview.setFitHeight(36);
 
-            if(player.getUsername().equals(myUsername)) {
+            if (player.getUsername().equals(myUsername)) {
                 usernameLabel.setStyle("-fx-font-weight: bold;");
                 setActiveButton(viewboardButton);
-            };
+            }
 
             playersGridpane.add(viewboardButton, 0, index);
             playersGridpane.add(totemImageview, 2, index);
-            playersGridpane.add(usernameLabel,3,  index);
+            playersGridpane.add(usernameLabel, 3, index);
 
             viewboardButton.setOnAction(actionEvent -> {
                 setFocusedPlayer(player);

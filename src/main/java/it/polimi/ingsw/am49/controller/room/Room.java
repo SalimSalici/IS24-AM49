@@ -106,6 +106,10 @@ public class Room {
 
         pInfo.setVirtualView(new VirtualView(this.game, pInfo.getClient(), pInfo.getUsername()));
 
+        for ( PlayerInfo p : this.usernamesToPlayers.values() ) {
+            p.getClient().receiveGameUpdate(new IsPlayingUpdate(playerUsername, true));
+        }
+
         if (currentPlayers > 1 && this.game != null && this.game.isPaused()) {
             this.game.setPaused(false);
             this.stopPauseTimer();
@@ -132,6 +136,10 @@ public class Room {
             this.usernamesToPlayers.values().stream().map(PlayerInfo::getClient)
                     .filter(c -> !c.equals(client))
                     .forEach(c -> c.roomUpdate(this.getRoomInfo(), "Player '" + username + "' left your room."));
+
+            for ( PlayerInfo p : usernamesToPlayers.values()) {
+                p.getClient().receiveGameUpdate(new IsPlayingUpdate(username, false));
+            }
 
             return true;
         }

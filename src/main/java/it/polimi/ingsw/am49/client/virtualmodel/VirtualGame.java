@@ -89,7 +89,13 @@ public class VirtualGame extends Observable {
             case HIDDEN_HAND_UPDATE -> this.handleHiddenHandUpdate((HiddenHandUpdate) gameUpdate);
             case DRAW_AREA_UPDATE -> this.handleDrawAreaUpdate((DrawAreaUpdate) gameUpdate);
             case END_GAME_UPDATE -> this.handleEndGameUpdate((EndGameUpdate) gameUpdate);
+            case IS_PLAYING_UPDATE -> this.handleIsPlayingUpdate((IsPlayingUpdate) gameUpdate);
         }
+    }
+
+    private void handleIsPlayingUpdate(IsPlayingUpdate update){
+        this.getPlayerByUsername(update.username()).setPlaing(update.status());
+        this.getPlayerByUsername(update.username()).notifyObservers();
     }
 
     private void handleGameStateUpdate(GameStateChangedUpdate update) {

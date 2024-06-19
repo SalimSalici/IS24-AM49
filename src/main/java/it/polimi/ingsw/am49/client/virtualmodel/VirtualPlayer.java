@@ -33,6 +33,7 @@ public class VirtualPlayer extends Observable {
     private final Color color;
     private int personalObjectiveId;
     private final List<VirtualChatMessage> messages;
+    private boolean playing = true;
 
     /**
      * Constructs a VirtualPlayer with a specified username and color.
@@ -59,6 +60,14 @@ public class VirtualPlayer extends Observable {
      */
     public String getUsername() {
         return username;
+    }
+
+    public void setPlaing(boolean playing) {
+        this.playing = playing;
+    }
+
+    public boolean getPlaying(){
+        return playing;
     }
 
     /**

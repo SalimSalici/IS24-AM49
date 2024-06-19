@@ -5,10 +5,7 @@ package it.polimi.ingsw.am49.controller.gameupdates;
  */
 public enum GameUpdateType {
     /** Update for when a player joins the game */
-    PLAYER_JOINED_UPDATE,
-
-    /** Update for when a player leaves the game */
-    PLAYER_LEFT_UPDATE,
+    IS_PLAYING_UPDATE,
 
     /** Update for when a starter card is assigned */
     STARTER_CARD_ASSIGNED_UPDATE,
