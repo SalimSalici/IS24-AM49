@@ -91,7 +91,7 @@ public class BoardTile implements Serializable {
     }
 
     public Map<Symbol, Integer> getActiveSymbols() {
-        return Collections.unmodifiableMap(this.activeSymbols);
+        return new HashMap<>(this.activeSymbols);
     }
 
     /**

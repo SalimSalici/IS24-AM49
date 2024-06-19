@@ -3,11 +3,9 @@ package it.polimi.ingsw.am49.model.players;
 import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
-import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.enumerations.Symbol;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.util.Pair;
-import it.polimi.ingsw.am49.model.cards.placeables.GoldCard;
 
 import java.io.Serializable;
 import java.util.*;
@@ -58,7 +56,7 @@ public class PlayerBoard implements Serializable {
     /**
      * Updates the availableResources Map every time that a card is added.
      */
-    private void updateAvailableResources() {
+    public void updateAvailableResources() {
         for (Symbol s : Symbol.values()) {
             this.availableResources.put(s, 0);
         }
@@ -81,7 +79,7 @@ public class PlayerBoard implements Serializable {
      * @return the map that tracks the available resources.
      */
     public Map<Symbol, Integer> getAvailableResources() {
-        return Collections.unmodifiableMap(availableResources);
+        return new HashMap<>(availableResources);
     }
 
     /**

@@ -20,7 +20,7 @@ public class ClientHandler implements Client {
     private long lastHeartbeat;
     private final IntervalTimer hearbeatCheckerTimer;
     @SuppressWarnings("FieldCanBeLocal")
-    private final int timeoutInSeconds = 5;
+    private final int timeoutInSeconds = 5000;
 
     public ClientHandler(Client client, Server server) {
         this.client = client;
