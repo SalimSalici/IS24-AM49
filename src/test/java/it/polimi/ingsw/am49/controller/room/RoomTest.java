@@ -100,7 +100,7 @@ class RoomTest {
         room.clientReady(player1, Color.RED);
         room.clientReady(player2, Color.BLUE);
 
-        Thread.sleep(500); // 500 milliseconds delay
+        Thread.sleep(500);
 
         // Execute all actions needed to get to the PLACE_CARD_STATE
 

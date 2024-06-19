@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.model.cards.placeables.*;
 import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.model.decks.GameDeck;
+import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameEventType;
 import it.polimi.ingsw.am49.model.events.EventEmitter;
 import it.polimi.ingsw.am49.model.events.EventListener;
@@ -133,6 +134,20 @@ public class Game implements Serializable, EventEmitter {
             revealedGolds[i] = goldGameDeck.draw();
 
         Log.getLogger().info("Game created.");
+    }
+
+    public synchronized void addPlayer(String username, Color color) {
+        if (this.players.size() < this.numPlayers) {
+            Player newPlayer = new Player(username);
+            newPlayer.setColor(color);
+            this.players.add(newPlayer);
+        }
+    }
+
+    public synchronized void addPlayer(Player player) {
+        if (this.players.size() < this.numPlayers && this.getPlayerByUsername(player.getUsername()) == null) {
+            this.players.add(player);
+        }
     }
 
     /**

@@ -55,7 +55,6 @@ public class ChooseStarterSideState extends GameState {
         Collections.shuffle(this.game.getPlayers());
         this.game.setCurrentPlayer(this.game.getStartingPlayer());
         this.game.triggerEvent(new PlayersOrderEvent(this.game.getPlayers()));
-        // TODO: (maybe) set up drawable decks and revealed drawable cards here
 
         // Draw common objectives
         ObjectiveCard[] commonObjectives = this.game.getCommonObjectives();
