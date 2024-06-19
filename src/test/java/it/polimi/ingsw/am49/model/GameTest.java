@@ -159,23 +159,6 @@ class GameTest {
         assertEquals(GameStateType.END_GAME, game.getGameState().getType());
     }
 
-    void startAndSkipToPlaceCardState(Game game) throws InvalidActionException, NotYourTurnException {
-        VirtualView virtualView = mock(VirtualView.class);
-        game.addEventListener(GameEventType.CHOOSABLE_OBJECTIVES_EVENT, virtualView);
-        game.startGame();
-
-        for (Player p : game.getPlayers())
-            game.executeAction(new ChooseStarterSideAction(p.getUsername(), false));
-
-        ArgumentCaptor<ChoosableObjectivesEvent> captor = ArgumentCaptor.forClass(ChoosableObjectivesEvent.class);
-
-        verify(virtualView, times(3)).onEventTrigger(captor.capture());
-
-        for (ChoosableObjectivesEvent event : captor.getAllValues()) {
-            game.executeAction(new ChooseObjectiveAction(event.player().getUsername(), event.objectiveCards().getFirst().getId()));
-        }
-    }
-
     @Test
     void testEventListeners() throws InvalidActionException, NotYourTurnException {
         VirtualView virtualView = mock(VirtualView.class);
@@ -193,5 +176,22 @@ class GameTest {
         game.executeAction(new ChooseStarterSideAction(game.getNextPlayer().getUsername(), true));
 
         verify(virtualView, times(1)).onEventTrigger(any());
+    }
+
+    void startAndSkipToPlaceCardState(Game game) throws InvalidActionException, NotYourTurnException {
+        VirtualView virtualView = mock(VirtualView.class);
+        game.addEventListener(GameEventType.CHOOSABLE_OBJECTIVES_EVENT, virtualView);
+        game.startGame();
+
+        for (Player p : game.getPlayers())
+            game.executeAction(new ChooseStarterSideAction(p.getUsername(), false));
+
+        ArgumentCaptor<ChoosableObjectivesEvent> captor = ArgumentCaptor.forClass(ChoosableObjectivesEvent.class);
+
+        verify(virtualView, times(3)).onEventTrigger(captor.capture());
+
+        for (ChoosableObjectivesEvent event : captor.getAllValues()) {
+            game.executeAction(new ChooseObjectiveAction(event.player().getUsername(), event.objectiveCards().getFirst().getId()));
+        }
     }
 }

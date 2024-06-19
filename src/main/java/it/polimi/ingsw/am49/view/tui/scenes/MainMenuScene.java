@@ -226,7 +226,7 @@ public class MainMenuScene extends Scene {
     public void handleRefreshRooms() {
         try {
             this.showInfoMessage("Updating list of available room. Please wait...");
-            this.rooms = this.server.fetchRooms(this.tuiApp);
+            this.rooms = this.menuController.fetchRooms();
             this.refreshView();
         } catch (RemoteException e) {
             this.showError("RemoteException. " + e.getMessage());

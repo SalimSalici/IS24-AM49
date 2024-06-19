@@ -7,6 +7,7 @@ import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.events.GameStateChangedEvent;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.util.Log;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -79,7 +80,7 @@ public abstract class GameState {
      */
     public void goToNextState(GameState nextState) {
         if (nextState == null) {
-            System.err.println("Tried to switch to null state.");
+            Log.getLogger().severe("Tried to switch to null state.");
             return;
         }
 
