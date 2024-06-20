@@ -43,7 +43,7 @@ public class Room {
     private Game game;
     private boolean gameStarted;
     private Timer pauseTimer;
-    private final int forwaitTimeoutInSecond = 60;
+    private final int forwaitTimeoutInSecond = 10;
 
     /**
      * Constructor for the Room class.

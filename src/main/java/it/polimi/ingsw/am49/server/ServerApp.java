@@ -35,6 +35,7 @@ public class ServerApp implements Server {
         for (Room room : this.rooms) {
             roomInfos.add(room.getRoomInfo());
         }
+        System.out.println("Sending roomInfo");
         return roomInfos;
     }
 

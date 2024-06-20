@@ -16,6 +16,7 @@ import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.util.IntervalTimer;
+import it.polimi.ingsw.am49.view.GuiView;
 import it.polimi.ingsw.am49.view.TuiView;
 import it.polimi.ingsw.am49.view.View;
 
@@ -52,7 +53,13 @@ public class ClientApp extends UnicastRemoteObject implements Client {
         this.roomController = new RoomController(this.server, this);
         this.gameController = new GameController(this.server, this);
         // TODO: tui vs gui
-        this.setView(new TuiView(menuController, roomController, gameController));
+//        this.setView(new TuiView(menuController, roomController, gameController));
+        try {
+            if (gui)
+                this.setView(new GuiView(menuController, roomController, gameController));
+            else
+                this.setView(new TuiView(menuController, roomController, gameController));
+        } catch (RemoteException ignored) {}
         this.menuController.setView(view);
         this.roomController.setView(view);
         this.gameController.setView(view);
@@ -84,9 +91,7 @@ public class ClientApp extends UnicastRemoteObject implements Client {
     }
 
     @Override
-    public void startHeartbeat() {
-        this.heartbeatInterval.start();
-    }
+    public void startHeartbeat() {this.heartbeatInterval.start();}
 
     @Override
     public void stopHeartbeat() {
@@ -159,7 +164,7 @@ public class ClientApp extends UnicastRemoteObject implements Client {
         }
 
         client.setServer(server);
-        client.initialize(true);
+        client.initialize(argsList.contains("--gui"));
     }
 
     private static Server getRMIServer(String host, int port) throws RemoteException, NotBoundException {

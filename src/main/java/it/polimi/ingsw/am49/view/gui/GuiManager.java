@@ -1,6 +1,10 @@
 package it.polimi.ingsw.am49.view.gui;
 
 import it.polimi.ingsw.am49.client.GuiApp;
+import it.polimi.ingsw.am49.client.controller.GameController;
+import it.polimi.ingsw.am49.client.controller.MenuController;
+import it.polimi.ingsw.am49.client.controller.RoomController;
+import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.util.BiMap;
@@ -34,6 +38,10 @@ public class GuiManager {
     private int starterCardId;
     private List<Integer> objectiveCardsIds;
     private final GuiApp app;
+    private VirtualGame virtualGame;
+    private final MenuController menuController;
+    private final RoomController roomController;
+    private final GameController gameController;
     public final ExecutorService executorService = Executors.newSingleThreadExecutor();
   
     // CONSTRUCTOR
@@ -43,8 +51,11 @@ public class GuiManager {
      *
      * @param app the GuiApp instance associated with this manager
      */
-    public GuiManager(GuiApp app) {
+    public GuiManager(GuiApp app, MenuController menuController, RoomController roomController, GameController gameController) {
         this.app = app;
+        this.menuController = menuController;
+        this.roomController = roomController;
+        this.gameController = gameController;
     }
 
 
@@ -82,15 +93,15 @@ public class GuiManager {
      *
      * @param newSceneTitle the title of the new scene to be displayed
      */
-    public void changeScene(SceneTitle newSceneTitle, boolean reload) throws InvalidSceneException {
+    public void changeScene(SceneTitle newSceneTitle, boolean reload){
         System.out.println("Changing scene to: " + newSceneTitle.getFileName());
 
         if (titleToScene.getValue(newSceneTitle) == null) {
-            System.err.println("Couldn't find the specified scene");
-            throw new InvalidSceneException();
-            //stop();
+            System.err.println("GuiManager::changeScene received null SceneTitle.");
+            return;
         }
 
+        titleToController.getValue(titleToScene.getKey(currentScene)).onClose();
         currentScene = titleToScene.getValue(newSceneTitle);
         if(reload)
             titleToController.getValue(titleToScene.getKey(currentScene)).init();
@@ -105,6 +116,11 @@ public class GuiManager {
 
 
     // GETTERS
+
+
+    public VirtualGame getVirtualGame() {
+        return virtualGame;
+    }
 
     /**
      * @param sceneTitle the title of the scene
@@ -158,6 +174,11 @@ public class GuiManager {
 
     //SETTERS
 
+    //TODO: JAVADOC
+    public void setVirtualGame(VirtualGame virtualGame) {
+        this.virtualGame = virtualGame;
+    }
+
     /**
      * Sets the room information.
      *
@@ -208,7 +229,7 @@ public class GuiManager {
                 titleToScene.put(sceneTitle, scene);
                 GuiController controller = loader.getController();
                 //Sets the scene's controller
-                controller.setGui(app, this);
+                controller.setGui(app, this, this.menuController, this.roomController, this.gameController);
                 titleToController.put(sceneTitle, controller);
             }
         } catch (IOException e) {

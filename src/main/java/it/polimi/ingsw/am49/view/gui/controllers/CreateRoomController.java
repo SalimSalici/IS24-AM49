@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.server.Server;
@@ -32,7 +33,7 @@ public class CreateRoomController extends GuiController {
 
     @Override
     public void init() {
-        this.server = this.app.getServer();
+//        this.server = this.app.getServer();
 
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 4, 2);
         numplayerSpinner.setValueFactory( valueFactory);
@@ -41,13 +42,8 @@ public class CreateRoomController extends GuiController {
         nameTextfield.setOnAction(x-> execute());
         exitButton.setOnAction(x -> {
             this.nameTextfield.clear();
-                    try {
-                        this.manager.changeScene(SceneTitle.MAIN_MENU, true);
-                    } catch (InvalidSceneException e) {
-                        showErrorPopup(e.getMessage());
-                    }
-                }
-        );
+            this.manager.changeScene(SceneTitle.MAIN_MENU, true);
+        });
     }
 
     /**
@@ -58,13 +54,12 @@ public class CreateRoomController extends GuiController {
     private void execute(){
         this.manager.executorService.submit(() -> {
             try {
-                RoomInfo roomInfo = this.server.createRoom(this.app, nameTextfield.getText(), numplayerSpinner.getValue(), this.app.getUsername());
-                this.manager.setRoomInfo(roomInfo);
-                this.manager.changeScene(SceneTitle.ROOM, true);
+                this.menuController.createRoom(nameTextfield.getText(), numplayerSpinner.getValue());
+//                RoomInfo roomInfo = this.menuController.createRoom(nameTextfield.getText(), numplayerSpinner.getValue());
+//                this.manager.setRoomInfo(roomInfo);
+//                this.manager.changeScene(SceneTitle.ROOM, true);
             } catch (CreateRoomException | RemoteException | AlreadyInRoomException e){
                 System.out.println(e.getMessage());
-                Platform.runLater(() -> showErrorPopup(e.getMessage()));
-            } catch (InvalidSceneException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
             }
 

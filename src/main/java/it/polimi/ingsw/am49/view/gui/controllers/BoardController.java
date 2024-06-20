@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
@@ -62,8 +63,8 @@ public class BoardController extends GuiController {
 
     public void init() {
         this.overviewController = (OverviewController) this.manager.getControllerBySceneTitle(SceneTitle.OVERVIEW);
-        this.players = this.app.getVirtualGame().getPlayers();
-        this.myUsername = this.app.getUsername();
+        this.players = this.manager.getVirtualGame().getPlayers();
+        this.myUsername = ClientApp.getUsername();
         this.currentPlayer = players.stream()
                 .filter(player1 -> player1.getUsername().equals(myUsername))
                 .findFirst()
@@ -321,7 +322,7 @@ public class BoardController extends GuiController {
 
             this.manager.executorService.submit( () -> {
                 try {
-                    this.app.getServer().executeAction(this.app, new PlaceCardAction(this.app.getUsername(), card.id(), cardpane.row(), cardpane.col(), cornerPosition, card.flipped()));
+                    gameController.placeCard(card.id(), cardpane.row(), cardpane.col(), cornerPosition, card.flipped());
                     Pair<Integer, Integer> newCoords = VirtualBoard.getCoords(cornerPosition.toRelativePosition(), cardpane.row(), cardpane.col());
 
                     Platform.runLater(() -> {

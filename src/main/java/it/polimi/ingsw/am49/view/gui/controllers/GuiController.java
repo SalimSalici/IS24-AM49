@@ -2,6 +2,9 @@ package it.polimi.ingsw.am49.view.gui.controllers;
 
 
 import it.polimi.ingsw.am49.client.GuiApp;
+import it.polimi.ingsw.am49.client.controller.GameController;
+import it.polimi.ingsw.am49.client.controller.MenuController;
+import it.polimi.ingsw.am49.client.controller.RoomController;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
@@ -17,6 +20,9 @@ public abstract class GuiController {
     protected GuiManager manager;
     protected GuiApp app;
     protected GuiTextureManager guiTextureManager;
+    protected MenuController menuController;
+    protected RoomController roomController;
+    protected GameController gameController;
 
     /**
      * Sets the GUI application and manager for this controller.
@@ -25,9 +31,12 @@ public abstract class GuiController {
      * @param app the GUI application
      * @param manager the GUI manager
      */
-    public void setGui(GuiApp app, GuiManager manager){
+    public void setGui(GuiApp app, GuiManager manager, MenuController menuController, RoomController roomController, GameController gameController){
         this.manager = manager;
         this.app = app;
+        this.menuController = menuController;
+        this.roomController = roomController;
+        this.gameController = gameController;
         this.guiTextureManager = GuiTextureManager.getInstance();
 
         //this.init();
@@ -47,7 +56,7 @@ public abstract class GuiController {
      * @param message a message associated with the update
      * @throws InvalidSceneException if the current scene is invalid for this update
      */
-    public void roomUpdate(RoomInfo roomInfo, String message) throws InvalidSceneException{}
+    public void roomUpdate(RoomInfo roomInfo, String message){}
 
     /**
      * Updates the game state.
@@ -56,7 +65,9 @@ public abstract class GuiController {
      * @param gameUpdate the new game update
      * @throws InvalidSceneException if the current scene is invalid for this update
      */
-    public void gameUpdate(GameUpdate gameUpdate) throws InvalidSceneException{}
+    public void gameUpdate(GameUpdate gameUpdate){}
+
+    public void onClose() {}
 
     /**
      * Displays an error popup with the specified error message.

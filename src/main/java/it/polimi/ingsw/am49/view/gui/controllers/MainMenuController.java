@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.controller.CompleteGameInfo;
 import it.polimi.ingsw.am49.controller.room.Room;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
@@ -18,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +44,7 @@ public class MainMenuController extends GuiController {
 
     @Override
     public void init(){
-        this.server = this.app.getServer();
+        //this.server = this.app.getServer();
         refreshRooms();
         roomsListview.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RoomInfoItem>() {
             @Override
@@ -50,7 +52,7 @@ public class MainMenuController extends GuiController {
                 selectedRoom = roomsListview.getSelectionModel().getSelectedItem();
             }
         });
-        usernameLabel.setText("Username: " + this.app.getUsername());
+        usernameLabel.setText("Username: " + ClientApp.getUsername());
 
         refreshButton.setOnAction(e -> {
             refreshRooms();
@@ -77,7 +79,7 @@ public class MainMenuController extends GuiController {
         this.manager.executorService.submit(() -> {
             roomsListview.getItems().clear();
             try {
-                this.rooms = this.server.fetchRooms(this.app);
+                this.rooms = this.menuController.fetchRooms();
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
@@ -104,11 +106,11 @@ public class MainMenuController extends GuiController {
         this.manager.executorService.submit(() -> {
             try {
                 System.out.println("Joining room: " + selectedRoom);
-                RoomInfo roomInfo = this.server.joinRoom(this.app, selectedRoom.getRoomName(), this.app.getUsername());
-                this.manager.setRoomInfo(roomInfo);
-                this.manager.changeScene(SceneTitle.ROOM, true);
-                //this.manager.changeScene();
-            } catch (JoinRoomException | InvalidSceneException e) {
+//                RoomInfo roomInfo = this.server.joinRoom(this.app, selectedRoom.getRoomName(), ClientApp.getUsername());
+//                this.manager.setRoomInfo(roomInfo);
+//                this.manager.changeScene(SceneTitle.ROOM, true);
+                this.menuController.joinRoom(selectedRoom.getRoomName());
+            } catch (JoinRoomException e) {
                     Platform.runLater(() -> showErrorPopup(e.getMessage()));
                     System.out.println(e.getMessage());
                     return;
@@ -118,10 +120,10 @@ public class MainMenuController extends GuiController {
             } catch (GameAlreadyStartedException e) {
                 try {
                     this.manager.setRoomInfo(selectedRoom.toRoomInfo());
-                    CompleteGameInfo completeGameInfo = this.server.reconnect(this.app, selectedRoom.getRoomName(), this.app.getUsername());
-                    this.app.loadGame(completeGameInfo);
-                    this.manager.changeScene(SceneTitle.OVERVIEW, true);
-                } catch (AlreadyInRoomException | JoinRoomException | RemoteException | InvalidSceneException ex) {
+                    this.menuController.reconnect(selectedRoom.getRoomName());
+//                    this.app.loadGame(completeGameInfo);
+//                    this.manager.changeScene(SceneTitle.OVERVIEW, true);
+                } catch (AlreadyInRoomException | JoinRoomException | RemoteException ex) {
                     Platform.runLater(() -> showErrorPopup(e.getMessage()));
                     throw new RuntimeException(e);
                 }
@@ -133,21 +135,13 @@ public class MainMenuController extends GuiController {
      * Changes the scene to the change username screen.
      */
     private void changeUsername(){
-        try {
-            this.manager.changeScene(SceneTitle.CHANGE_USERNAME, true);
-        } catch (InvalidSceneException e) {
-            Platform.runLater(() -> showErrorPopup(e.getMessage()));
-        }
+        this.manager.changeScene(SceneTitle.CHANGE_USERNAME, true);
     }
 
     /**
      * Changes the scene to the create room screen.
      */
     private void createRoom(){
-        try {
-            this.manager.changeScene(SceneTitle.CREATE_ROOM, true);
-        } catch (InvalidSceneException e) {
-            throw new RuntimeException(e);
-        }
+        this.manager.changeScene(SceneTitle.CREATE_ROOM, true);
     }
 }
