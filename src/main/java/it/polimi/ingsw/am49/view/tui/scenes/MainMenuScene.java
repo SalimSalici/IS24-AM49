@@ -1,10 +1,8 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.ClientApp;
-import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.controller.MenuController;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
-import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.server.exceptions.CreateRoomException;
 import it.polimi.ingsw.am49.server.exceptions.GameAlreadyStartedException;
@@ -16,14 +14,12 @@ import java.util.List;
 
 public class MainMenuScene extends Scene {
 
-    private final Server server;
     private final MenuController menuController;
     private List<RoomInfo> rooms;
     private boolean isLoading = false;
 
-    public MainMenuScene(SceneManager sceneManager, TuiApp tuiApp, MenuController menuController) {
-        super(sceneManager, tuiApp);
-        this.server = tuiApp.getServer();
+    public MainMenuScene(SceneManager sceneManager, MenuController menuController) {
+        super(sceneManager);
         this.menuController = menuController;
     }
 
@@ -110,7 +106,7 @@ public class MainMenuScene extends Scene {
 
     public void focus() {
         try {
-            this.rooms = this.server.fetchRooms(this.tuiApp);
+            this.rooms = this.menuController.fetchRooms();
         } catch (RemoteException e) {
             // TODO: handle exception (show scene anyway, with empty list of rooms, and print error message saying an issue occurred)
             throw new RuntimeException(e);
@@ -157,9 +153,10 @@ public class MainMenuScene extends Scene {
         try {
             this.isLoading = true;
             this.showInfoMessage("Loading room...");
-            RoomInfo roomInfo = this.menuController.createRoom(roomName, numPlayers);
+//            RoomInfo roomInfo = this.menuController.createRoom(roomName, numPlayers);
+            this.menuController.createRoom(roomName, numPlayers);
             this.isLoading = false;
-            this.sceneManager.switchScene(roomInfo);
+//            this.sceneManager.switchScene(roomInfo);
         } catch (CreateRoomException | AlreadyInRoomException e) {
             this.isLoading = false;
             this.showError("Failed to create room. " + e.getMessage());
@@ -183,9 +180,10 @@ public class MainMenuScene extends Scene {
         try {
             this.isLoading = true;
             this.showInfoMessage("Loading room...");
-            RoomInfo roomInfo = this.menuController.joinRoom(roomName);
+//            RoomInfo roomInfo = this.menuController.joinRoom(roomName);
+            this.menuController.joinRoom(roomName);
             this.isLoading = false;
-            this.sceneManager.switchScene(roomInfo);
+//            this.sceneManager.switchScene(roomInfo);
         } catch (JoinRoomException | AlreadyInRoomException | GameAlreadyStartedException  e) {
             this.isLoading = false;
             this.showError("Failed to join room. " + e.getMessage());
@@ -211,8 +209,8 @@ public class MainMenuScene extends Scene {
             this.isLoading = true;
             this.showInfoMessage("Loading game...");
             this.menuController.reconnect(roomName);
-            this.sceneManager.initializePlayerScenes();
-            this.sceneManager.switchScene(SceneType.OVERVIEW_SCENE);
+//            this.sceneManager.initializePlayerScenes();
+//            this.sceneManager.switchScene(SceneType.OVERVIEW_SCENE);
             this.isLoading = false;
         } catch (JoinRoomException | AlreadyInRoomException  e) {
             this.isLoading = false;

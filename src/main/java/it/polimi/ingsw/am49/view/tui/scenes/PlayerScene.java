@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.ClientApp;
-import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
@@ -9,7 +8,6 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
-import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
@@ -25,7 +23,6 @@ import java.util.List;
 
 public class PlayerScene extends Scene implements Observer {
 
-    private final Server server;
     private final VirtualGame game;
     private final TuiBoardRenderer boardRenderer;
     private final TuiPlayerRenderer tuiPlayerRenderer;
@@ -35,10 +32,9 @@ public class PlayerScene extends Scene implements Observer {
     private int col = 25;
     private final GameController gameController;
 
-    public PlayerScene(SceneManager sceneManager, TuiApp tuiApp, VirtualPlayer player, GameController gameController) {
-        super(sceneManager, tuiApp);
-        this.server = tuiApp.getServer();
-        this.game = tuiApp.getVirtualGame();
+    public PlayerScene(SceneManager sceneManager, VirtualGame game, VirtualPlayer player, GameController gameController) {
+        super(sceneManager);
+        this.game = game;
         this.player = player;
         this.board = player.getBoard();
         this.boardRenderer = new TuiBoardRenderer(player.getBoard());

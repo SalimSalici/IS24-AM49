@@ -2,7 +2,6 @@ package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.client.ClientApp;
-import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
@@ -24,8 +23,8 @@ public class ChatScene extends Scene implements Observer {
     private final List<TimedChatMessage> chatMessages;
     private final GameController gameController;
 
-    public ChatScene(SceneManager sceneManager, TuiApp tuiApp, GameController gameController) {
-        super(sceneManager, tuiApp);
+    public ChatScene(SceneManager sceneManager, GameController gameController) {
+        super(sceneManager);
         this.chatMessages = new LinkedList<>();
         this.gameController = gameController;
     }
@@ -59,13 +58,13 @@ public class ChatScene extends Scene implements Observer {
         String sender = msg.chatMSG.sender();
         String recipient = msg.chatMSG.recipient();
         String toPrint = msg.timestamp().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + " ";
-        VirtualPlayer senderPlayer = this.tuiApp.getVirtualGame().getPlayerByUsername(sender);
+        VirtualPlayer senderPlayer = this.sceneManager.getVirtualGame().getPlayerByUsername(sender);
         toPrint += this.getColoredUsername(senderPlayer) + " (" + senderPlayer.getPoints() + " points)";
         if (!recipient.equals("*")) {
             if (recipient.equals(ClientApp.getUsername()))
                 toPrint += " whispered you";
             else {
-                VirtualPlayer recipientPlayer = this.tuiApp.getVirtualGame().getPlayerByUsername(recipient);
+                VirtualPlayer recipientPlayer = this.sceneManager.getVirtualGame().getPlayerByUsername(recipient);
                 toPrint += " whispered " + this.getColoredUsername(recipientPlayer);
             }
         }
@@ -130,7 +129,7 @@ public class ChatScene extends Scene implements Observer {
 
     @Override
     public void focus() {
-        this.game = this.tuiApp.getVirtualGame();
+        this.game = this.sceneManager.getVirtualGame();
         this.game.addObserver(this);
     }
 

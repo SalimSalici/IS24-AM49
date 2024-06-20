@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.ClientApp;
-import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
@@ -29,8 +28,8 @@ public class GameOverviewScene extends Scene implements Observer {
     private TuiPlayerRenderer focusedPlayerRenderer;
     private final GameController gameController;
 
-    public GameOverviewScene(SceneManager sceneManager, TuiApp tuiApp, GameController gameController) {
-        super(sceneManager, tuiApp);
+    public GameOverviewScene(SceneManager sceneManager, GameController gameController) {
+        super(sceneManager);
         this.gameController = gameController;
     }
 
@@ -136,7 +135,7 @@ public class GameOverviewScene extends Scene implements Observer {
                     this.game.getPlayers().get(Integer.parseInt(args[1]) - 1);
             if (player != null) {
                 boolean hiddenHand = !player.getUsername().equals(ClientApp.getUsername());
-                boolean hiddenPersonalObjective = this.game.getGameState() != GameStateType.END_GAME;
+                boolean hiddenPersonalObjective = this.game.getGameState() != GameStateType.END_GAME && hiddenHand;
                 this.focusedPlayerRenderer = new TuiPlayerRenderer(player, hiddenHand, hiddenPersonalObjective, this.game.getCommonObjectives());
             } else
                 this.showError("Unexpected error occurred. If it persists, please restart the client.");
@@ -245,13 +244,14 @@ public class GameOverviewScene extends Scene implements Observer {
     }
 
     private void handleLeave() {
-        this.sceneManager.destroyPlayerScenes();
-        this.backToMainMenu(true);
+//        this.sceneManager.destroyPlayerScenes();
+        this.gameController.leave();
+//        this.backToMainMenu(true);
     }
 
     @Override
     public void focus() {
-        this.game = this.tuiApp.getVirtualGame();
+        this.game = this.sceneManager.getVirtualGame();
         this.game.addObserver(this);
         this.drawAreaRenderer = new TuiDrawAreaRenderer(this.game.getDrawableArea());
         this.focusedPlayerRenderer = new TuiPlayerRenderer(this.game.getPlayerByUsername(ClientApp.getUsername()), false, false, this.game.getCommonObjectives());

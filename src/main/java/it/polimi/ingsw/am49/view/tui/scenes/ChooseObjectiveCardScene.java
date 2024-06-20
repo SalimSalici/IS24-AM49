@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.ClientApp;
-import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
@@ -22,18 +21,16 @@ import java.util.List;
 
 public class ChooseObjectiveCardScene extends Scene implements Observer {
 
-    private final Server server;
     private VirtualGame game;
     private List<Integer> objectiveCardIds;
     private final TuiCardRenderer renderer;
     private boolean chosen = false;
     private final GameController gameController;
 
-    public ChooseObjectiveCardScene(SceneManager sceneManager, TuiApp tuiApp, GameController gameController) {
-        super(sceneManager, tuiApp);
+    public ChooseObjectiveCardScene(SceneManager sceneManager, GameController gameController) {
+        super(sceneManager);
         this.gameController = gameController;
         this.renderer = new TuiCardRenderer(31, 5);
-        this.server = tuiApp.getServer();
     }
 
     public void setObjectiveCardIds(List<Integer> objectiveCardIds) {
@@ -122,7 +119,7 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
     private void handleObjectiveChosen(int objectiveId) {
         try {
             this.chosen = true;
-            this.tuiApp.getVirtualGame().getPlayerByUsername(ClientApp.getUsername()).setPersonalObjectiveId(objectiveId);
+            this.sceneManager.getVirtualGame().getPlayerByUsername(ClientApp.getUsername()).setPersonalObjectiveId(objectiveId);
             this.gameController.chooseObjective(objectiveId);
             this.refreshView();
         } catch (InvalidActionException | NotInGameException | NotYourTurnException e) {
@@ -142,7 +139,7 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
     @Override
     public void focus() {
         this.chosen = false;
-        this.game = this.tuiApp.getVirtualGame();
+        this.game = this.sceneManager.getVirtualGame();
         this.game.addObserver(this);
     }
 

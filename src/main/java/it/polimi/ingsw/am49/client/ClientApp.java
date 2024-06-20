@@ -1,10 +1,14 @@
 package it.polimi.ingsw.am49.client;
 
 import it.polimi.ingsw.am49.chat.ChatMSG;
+import it.polimi.ingsw.am49.client.controller.GameController;
+import it.polimi.ingsw.am49.client.controller.MenuController;
+import it.polimi.ingsw.am49.client.controller.RoomController;
 import it.polimi.ingsw.am49.client.sockets.ServerSocketHandler;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.config.StaticConfig;
 import it.polimi.ingsw.am49.controller.CompleteGameInfo;
+import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
@@ -12,6 +16,8 @@ import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.util.IntervalTimer;
+import it.polimi.ingsw.am49.view.TuiView;
+import it.polimi.ingsw.am49.view.View;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -24,20 +30,38 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.time.LocalTime;
 
-public abstract class ClientApp extends UnicastRemoteObject implements Client {
+public class ClientApp extends UnicastRemoteObject implements Client {
 
-    protected VirtualGame game;
-    protected Server server;
     protected static String username;
+
+    protected Server server;
+    protected View view;
+    protected VirtualGame game;
+    protected MenuController menuController;
+    protected RoomController roomController;
+    protected GameController gameController;
+
     private final IntervalTimer heartbeatInterval;
 
     public ClientApp() throws RemoteException {
         this.heartbeatInterval = new IntervalTimer(this::pingServer, 10, 1000, TimeUnit.MILLISECONDS);
     }
 
+    protected void initialize(boolean gui) {
+        this.menuController = new MenuController(this.server, this);
+        this.roomController = new RoomController(this.server, this);
+        this.gameController = new GameController(this.server, this);
+        // TODO: tui vs gui
+        this.setView(new TuiView(menuController, roomController, gameController));
+        this.menuController.setView(view);
+        this.roomController.setView(view);
+        this.gameController.setView(view);
+        this.view.initialize();
+    }
+
     @Override
     public void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException {
-
+        this.view.roomUpdate(roomInfo, message);
     }
 
     @Override
@@ -46,8 +70,15 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
             Log.getLogger().severe("Received a null GameUpdate from the server.");
             return;
         }
+
         if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
-            this.game = VirtualGame.newGame((GameStartedUpdate)gameUpdate);
+            GameStartedUpdate gameStartedUpdate = (GameStartedUpdate) gameUpdate;
+            this.game = VirtualGame.newGame(gameStartedUpdate);
+            this.view.setVirtualGame(this.game);
+            this.view.showStarterChoice(gameStartedUpdate.starterCardId());
+        } else if (gameUpdate.getType() == GameUpdateType.CHOOSABLE_OBJETIVES_UPDATE) {
+            ChoosableObjectivesUpdate choosableObjectivesUpdate = (ChoosableObjectivesUpdate) gameUpdate;
+            this.view.showObjectiveChoice(choosableObjectivesUpdate.objectiveCards());
         } else if (this.game != null)
             this.game.processGameUpdate(gameUpdate);
     }
@@ -65,6 +96,7 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
     @Override
     public void receiveChatMessage(ChatMSG msg){
         game.getPlayerByUsername(username).setMessage(msg.text(), msg.sender(), msg.recipient(), LocalTime.now().truncatedTo(ChronoUnit.MINUTES));
+        this.view.receiveChatMessage(msg);
     }
 
     private void pingServer() {
@@ -95,7 +127,11 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
         return this.game;
     }
 
-    protected abstract void initialize();
+    public void setView(View view) {
+        this.view = view;
+    }
+
+
 
     // TODO: handle exceptions
     public static void main(String[] args) throws IOException, NotBoundException {
@@ -123,7 +159,7 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
         }
 
         client.setServer(server);
-        client.initialize();
+        client.initialize(true);
     }
 
     private static Server getRMIServer(String host, int port) throws RemoteException, NotBoundException {
@@ -136,6 +172,9 @@ public abstract class ClientApp extends UnicastRemoteObject implements Client {
     }
 
     private static ClientApp getClient(String[] args) throws RemoteException {
-        return List.of(args).contains("--gui") ? new GuiApp(args) : new TuiApp();
+        return new ClientApp();
     }
+//    private static ClientApp getClient(String[] args) throws RemoteException {
+//        return List.of(args).contains("--gui") ? new GuiApp(args) : new TuiApp();
+//    }
 }

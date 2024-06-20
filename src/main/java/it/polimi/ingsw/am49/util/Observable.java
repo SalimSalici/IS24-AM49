@@ -11,7 +11,7 @@ public class Observable {
         this.observers = new ArrayList<>();
     }
 
-    public void addObserver(Observer o) {
+    public synchronized void addObserver(Observer o) {
         if (o == null) {
             throw new NullPointerException();
         }
@@ -20,13 +20,25 @@ public class Observable {
         }
     }
 
-    public void deleteObserver(Observer o) {
+    public synchronized void deleteObserver(Observer o) {
         this.observers.remove(o);
     }
 
     public void notifyObservers() {
-        for (Observer observer : this.observers) {
-            observer.update();
+//        for (Observer observer : this.observers) {
+//            observer.update();
+//        }
+        List<Observer> observersCopy;
+        synchronized (this) {
+            observersCopy = new ArrayList<>(this.observers);
+        }
+
+        for (Observer observer : observersCopy) {
+            synchronized (this) {
+                if (this.observers.contains(observer)) {
+                    observer.update();
+                }
+            }
         }
     }
 }

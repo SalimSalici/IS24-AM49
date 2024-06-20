@@ -32,7 +32,7 @@ public class GuiApp extends ClientApp {
      * This method starts the JavaFX application and sets up the GUI manager.
      */
     @Override
-    public void initialize() {
+    public void initialize(boolean gui) {
         // Start JavaFX
         manager = new GuiManager(this);
         GuiEntry.guiManagerInstance = manager;
