@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.controller.room;
 
+import it.polimi.ingsw.am49.chat.ChatMSG;
 import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
 import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -187,6 +189,35 @@ class RoomTest {
 
         assertDoesNotThrow(
                 () -> room.executeGameAction(mockCreatorClient, new ChooseStarterSideAction(creatorUsername, true)));
+    }
+
+    @Test
+    void testNewChatMSG() throws JoinRoomException, GameAlreadyStartedException {
+        ClientHandler player2 = mock(ClientHandler.class);
+        ClientHandler player3 = mock(ClientHandler.class);
+        room.addNewPlayer(player2, "player2");
+        room.addNewPlayer(player3, "player3");
+
+        ChatMSG broadcastMsg = new ChatMSG("Hello everyone!","creator", "*");
+        room.newChatMSG(broadcastMsg);
+
+        verify(mockCreatorClient, times(1)).receiveChatMessage(broadcastMsg);
+        verify(player2, times(1)).receiveChatMessage(broadcastMsg);
+        verify(player3, times(1)).receiveChatMessage(broadcastMsg);
+
+        ChatMSG directMsg = new ChatMSG("Hello player2!","creator", "player2");
+        room.newChatMSG(directMsg);
+
+        verify(mockCreatorClient, times(1)).receiveChatMessage(directMsg);
+        verify(player2, times(1)).receiveChatMessage(directMsg);
+        verify(player3, never()).receiveChatMessage(directMsg);
+
+        ChatMSG invalidMsg = new ChatMSG("This shouldn't be sent","creator", "nonexistent");
+        room.newChatMSG(invalidMsg);
+
+        verify(mockCreatorClient, never()).receiveChatMessage(invalidMsg);
+        verify(player2, never()).receiveChatMessage(invalidMsg);
+        verify(player3, never()).receiveChatMessage(invalidMsg);
     }
 
     private List<ClientHandler> addPlayersAndMakeThemReady(Room room, HashMap<String, Color> players) throws JoinRoomException, RoomException, GameAlreadyStartedException {

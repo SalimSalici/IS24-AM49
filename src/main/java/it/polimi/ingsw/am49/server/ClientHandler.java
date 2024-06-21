@@ -79,7 +79,7 @@ public class ClientHandler implements Client {
     }
 
     @Override
-    public void receiveChatMessage(ChatMSG msg) throws RemoteException {
+    public void receiveChatMessage(ChatMSG msg) {
         executorService.submit(() -> {
             try {
                 client.receiveChatMessage(msg);

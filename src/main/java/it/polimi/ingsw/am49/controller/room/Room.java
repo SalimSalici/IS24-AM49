@@ -16,7 +16,6 @@ import it.polimi.ingsw.am49.server.ServerApp;
 import it.polimi.ingsw.am49.server.exceptions.*;
 import it.polimi.ingsw.am49.util.Log;
 
-import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -473,27 +472,15 @@ public class Room {
         if (msg.recipient().equals("*")) {
             for (PlayerInfo pInfo : this.usernamesToPlayers.values()) {
                 ClientHandler client = pInfo.getClient();
-                try {
-                    client.receiveChatMessage(msg);
-                } catch (RemoteException e) {
-                    throw new RuntimeException(e);
-                }
+                client.receiveChatMessage(msg);
             }
         } else {
             ClientHandler clientRecipient = this.getClientByUsername(msg.recipient());
             ClientHandler clientSender = this.getClientByUsername(msg.sender());
             if (clientSender == null || clientRecipient == null)
                 return;
-            try {
-                clientRecipient.receiveChatMessage(msg);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                clientSender.receiveChatMessage(msg);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
+            clientRecipient.receiveChatMessage(msg);
+            clientSender.receiveChatMessage(msg);
         }
     }
 }

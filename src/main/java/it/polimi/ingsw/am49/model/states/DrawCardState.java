@@ -141,16 +141,21 @@ public class DrawCardState extends GameState {
         try {
             if (!this.resourceGameDeck.isEmpty())
                 this.execute(new DrawCardAction(player.getUsername(), DrawPosition.RESOURCE_DECK, 0));
-            else if (!this.goldGameDeck.isEmpty())
+            else if (!this.goldGameDeck.isEmpty()) {
                 this.execute(new DrawCardAction(player.getUsername(), DrawPosition.GOLD_DECK, 0));
-            else if (this.revealedResources[0] != null)
-                this.execute(new DrawCardAction(player.getUsername(), DrawPosition.REVEALED, this.revealedResources[0].getId()));
-            else if (this.revealedResources[1] != null)
-                this.execute(new DrawCardAction(player.getUsername(), DrawPosition.REVEALED, this.revealedResources[1].getId()));
-            else if (this.revealedGolds[0] != null)
-                this.execute(new DrawCardAction(player.getUsername(), DrawPosition.REVEALED, this.revealedGolds[0].getId()));
-            else if (this.revealedGolds[1] != null)
-                this.execute(new DrawCardAction(player.getUsername(), DrawPosition.REVEALED, this.revealedGolds[1].getId()));
+            }
+
+            for (GoldCard revealedGold : this.revealedGolds)
+                if (revealedGold != null) {
+                    this.execute(new DrawCardAction(player.getUsername(), DrawPosition.REVEALED, revealedGold.getId()));
+                    return;
+                }
+
+            for (ResourceCard revealedResource : this.revealedResources)
+                if (revealedResource != null) {
+                    this.execute(new DrawCardAction(player.getUsername(), DrawPosition.REVEALED, revealedResource.getId()));
+                    return;
+                }
         } catch (NotYourTurnException | InvalidActionException e) {
             Log.getLogger().severe("Disconnect player anomaly... Exception message: " + e.getMessage());
         }
