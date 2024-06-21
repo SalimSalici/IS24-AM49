@@ -62,7 +62,7 @@ public class VirtualPlayer extends Observable {
         return username;
     }
 
-    public void setPlaing(boolean playing) {
+    public void setPlaiyng(boolean playing) {
         this.playing = playing;
     }
 

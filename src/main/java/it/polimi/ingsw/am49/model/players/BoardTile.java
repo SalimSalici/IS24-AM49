@@ -111,22 +111,6 @@ public class BoardTile implements Serializable {
         return this.board.getTile(coords.first, coords.second);
     }
 
-    public boolean getTrCovered(){
-        return trCovered;
-    }
-
-    public boolean getTlCovered(){
-        return tlCovered;
-    }
-
-    public boolean getBrCovered(){
-        return brCovered;
-    }
-
-    public boolean getBlCovered(){
-        return blCovered;
-    }
-
     public void updateActiveSymbols() {
         for (Symbol symbol : Symbol.values())
             this.activeSymbols.put(symbol, 0);

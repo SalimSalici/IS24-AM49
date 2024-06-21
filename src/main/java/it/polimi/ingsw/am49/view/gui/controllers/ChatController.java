@@ -257,9 +257,11 @@ public class ChatController extends GuiController {
                 }
             }
         }
-        //Removes the global chat if there are only two player because it's presence is reduntant
+        //Leaves only the global chat if there are only two player in the game
         if(game.getPlayers().size()<3){
-            chatTabpane.getTabs().remove(chatglobalTab);
+            for (Tab tab : chatTabs)
+                if(tab != chatglobalTab)
+                    chatTabpane.getTabs().remove(tab);
         }
     }
 

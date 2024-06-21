@@ -94,7 +94,7 @@ public class VirtualGame extends Observable {
     }
 
     private void handleIsPlayingUpdate(IsPlayingUpdate update){
-        this.getPlayerByUsername(update.username()).setPlaing(update.status());
+        this.getPlayerByUsername(update.username()).setPlaiyng(update.status());
         this.getPlayerByUsername(update.username()).notifyObservers();
     }
 
