@@ -279,6 +279,7 @@ public class OverviewController extends GuiController {
 
     private void drawPlayers() {
         playersGridpane.getChildren().clear();
+        Image offlineTotemImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/CODEX_pion_noir.png")));
         int index = 0;
         for (VirtualPlayer player : this.players) {
             Button viewboardButton = new Button("VIEW");
@@ -286,14 +287,17 @@ public class OverviewController extends GuiController {
             String newBackgroundStyle = "-fx-background-color: transparent;";
             viewboardButton.setStyle(existingStyle + " " + newBackgroundStyle);
             GridPane.setHalignment(viewboardButton, HPos.CENTER);
-            ImageView totemImageview = new ImageView(this.guiTextureManager.getImageByTotemColor(player.getColor()));
+            Image totemImage = this.guiTextureManager.getImageByTotemColor(player.getColor());
+            ImageView totemImageview = player.getPlaying() ?
+                    new ImageView(totemImage) :
+                    new ImageView(offlineTotemImage);
             Label usernameLabel = new Label(player.getUsername());
 
             int finalIndex = index;
             player.addObserver(() -> Platform.runLater(() -> {
                 playersGridpane.getChildren().removeIf(node -> {Integer columnIndex = GridPane.getColumnIndex(node); Integer rowIndex = GridPane.getRowIndex(node); return columnIndex != null && rowIndex != null && columnIndex == 1 && rowIndex == finalIndex;});
                 //TODO: replace black totem with gray one
-                totemImageview.setImage(player.getPlaying()? this.guiTextureManager.getImageByTotemColor(player.getColor()) : new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/CODEX_pion_noir.png"))));
+                totemImageview.setImage(player.getPlaying() ? totemImage : offlineTotemImage);
                 totemImageview.setFitWidth(33);
                 totemImageview.setFitHeight(36);
             }));

@@ -23,5 +23,6 @@ public record CompletePlayerInfo(
         LinkedList<TileInfo> tiles,
         HandUpdate hand,
         HiddenHandUpdate hiddenHand,
-        Map<Symbol, Integer> activeSymbols
+        Map<Symbol, Integer> activeSymbols,
+        boolean playing
 ) implements Serializable {}

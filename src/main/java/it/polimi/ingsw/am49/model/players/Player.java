@@ -271,7 +271,8 @@ public class Player implements Serializable {
                 tiles,
                 handUpdate,
                 hiddenHandUpdate,
-                this.board.getAvailableResources()
+                this.board.getAvailableResources(),
+                this.isOnline
         );
     }
 }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.client.virtualmodel;
 
 import it.polimi.ingsw.am49.controller.CompleteGameInfo;
+import it.polimi.ingsw.am49.controller.CompletePlayerInfo;
 import it.polimi.ingsw.am49.controller.gameupdates.*;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
@@ -41,12 +42,7 @@ public class VirtualGame extends Observable {
      public static VirtualGame loadGame(CompleteGameInfo gameInfo) {
         VirtualGame game = new VirtualGame();
         gameInfo.players().forEach(completePlayerInfo -> {
-            VirtualPlayer player = new VirtualPlayer(completePlayerInfo.username(), completePlayerInfo.color());
-            player.setPoints(completePlayerInfo.points());
-            player.setPersonalObjectiveId(completePlayerInfo.personalObjectiveId());
-            player.setHand(completePlayerInfo.hand().handIds());
-            player.setHiddenHand(completePlayerInfo.hiddenHand().hiddenHand());
-            player.setActiveSymbols(completePlayerInfo.activeSymbols());
+            VirtualPlayer player = initializePlayer(completePlayerInfo);
             completePlayerInfo.tiles().forEach(
                     tile -> player.getBoard().placeCard(
                             new VirtualCard(tile.cardId(), tile.flipped()),
@@ -68,6 +64,17 @@ public class VirtualGame extends Observable {
         game.handleGameStateUpdate(gameInfo.gameState());
         return game;
      }
+
+    private static VirtualPlayer initializePlayer(CompletePlayerInfo completePlayerInfo) {
+        VirtualPlayer player = new VirtualPlayer(completePlayerInfo.username(), completePlayerInfo.color());
+        player.setPoints(completePlayerInfo.points());
+        player.setPersonalObjectiveId(completePlayerInfo.personalObjectiveId());
+        player.setHand(completePlayerInfo.hand().handIds());
+        player.setHiddenHand(completePlayerInfo.hiddenHand().hiddenHand());
+        player.setActiveSymbols(completePlayerInfo.activeSymbols());
+        player.setPlaiyng(completePlayerInfo.playing());
+        return player;
+    }
 
     public List<VirtualPlayer> getPlayers() {
         return players;

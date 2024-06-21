@@ -28,7 +28,10 @@ public class SocketClientHandler implements Client {
         new Thread(() -> {
             try {
                 this.startListeningForMessages();
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (Exception e) {
+                try {
+                    this.server.leaveRoom(this);
+                } catch (RemoteException | RoomException ignored) {}
                 throw new RuntimeException(e);
             }
         }).start();
