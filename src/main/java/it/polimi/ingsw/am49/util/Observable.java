@@ -24,6 +24,10 @@ public class Observable {
         this.observers.remove(o);
     }
 
+    public synchronized void clearObservers() {
+        this.observers.clear();
+    }
+
     public void notifyObservers() {
 //        for (Observer observer : this.observers) {
 //            observer.update();

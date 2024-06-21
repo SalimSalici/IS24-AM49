@@ -51,6 +51,7 @@ public class GameController extends ClientController {
                     server.leaveRoom(this.client);
                 } catch (RemoteException | RoomException ignored) {}
             }).start();
+            this.client.getVirtualGame().clearAllObservers();
             Thread.sleep(150);
             this.view.showMainMenu();
         } catch (InterruptedException ignored) {

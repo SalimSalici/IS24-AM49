@@ -219,4 +219,10 @@ public class VirtualGame extends Observable {
     public VirtualPlayer getforfeitWinner() {
         return forfeitWinner;
     }
+
+    public void clearAllObservers() {
+        this.clearObservers();
+        this.players.forEach(Observable::clearObservers);
+        this.drawableArea.clearObservers();
+    }
 }
