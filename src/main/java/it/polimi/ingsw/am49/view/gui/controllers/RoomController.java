@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
@@ -36,7 +37,7 @@ public class RoomController extends GuiController {
     @FXML
     private HBox totemHBox;
 
-    private Server server;
+//    private Server server;
     private RoomInfo roomInfo;
     private Color totemColor;
 
@@ -46,7 +47,7 @@ public class RoomController extends GuiController {
 
     @Override
     public void init() {
-        this.server = this.app.getServer();
+//        this.server = this.app.getServer();
         this.roomInfo = this.manager.getRoomInfo();
 
         totemHBox.setVisible(false);
@@ -87,7 +88,7 @@ public class RoomController extends GuiController {
     }
 
     @Override
-    public void roomUpdate(RoomInfo roomInfo, String message) throws InvalidSceneException {
+    public void roomUpdate(RoomInfo roomInfo, String message) {
         this.roomInfo = roomInfo;
         drawPlayersList();
         drawPlayersCount();
@@ -98,11 +99,7 @@ public class RoomController extends GuiController {
         if (gameUpdate.getType() == GameUpdateType.GAME_STARTED_UPDATE) {
             GameStartedUpdate update = (GameStartedUpdate) gameUpdate;
             this.manager.setStarterCardId(update.starterCardId());
-            try {
-                this.manager.changeScene(SceneTitle.STARTER_CARD, true);
-            } catch (InvalidSceneException e) {
-                throw new RuntimeException(e);
-            }
+            this.manager.changeScene(SceneTitle.STARTER_CARD, true);
         }
     }
 
@@ -114,10 +111,8 @@ public class RoomController extends GuiController {
         this.manager.executorService.submit(() -> {
             this.totemColor = null;
             try{
-                roomInfo = this.server.readyDown(this.app);
-                this.server.leaveRoom(this.app);
-                this.manager.changeScene(SceneTitle.MAIN_MENU, true);
-            } catch (RemoteException | RoomException | InvalidSceneException e) {
+                this.roomController.leaveRoom();
+            } catch (RemoteException | RoomException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 throw new RuntimeException(e);
             }
@@ -133,14 +128,14 @@ public class RoomController extends GuiController {
             try {
                 // if color isn't set
                 if(totemColor == null){
-                    this.roomInfo = this.server.readyDown(this.app);
+                    this.roomInfo = this.roomController.readyDown();
                 }
                 else{
-                    this.roomInfo = this.server.readyUp(this.app, totemColor);
+                    this.roomInfo = this.roomController.readyUp(totemColor);
                     this.manager.setRoomInfo(this.roomInfo);
                 }
 
-                if(this.roomInfo.playersToColors().get(this.app.getUsername()) == null){
+                if(this.roomInfo.playersToColors().get(ClientApp.getUsername()) == null){
                     totemHBox.setVisible(false);
 
                 }else{
@@ -181,7 +176,7 @@ public class RoomController extends GuiController {
                     this.roomInfo.playersToColors()
                             .entrySet()
                             .stream()
-                            .filter(entry -> !entry.getKey().equals(this.app.getUsername()))
+                            .filter(entry -> !entry.getKey().equals(ClientApp.getUsername()))
                             .map(entry -> new PlayerInfoItem(
                                     entry.getKey(),
                                     entry.getValue() == null ? null : this.guiTextureManager.getImageByTotemColor(entry.getValue())

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import it.polimi.ingsw.am49.view.tui.scenes.InvalidSceneException;
 import javafx.application.Platform;
@@ -44,12 +45,8 @@ public class WelcomeController extends GuiController {
      */
     private void execute(){
         if(this.isUsernameValid(usernameTextfield.getText())) {
-            app.setUsername(usernameTextfield.getText());
-            try {
-                this.manager.changeScene(SceneTitle.MAIN_MENU, true);
-            } catch (InvalidSceneException e) {
-                Platform.runLater(() -> showErrorPopup(e.getMessage()));
-            }
+            ClientApp.setUsername(usernameTextfield.getText());
+            this.manager.changeScene(SceneTitle.MAIN_MENU, true);
         }else System.out.println("The username your trying to use is not allowed");
     }
 }

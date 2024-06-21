@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
 import it.polimi.ingsw.am49.chat.ChatMSG;
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.model.enumerations.Color;
@@ -54,8 +55,8 @@ public class ChatController extends GuiController {
      */
     @Override
     public void init() {
-        this.game = app.getVirtualGame();
-        this.myVirtualPlayer = game.getPlayerByUsername(this.app.getUsername());
+        this.game = this.manager.getVirtualGame();
+        this.myVirtualPlayer = game.getPlayerByUsername(ClientApp.getUsername());
         removeUnusedTabs();
         initializeTabs();
 
@@ -146,7 +147,7 @@ public class ChatController extends GuiController {
             recipient = playerToChatTab.getKey(recipientTab).getUsername();
         }
         try {
-            this.app.getServer().chatMessage(this.app, new ChatMSG(message, senderUsername, recipient));
+            this.gameController.chatMessage(message, recipient);
             tabToTextField.getValue(recipientTab).clear(); // Clear the text field after sending
         } catch (RemoteException e) {
             throw new RuntimeException(e);
@@ -223,7 +224,7 @@ public class ChatController extends GuiController {
         chatTabs.add(chatglobalTab);
 
         List<Color> chatColors = game.getPlayers().stream()
-                .filter(player -> !player.equals(game.getPlayerByUsername(this.app.getUsername())))
+                .filter(player -> !player.equals(game.getPlayerByUsername(ClientApp.getUsername())))
                 .map(VirtualPlayer::getColor)
                 .toList();
 

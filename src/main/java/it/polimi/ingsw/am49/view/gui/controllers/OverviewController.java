@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualDrawable;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
@@ -75,8 +76,8 @@ public class OverviewController extends GuiController {
 
     @Override
     public void init() {
-        this.game = app.getVirtualGame();
-        this.myUsername = this.app.getUsername();
+        this.game = manager.getVirtualGame();
+        this.myUsername = ClientApp.getUsername();
         this.players = this.game.getPlayers();
         this.drawableArea = this.game.getDrawableArea();
         this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
@@ -116,25 +117,17 @@ public class OverviewController extends GuiController {
             }
             // sets the scene for when the game has ended
             if (this.game.getGameState() == GameStateType.END_GAME) {
-                try {
-                    endGame = true;
-                    unselectCard();
-                    setPersonalObjectives();
-                    disableButtons();
-                    Platform.runLater(() -> {
-                        leaveButton.setText("RESULTS");
-                        leaveButton.setOnMouseClicked(actionEvent -> {
-                            try {
-                                this.manager.changeScene(SceneTitle.END_GAME, false);
-                            } catch (InvalidSceneException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
+                endGame = true;
+                unselectCard();
+                setPersonalObjectives();
+                disableButtons();
+                Platform.runLater(() -> {
+                    leaveButton.setText("RESULTS");
+                    leaveButton.setOnMouseClicked(actionEvent -> {
+                        this.manager.changeScene(SceneTitle.END_GAME, false);
                     });
-                    this.manager.changeScene(SceneTitle.END_GAME, true);
-                } catch (InvalidSceneException e) {
-                    showErrorPopup(e.getMessage());
-                }
+                });
+                this.manager.changeScene(SceneTitle.END_GAME, true);
             }
             this.playerboardController.setBoardRound(this.game.getRound());
         });
@@ -171,7 +164,7 @@ public class OverviewController extends GuiController {
 
             // Gets the controller of board.fxml
             playerboardController = loader.getController();
-            playerboardController.setGui(this.app, this.manager);
+            playerboardController.setGui(this.app, this.manager, this.menuController, this.roomController, this.gameController);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -189,7 +182,7 @@ public class OverviewController extends GuiController {
 
             // Gets the controller of board.fxml
             chatController = loader.getController();
-            chatController.setGui(this.app, this.manager);
+            chatController.setGui(this.app, this.manager, this.menuController, this.roomController, this.gameController);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -520,7 +513,7 @@ public class OverviewController extends GuiController {
     private void drawCard(int cardId, DrawPosition drawPosition) {
         this.manager.executorService.submit(() -> {
             try {
-                this.app.getServer().executeAction(this.app, new DrawCardAction(this.myUsername, drawPosition, cardId));
+                gameController.drawCard(drawPosition, cardId);
                 unselectCard();
             } catch (NotYourTurnException | InvalidActionException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
@@ -586,15 +579,7 @@ public class OverviewController extends GuiController {
     }
 
     public void leaveGame(){
-        this.manager.executorService.submit(() -> {
-            try {
-                app.getServer().leaveRoom(this.app);
-                this.manager.changeScene(SceneTitle.MAIN_MENU, true);
-            } catch (RemoteException | RoomException | InvalidSceneException e) {
-                Platform.runLater(() -> showErrorPopup(e.getMessage()));
-                throw new RuntimeException(e);
-            }
-        });
+        this.manager.executorService.submit(() -> gameController.leave());
     }
 
     public void showFinalRoundPopUp(){

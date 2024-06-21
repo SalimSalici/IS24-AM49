@@ -1,6 +1,5 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
-import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
@@ -21,8 +20,8 @@ public class StarterCardScene extends Scene {
     private boolean chosen = false;
     private final GameController gameController;
 
-    public StarterCardScene(SceneManager sceneManager, TuiApp tuiApp, GameController gameController) {
-        super(sceneManager, tuiApp);
+    public StarterCardScene(SceneManager sceneManager, GameController gameController) {
+        super(sceneManager);
         this.gameController = gameController;
         this.renderer = new TuiCardRenderer(31, 5);
     }

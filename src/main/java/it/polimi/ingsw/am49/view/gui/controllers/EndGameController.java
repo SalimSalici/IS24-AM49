@@ -53,7 +53,7 @@ public class EndGameController extends GuiController {
         leaveButton.setOnAction(e -> leave());
         viewboardsButton.setOnAction(e -> backToOverview());
 
-        VirtualPlayer forfeitWinner = this.app.getVirtualGame().getforfeitWinner();
+        VirtualPlayer forfeitWinner = this.manager.getVirtualGame().getforfeitWinner();
         if (forfeitWinner != null) {
             rankingVbox.getChildren().remove(labelsHbox);
             rankingVbox.getChildren().remove(rankingListview);
@@ -67,7 +67,7 @@ public class EndGameController extends GuiController {
         rankingVbox.getChildren().remove(forfeitLabel);
         rankingVbox.getChildren().remove(totemforfImageview);
 
-        List<VirtualPlayer> ranking = this.app.getVirtualGame().getRanking();
+        List<VirtualPlayer> ranking = this.manager.getVirtualGame().getRanking();
         List<EndGameInfoItem> endGameItems = new ArrayList<>();
 
         for (int rank = 0; rank < ranking.size(); rank++) {
@@ -90,22 +90,7 @@ public class EndGameController extends GuiController {
      * If an error occurs, shows an error popup with the appropriate message.
      */
     private void leave(){
-        this.manager.executorService.submit(() -> {
-            try {
-                this.app.getServer().leaveRoom(this.app);
-            } catch (RoomException | RemoteException e) {
-                Platform.runLater(() -> showErrorPopup(e.getMessage()));
-            }
-
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException ignored) {}
-            try {
-                this.manager.changeScene(SceneTitle.MAIN_MENU, true);
-            } catch (InvalidSceneException e) {
-                showErrorPopup(e.getMessage());
-            }
-        });
+        this.manager.executorService.submit(() -> this.gameController.leave());
     }
 
     /**
@@ -113,10 +98,9 @@ public class EndGameController extends GuiController {
      * If an error occurs, shows an error popup with the appropriate message.
      */
     private void backToOverview(){
-        try{
+        try {
             this.manager.changeScene(SceneTitle.OVERVIEW, false);
-        }
-        catch (InvalidSceneException | NullPointerException e){
+        } catch (NullPointerException e){
             showErrorPopup(e.getMessage());
         }
     }

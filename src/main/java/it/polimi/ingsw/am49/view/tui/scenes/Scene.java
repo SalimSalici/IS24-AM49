@@ -1,6 +1,5 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
-import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.config.StaticConfig;
 import it.polimi.ingsw.am49.model.enumerations.Color;
@@ -14,13 +13,11 @@ import java.rmi.RemoteException;
 public abstract class Scene {
 
     protected final SceneManager sceneManager;
-    protected final TuiApp tuiApp;
     protected String errorMessage = "";
     protected String infoMessage = "";
 
-    public Scene(SceneManager sceneManager, TuiApp tuiApp) {
+    public Scene(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
-        this.tuiApp = tuiApp;
     }
 
     public abstract void printView();
@@ -81,7 +78,8 @@ public abstract class Scene {
                 Thread.sleep(250);
             } catch (InterruptedException ignored) {}
         }
-        this.tuiApp.stopHeartbeat();
+        // TODO: stop heartbeat when leaving
+//        this.tuiApp.stopHeartbeat();
         this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
     }
 

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.ClientApp;
-import it.polimi.ingsw.am49.client.TuiApp;
 import it.polimi.ingsw.am49.client.controller.RoomController;
 import it.polimi.ingsw.am49.controller.room.RoomInfo;
 import it.polimi.ingsw.am49.model.enumerations.Color;
@@ -17,8 +16,8 @@ public class RoomScene extends Scene {
     private boolean isReady;
     private final RoomController roomController;
 
-    public RoomScene(SceneManager sceneManager, TuiApp tuiApp, RoomController roomController) {
-        super(sceneManager, tuiApp);
+    public RoomScene(SceneManager sceneManager, RoomController roomController) {
+        super(sceneManager);
         this.roomInfo = null;
         this.roomController = roomController;
     }

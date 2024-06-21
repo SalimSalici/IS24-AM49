@@ -12,10 +12,14 @@ import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.server.exceptions.RoomException;
+import it.polimi.ingsw.am49.view.View;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.Executors;
 
 public class GameController extends ClientController {
+
     public GameController(Server server, ClientApp client) {
         super(server, client);
     }
@@ -38,5 +42,21 @@ public class GameController extends ClientController {
 
     public void chatMessage(String message, String recipient) throws RemoteException {
         this.server.chatMessage(this.client, new ChatMSG(message, ClientApp.getUsername(), recipient));
+    }
+
+    public void leave() {
+        try {
+            new Thread(() -> {
+                try {
+                    server.leaveRoom(this.client);
+                } catch (RemoteException | RoomException ignored) {}
+            }).start();
+            this.client.getVirtualGame().clearAllObservers();
+            Thread.sleep(150);
+            this.view.showMainMenu();
+        } catch (InterruptedException ignored) {
+        } finally {
+            this.client.stopHeartbeat();
+        }
     }
 }

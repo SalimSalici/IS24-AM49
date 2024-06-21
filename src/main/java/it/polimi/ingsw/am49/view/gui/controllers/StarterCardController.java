@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.server.Server;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
@@ -31,14 +32,10 @@ public class StarterCardController extends GuiController{
     @FXML
     private ImageView frontImageview, backImageview;
 
-    private Server server;
-
     @Override
     public void init() {
-        this.server = this.app.getServer();
-
         Text text1 = new Text("It's time to make a choice, ");
-        Text text2 = new Text(this.app.getUsername());
+        Text text2 = new Text(ClientApp.getUsername());
         Text text3 = new Text(": which side of your starting card will you choose?");
 
         text1.setFont(Font.font("DejaVu Sans Mono", FontWeight.NORMAL, 20));
@@ -48,7 +45,7 @@ public class StarterCardController extends GuiController{
         descriptionTextflow.getChildren().addAll(text1, text2, text3);
 
         int starterCardId = this.manager.getStarterCardId();
-        
+
         Image frontImage = this.guiTextureManager.getCardImage(starterCardId, false);
         Image backImage = this.guiTextureManager.getCardImage(starterCardId, true);
 
@@ -77,15 +74,11 @@ public class StarterCardController extends GuiController{
         this.manager.executorService.submit(() -> {
             try {
                 this.manager.changeScene(SceneTitle.WAITING, true);
-                this.server.executeAction(this.app, new ChooseStarterSideAction(this.app.getUsername(), flipped));
-            } catch (InvalidActionException | NotYourTurnException | NotInGameException | RemoteException | InvalidSceneException e) {
+                this.gameController.chooseStarterSide(flipped);
+            } catch (InvalidActionException | NotYourTurnException | NotInGameException | RemoteException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 Platform.runLater(() -> {
-                    try {
-                        this.manager.changeScene(SceneTitle.MAIN_MENU, true);
-                    } catch (InvalidSceneException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    this.manager.changeScene(SceneTitle.MAIN_MENU, true);
                 });
             }
         });

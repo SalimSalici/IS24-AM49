@@ -1,6 +1,6 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
-import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.view.tui.SceneManager;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
@@ -8,8 +8,8 @@ public class WelcomeScene extends Scene {
 
     private String errorMessage = "";
 
-    public WelcomeScene(SceneManager sceneManager, TuiApp tuiApp) {
-        super(sceneManager, tuiApp);
+    public WelcomeScene(SceneManager sceneManager) {
+        super(sceneManager);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class WelcomeScene extends Scene {
             this.errorMessage = "Username must be between 2 and 20 characters.";
             return;
         }
-        this.tuiApp.setUsername(input);
+        ClientApp.setUsername(input);
         this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
     }
 }

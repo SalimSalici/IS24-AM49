@@ -1,6 +1,6 @@
 package it.polimi.ingsw.am49.view.tui.scenes;
 
-import it.polimi.ingsw.am49.client.TuiApp;
+import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.view.tui.SceneManager;
 import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
@@ -9,8 +9,11 @@ import java.util.List;
 
 public class EndGameScene extends Scene {
 
-    public EndGameScene(SceneManager sceneManager, TuiApp tuiApp) {
-        super(sceneManager, tuiApp);
+    private final GameController gameController;
+
+    public EndGameScene(SceneManager sceneManager, GameController gameController) {
+        super(sceneManager);
+        this.gameController = gameController;
     }
 
     @Override
@@ -32,12 +35,12 @@ public class EndGameScene extends Scene {
     }
 
     private void printLeaderBoard() {
-        VirtualPlayer forfeitWinner = this.tuiApp.getVirtualGame().getforfeitWinner();
+        VirtualPlayer forfeitWinner = this.sceneManager.getVirtualGame().getforfeitWinner();
         if (forfeitWinner != null) {
             System.out.println(this.getColoredUsername(forfeitWinner) + " wins by forfeit!\n");
         }
 
-        List<VirtualPlayer> ranking = this.tuiApp.getVirtualGame().getRanking();
+        List<VirtualPlayer> ranking = this.sceneManager.getVirtualGame().getRanking();
         for (int i = 0; i < ranking.size(); i++) {
             VirtualPlayer player = ranking.get(i);
             System.out.println(
@@ -75,6 +78,6 @@ public class EndGameScene extends Scene {
     }
 
     private void handleLeave() {
-        this.backToMainMenu(true);
+        this.gameController.leave();
     }
 }
