@@ -1,6 +1,5 @@
 package it.polimi.ingsw.am49.view.gui;
 
-import it.polimi.ingsw.am49.client.GuiApp;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.controller.MenuController;
 import it.polimi.ingsw.am49.client.controller.RoomController;
@@ -37,7 +36,6 @@ public class GuiManager {
     private RoomInfo roomInfo;
     private int starterCardId;
     private List<Integer> objectiveCardsIds;
-    private final GuiApp app;
     private VirtualGame virtualGame;
     private final MenuController menuController;
     private final RoomController roomController;
@@ -49,10 +47,8 @@ public class GuiManager {
     /**
      * Constructs a new GuiManager associated with the specified application.
      *
-     * @param app the GuiApp instance associated with this manager
      */
-    public GuiManager(GuiApp app, MenuController menuController, RoomController roomController, GameController gameController) {
-        this.app = app;
+    public GuiManager(MenuController menuController, RoomController roomController, GameController gameController) {
         this.menuController = menuController;
         this.roomController = roomController;
         this.gameController = gameController;
@@ -229,7 +225,7 @@ public class GuiManager {
                 titleToScene.put(sceneTitle, scene);
                 GuiController controller = loader.getController();
                 //Sets the scene's controller
-                controller.setGui(app, this, this.menuController, this.roomController, this.gameController);
+                controller.setGui(this, this.menuController, this.roomController, this.gameController);
                 titleToController.put(sceneTitle, controller);
             }
         } catch (IOException e) {

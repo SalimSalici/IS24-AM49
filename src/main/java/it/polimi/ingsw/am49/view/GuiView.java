@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.view;
 
 import it.polimi.ingsw.am49.chat.ChatMSG;
-import it.polimi.ingsw.am49.client.GuiApp;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.controller.MenuController;
 import it.polimi.ingsw.am49.client.controller.RoomController;
@@ -20,7 +19,7 @@ public class GuiView extends View {
 
     public GuiView(MenuController menuController, RoomController roomController, GameController gameController) throws RemoteException {
         super(menuController, roomController, gameController);
-        manager = new GuiManager(new GuiApp(), menuController, roomController, gameController);
+        manager = new GuiManager(menuController, roomController, gameController);
     }
 
     @Override

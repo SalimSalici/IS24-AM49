@@ -164,7 +164,7 @@ public class OverviewController extends GuiController {
 
             // Gets the controller of board.fxml
             playerboardController = loader.getController();
-            playerboardController.setGui(this.app, this.manager, this.menuController, this.roomController, this.gameController);
+            playerboardController.setGui(this.manager, this.menuController, this.roomController, this.gameController);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -182,7 +182,7 @@ public class OverviewController extends GuiController {
 
             // Gets the controller of board.fxml
             chatController = loader.getController();
-            chatController.setGui(this.app, this.manager, this.menuController, this.roomController, this.gameController);
+            chatController.setGui(this.manager, this.menuController, this.roomController, this.gameController);
         } catch (IOException e) {
             e.printStackTrace();
         }
