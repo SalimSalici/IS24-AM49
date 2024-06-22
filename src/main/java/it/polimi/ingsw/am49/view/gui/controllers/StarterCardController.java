@@ -34,6 +34,7 @@ public class StarterCardController extends GuiController{
 
     @Override
     public void init() {
+        descriptionTextflow.getChildren().clear();
         Text text1 = new Text("It's time to make a choice, ");
         Text text2 = new Text(ClientApp.getUsername());
         Text text3 = new Text(": which side of your starting card will you choose?");

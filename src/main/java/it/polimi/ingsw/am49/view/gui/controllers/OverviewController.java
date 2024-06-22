@@ -87,6 +87,8 @@ public class OverviewController extends GuiController {
 
         // draws every element of the scene
         roomnameLabel.setText(this.manager.getRoomInfo().roomName());
+
+
         loadPlayerBoard();
         loadChat();
         drawRotationButtons();
@@ -106,6 +108,8 @@ public class OverviewController extends GuiController {
         if (chatController != null){
             chatController.init();
         }
+
+        this.playerboardController.setBoardRound(this.game.getRound());
 
         // links all the observers
         this.game.addObserver(() -> {
@@ -279,7 +283,7 @@ public class OverviewController extends GuiController {
 
     private void drawPlayers() {
         playersGridpane.getChildren().clear();
-        Image offlineTotemImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/CODEX_pion_noir.png")));
+        Image offlineTotemImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/CODEX_pion_disabled.png")));
         int index = 0;
         for (VirtualPlayer player : this.players) {
             Button viewboardButton = new Button("VIEW");
