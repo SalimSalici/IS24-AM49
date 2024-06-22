@@ -145,10 +145,8 @@ public class Player implements Serializable {
     }
 
     public void chooseStarterSide(boolean flipped){
-        if (flipped)
+        if(flipped)
             starterCard.setFlipped(true);
-        this.board.getStarterTile().updateActiveSymbols();
-        this.board.updateAvailableResources();
     }
 
     /**

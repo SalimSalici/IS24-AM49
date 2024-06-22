@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.time.LocalTime;
 
+/**
+ * The main client application class that handles the client-side logic for the game.
+ */
 public class ClientApp extends UnicastRemoteObject implements Client {
 
     protected static String username;
@@ -44,16 +47,22 @@ public class ClientApp extends UnicastRemoteObject implements Client {
 
     private final IntervalTimer heartbeatInterval;
 
+    /**
+     * Constructs a ClientApp instance initializing the heartbeat mechanism.
+     * @throws RemoteException if RMI-related error occurs
+     */
     public ClientApp() throws RemoteException {
         this.heartbeatInterval = new IntervalTimer(this::pingServer, 10, 1000, TimeUnit.MILLISECONDS);
     }
 
+    /**
+     * Initializes controllers and view based on the GUI mode.
+     * @param gui true to use GUI, false to use TUI
+     */
     protected void initialize(boolean gui) {
         this.menuController = new MenuController(this.server, this);
         this.roomController = new RoomController(this.server, this);
         this.gameController = new GameController(this.server, this);
-        // TODO: tui vs gui
-//        this.setView(new TuiView(menuController, roomController, gameController));
         try {
             if (gui)
                 this.setView(new GuiView(menuController, roomController, gameController));
@@ -104,43 +113,76 @@ public class ClientApp extends UnicastRemoteObject implements Client {
         this.view.receiveChatMessage(msg);
     }
 
+    /**
+     * Sends a ping to the server to maintain the connection alive.
+     */
     private void pingServer() {
         try { this.server.ping(this); } catch (Exception ignored) {}
     }
 
+    /**
+     * Loads a game from the provided game information.
+     * @param completeGameInfo the complete game information to load the game from
+     */
     public void loadGame(CompleteGameInfo completeGameInfo) {
         this.game = VirtualGame.loadGame(completeGameInfo);
     }
 
+    /**
+     * Sets the username for the client.
+     * @param username the username to set
+     */
     public static void setUsername(String username) {
         ClientApp.username = username;
     }
 
+    /**
+     * Returns the username of the client.
+     * @return the username
+     */
     public static String getUsername() {
         return username;
     }
 
+    /**
+     * Sets the server for the client.
+     * @param server the server to set
+     */
     protected void setServer(Server server) {
         this.server = server;
     }
 
+    /**
+     * Returns the server associated with this client.
+     * @return the server
+     */
     public Server getServer() {
         return this.server;
     }
 
+    /**
+     * Returns the virtual game instance.
+     * @return the virtual game
+     */
     public VirtualGame getVirtualGame() {
         return this.game;
     }
 
+    /**
+     * Sets the view for the client.
+     * @param view the view to set
+     */
     public void setView(View view) {
         this.view = view;
     }
 
-
-
-    // TODO: handle exceptions
+    /**
+     * The main method to start the client application.
+     * @param args the command line arguments
+     * @throws IOException if an I/O error occurs
+     * @throws NotBoundException if not able to bind to the RMI registry
+     */
     public static void main(String[] args) throws IOException, NotBoundException {
-//        String serverHost = "10.147.20.206";
         String serverHost = "127.0.0.1";
         int serverPort = 8458;
 
@@ -167,19 +209,38 @@ public class ClientApp extends UnicastRemoteObject implements Client {
         client.initialize(argsList.contains("--gui"));
     }
 
+    /**
+     * Retrieves the RMI server from the registry.
+     * @param host the host of the RMI server
+     * @param port the port of the RMI server
+     * @return the server instance
+     * @throws RemoteException if a remote error occurs
+     * @throws NotBoundException if the server is not bound in the registry
+     */
     private static Server getRMIServer(String host, int port) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(host, port);
         return (Server) registry.lookup("server.am49.codex_naturalis");
     }
 
+    /**
+     * Creates a socket server connection.
+     * @param host the host of the socket server
+     * @param port the port of the socket server
+     * @param client the client to connect
+     * @return the server instance
+     * @throws IOException if an I/O error occurs
+     */
     private static Server getSocketServer(String host, int port, Client client) throws IOException {
         return new ServerSocketHandler(host, port, client);
     }
 
+    /**
+     * Creates a new instance of ClientApp based on command line arguments.
+     * @param args the command line arguments
+     * @return a new instance of ClientApp
+     * @throws RemoteException if a remote error occurs
+     */
     private static ClientApp getClient(String[] args) throws RemoteException {
         return new ClientApp();
     }
-//    private static ClientApp getClient(String[] args) throws RemoteException {
-//        return List.of(args).contains("--gui") ? new GuiApp(args) : new TuiApp();
-//    }
 }

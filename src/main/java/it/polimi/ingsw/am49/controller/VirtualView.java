@@ -18,11 +18,22 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The VirtualView class acts as a bridge between the game model and the client.
+ * It listens for game events and sends updates to the client.
+ */
 public class VirtualView implements EventListener {
     private final Game game;
     private final ClientHandler client;
     private final String username;
 
+    /**
+     * Constructs a VirtualView instance.
+     *
+     * @param game     the game instance
+     * @param client   the client handler
+     * @param username the username of the player
+     */
     public VirtualView(Game game, ClientHandler client, String username) {
         this.game = game;
         this.client = client;
@@ -32,6 +43,11 @@ public class VirtualView implements EventListener {
             this.game.addEventListener(eventType, this);
     }
 
+    /**
+     * Handles the event when it is triggered.
+     *
+     * @param event the game event
+     */
     @Override
     public void onEventTrigger(GameEvent event) {
         GameUpdate update = event.toGameUpdate();
@@ -74,6 +90,9 @@ public class VirtualView implements EventListener {
         }
     }
 
+    /**
+     * Destroys the VirtualView instance by removing all event listeners.
+     */
     public void destroy() {
         for (GameEventType eventType : GameEventType.values())
             this.game.removeEventListener(eventType, this);

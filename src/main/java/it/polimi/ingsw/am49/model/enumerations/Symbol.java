@@ -11,6 +11,11 @@ public enum Symbol {
     EMPTY,
     FORBIDDEN;
 
+    /**
+     * Converts the current Symbol to its corresponding Resource.
+     *
+     * @return the corresponding Resource if the Symbol is one of BUGS, LEAVES, WOLVES, or MUSHROOMS; otherwise, null.
+     */
     public Resource toResource() {
         Resource resource = null;
         switch (this) {
@@ -22,6 +27,11 @@ public enum Symbol {
         return resource;
     }
 
+    /**
+     * Converts the current Symbol to its corresponding Item.
+     *
+     * @return the corresponding Item if the Symbol is one of INKWELL, MANUSCRIPT, or QUILL; otherwise, null.
+     */
     public Item toItem() {
         Item item = null;
         switch (this) {

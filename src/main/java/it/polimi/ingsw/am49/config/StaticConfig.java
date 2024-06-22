@@ -10,11 +10,19 @@ public abstract class StaticConfig {
 
     public static boolean tuiColors = true;
 
+    /**
+     * Disables the color display in the text-based user interface.
+     */
     public static void disableTuiColors() {
         tuiColors = false;
     }
 
+    /**
+     * Enables the color display in the text-based user interface.
+     */
     public static void enableTuiColors() {
         tuiColors = true;
     }
 }
+
+

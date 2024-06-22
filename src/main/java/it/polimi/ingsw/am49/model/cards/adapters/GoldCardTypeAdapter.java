@@ -10,8 +10,22 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A custom deserializer for {@link GoldCard} objects that implements {@link JsonDeserializer}.
+ * This deserializer helps in converting JSON objects into {@link GoldCard} instances
+ * considering the specific structure and requirements of the GoldCard class.
+ */
 public class GoldCardTypeAdapter implements JsonDeserializer<GoldCard> {
 
+    /**
+     * Deserializes the JSON representation of a {@link GoldCard}.
+     * 
+     * @param json The JSON data being deserialized.
+     * @param typeOfT The type of the Object to deserialize to.
+     * @param context Context for deserialization that is passed to a custom deserializer during invocation of its {@link JsonDeserializer#deserialize} method.
+     * @return The deserialized {@link GoldCard} object.
+     * @throws JsonParseException if the JSON is not in the expected format.
+     */
     @Override
     public GoldCard deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject card = json.getAsJsonObject();

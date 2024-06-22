@@ -8,8 +8,20 @@ import it.polimi.ingsw.am49.model.cards.objectives.SymbolsObjectiveStrategy;
 
 import java.lang.reflect.Type;
 
+/**
+ * A custom type adapter for {@link ObjectiveCard} objects that implements both {@link JsonSerializer} and {@link JsonDeserializer}.
+ * This adapter helps in converting {@link ObjectiveCard} instances to and from JSON representations.
+ */
 public class ObjectiveCardTypeAdapter implements JsonDeserializer<ObjectiveCard>, JsonSerializer<ObjectiveCard> {
 
+    /**
+     * Serializes an {@link ObjectiveCard} instance into its JSON representation.
+     * 
+     * @param src The source {@link ObjectiveCard} that needs to be serialized.
+     * @param typeOfSrc The specific genericized type of source object.
+     * @param context The context of the JSON serialization process.
+     * @return A {@link JsonElement} corresponding to the serialized JSON form of the {@link ObjectiveCard}.
+     */
     @Override
     public JsonElement serialize(ObjectiveCard src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = new JsonObject();
@@ -22,6 +34,15 @@ public class ObjectiveCardTypeAdapter implements JsonDeserializer<ObjectiveCard>
         return jsonObject;
     }
 
+    /**
+     * Deserializes a JSON element into an {@link ObjectiveCard} instance.
+     * 
+     * @param json The JSON data being deserialized.
+     * @param typeOfT The type of the Object to deserialize to.
+     * @param context Context for deserialization that is passed to a custom deserializer during invocation of its {@link JsonDeserializer#deserialize} method.
+     * @return The deserialized {@link ObjectiveCard} object.
+     * @throws JsonParseException if the JSON is not in the expected format or if an unknown strategy type is encountered.
+     */
     @Override
     public ObjectiveCard deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
