@@ -32,16 +32,18 @@ public class SocketClientHandler implements Client {
                 try {
                     this.server.leaveRoom(this);
                 } catch (RemoteException | RoomException ignored) {}
-                throw new RuntimeException(e);
+            } finally {
+                System.out.println("Socket " + clientSocket.getRemoteSocketAddress() + " disconnected.");
             }
         }).start();
+
     }
 
     private void startListeningForMessages() throws IOException, ClassNotFoundException {
         ObjectInputStream objectInputStream = new ObjectInputStream(this.clientSocket.getInputStream());
 
         while (this.shouldListen) {
-            Object msg = null;
+            Object msg;
             try {
                 msg = objectInputStream.readObject();
             } catch (SocketException ex) {
@@ -174,13 +176,6 @@ public class SocketClientHandler implements Client {
         }
     }
 
-    private void disconnect() throws IOException {
-        this.shouldListen = false;
-        this.objectOutputStream.close();
-        this.clientSocket.close();
-        System.out.println("(Socket client disconnected)");
-    }
-
     @Override
     public void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException {
         try {
@@ -240,5 +235,12 @@ public class SocketClientHandler implements Client {
         synchronized (this.objectOutputStream) {
             this.objectOutputStream.writeObject(obj);
         }
+    }
+
+    private void disconnect() throws IOException {
+        this.shouldListen = false;
+        this.objectOutputStream.close();
+        this.clientSocket.close();
+        try { this.server.leaveRoom(this); } catch (RoomException ignored) {}
     }
 }

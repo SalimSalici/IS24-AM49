@@ -41,7 +41,7 @@ public class MainMenuScene extends Scene {
         if (this.isLoading)
             System.out.println("exit");
         else
-            System.out.println("(1) username | (2) create | (3) join | (4) reconnect | (5) help | (6) refresh rooms | exit");
+            System.out.println("(1) username | (2) create | (3) join | (4) reconnect | (5) help | (6) refresh rooms | (7) server selection | exit");
         System.out.print(">>> ");
     }
 
@@ -93,6 +93,9 @@ public class MainMenuScene extends Scene {
                 break;
             case "6":
                 handleRefreshRooms();
+                break;
+            case "7":
+                this.sceneManager.forceServerSelection();
                 break;
             case "exit":
                 System.exit(0);

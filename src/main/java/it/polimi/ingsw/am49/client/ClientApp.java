@@ -25,7 +25,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +33,7 @@ import java.time.LocalTime;
 /**
  * The main client application class that handles the client-side logic for the game.
  */
-public class ClientApp extends UnicastRemoteObject implements Client {
+public class ClientApp implements Client {
 
     protected static String username;
 
@@ -45,13 +44,12 @@ public class ClientApp extends UnicastRemoteObject implements Client {
     protected RoomController roomController;
     protected GameController gameController;
 
+    protected final ServerConnector serverConnector;
+
     private final IntervalTimer heartbeatInterval;
 
-    /**
-     * Constructs a ClientApp instance initializing the heartbeat mechanism.
-     * @throws RemoteException if RMI-related error occurs
-     */
-    public ClientApp() throws RemoteException {
+    public ClientApp(boolean socket) throws RemoteException {
+        this.serverConnector = socket ? new ServerConnectorSocket() : new ServerConnectorRMI();
         this.heartbeatInterval = new IntervalTimer(this::pingServer, 10, 1000, TimeUnit.MILLISECONDS);
     }
 
@@ -144,12 +142,11 @@ public class ClientApp extends UnicastRemoteObject implements Client {
         return username;
     }
 
-    /**
-     * Sets the server for the client.
-     * @param server the server to set
-     */
-    protected void setServer(Server server) {
-        this.server = server;
+    public void setServer(String host, int port) throws RemoteException {
+        this.server = this.serverConnector.connect(host, port, this);
+        if (this.menuController != null) menuController.setServer(server);
+        if (this.roomController != null) roomController.setServer(server);
+        if (this.gameController != null) gameController.setServer(server);
     }
 
     /**
@@ -194,18 +191,19 @@ public class ClientApp extends UnicastRemoteObject implements Client {
         if (argsList.contains("--disable-tui-colors"))
             StaticConfig.disableTuiColors();
 
-        if (argsList.contains("--socket")) {
-            client = ClientApp.getClient(args);
-            server = ClientApp.getSocketServer(serverHost, serverPort + 1, client);
-            System.out.println("Connected to socket server.");
-        } else {
-            server = ClientApp.getRMIServer(serverHost, serverPort);
-            System.setProperty("java.rmi.server.hostname", server.getClientHostAddress());
-            client = ClientApp.getClient(args);
-            System.out.println("Connected to RMI server.");
-        }
+//        if (argsList.contains("--socket")) {
+//            client = ClientApp.getClient(argsList);
+//            server = ClientApp.getSocketServer(serverHost, serverPort + 1, client);
+//            System.out.println("Connected to socket server.");
+//        } else {
+//            server = ClientApp.getRMIServer(serverHost, serverPort);
+//            System.setProperty("java.rmi.server.hostname", server.getClientHostAddress());
+//            client = ClientApp.getClient(argsList);
+//            System.out.println("Connected to RMI server.");
+//        }
 
-        client.setServer(server);
+        client = ClientApp.getClient(argsList);
+//        client.setServer(server);
         client.initialize(argsList.contains("--gui"));
     }
 
@@ -234,13 +232,10 @@ public class ClientApp extends UnicastRemoteObject implements Client {
         return new ServerSocketHandler(host, port, client);
     }
 
-    /**
-     * Creates a new instance of ClientApp based on command line arguments.
-     * @param args the command line arguments
-     * @return a new instance of ClientApp
-     * @throws RemoteException if a remote error occurs
-     */
-    private static ClientApp getClient(String[] args) throws RemoteException {
-        return new ClientApp();
+    private static ClientApp getClient(List<String> argsList) throws RemoteException {
+        return argsList.contains("--socket") ? new ClientApp(true) : new ClientApp(false);
     }
+//    private static ClientApp getClient(String[] args) throws RemoteException {
+//        return List.of(args).contains("--gui") ? new GuiApp(args) : new TuiApp();
+//    }
 }

@@ -17,7 +17,7 @@ public abstract class ClientController {
 
     /**
      * Constructs a new ClientController with a specified server and client application.
-     * 
+     *
      * @param server the server instance to be used by this controller
      * @param client the client application instance
      */
@@ -28,7 +28,7 @@ public abstract class ClientController {
 
     /**
      * Sets the server instance for this controller.
-     * 
+     *
      * @param server the new server instance
      */
     public void setServer(Server server) {
@@ -37,7 +37,7 @@ public abstract class ClientController {
 
     /**
      * Sets the view instance for this controller.
-     * 
+     *
      * @param view the new view instance
      */
     public void setView(View view) {

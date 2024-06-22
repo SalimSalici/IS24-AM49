@@ -133,4 +133,8 @@ public class SocketHandler {
     public int getUniqueId() {
         return uniqueId.getAndIncrement();
     }
+
+    public void close() {
+        try { this.socket.close(); } catch (IOException ignored) {}
+    }
 }

@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 public class SceneManager {
     private final HashMap<SceneType, Scene> scenes;
     private final HashMap<VirtualPlayer, Scene> playerScenes;
+    private ServerScene serverScene;
     private RoomScene roomScene;
     private ChatScene chatScene;
     private StarterCardScene starterCardScene;
@@ -54,6 +55,7 @@ public class SceneManager {
         this.starterCardScene = new StarterCardScene(this, gameController);
         this.chooseObjectiveCardScene = new ChooseObjectiveCardScene(this, gameController);
         this.chatScene = new ChatScene(this, gameController);
+        this.serverScene = new ServerScene(this, menuController);
 
         this.scenes.put(SceneType.WELCOME_SCENE, new WelcomeScene(this));
         this.scenes.put(SceneType.MAIN_MENU_SCENE, new MainMenuScene(this, menuController));
@@ -61,7 +63,8 @@ public class SceneManager {
         this.scenes.put(SceneType.END_GAME_SCENE, new EndGameScene(this, gameController));
         this.scenes.put(SceneType.CHAT_SCENE, chatScene);
 
-        this.switchScene(SceneType.WELCOME_SCENE);
+//        this.switchScene(SceneType.WELCOME_SCENE);
+        this.forceServerSelection();
 
         this.loop();
     }
@@ -147,6 +150,10 @@ public class SceneManager {
         this.menuController.setServer(server);
         this.roomController.setServer(server);
         this.gameController.setServer(server);
+    }
+
+    public synchronized void forceServerSelection() {
+        this.switchScene(serverScene);
     }
 
     public RoomController getRoomController() {

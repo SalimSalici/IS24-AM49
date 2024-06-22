@@ -12,6 +12,7 @@ import it.polimi.ingsw.am49.server.exceptions.*;
 import it.polimi.ingsw.am49.util.Log;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class ServerSocketHandler extends SocketHandler implements Server {
         new Thread(() -> {
             try {
                 this.startListeningForMessages();
+            } catch (SocketException ignored) {
             } catch (Exception e) {
                 throw new RuntimeException("Failed to start listening for messages: " + e.getMessage(), e);
             }
