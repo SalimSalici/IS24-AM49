@@ -38,6 +38,7 @@ public class SocketHandler {
      */
     public SocketHandler(String host, int port) throws IOException {
         this.socket = new Socket(host, port);
+        socket.setSoTimeout(5000);
         this.output = new ObjectOutputStream(socket.getOutputStream());
         this.input = new ObjectInputStream(socket.getInputStream());
     }

@@ -16,7 +16,7 @@ public class ServerConnectorSocket implements ServerConnector {
 
         try {
             return new ServerSocketHandler(host, port, client);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RemoteException("Could not connect to server.");
         }
     }
