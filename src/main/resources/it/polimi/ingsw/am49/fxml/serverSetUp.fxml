@@ -19,7 +19,7 @@
                   <Font name="DejaVu Sans Mono Bold" size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="serveripTextfield" alignment="CENTER" maxWidth="150.0" prefHeight="24.0" prefWidth="200.0" text="Enter adress">
+            <TextField fx:id="serveripTextfield" alignment="CENTER" maxWidth="150.0" prefHeight="24.0" prefWidth="200.0" text="127.0.0.1">
                <font>
                   <Font name="DejaVu Sans Mono Oblique" size="13.0" />
                </font>
@@ -31,7 +31,7 @@
                   <Font name="DejaVu Sans Mono Bold" size="18.0" />
                </font>
             </Label>
-            <TextField fx:id="serverportTextfield" alignment="CENTER" maxWidth="100.0" text="Enter port">
+            <TextField fx:id="serverportTextfield" alignment="CENTER" maxWidth="100.0" text="8458">
                <font>
                   <Font name="DejaVu Sans Mono Oblique" size="13.0" />
                </font>
