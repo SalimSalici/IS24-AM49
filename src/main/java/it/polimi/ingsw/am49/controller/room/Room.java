@@ -10,6 +10,7 @@ import it.polimi.ingsw.am49.model.actions.GameAction;
 import it.polimi.ingsw.am49.model.cards.Card;
 import it.polimi.ingsw.am49.model.enumerations.Color;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
+import it.polimi.ingsw.am49.model.enumerations.Resource;
 import it.polimi.ingsw.am49.model.players.Player;
 import it.polimi.ingsw.am49.server.ClientHandler;
 import it.polimi.ingsw.am49.server.ServerApp;
@@ -437,13 +438,23 @@ public class Room {
                     return player.toCompletePlayerInfo(hidden);
                 })
                 .collect(Collectors.toCollection(LinkedList::new));
+        Resource topDeckResource = this.game.getResourceGameDeck().peek() != null ?
+                this.game.getResourceGameDeck().peek().getResource() :
+                null;
+        Resource topDeckGold = this.game.getGoldGameDeck().peek() != null ?
+                this.game.getGoldGameDeck().peek().getResource() :
+                null;
         DrawAreaUpdate drawAreaUpdate = new DrawAreaUpdate(
                 this.game.getResourceGameDeck().size(),
                 this.game.getGoldGameDeck().size(),
-                this.game.getResourceGameDeck().peek().getResource(),
-                this.game.getGoldGameDeck().peek().getResource(),
-                Arrays.stream(this.game.getRevealedResources()).map(Card::getId).collect(Collectors.toCollection(LinkedList::new)),
-                Arrays.stream(this.game.getRevealedGolds()).map(Card::getId).collect(Collectors.toCollection(LinkedList::new))
+                topDeckResource,
+                topDeckGold,
+                Arrays.stream(this.game.getRevealedResources())
+                        .map(card -> card != null ? card.getId() : null)
+                        .collect(Collectors.toCollection(LinkedList::new)),
+                Arrays.stream(this.game.getRevealedGolds())
+                        .map(card -> card != null ? card.getId() : null)
+                        .collect(Collectors.toCollection(LinkedList::new))
         );
         GameStateChangedUpdate gameStateUpdate = new GameStateChangedUpdate(
                 this.game.getGameState().getType(),
