@@ -42,11 +42,11 @@ public class GuiTextureManager {
     private GuiTexture loadCard(int id) {
         try {
             String zeros = "0".repeat(3 - String.valueOf(id).length());
-            String subFolder_front = "gold_cards_front";
-            String subFolder_back = "gold_card_back";
+            String subFolder_front = "gold_cards_front_resized";
+            String subFolder_back = "gold_card_back_resized";
 
-            Image frontImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/" + subFolder_front + "/" + zeros + id + ".png")));
-            Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/" + subFolder_back + "/" + zeros + id + ".png")));
+            Image frontImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/Resized/" + subFolder_front + "/" + zeros + id + ".png")));
+            Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/Resized/" + subFolder_back + "/" + zeros + id + ".png")));
 
             return new GuiTexture(frontImage, backImage);
         } catch (NullPointerException | IllegalArgumentException e) {

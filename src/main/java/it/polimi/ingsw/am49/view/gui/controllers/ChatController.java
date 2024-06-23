@@ -146,12 +146,14 @@ public class ChatController extends GuiController {
         } else {
             recipient = playerToChatTab.getKey(recipientTab).getUsername();
         }
-        try {
-            this.gameController.chatMessage(message, recipient);
+        this.manager.executorService.submit(() -> {
+            try {
+                this.gameController.chatMessage(message, recipient);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
             tabToTextField.getValue(recipientTab).clear(); // Clear the text field after sending
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     /**

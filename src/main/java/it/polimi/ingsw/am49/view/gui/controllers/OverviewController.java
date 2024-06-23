@@ -85,13 +85,16 @@ public class OverviewController extends GuiController {
         for(VirtualPlayer player : players)
             updateHand(player.getUsername());
 
+        this.endGame = manager.getVirtualGame().getEndGame();
+
         // draws every element of the scene
         roomnameLabel.setText(this.manager.getRoomInfo().roomName());
-
+        leaveButton.setText("LEAVE");
 
         loadPlayerBoard();
         loadChat();
         drawRotationButtons();
+        rotationButtonList.forEach(button -> button.setVisible(false));
         drawHand(myUsername);
         drawSymbols();
         drawObjectives();
@@ -111,6 +114,9 @@ public class OverviewController extends GuiController {
 
         this.playerboardController.setBoardRound(this.game.getRound());
 
+        if(endGame)
+            endGameSettings();
+
         // links all the observers
         this.game.addObserver(() -> {
             drawCurrentPlayerIndicator();
@@ -122,15 +128,7 @@ public class OverviewController extends GuiController {
             // sets the scene for when the game has ended
             if (this.game.getGameState() == GameStateType.END_GAME) {
                 endGame = true;
-                unselectCard();
-                setPersonalObjectives();
-                disableButtons();
-                Platform.runLater(() -> {
-                    leaveButton.setText("RESULTS");
-                    leaveButton.setOnMouseClicked(actionEvent -> {
-                        this.manager.changeScene(SceneTitle.END_GAME, false);
-                    });
-                });
+                this.endGameSettings();
                 this.manager.changeScene(SceneTitle.END_GAME, true);
             }
             this.playerboardController.setBoardRound(this.game.getRound());
@@ -157,6 +155,18 @@ public class OverviewController extends GuiController {
                 });
             }
         }
+    }
+
+    private void endGameSettings(){
+        unselectCard();
+        setPersonalObjectives();
+        disableButtons();
+        Platform.runLater(() -> {
+            leaveButton.setText("RESULTS");
+            leaveButton.setOnMouseClicked(actionEvent -> {
+                this.manager.changeScene(SceneTitle.END_GAME, false);
+            });
+        });
     }
 
     private void loadPlayerBoard() {

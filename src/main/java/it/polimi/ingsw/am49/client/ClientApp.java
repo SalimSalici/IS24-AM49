@@ -181,6 +181,7 @@ public class ClientApp implements Client {
      */
     public static void main(String[] args) throws IOException, NotBoundException {
         String serverHost = "127.0.0.1";
+//        String serverHost = "10.147.20.206";
         int serverPort = 8458;
 
         ClientApp client;
