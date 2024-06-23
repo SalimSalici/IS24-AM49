@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.view.tui.scenes;
 
+import it.polimi.ingsw.am49.client.ConnectorType;
 import it.polimi.ingsw.am49.client.controller.MenuController;
 import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 
@@ -9,8 +10,8 @@ public class ServerScene extends Scene {
 
     private final MenuController menuController;
 
+    private ConnectorType connectorType;
     private String host;
-    private Integer port;
 
     public ServerScene(SceneManager sceneManager, MenuController menuController) {
         super(sceneManager);
@@ -21,7 +22,7 @@ public class ServerScene extends Scene {
     public void printView() {
         this.clearScreen();
         this.printHeader();
-        System.out.println("\n\n");
+        System.out.println("\n");
         this.printPrompt();
     }
 
@@ -35,14 +36,22 @@ public class ServerScene extends Scene {
 
     private void printPrompt() {
         this.printInfoOrError();
-        if (this.host == null) {
-            System.out.println("\n");
+        if (this.connectorType == null) {
+            System.out.println("\n\n");
+            System.out.println("Default: RMI");
+            System.out.print("Enter the connection type [RMI/socket]> ");
+        } else if (this.host == null) {
+            System.out.println();
+            System.out.println("Connection type: " + this.connectorType + "\n");
             System.out.println("Default if empty: 127.0.0.1");
             System.out.print("Enter the ip address of the server> ");
-        }
-        else if (this.port == null) {
+        } else {
+            System.out.println("Connection type: " + this.connectorType);
             System.out.println("Inserted host: " + this.host + "\n");
-            System.out.println("Default if empty: 8458");
+            if (this.connectorType == ConnectorType.RMI)
+                System.out.println("Default if empty: 8458");
+            else
+                System.out.println("Default if empty: 8459");
             System.out.print("Enter the port of the server>");
         }
     }
@@ -53,10 +62,25 @@ public class ServerScene extends Scene {
             showError("Not available yet.");
         }
 
-        if (this.host == null) {
+        if (this.connectorType == null) {
+          this.handleConnectionType(input);
+        } else if (this.host == null) {
             this.handleHost(input);
         } else
             this.handlePort(input);
+    }
+
+    public void handleConnectionType(String input) {
+        input = input.toLowerCase();
+        if (input.isEmpty() || input.startsWith("r"))
+            this.connectorType = ConnectorType.RMI;
+        else if (input.startsWith("s"))
+            this.connectorType = ConnectorType.SOCKET;
+        else {
+            this.showError("Invalid connection type. Must be rmi or socket.");
+            return;
+        }
+        this.refreshView();
     }
 
     public void handleHost(String input) {
@@ -76,13 +100,16 @@ public class ServerScene extends Scene {
     public void handlePort(String input) {
         try {
             int port;
-            if (input.isEmpty())
-                port = 8458;
-            else {
+            if (input.isEmpty()) {
+                if (this.connectorType == ConnectorType.RMI)
+                    port = 8458;
+                else
+                    port = 8459;
+            } else {
                 port = Integer.parseInt(input);
                 if (port < 1 || port > 65535) throw new NumberFormatException();
             }
-            this.menuController.connectToServer(this.host, port);
+            this.menuController.connectToServer(this.host, port, this.connectorType);
         } catch (NumberFormatException e) {
             this.showError("Invalid port number. Please try again.");
         } catch (RemoteException e) {
@@ -119,5 +146,6 @@ public class ServerScene extends Scene {
     @Override
     public void focus() {
         this.host = null;
+        this.connectorType = null;
     }
 }

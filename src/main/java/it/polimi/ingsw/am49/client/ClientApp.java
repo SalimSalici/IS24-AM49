@@ -44,7 +44,7 @@ public class ClientApp implements Client {
     protected RoomController roomController;
     protected GameController gameController;
 
-    protected final ServerConnector serverConnector;
+    protected ServerConnector serverConnector;
 
     private final IntervalTimer heartbeatInterval;
 
@@ -142,7 +142,10 @@ public class ClientApp implements Client {
         return username;
     }
 
-    public void setServer(String host, int port) throws RemoteException {
+    public void setServer(String host, int port, ConnectorType type) throws RemoteException {
+        this.serverConnector.disconnect(this);
+        if (serverConnector.getConnectorType() != type)
+            this.serverConnector = type == ConnectorType.RMI ? new ServerConnectorRMI() : new ServerConnectorSocket();
         this.server = this.serverConnector.connect(host, port, this);
         if (this.menuController != null) menuController.setServer(server);
         if (this.roomController != null) roomController.setServer(server);

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.client.controller;
 
 import it.polimi.ingsw.am49.client.ClientApp;
+import it.polimi.ingsw.am49.client.ConnectorType;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.server.Server;
@@ -92,8 +93,8 @@ public class MenuController extends ClientController {
         ClientApp.setUsername(username);
     }
 
-    public void connectToServer(String host, int port) throws RemoteException {
-        this.client.setServer(host, port);
+    public void connectToServer(String host, int port, ConnectorType connectorType) throws RemoteException {
+        this.client.setServer(host, port, connectorType);
 
         if (ClientApp.getUsername() == null)
             this.view.showWelcome();

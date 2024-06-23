@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.ConnectorType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -48,8 +49,9 @@ public class ServerSetUpController extends GuiController{
         port = serverportTextfield.getText();
         if (isIpValid() && isPortValid()) {
             //TODO:try connection to server
+            //TODO: RMI vs Socket
             try {
-                menuController.connectToServer(ip, Integer.parseInt(port));
+                menuController.connectToServer(ip, Integer.parseInt(port), ConnectorType.RMI);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
