@@ -57,7 +57,7 @@ public class TuiPlayerRenderer {
                 + "Q(" + this.player.getActiveSymbols().get(Symbol.QUILL) + ")";
 
         System.out.println(
-                "Player: " + getColoredUsername(this.player.getUsername(), this.player.getColor())
+                "Player: " + getColoredUsername(this.player)
                 + "     Points: " + this.player.getPoints()
                 + "     Available symbols: " + availableSymbols
         );
@@ -70,11 +70,6 @@ public class TuiPlayerRenderer {
         System.out.println("Hand" + " ".repeat(51) + "Personal obj." + " ".repeat(10) + "Common objectives");
         this.renderer.clear();
 
-//        if (!this.hidden) {
-//            this.drawVisibleHandAndObjective();
-//        } else {
-//            this.drawHiddenHandAndObjective();
-//        }
         this.drawHand();
         this.drawPersonalObjective();
 
@@ -109,38 +104,6 @@ public class TuiPlayerRenderer {
             this.renderer.draw(obTexture, 62, 2);
         }
     }
-
-//    /**
-//     * Draws the player's visible hand and personal objective.
-//     */
-//    private void drawVisibleHandAndObjective() {
-//        List<Integer> hand = this.player.getHand();
-//
-//        for (int i = 0; i < hand.size(); i++) {
-//            drawCard(hand.get(i), 7 + i * 16);
-//        }
-//
-//        Integer personalObjectiveId = this.player.getPersonalObjectiveId();
-//        drawCard(personalObjectiveId, 62);
-//    }
-//
-//    /**
-//     * Draws the player's hidden hand and personal objective.
-//     */
-//    private void drawHiddenHandAndObjective() {
-//        List<Pair<Resource, Boolean>> hiddenHand = this.player.getHiddenHand();
-//
-//        for (int i = 0; i < hiddenHand.size(); i++) {
-//            Pair<Resource, Boolean> pair = hiddenHand.get(i);
-//            ColoredChar[][] texture = this.getBackPlaceableTexture(pair.first, pair.second);
-//            if (texture != null) {
-//                this.renderer.draw(texture, 7 + i * 16, 2);
-//            }
-//        }
-//
-//        ColoredChar[][] obTexture = this.textureManager.getBackTexture(BackTexture.OB);
-//        this.renderer.draw(obTexture, 62, 2);
-//    }
 
     /**
      * Draws the common objectives.
@@ -198,7 +161,13 @@ public class TuiPlayerRenderer {
         this.printInfo();
     }
 
-    private String getColoredUsername(String username, Color color) {
+    protected String getColoredUsername(VirtualPlayer player) {
+        if (player == null) return null;
+        String offline = player.getPlaying() ? "" : " (offline)";
+        return this.getColoredUsername(player.getUsername(), player.getColor()) + offline;
+    }
+
+    protected String getColoredUsername(String username, Color color) {
         if (color == null) return username;
         if (StaticConfig.tuiColors)
             return AnsiColor.fromColor(color) + username + AnsiColor.ANSI_RESET;

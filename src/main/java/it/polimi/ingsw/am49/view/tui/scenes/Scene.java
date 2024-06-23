@@ -85,7 +85,8 @@ public abstract class Scene {
 
     protected String getColoredUsername(VirtualPlayer player) {
         if (player == null) return null;
-        return this.getColoredUsername(player.getUsername(), player.getColor());
+        String offline = player.getPlaying() ? "" : " (offline)";
+        return this.getColoredUsername(player.getUsername(), player.getColor()) + offline;
     }
 
     protected String getColoredUsername(String username, Color color) {

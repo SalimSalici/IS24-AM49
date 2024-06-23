@@ -41,6 +41,7 @@ public class SocketHandler {
         socket.setSoTimeout(5000);
         this.output = new ObjectOutputStream(socket.getOutputStream());
         this.input = new ObjectInputStream(socket.getInputStream());
+        socket.setSoTimeout(0);
     }
 
     /**

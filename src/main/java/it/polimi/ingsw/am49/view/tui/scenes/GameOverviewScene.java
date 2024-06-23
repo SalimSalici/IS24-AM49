@@ -4,19 +4,15 @@ import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
-import it.polimi.ingsw.am49.model.actions.DrawCardAction;
 import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.model.enumerations.GameStateType;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
-import it.polimi.ingsw.am49.server.exceptions.RoomException;
-import it.polimi.ingsw.am49.util.Log;
 import it.polimi.ingsw.am49.util.Observer;
 import it.polimi.ingsw.am49.view.tui.SceneManager;
 import it.polimi.ingsw.am49.view.tui.renderers.TuiDrawAreaRenderer;
 import it.polimi.ingsw.am49.view.tui.renderers.TuiPlayerRenderer;
-import it.polimi.ingsw.am49.view.tui.textures.AnsiColor;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -69,7 +65,7 @@ public class GameOverviewScene extends Scene implements Observer {
             System.out.print(" (" + (i+1) + ") ");
             if (ClientApp.getUsername().equals(p.getUsername())) System.out.print("you->");
             if (isCurrentPlayer) System.out.print("*");
-            System.out.print(this.getColoredUsername(p.getUsername(), p.getColor()));
+            System.out.print(this.getColoredUsername(p));
             if (isCurrentPlayer) System.out.print("*");
             System.out.print(" [" + p.getPoints() + "]    ");
         }
