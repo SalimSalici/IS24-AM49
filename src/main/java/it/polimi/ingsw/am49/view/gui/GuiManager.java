@@ -225,6 +225,8 @@ public class GuiManager {
                 titleToScene.put(sceneTitle, scene);
                 GuiController controller = loader.getController();
                 //Sets the scene's controller
+
+
                 controller.setGui(this, this.menuController, this.roomController, this.gameController);
                 titleToController.put(sceneTitle, controller);
             }
@@ -232,7 +234,8 @@ public class GuiManager {
             System.out.println("Senes setup failed");
             stop();
         }
-        currentScene = titleToScene.getValue(SceneTitle.WELCOME);
+//        currentScene = titleToScene.getValue(SceneTitle.WELCOME);
+        currentScene = titleToScene.getValue(SceneTitle.SERVER_SETUP);
         titleToController.getValue(titleToScene.getKey(currentScene)).init();
     }
 

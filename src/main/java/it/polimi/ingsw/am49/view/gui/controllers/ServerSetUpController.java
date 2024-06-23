@@ -5,7 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 
-public class ClientSetUpController extends GuiController{
+import java.rmi.RemoteException;
+
+public class ServerSetUpController extends GuiController{
 
     @FXML
     private TextField serveripTextfield;
@@ -42,16 +44,25 @@ public class ClientSetUpController extends GuiController{
     }
 
     private void connectToServer() {
+        ip = serveripTextfield.getText();
+        port = serverportTextfield.getText();
         if (isIpValid() && isPortValid()) {
             //TODO:try connection to server
+            try {
+                menuController.connectToServer(ip, Integer.parseInt(port));
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     private boolean isIpValid() {
-        return !ip.isEmpty() && (ip.contains(".") || ip.contains(":")) && ip.length() < 15 && ip.length() > 7;
+        return true;
+//        return !ip.isEmpty() && (ip.contains(".") || ip.contains(":")) && ip.length() < 15 && ip.length() > 7;
     }
 
     private boolean isPortValid() {
-        return !port.isEmpty() && !port.contains(":") && !port.contains(".") && port.length() <= 5;
+        return true;
+//        return !port.isEmpty() && !port.contains(":") && !port.contains(".") && port.length() <= 5;
     }
 }

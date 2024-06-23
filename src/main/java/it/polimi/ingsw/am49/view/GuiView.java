@@ -30,7 +30,7 @@ public class GuiView extends View {
 
     @Override
     public void showWelcome() {
-
+        manager.changeScene(SceneTitle.WELCOME, false);
     }
 
     @Override

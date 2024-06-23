@@ -9,6 +9,7 @@ package it.polimi.ingsw.am49.view.gui;
  */
 public enum SceneTitle {
     WELCOME,
+    SERVER_SETUP,
     MAIN_MENU,
     CHANGE_USERNAME,
     CREATE_ROOM,
@@ -29,6 +30,7 @@ public enum SceneTitle {
 
         switch (this) {
             case WELCOME -> fileName = "welcome.fxml";
+            case SERVER_SETUP -> fileName = "serverSetUp.fxml";
             case MAIN_MENU -> fileName = "mainMenu.fxml";
             case ROOM -> fileName = "room.fxml";
             case STARTER_CARD -> fileName= "starterCard.fxml";
