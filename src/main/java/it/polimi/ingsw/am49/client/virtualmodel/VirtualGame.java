@@ -1,12 +1,12 @@
 package it.polimi.ingsw.am49.client.virtualmodel;
 
-import it.polimi.ingsw.am49.controller.CompleteGameInfo;
-import it.polimi.ingsw.am49.controller.CompletePlayerInfo;
-import it.polimi.ingsw.am49.controller.gameupdates.*;
-import it.polimi.ingsw.am49.model.enumerations.Color;
-import it.polimi.ingsw.am49.model.enumerations.GameStateType;
-import it.polimi.ingsw.am49.util.Log;
-import it.polimi.ingsw.am49.util.Observable;
+import it.polimi.ingsw.am49.common.gameupdates.*;
+import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
+import it.polimi.ingsw.am49.common.reconnectioninfo.CompletePlayerInfo;
+import it.polimi.ingsw.am49.common.enumerations.Color;
+import it.polimi.ingsw.am49.common.enumerations.GameStateType;
+import it.polimi.ingsw.am49.common.util.Log;
+import it.polimi.ingsw.am49.common.util.Observable;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

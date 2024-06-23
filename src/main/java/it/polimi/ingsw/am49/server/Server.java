@@ -1,12 +1,12 @@
 package it.polimi.ingsw.am49.server;
 
-import it.polimi.ingsw.am49.chat.ChatMSG;
+import it.polimi.ingsw.am49.common.exceptions.*;
+import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.controller.CompleteGameInfo;
-import it.polimi.ingsw.am49.controller.room.RoomInfo;
-import it.polimi.ingsw.am49.model.actions.GameAction;
-import it.polimi.ingsw.am49.model.enumerations.Color;
-import it.polimi.ingsw.am49.server.exceptions.*;
+import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
+import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
+import it.polimi.ingsw.am49.common.actions.GameAction;
+import it.polimi.ingsw.am49.common.enumerations.Color;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

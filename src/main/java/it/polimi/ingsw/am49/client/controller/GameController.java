@@ -1,22 +1,20 @@
 package it.polimi.ingsw.am49.client.controller;
 
-import it.polimi.ingsw.am49.chat.ChatMSG;
+import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.client.ClientApp;
-import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
-import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
-import it.polimi.ingsw.am49.model.actions.DrawCardAction;
-import it.polimi.ingsw.am49.model.actions.PlaceCardAction;
-import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
-import it.polimi.ingsw.am49.model.enumerations.DrawPosition;
+import it.polimi.ingsw.am49.common.actions.ChooseObjectiveAction;
+import it.polimi.ingsw.am49.common.actions.ChooseStarterSideAction;
+import it.polimi.ingsw.am49.common.actions.DrawCardAction;
+import it.polimi.ingsw.am49.common.actions.PlaceCardAction;
+import it.polimi.ingsw.am49.common.enumerations.CornerPosition;
+import it.polimi.ingsw.am49.common.enumerations.DrawPosition;
 import it.polimi.ingsw.am49.server.Server;
-import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
-import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
-import it.polimi.ingsw.am49.server.exceptions.NotYourTurnException;
-import it.polimi.ingsw.am49.server.exceptions.RoomException;
-import it.polimi.ingsw.am49.view.View;
+import it.polimi.ingsw.am49.common.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.common.exceptions.NotInGameException;
+import it.polimi.ingsw.am49.common.exceptions.NotYourTurnException;
+import it.polimi.ingsw.am49.common.exceptions.RoomException;
 
 import java.rmi.RemoteException;
-import java.util.concurrent.Executors;
 
 /**
  * Controller class for game-related actions and interactions.

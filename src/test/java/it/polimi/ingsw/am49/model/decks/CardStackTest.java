@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.model.decks;
 
-import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
+import it.polimi.ingsw.am49.server.model.cards.placeables.ResourceCard;
+import it.polimi.ingsw.am49.server.model.decks.CardStack;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

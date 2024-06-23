@@ -1,12 +1,13 @@
 package it.polimi.ingsw.am49.model.states;
 
-import it.polimi.ingsw.am49.model.Game;
-import it.polimi.ingsw.am49.model.actions.GameAction;
-import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
-import it.polimi.ingsw.am49.model.enumerations.GameStateType;
-import it.polimi.ingsw.am49.model.events.EndgameEvent;
-import it.polimi.ingsw.am49.model.players.Player;
-import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.server.model.Game;
+import it.polimi.ingsw.am49.common.actions.GameAction;
+import it.polimi.ingsw.am49.server.model.cards.objectives.ObjectiveCard;
+import it.polimi.ingsw.am49.common.enumerations.GameStateType;
+import it.polimi.ingsw.am49.server.model.events.EndgameEvent;
+import it.polimi.ingsw.am49.server.model.players.Player;
+import it.polimi.ingsw.am49.common.exceptions.InvalidActionException;
+import it.polimi.ingsw.am49.server.model.states.EndGameState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -83,12 +84,6 @@ class EndGameStateTest {
     @Test
     void testExecute() {
         assertThrows(InvalidActionException.class, () -> endGameState.execute(mock(GameAction.class)));
-    }
-
-    @Test
-    void testIsYourTurn() {
-        GameAction action = mock(GameAction.class);
-        assertFalse(endGameState.isYourTurn(action));
     }
 
     @Test

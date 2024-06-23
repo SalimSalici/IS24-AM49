@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="mainBackground" stylesheets="@../css/preGame.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.am49.view.gui.controllers.StarterCardController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="mainBackground" stylesheets="@../css/preGame.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.am49.client.view.gui.controllers.StarterCardController">
    <children>
       <VBox alignment="CENTER" layoutX="15.0" layoutY="14.0" prefHeight="371.0" prefWidth="567.0" spacing="10.0">
          <children>

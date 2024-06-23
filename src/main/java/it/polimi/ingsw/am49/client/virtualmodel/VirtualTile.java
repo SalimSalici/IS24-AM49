@@ -1,7 +1,7 @@
 package it.polimi.ingsw.am49.client.virtualmodel;
 
-import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
-import it.polimi.ingsw.am49.util.Pair;
+import it.polimi.ingsw.am49.common.enumerations.RelativePosition;
+import it.polimi.ingsw.am49.common.util.Pair;
 
 /**
  * Represents a virtual tile on the game board. Manages the position, card, and neighbors of the tile.

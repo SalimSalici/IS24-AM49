@@ -1,13 +1,13 @@
 package it.polimi.ingsw.am49.model.cards.placeables;
 
-import it.polimi.ingsw.am49.model.decks.DeckLoader;
-import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
-import it.polimi.ingsw.am49.model.players.BoardTile;
-import it.polimi.ingsw.am49.model.players.PlayerBoard;
+import it.polimi.ingsw.am49.server.model.cards.placeables.GoldCard;
+import it.polimi.ingsw.am49.server.model.cards.placeables.StarterCard;
+import it.polimi.ingsw.am49.server.model.decks.DeckLoader;
+import it.polimi.ingsw.am49.common.enumerations.RelativePosition;
+import it.polimi.ingsw.am49.server.model.players.BoardTile;
+import it.polimi.ingsw.am49.server.model.players.PlayerBoard;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PlaceableCardTest {
 

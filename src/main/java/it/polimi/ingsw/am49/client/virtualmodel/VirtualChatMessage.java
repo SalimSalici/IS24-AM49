@@ -1,7 +1,5 @@
 package it.polimi.ingsw.am49.client.virtualmodel;
 
-import it.polimi.ingsw.am49.model.players.Player;
-
 import java.time.LocalTime;
 
 /**

@@ -1,18 +1,18 @@
 package it.polimi.ingsw.am49.controller.room;
 
-import it.polimi.ingsw.am49.chat.ChatMSG;
-import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
-import it.polimi.ingsw.am49.model.actions.ChooseObjectiveAction;
-import it.polimi.ingsw.am49.model.actions.ChooseStarterSideAction;
-import it.polimi.ingsw.am49.model.enumerations.Color;
+import it.polimi.ingsw.am49.common.exceptions.*;
+import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
+import it.polimi.ingsw.am49.common.gameupdates.ChoosableObjectivesUpdate;
+import it.polimi.ingsw.am49.common.actions.ChooseObjectiveAction;
+import it.polimi.ingsw.am49.common.actions.ChooseStarterSideAction;
+import it.polimi.ingsw.am49.common.enumerations.Color;
 import it.polimi.ingsw.am49.server.ClientHandler;
 import it.polimi.ingsw.am49.server.ServerApp;
-import it.polimi.ingsw.am49.server.exceptions.*;
+import it.polimi.ingsw.am49.server.controller.room.Room;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;

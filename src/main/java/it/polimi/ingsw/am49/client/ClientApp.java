@@ -1,24 +1,24 @@
 package it.polimi.ingsw.am49.client;
 
-import it.polimi.ingsw.am49.chat.ChatMSG;
+import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.controller.MenuController;
 import it.polimi.ingsw.am49.client.controller.RoomController;
 import it.polimi.ingsw.am49.client.sockets.ServerSocketHandler;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.config.StaticConfig;
-import it.polimi.ingsw.am49.controller.CompleteGameInfo;
-import it.polimi.ingsw.am49.controller.gameupdates.ChoosableObjectivesUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.GameStartedUpdate;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdateType;
-import it.polimi.ingsw.am49.controller.room.RoomInfo;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
+import it.polimi.ingsw.am49.common.gameupdates.ChoosableObjectivesUpdate;
+import it.polimi.ingsw.am49.common.gameupdates.GameStartedUpdate;
+import it.polimi.ingsw.am49.common.gameupdates.GameUpdateType;
+import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
+import it.polimi.ingsw.am49.common.gameupdates.GameUpdate;
 import it.polimi.ingsw.am49.server.Server;
-import it.polimi.ingsw.am49.util.Log;
-import it.polimi.ingsw.am49.util.IntervalTimer;
-import it.polimi.ingsw.am49.view.GuiView;
-import it.polimi.ingsw.am49.view.TuiView;
-import it.polimi.ingsw.am49.view.View;
+import it.polimi.ingsw.am49.common.util.Log;
+import it.polimi.ingsw.am49.common.util.IntervalTimer;
+import it.polimi.ingsw.am49.client.view.GuiView;
+import it.polimi.ingsw.am49.client.view.TuiView;
+import it.polimi.ingsw.am49.client.view.View;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;

@@ -1,10 +1,10 @@
 package it.polimi.ingsw.am49.client.virtualmodel;
 
-import it.polimi.ingsw.am49.model.enumerations.Color;
-import it.polimi.ingsw.am49.model.enumerations.Resource;
-import it.polimi.ingsw.am49.model.enumerations.Symbol;
-import it.polimi.ingsw.am49.util.Observable;
-import it.polimi.ingsw.am49.util.Pair;
+import it.polimi.ingsw.am49.common.enumerations.Color;
+import it.polimi.ingsw.am49.common.enumerations.Resource;
+import it.polimi.ingsw.am49.common.enumerations.Symbol;
+import it.polimi.ingsw.am49.common.util.Observable;
+import it.polimi.ingsw.am49.common.util.Pair;
 
 import java.util.HashMap;
 import java.util.LinkedList;

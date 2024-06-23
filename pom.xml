@@ -78,7 +78,7 @@
           <artifactId>exec-maven-plugin</artifactId>
           <version>3.2.0</version>
           <configuration>
-            <mainClass>it.polimi.ingsw.am49.view.gui.GuiManager</mainClass>
+            <mainClass>it.polimi.ingsw.am49.client.view.gui.GuiManager</mainClass>
           </configuration>
         </plugin>
 

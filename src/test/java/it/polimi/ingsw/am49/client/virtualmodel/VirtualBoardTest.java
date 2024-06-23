@@ -5,16 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 
-import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
-import it.polimi.ingsw.am49.util.Pair;
+import it.polimi.ingsw.am49.common.enumerations.RelativePosition;
+import it.polimi.ingsw.am49.common.util.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-    public class VirtualBoardTest {
+public class VirtualBoardTest {
 
         private VirtualBoard board;
         private VirtualCard card;

@@ -2,7 +2,7 @@ package it.polimi.ingsw.am49.client.controller;
 
 import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.server.Server;
-import it.polimi.ingsw.am49.view.View;
+import it.polimi.ingsw.am49.client.view.View;
 
 /**
  * Abstract base class for client controllers in the application.

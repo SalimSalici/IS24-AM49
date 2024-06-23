@@ -1,21 +1,19 @@
 package it.polimi.ingsw.am49.model.players;
 
-import it.polimi.ingsw.am49.model.cards.objectives.ObjectiveCard;
-import it.polimi.ingsw.am49.model.cards.placeables.PlaceableCard;
-import it.polimi.ingsw.am49.model.cards.placeables.ResourceCard;
-import it.polimi.ingsw.am49.model.cards.placeables.StarterCard;
-import it.polimi.ingsw.am49.model.decks.DeckLoader;
-import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
-import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
+import it.polimi.ingsw.am49.server.model.cards.objectives.ObjectiveCard;
+import it.polimi.ingsw.am49.server.model.cards.placeables.PlaceableCard;
+import it.polimi.ingsw.am49.server.model.cards.placeables.ResourceCard;
+import it.polimi.ingsw.am49.server.model.cards.placeables.StarterCard;
+import it.polimi.ingsw.am49.server.model.decks.DeckLoader;
+import it.polimi.ingsw.am49.common.enumerations.CornerPosition;
+import it.polimi.ingsw.am49.common.enumerations.RelativePosition;
+import it.polimi.ingsw.am49.server.model.players.BoardTile;
+import it.polimi.ingsw.am49.server.model.players.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
 

@@ -1,12 +1,12 @@
 package it.polimi.ingsw.am49.server;
 
-import it.polimi.ingsw.am49.chat.ChatMSG;
+import it.polimi.ingsw.am49.common.exceptions.*;
+import it.polimi.ingsw.am49.common.messages.*;
+import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.client.Client;
-import it.polimi.ingsw.am49.controller.room.RoomInfo;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
-import it.polimi.ingsw.am49.messages.*;
-import it.polimi.ingsw.am49.server.exceptions.*;
-import it.polimi.ingsw.am49.util.Log;
+import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
+import it.polimi.ingsw.am49.common.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.common.util.Log;
 
 import java.io.*;
 import java.net.Socket;
@@ -100,7 +100,8 @@ public class SocketClientHandler implements Client {
                             params.roomName(),
                             params.username()
                     );
-                } catch (JoinRoomException | RemoteException | AlreadyInRoomException | IllegalArgumentException | GameAlreadyStartedException e) {
+                } catch (JoinRoomException | RemoteException | AlreadyInRoomException | IllegalArgumentException |
+                         GameAlreadyStartedException e) {
                     returnValue = e;
                 }
                 this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));

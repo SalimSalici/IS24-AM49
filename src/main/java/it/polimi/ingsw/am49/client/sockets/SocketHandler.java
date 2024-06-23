@@ -1,8 +1,8 @@
 package it.polimi.ingsw.am49.client.sockets;
 
-import it.polimi.ingsw.am49.messages.ReturnMessage;
-import it.polimi.ingsw.am49.messages.SocketMessage;
-import it.polimi.ingsw.am49.util.Log;
+import it.polimi.ingsw.am49.common.messages.ReturnMessage;
+import it.polimi.ingsw.am49.common.messages.SocketMessage;
+import it.polimi.ingsw.am49.common.util.Log;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

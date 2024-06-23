@@ -1,8 +1,8 @@
 package it.polimi.ingsw.am49.client;
 
-import it.polimi.ingsw.am49.chat.ChatMSG;
-import it.polimi.ingsw.am49.controller.room.RoomInfo;
-import it.polimi.ingsw.am49.controller.gameupdates.GameUpdate;
+import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
+import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
+import it.polimi.ingsw.am49.common.gameupdates.GameUpdate;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -23,7 +23,7 @@ public interface Client extends Remote {
     public void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException;
 
     /**
-     * Receives the gameUpdates {@link it.polimi.ingsw.am49.controller.gameupdates}
+     * Receives the gameUpdates {@link it.polimi.ingsw.am49.common.gameupdates}
      *
      * @param gameUpdate the game update to be sent to the client
      * @throws RemoteException if a remote communication error occurs

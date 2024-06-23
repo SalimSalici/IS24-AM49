@@ -1,14 +1,13 @@
 package it.polimi.ingsw.am49.client.controller;
 
 import it.polimi.ingsw.am49.client.ClientApp;
-import it.polimi.ingsw.am49.controller.CompleteGameInfo;
-import it.polimi.ingsw.am49.controller.room.RoomInfo;
+import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
+import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.server.Server;
-import it.polimi.ingsw.am49.server.exceptions.AlreadyInRoomException;
-import it.polimi.ingsw.am49.server.exceptions.CreateRoomException;
-import it.polimi.ingsw.am49.server.exceptions.GameAlreadyStartedException;
-import it.polimi.ingsw.am49.server.exceptions.JoinRoomException;
-import it.polimi.ingsw.am49.view.View;
+import it.polimi.ingsw.am49.common.exceptions.AlreadyInRoomException;
+import it.polimi.ingsw.am49.common.exceptions.CreateRoomException;
+import it.polimi.ingsw.am49.common.exceptions.GameAlreadyStartedException;
+import it.polimi.ingsw.am49.common.exceptions.JoinRoomException;
 
 import java.rmi.RemoteException;
 import java.util.List;

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.am49.client.virtualmodel;
 
-import it.polimi.ingsw.am49.model.enumerations.RelativePosition;
-import it.polimi.ingsw.am49.util.Observable;
-import it.polimi.ingsw.am49.util.Pair;
+import it.polimi.ingsw.am49.common.enumerations.RelativePosition;
+import it.polimi.ingsw.am49.common.util.Observable;
+import it.polimi.ingsw.am49.common.util.Pair;
 
 import java.util.Arrays;
 import java.util.Comparator;

@@ -1,12 +1,10 @@
 package it.polimi.ingsw.am49.server;
 
-import it.polimi.ingsw.am49.util.Log;
+import it.polimi.ingsw.am49.common.util.Log;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ServerSocketManager {
     private final Server server;
