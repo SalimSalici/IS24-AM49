@@ -5,7 +5,6 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualCard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualTile;
-import it.polimi.ingsw.am49.model.actions.PlaceCardAction;
 import it.polimi.ingsw.am49.model.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.server.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.server.exceptions.NotInGameException;
@@ -15,29 +14,23 @@ import it.polimi.ingsw.am49.view.gui.SceneTitle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
-import java.lang.invoke.MutableCallSite;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.ArrayList;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+/**
+ * Controller class for the game board GUI.
+ */
 public class BoardController extends GuiController {
 
     @FXML
@@ -60,7 +53,9 @@ public class BoardController extends GuiController {
     String myUsername;
     private VirtualPlayer currentPlayer;
 
-
+    /**
+     * Initializes the board controller.
+     */
     public void init() {
         this.overviewController = (OverviewController) this.manager.getControllerBySceneTitle(SceneTitle.OVERVIEW);
         this.players = this.manager.getVirtualGame().getPlayers();
@@ -70,7 +65,7 @@ public class BoardController extends GuiController {
                 .findFirst()
                 .orElse(null);
 
-        // sets the starting postiions for the boards
+        // sets the starting positions for the boards
         for(VirtualPlayer player : players){
             // sets up the starting coordinates for all the boards
             playerToBoardCoords.put(player, new Pair<>(0.0, 0.0));
@@ -84,6 +79,9 @@ public class BoardController extends GuiController {
         drawBoard(this.currentPlayer);
     }
 
+    /**
+     * Sets up the panes for the board.
+     */
     private void setupPanes() {
         borderPane = new Pane();
         borderPane.setPrefSize(innerPaneWidth + 10, innerPaneHeight + 10);
@@ -110,6 +108,9 @@ public class BoardController extends GuiController {
         containerPane.heightProperty().addListener((obs, oldVal, newVal) -> centerBorderPane());
     }
 
+    /**
+     * Sets up the buttons for the board.
+     */
     private void setupButtons() {
         Button resetButton = new Button("RESET");
         resetButton.setLayoutX(5);
@@ -124,6 +125,9 @@ public class BoardController extends GuiController {
         containerPane.getChildren().add(resetButton);
     }
 
+    /**
+     * Sets up the board information labels.
+     */
     private void setUpBoardInfo(){
         Label boardNameInfo = new Label("BOARD OF: ");
         Label boardRoundInfo = new Label("ROUND: ");
@@ -152,16 +156,28 @@ public class BoardController extends GuiController {
         containerPane.getChildren().addAll(boardNameInfo, boardName, boardRoundInfo, boardRound);
     }
 
+    /**
+     * Sets the board round number.
+     * @param round the round number to set
+     */
     public void setBoardRound(int round) {
         Platform.runLater(() -> this.boardRound.setText(Integer.toString(round)));
     }
 
+    /**
+     * Updates the specific board for a player.
+     * @param player the player whose board to update
+     */
     public void updateSpecificBoard(VirtualPlayer player){
         loadBoardFromVirtualBoard(player);
         if(player.equals(currentPlayer))
             drawBoard(currentPlayer);
     }
 
+    /**
+     * Draws the board for a player.
+     * @param player the player whose board to draw
+     */
     private void drawBoard(VirtualPlayer player) {
         Platform.runLater(() -> {
             imagePane.getChildren().clear();
@@ -179,12 +195,19 @@ public class BoardController extends GuiController {
         });
     }
 
+    /**
+     * Loads all boards for all players.
+     */
     private void loadAllBoards(){
         for(VirtualPlayer player : players){
             loadBoardFromVirtualBoard(player);
         }
     }
 
+    /**
+     * Loads the board from the virtual board for a player.
+     * @param player the player whose board to load
+     */
     private void loadBoardFromVirtualBoard(VirtualPlayer player){
         //for all the other players (the corners are not clickable)
         if(isNotMe(player)){
@@ -227,6 +250,14 @@ public class BoardController extends GuiController {
         }
     }
 
+    /**
+     * Creates an ImageView for a card.
+     * @param x the x-coordinate of the ImageView
+     * @param y the y-coordinate of the ImageView
+     * @param id the id of the card
+     * @param card the virtual card
+     * @return the created ImageView
+     */
     private ImageView createCardImageView(double x, double y, String id, VirtualCard card){
         ImageView imageView = new ImageView();
         imageView.setFitWidth(cardWidth);
@@ -239,6 +270,16 @@ public class BoardController extends GuiController {
         return imageView;
     }
 
+    /**
+     * Creates a CardPane for a card.
+     * @param x the x-coordinate of the CardPane
+     * @param y the y-coordinate of the CardPane
+     * @param id the id of the card
+     * @param card the virtual card
+     * @param row the row of the card
+     * @param col the column of the card
+     * @return the created CardPane
+     */
     private CardPane createCardPane(double x, double y, String  id, VirtualCard card, int row, int col){
         ImageView imageView = new ImageView();
         imageView.setFitWidth(cardWidth);
@@ -265,6 +306,10 @@ public class BoardController extends GuiController {
         return cardpane;
     }
 
+    /**
+     * Adds corner buttons to a CardPane.
+     * @param cardpane the CardPane to add corner buttons to
+     */
     private void addCornerButtons(CardPane cardpane) {
         Button topLeftButton = createCornerButton("TL");
         Button topRightButton = createCornerButton("TR");
@@ -299,19 +344,30 @@ public class BoardController extends GuiController {
         bottomRightButton.setOnMouseExited(e -> clearPreviewImageView());
         bottomLeftButton.setOnMouseExited(e -> clearPreviewImageView());
 
-
         topLeftButton.setOpacity(0);
         topRightButton.setOpacity(0);
         bottomLeftButton.setOpacity(0);
         bottomRightButton.setOpacity(0);
     }
 
+    /**
+     * Creates a corner button.
+     * @param text the text to display on the button
+     * @return the created button
+     */
     private Button createCornerButton(String text) {
         Button button = new Button(text);
         button.setPrefSize(20, 20);
         return button;
     }
 
+    /**
+     * Handles the action of a corner button.
+     * @param cardpane the CardPane associated with the corner button
+     * @param offsetX the x-offset for the new card
+     * @param offsetY the y-offset for the new card
+     * @param cornerPosition the corner position of the new card
+     */
     private void handleCornerButtonAction(CardPane cardpane, double offsetX, double offsetY, CornerPosition cornerPosition) {
         MyCard myCard = overviewController.getSelectedCard();
         if(myCard != null) {
@@ -337,6 +393,12 @@ public class BoardController extends GuiController {
         }
     }
 
+    /**
+     * Handles the hover action of a corner button.
+     * @param cardStackpane the StackPane associated with the corner button
+     * @param offsetX the x-offset for the preview card
+     * @param offsetY the y-offset for the preview card
+     */
     private void handleCornerButtonHover(StackPane cardStackpane, double offsetX, double offsetY) {
         MyCard myCard = overviewController.getSelectedCard();
         if(myCard != null) {
@@ -348,6 +410,9 @@ public class BoardController extends GuiController {
         }
     }
 
+    /**
+     * Centers the inner pane within the border pane.
+     */
     private void centerInnerPane() {
         double paneWidth = borderPane.getPrefWidth();
         double paneHeight = borderPane.getPrefHeight();
@@ -357,6 +422,9 @@ public class BoardController extends GuiController {
         innerPane.setLayoutY(5);
     }
 
+    /**
+     * Centers the border pane within the container pane.
+     */
     private void centerBorderPane() {
         double paneWidth = containerPane.getPrefWidth();
         double paneHeight = containerPane.getPrefHeight();
@@ -366,13 +434,27 @@ public class BoardController extends GuiController {
         borderPane.setLayoutY(paneHeight - innerHeight);
     }
 
-
+    /**
+     * Adds a CardPane to the board.
+     * @param x the x-coordinate of the CardPane
+     * @param y the y-coordinate of the CardPane
+     * @param card the virtual card
+     * @param id the id of the card
+     * @param row the row of the card
+     * @param col the column of the card
+     */
     private void addCardPane(double x, double y, VirtualCard card, String id, int row, int col) {
         CardPane cardPane = createCardPane(x, y, "NEW", card, row, col);
         myBoard.add(cardPane);
         imagePane.getChildren().add(cardPane.stackPane());
     }
 
+    /**
+     * Previews an ImageView for a card.
+     * @param x the x-coordinate of the ImageView
+     * @param y the y-coordinate of the ImageView
+     * @param card the virtual card
+     */
     private void previewImageView(double x, double y, VirtualCard card) {
         clearPreviewImageView();
         Platform.runLater(() -> {
@@ -380,7 +462,7 @@ public class BoardController extends GuiController {
             previewImage.setFitWidth(cardWidth);
             previewImage.setFitHeight(cardHeight);
             previewImage.setImage(this.guiTextureManager.getCardImageByVirtualCard(card));
-            previewImage.setOpacity(0.5); // Imposta l'opacità per l'anteprima
+            previewImage.setOpacity(0.5); // Set opacity for preview
             previewImage.setMouseTransparent(true);
 
             previewImage.setLayoutX(x);
@@ -391,22 +473,36 @@ public class BoardController extends GuiController {
         });
     }
 
+    /**
+     * Clears the preview ImageView.
+     */
     private void clearPreviewImageView() {
         Platform.runLater(() -> {
             imagePane.getChildren().removeIf(node -> "preview".equals(node.getId()));
         });
     }
 
+    /**
+     * Switches the board to display a different player's board.
+     * @param player the player whose board to display
+     */
     public void switchPlayerBoard(VirtualPlayer player) {
         currentPlayer = player;
         drawBoard(player);
         centerBorderPane();
     }
 
+    /**
+     * Gets the inner pane.
+     * @return the inner pane
+     */
     public Pane getInnerPane() {
         return innerPane;
     }
 
+    /**
+     * Disables the corner buttons on the board.
+     */
     public void disableCornerButtons(){
         myBoard.forEach(cardPane -> {
             cardPane.stackPane().getChildren().stream()
@@ -415,6 +511,11 @@ public class BoardController extends GuiController {
         });
     }
 
+    /**
+     * Checks if the player is not the current player.
+     * @param player the player to check
+     * @return true if the player is not the current player, false otherwise
+     */
     private boolean isNotMe(VirtualPlayer player){
         return !player.getUsername().equals(myUsername);
     }

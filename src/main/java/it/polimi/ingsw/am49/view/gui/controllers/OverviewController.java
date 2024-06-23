@@ -74,6 +74,9 @@ public class OverviewController extends GuiController {
     private Button activeViewButton;
 //    private Map<VirtualPlayer, Integer> playerToTotem = new HashMap<>();
 
+    /**
+     * Initializes the controller and sets up the game state and UI components.
+     */
     @Override
     public void init() {
         this.game = manager.getVirtualGame();
@@ -169,6 +172,9 @@ public class OverviewController extends GuiController {
         });
     }
 
+    /**
+     * Loads the player board UI component.
+     */
     private void loadPlayerBoard() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneTitle.BOARD.getFilePath()));
@@ -184,6 +190,9 @@ public class OverviewController extends GuiController {
         }
     }
 
+    /**
+     * Loads the chat UI component.
+     */
     private void loadChat() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneTitle.CHAT.getFilePath()));
@@ -202,6 +211,9 @@ public class OverviewController extends GuiController {
         }
     }
 
+    /**
+     * Draws the objectives on the UI.
+     */
     private void drawObjectives(){
         int index = 2;
         for(int cardId : this.game.getCommonObjectives()){
@@ -218,6 +230,9 @@ public class OverviewController extends GuiController {
         objectivesGridpane.add(cardImageview, 0, 0);
     }
 
+    /**
+     * Draws the personal objective on the UI.
+     */
     private void drawPersonalObjective(){
         Platform.runLater(()->{
             objectivesGridpane.getChildren().removeLast();
@@ -227,6 +242,9 @@ public class OverviewController extends GuiController {
         });
     }
 
+    /**
+     * Draws the drawable area on the UI.
+     */
     private void drawDrawableArea(){
         Platform.runLater(() -> {
             if (!drawableGridpane.getChildren().isEmpty())
@@ -291,6 +309,9 @@ public class OverviewController extends GuiController {
         });
     }
 
+    /**
+     * Draws the players on the UI.
+     */
     private void drawPlayers() {
         playersGridpane.getChildren().clear();
         Image offlineTotemImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/CODEX_pion_disabled.png")));
@@ -338,6 +359,10 @@ public class OverviewController extends GuiController {
         drawCurrentPlayerIndicator();
     }
 
+    /**
+     * Sets the active button for viewing the player board.
+     * @param viewboardButton The button to set as active.
+     */
     private void setActiveButton(Button viewboardButton) {
         // Reset the style of the previously active button
         if (activeViewButton != null) {
@@ -349,6 +374,9 @@ public class OverviewController extends GuiController {
         activeViewButton.setStyle("-fx-background-color: A39E20; -fx-border-color: #21130b; -fx-border-width: 2; -fx-text-fill: #21130b; -fx-font-family: 'DejaVu Sans Mono'; -fx-font-size: 13px; -fx-background-radius: 10; -fx-border-radius: 10;");
     }
 
+    /**
+     * Draws the current player indicator on the UI.
+     */
     private void drawCurrentPlayerIndicator() {
         Platform.runLater(() -> {
             int index = 0;
@@ -370,11 +398,17 @@ public class OverviewController extends GuiController {
         });
     }
 
+    /**
+     * Clears the current player indicator from the UI.
+     */
     private void clearTurnIndicator() {
         // only remove nodes that are in the second column of playersGridpane
         playersGridpane.getChildren().removeIf(node -> {Integer columnIndex = GridPane.getColumnIndex(node); return columnIndex != null && columnIndex == 1;});
     }
 
+    /**
+     * Draws the rotation buttons on the UI.
+     */
     public void drawRotationButtons() {
         Platform.runLater(() -> {
             for (int index = 0; index < this.myHand.size(); index++) {
@@ -393,11 +427,18 @@ public class OverviewController extends GuiController {
         });
     }
 
+    /**
+     * Hides the rotation buttons on the UI.
+     */
     public void hideRotationButtons(){
             for(Button button : rotationButtonList)
                 button.setVisible(false);
     }
 
+    /**
+     * Updates the hand of the specified player.
+     * @param username The username of the player whose hand is to be updated.
+     */
     public void updateHand(String username){
         Platform.runLater(() -> {
             if(username.equals(myUsername)){
@@ -421,6 +462,11 @@ public class OverviewController extends GuiController {
         });
     }
 
+    /**
+     * Retrieves the card with the specified ID from the player's hand.
+     * @param id The ID of the card to retrieve.
+     * @return The card with the specified ID, or null if not found.
+     */
     public MyCard getMyCardById(int id){
         for(MyCard card : myHand){
             if(card.getId() == id)
@@ -429,6 +475,10 @@ public class OverviewController extends GuiController {
         return null;
     }
 
+    /**
+     * Draws the hand of the specified player on the UI.
+     * @param username The username of the player whose hand is to be drawn.
+     */
     public void drawHand(String username){
         Platform.runLater(()->{
             handGridpane.getChildren().removeIf(node -> {Integer columnIndex = GridPane.getColumnIndex(node); return columnIndex != null && columnIndex == 1;});
@@ -462,6 +512,9 @@ public class OverviewController extends GuiController {
         });
     }
 
+    /**
+     * Draws the symbols on the UI.
+     */
     private void drawSymbols(){
         Platform.runLater(()->{
             //populates the resource list with the strings rapresenting the values of the enum
@@ -491,6 +544,9 @@ public class OverviewController extends GuiController {
         });
     }
 
+    /**
+     * Draws the points board on the UI.
+     */
     private void drawPointsBoard(){
         // Carica l'immagine
         Image pointsBoardImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/plateau_score/plateau.png")));
@@ -508,6 +564,9 @@ public class OverviewController extends GuiController {
         pointsBoardImageview.fitHeightProperty().bind(pointsPane.heightProperty());
     }
 
+    /**
+     * Draws the points tokens on the UI.
+     */
     private void drawPointsTokens(){
         Platform.runLater(()->{
             pointsPane.getChildren().removeIf(node -> pointsPane.getChildren().indexOf(node) != 0);
@@ -524,9 +583,9 @@ public class OverviewController extends GuiController {
     }
 
     /**
-     * Method to handle the process of drawing a card frome one of the decks
-     * @param cardId
-     * @param drawPosition
+     * Method to handle the process of drawing a card from one of the decks.
+     * @param cardId The ID of the card to draw.
+     * @param drawPosition The position from which to draw the card.
      */
     private void drawCard(int cardId, DrawPosition drawPosition) {
         this.manager.executorService.submit(() -> {
@@ -543,6 +602,10 @@ public class OverviewController extends GuiController {
         });
     }
 
+    /**
+     * Selects the specified card.
+     * @param card The card to select.
+     */
     public void selectCard(MyCard card){
         unselectCard();
         selectedCard = card;
@@ -550,6 +613,10 @@ public class OverviewController extends GuiController {
         System.out.println("Carta selezionata: " + selectedCard.getId());
     }
 
+    /**
+     * Sets the focused player.
+     * @param player The player to set as focused.
+     */
     private void setFocusedPlayer(VirtualPlayer player){
         if(!focusedPlayer.equals(player)) {
             this.focusedPlayer = player;
@@ -562,6 +629,10 @@ public class OverviewController extends GuiController {
         }
     }
 
+    /**
+     * Retrieves the selected card.
+     * @return The selected card, or null if no card is selected.
+     */
     public MyCard getSelectedCard() {
         if(selectedCard == null)
             return null;
@@ -569,6 +640,9 @@ public class OverviewController extends GuiController {
             return selectedCard;
     }
 
+    /**
+     * Unselects the currently selected card.
+     */
     public void unselectCard() {
         if(selectedCard != null){
             selectedCard.getImageView().setOpacity(1);
@@ -576,6 +650,9 @@ public class OverviewController extends GuiController {
         }
     }
 
+    /**
+     * Sets the personal objectives for all players.
+     */
     public void setPersonalObjectives(){
         for(VirtualPlayer player : players){
             try{
@@ -587,6 +664,9 @@ public class OverviewController extends GuiController {
         }
     }
 
+    /**
+     * Disables all buttons on the UI.
+     */
     public void disableButtons(){
         rotationButtonList.forEach(button -> button.setVisible(false));
         myHand.forEach(card -> {card.getImageView().setOnMouseClicked(event -> {});});
@@ -596,10 +676,16 @@ public class OverviewController extends GuiController {
         playerboardController.disableCornerButtons();
     }
 
+    /**
+     * Leaves the game.
+     */
     public void leaveGame(){
         this.manager.executorService.submit(() -> gameController.leave());
     }
 
+    /**
+     * Shows a popup indicating the final round.
+     */
     public void showFinalRoundPopUp(){
         System.out.println("debug");
         finalRoundAlreadyShown = true;
@@ -615,6 +701,10 @@ public class OverviewController extends GuiController {
         alert.showAndWait();
     }
 
+    /**
+     * Sets the style for the specified card image.
+     * @param cardImage The card image to set the style for.
+     */
     private void setCardStyle(ImageView cardImage){
         cardImage.setFitWidth(143);
         cardImage.setFitHeight(88);
@@ -622,6 +712,10 @@ public class OverviewController extends GuiController {
         GridPane.setValignment(cardImage, VPos.CENTER);
     }
 
+    /**
+     * Changes the border color of various UI components.
+     * @param newColor The new border color to set.
+     */
     private void changeBorderColor(String newColor) {
         String style = String.format("-fx-border-color: %s; -fx-border-width: 5;", newColor);
         Platform.runLater(() -> {
