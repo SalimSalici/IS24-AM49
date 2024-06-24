@@ -207,5 +207,6 @@ public class RoomScene extends Scene {
     @Override
     public void focus() {
         this.isReady = false;
+        this.printView();
     }
 }

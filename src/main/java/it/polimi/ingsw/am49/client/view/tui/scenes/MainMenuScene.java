@@ -110,6 +110,7 @@ public class MainMenuScene extends Scene {
     public void focus() {
         try {
             this.rooms = this.menuController.fetchRooms();
+            this.printView();
         } catch (RemoteException e) {
             // TODO: handle exception (show scene anyway, with empty list of rooms, and print error message saying an issue occurred)
             throw new RuntimeException(e);

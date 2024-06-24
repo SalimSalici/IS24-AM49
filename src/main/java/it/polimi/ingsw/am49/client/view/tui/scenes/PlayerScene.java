@@ -235,6 +235,7 @@ public class PlayerScene extends Scene implements Observer {
     @Override
     public void focus() {
         this.game.addObserver(this);
+        this.printView();
     }
 
     /**

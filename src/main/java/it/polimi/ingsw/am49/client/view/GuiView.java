@@ -25,9 +25,8 @@ public class GuiView extends View {
      * @param menuController the controller for menu operations
      * @param roomController the controller for room operations
      * @param gameController the controller for game operations
-     * @throws RemoteException if a remote communication error occurs
      */
-    public GuiView(MenuController menuController, RoomController roomController, GameController gameController) throws RemoteException {
+    public GuiView(MenuController menuController, RoomController roomController, GameController gameController) {
         super(menuController, roomController, gameController);
         manager = new GuiManager(menuController, roomController, gameController);
     }
