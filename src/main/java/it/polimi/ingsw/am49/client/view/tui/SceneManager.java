@@ -106,11 +106,11 @@ public class SceneManager {
      * @param scene the scene to switch to
      */
     public synchronized void switchScene(Scene scene) {
-        if (this.currentScene != null)
-            this.currentScene.unfocus();
+        if (this.currentScene == scene) return;
+        if (this.currentScene != null) this.currentScene.unfocus();
         this.currentScene = scene;
         this.currentScene.focus();
-        this.currentScene.printView();
+//        this.currentScene.printView();
     }
 
     /**
@@ -172,12 +172,6 @@ public class SceneManager {
         this.starterCardScene.setStarterCardId(starterCardId);
         this.switchScene(this.starterCardScene);
     }
-//    public synchronized void gameStarted(GameStartedUpdate gameStartedUpdate) {
-//        this.initializePlayerScenes();
-//        this.starterCardScene.setStarterCardId(gameStartedUpdate.starterCardId());
-//        this.switchScene(this.starterCardScene);
-//        this.chatScene.clearMessages();
-//    }
 
     /**
      * Initializes the player scenes.

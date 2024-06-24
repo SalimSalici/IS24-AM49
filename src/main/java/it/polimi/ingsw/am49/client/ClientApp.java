@@ -47,13 +47,13 @@ public class ClientApp implements Client {
     protected MenuController menuController;
     protected RoomController roomController;
     protected GameController gameController;
-
     protected ServerConnector serverConnector;
-
     private final IntervalTimer heartbeatInterval;
 
-    public ClientApp(boolean socket) throws RemoteException {
-        this.serverConnector = socket ? new ServerConnectorSocket() : new ServerConnectorRMI();
+    public ClientApp() throws RemoteException {
+        this.serverConnector = ClientConfig.connectionType == ConnectorType.SOCKET ?
+                new ServerConnectorSocket() :
+                new ServerConnectorRMI();
         this.heartbeatInterval = new IntervalTimer(this::pingServer, 10, 1000, TimeUnit.MILLISECONDS);
     }
 
@@ -65,12 +65,10 @@ public class ClientApp implements Client {
         this.menuController = new MenuController(this.server, this);
         this.roomController = new RoomController(this.server, this);
         this.gameController = new GameController(this.server, this);
-        try {
-            if (gui)
-                this.setView(new GuiView(menuController, roomController, gameController));
-            else
-                this.setView(new TuiView(menuController, roomController, gameController));
-        } catch (RemoteException ignored) {}
+
+        if (gui) this.setView(new GuiView(menuController, roomController, gameController));
+        else this.setView(new TuiView(menuController, roomController, gameController));
+
         this.menuController.setView(view);
         this.roomController.setView(view);
         this.gameController.setView(view);
@@ -187,61 +185,47 @@ public class ClientApp implements Client {
      * @throws NotBoundException if not able to bind to the RMI registry
      */
     public static void main(String[] args) throws IOException, NotBoundException {
-        String serverHost = "127.0.0.1";
-//        String serverHost = "10.147.20.145";
-        int serverPort = 8458;
-
         ClientApp client;
-        Server server;
 
         List<String> argsList = List.of(args);
 
-        if (argsList.contains("--disable-tui-colors"))
-            StaticConfig.disableTuiColors();
+        ClientApp.parseArgs(argsList);
 
-//        if (argsList.contains("--socket")) {
-//            client = ClientApp.getClient(argsList);
-//            server = ClientApp.getSocketServer(serverHost, serverPort + 1, client);
-//            System.out.println("Connected to socket server.");
-//        } else {
-//            server = ClientApp.getRMIServer(serverHost, serverPort);
-//            System.setProperty("java.rmi.server.hostname", server.getClientHostAddress());
-//            client = ClientApp.getClient(argsList);
-//            System.out.println("Connected to RMI server.");
-//        }
-
-        client = ClientApp.getClient(argsList);
-//        client.setServer(server);
+        client = new ClientApp();
         client.initialize(argsList.contains("--gui"));
     }
 
-    /**
-     * Retrieves the RMI server from the registry.
-     * @param host the host of the RMI server
-     * @param port the port of the RMI server
-     * @return the server instance
-     * @throws RemoteException if a remote error occurs
-     * @throws NotBoundException if the server is not bound in the registry
-     */
-    private static Server getRMIServer(String host, int port) throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry(host, port);
-        return (Server) registry.lookup("server.am49.codex_naturalis");
-    }
+    private static void parseArgs(List<String> argsList) {
+        if (argsList.contains("--disable-tui-colors"))
+            ClientConfig.disableColors();
 
-    /**
-     * Creates a socket server connection.
-     * @param host the host of the socket server
-     * @param port the port of the socket server
-     * @param client the client to connect
-     * @return the server instance
-     * @throws IOException if an I/O error occurs
-     */
-    private static Server getSocketServer(String host, int port, Client client) throws IOException {
-        return new ServerSocketHandler(host, port, client);
-    }
+        // If both port and host are set, then user RMI by default
+        if (argsList.contains("--port") && argsList.contains("--host"))
+            ClientConfig.connectionType = ConnectorType.RMI;
 
-    private static ClientApp getClient(List<String> argsList) throws RemoteException {
-        return argsList.contains("--socket") ? new ClientApp(true) : new ClientApp(false);
+        // Buf if socket is set, then use that
+        if (argsList.contains("--socket"))
+            ClientConfig.connectionType = ConnectorType.SOCKET;
+
+        // Otherwise ClientConfig.connectionType is null and user will be requested which one to use in the
+        // server selection scene
+
+        for (int i = 0; i < argsList.size() - 1; i++) {
+            String arg = argsList.get(i);
+            if (arg.equals("--host") || arg.equals("--h")) {
+                String host = argsList.get(i+1);
+                if (true)
+                    ClientConfig.serverHost = host;
+            } else if (arg.equals("--port") || arg.equals("--p")) {
+                int port = Integer.parseInt(argsList.get(i+1));
+                if (true)
+                    ClientConfig.serverPort = port;
+            }
+        }
+
+        System.out.println("conn: " + ClientConfig.connectionType);
+        System.out.println("host: " + ClientConfig.serverHost);
+        System.out.println("port: " + ClientConfig.serverPort);
     }
 
     public static boolean isIpValid(String ip) {
@@ -278,8 +262,4 @@ public class ClientApp implements Client {
         }
         return !(port < 1 || port > 65535);
     }
-
-//    private static ClientApp getClient(String[] args) throws RemoteException {
-//        return List.of(args).contains("--gui") ? new GuiApp(args) : new TuiApp();
-//    }
 }

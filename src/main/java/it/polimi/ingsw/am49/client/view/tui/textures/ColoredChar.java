@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.view.tui.textures;
 
+import it.polimi.ingsw.am49.client.ClientConfig;
 import it.polimi.ingsw.am49.config.StaticConfig;
 
 public class ColoredChar {
@@ -21,7 +22,7 @@ public class ColoredChar {
 
     @Override
     public String toString() {
-        if (StaticConfig.tuiColors)
+        if (ClientConfig.getColors())
             return this.color.toString() + character + AnsiColor.ANSI_RESET;
         else
             return String.valueOf(character);

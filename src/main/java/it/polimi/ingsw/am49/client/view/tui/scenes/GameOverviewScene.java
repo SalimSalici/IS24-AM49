@@ -251,6 +251,7 @@ public class GameOverviewScene extends Scene implements Observer {
         this.game.addObserver(this);
         this.drawAreaRenderer = new TuiDrawAreaRenderer(this.game.getDrawableArea());
         this.focusedPlayerRenderer = new TuiPlayerRenderer(this.game.getPlayerByUsername(ClientApp.getUsername()), false, false, this.game.getCommonObjectives());
+        this.printView();
     }
 
     @Override

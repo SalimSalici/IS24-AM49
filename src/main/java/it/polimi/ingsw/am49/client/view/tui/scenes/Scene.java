@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.view.tui.scenes;
 
+import it.polimi.ingsw.am49.client.ClientConfig;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.config.StaticConfig;
 import it.polimi.ingsw.am49.common.enumerations.Color;
@@ -53,7 +54,7 @@ public abstract class Scene {
      */
     protected void clearScreen() {
         System.out.println("\n" + "-".repeat(150));
-        if (StaticConfig.tuiColors)
+        if (ClientConfig.getColors())
             System.out.println("\033[H\033[2J");
         else System.out.print("\n".repeat(60));
     }
@@ -101,7 +102,7 @@ public abstract class Scene {
     protected void printInfoOrError() {
         if (this.errorMessage.isEmpty())
             System.out.println(this.infoMessage);
-        else if (StaticConfig.tuiColors)
+        else if (ClientConfig.getColors())
             System.out.println(AnsiColor.ANSI_RED + errorMessage + AnsiColor.ANSI_RESET);
         else
             System.out.println(errorMessage);
@@ -151,7 +152,7 @@ public abstract class Scene {
      */
     protected String getColoredUsername(String username, Color color) {
         if (color == null) return username;
-        if (StaticConfig.tuiColors)
+        if (ClientConfig.getColors())
             return AnsiColor.fromColor(color) + username + AnsiColor.ANSI_RESET;
         else
             return username + "[" + color.name() + "]";

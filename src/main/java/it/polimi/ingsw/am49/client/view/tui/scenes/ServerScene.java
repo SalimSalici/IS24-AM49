@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.view.tui.scenes;
 
+import it.polimi.ingsw.am49.client.ClientConfig;
 import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.connectors.ConnectorType;
 import it.polimi.ingsw.am49.client.controller.MenuController;
@@ -13,6 +14,8 @@ public class ServerScene extends Scene {
 
     private ConnectorType connectorType;
     private String host;
+
+    private boolean startup = true;
 
     public ServerScene(SceneManager sceneManager, MenuController menuController) {
         super(sceneManager);
@@ -123,5 +126,18 @@ public class ServerScene extends Scene {
     public void focus() {
         this.host = null;
         this.connectorType = null;
+
+        if (this.startup) {
+            this.startup = false;
+            this.connectorType = ClientConfig.connectionType;
+            this.host = ClientConfig.serverHost;
+            if (this.connectorType != null && this.host != null && ClientConfig.serverPort != null) {
+                System.out.println("Connection attempt with supplied arguments. Please wait...");
+                this.handlePort(String.valueOf(ClientConfig.serverPort));
+                return;
+            }
+        }
+
+        this.printView();
     }
 }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.view.tui.renderers;
 
+import it.polimi.ingsw.am49.client.ClientConfig;
 import it.polimi.ingsw.am49.client.view.tui.textures.BackTexture;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.config.StaticConfig;
@@ -169,7 +170,7 @@ public class TuiPlayerRenderer {
 
     protected String getColoredUsername(String username, Color color) {
         if (color == null) return username;
-        if (StaticConfig.tuiColors)
+        if (ClientConfig.getColors())
             return AnsiColor.fromColor(color) + username + AnsiColor.ANSI_RESET;
         else
             return username + "[" + color.name() + "]";

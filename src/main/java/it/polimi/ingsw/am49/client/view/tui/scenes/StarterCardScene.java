@@ -152,5 +152,6 @@ public class StarterCardScene extends Scene {
     @Override
     public void focus() {
         this.chosen = false;
+        this.printView();
     }
 }

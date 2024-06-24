@@ -167,6 +167,7 @@ public class ChatScene extends Scene implements Observer {
     public void focus() {
         this.game = this.sceneManager.getVirtualGame();
         this.game.addObserver(this);
+        this.printView();
     }
 
     @Override

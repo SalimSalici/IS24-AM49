@@ -50,4 +50,9 @@ public class WelcomeScene extends Scene {
         ClientApp.setUsername(input);
         this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
     }
+
+    @Override
+    public void focus() {
+        this.printView();
+    }
 }

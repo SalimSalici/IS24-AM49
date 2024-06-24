@@ -110,4 +110,9 @@ public class EndGameScene extends Scene {
     private void handleLeave() {
         this.gameController.leave();
     }
+
+    @Override
+    public void focus() {
+        this.printView();
+    }
 }

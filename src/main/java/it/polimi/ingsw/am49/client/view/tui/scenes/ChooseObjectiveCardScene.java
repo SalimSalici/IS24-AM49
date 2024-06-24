@@ -156,6 +156,7 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
         this.chosen = false;
         this.game = this.sceneManager.getVirtualGame();
         this.game.addObserver(this);
+        this.printView();
     }
 
     @Override
