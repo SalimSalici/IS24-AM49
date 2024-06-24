@@ -1,5 +1,6 @@
-package it.polimi.ingsw.am49.client;
+package it.polimi.ingsw.am49.client.connectors;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.server.Server;
 
 import java.rmi.RemoteException;

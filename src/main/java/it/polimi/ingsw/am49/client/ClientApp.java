@@ -1,5 +1,9 @@
 package it.polimi.ingsw.am49.client;
 
+import it.polimi.ingsw.am49.client.connectors.ConnectorType;
+import it.polimi.ingsw.am49.client.connectors.ServerConnector;
+import it.polimi.ingsw.am49.client.connectors.ServerConnectorRMI;
+import it.polimi.ingsw.am49.client.connectors.ServerConnectorSocket;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.controller.MenuController;

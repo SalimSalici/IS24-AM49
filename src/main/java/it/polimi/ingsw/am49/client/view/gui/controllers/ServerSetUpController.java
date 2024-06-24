@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.client.view.gui.controllers;
 
-import it.polimi.ingsw.am49.client.ConnectorType;
-import it.polimi.ingsw.am49.client.view.gui.controllers.GuiController;
+import it.polimi.ingsw.am49.client.connectors.ConnectorType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;

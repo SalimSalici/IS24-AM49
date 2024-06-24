@@ -1,6 +1,6 @@
 package it.polimi.ingsw.am49.client.view.tui.scenes;
 
-import it.polimi.ingsw.am49.client.ConnectorType;
+import it.polimi.ingsw.am49.client.connectors.ConnectorType;
 import it.polimi.ingsw.am49.client.controller.MenuController;
 import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.am49.client.controller;
 
 import it.polimi.ingsw.am49.client.ClientApp;
-import it.polimi.ingsw.am49.client.ConnectorType;
+import it.polimi.ingsw.am49.client.connectors.ConnectorType;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.server.Server;

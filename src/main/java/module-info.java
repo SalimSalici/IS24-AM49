@@ -21,4 +21,5 @@ module it.polimi.ingsw.am49 {
     exports it.polimi.ingsw.am49.client.view.gui to javafx.fxml;
     opens it.polimi.ingsw.am49.client.view.gui to javafx.graphics;
     exports it.polimi.ingsw.am49.common.reconnectioninfo to java.rmi;
+    exports it.polimi.ingsw.am49.client.connectors to java.rmi;
 }
