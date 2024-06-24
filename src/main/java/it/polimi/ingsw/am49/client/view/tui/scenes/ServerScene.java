@@ -111,7 +111,7 @@ public class ServerScene extends Scene {
                     port = 8459;
             } else {
                 port = Integer.parseInt(input);
-                if (ClientApp.isPortValid(input)) throw new NumberFormatException();
+                if (!ClientApp.isPortValid(input)) throw new NumberFormatException();
             }
             this.menuController.connectToServer(this.host, port, this.connectorType);
         } catch (NumberFormatException e) {

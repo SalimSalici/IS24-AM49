@@ -222,10 +222,6 @@ public class ClientApp implements Client {
                     ClientConfig.serverPort = port;
             }
         }
-
-        System.out.println("conn: " + ClientConfig.connectionType);
-        System.out.println("host: " + ClientConfig.serverHost);
-        System.out.println("port: " + ClientConfig.serverPort);
     }
 
     public static boolean isIpValid(String ip) {
