@@ -290,17 +290,59 @@ public class ServerApp implements Server {
     }
 
     public static void main(String[] args) throws IOException, AlreadyBoundException {
-        System.setProperty("java.rmi.server.hostname", "127.0.0.1");
-//        System.setProperty("java.rmi.server.hostname", "10.147.20.145");
 
-        Log.initializeLogger("server.log", true);
+        String host = getHostFromArgs(args);
+        if (host == null) {
+            System.out.println("Missing host address. Terminating.");
+            System.exit(1);
+            return;
+        }
 
-        int port = 8458;
-        Server server = new ServerApp();
-        Registry registry = LocateRegistry.createRegistry(port);
-        registry.bind("server.am49.codex_naturalis", UnicastRemoteObject.exportObject(server, port));
-        Log.getLogger().info("RMI Server started on port " + port);
-        ServerSocketManager serverSocketManager = new ServerSocketManager(server, port + 1);
-        Log.getLogger().info("Socket Server started on port " + (port + 1));
+        int rmiPort;
+        int socketPort;
+        try {
+            rmiPort = getRMIPortFromArgs(args);
+            socketPort = getSocketPortFromArgs(args);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+            return;
+        }
+
+        try {
+            System.setProperty("java.rmi.server.hostname", host);
+            Log.initializeLogger("server.log", true);
+            Server server = new ServerApp();
+            Registry registry = LocateRegistry.createRegistry(rmiPort);
+            registry.bind("server.am49.codex_naturalis", UnicastRemoteObject.exportObject(server, rmiPort));
+            Log.getLogger().info("RMI Server started on port " + rmiPort);
+            new ServerSocketManager(server, socketPort);
+            Log.getLogger().info("Socket Server started on port " + socketPort);
+        } catch (Exception e) {
+            System.out.println("Could not initialize server: " + e.getMessage());
+            System.out.println("Terminating.");
+            System.exit(1);
+        }
+    }
+
+    public static String getHostFromArgs(String[] args) {
+        for (int i = 0; i < args.length - 1; i++)
+            if (args[i].equals("--host") || args[i].equals("--h"))
+                return args[i+1];
+        return null;
+    }
+
+    public static int getRMIPortFromArgs(String[] args) {
+        for (int i = 0; i < args.length - 1; i++)
+            if (args[i].equals("--r"))
+                return Integer.parseInt(args[i+1]);
+        throw new NumberFormatException("Missing RMI port.");
+    }
+
+    public static int getSocketPortFromArgs(String[] args) {
+        for (int i = 0; i < args.length - 1; i++)
+            if (args[i].equals("--s"))
+                return Integer.parseInt(args[i+1]);
+        throw new NumberFormatException("Missing socket port.");
     }
 }
