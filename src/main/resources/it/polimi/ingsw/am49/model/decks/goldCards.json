@@ -153,5 +153,622 @@
       "BUGS": 0
     },
     "flipped": false
+  },
+  {
+    "id": 49,
+    "resource": "MUSHROOMS",
+    "tr": "MANUSCRIPT",
+    "tl": "FORBIDDEN",
+    "br": "EMPTY",
+    "bl": "FORBIDDEN",
+    "points": 3,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 3,
+      "WOLVES": 0,
+      "LEAVES": 0,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 50,
+    "resource": "MUSHROOMS",
+    "tr": "FORBIDDEN",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "EMPTY",
+    "points": 5,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 5,
+      "WOLVES": 0,
+      "LEAVES": 0,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 51,
+    "resource": "LEAVES",
+    "tr": "EMPTY",
+    "tl": "QUILL",
+    "br": "FORBIDDEN",
+    "bl": "EMPTY",
+    "points": 1,
+    "pointsStrategy": {
+      "name": "SymbolsPointsStrategy",
+      "symbol": "QUILL"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 2,
+      "BUGS": 1
+    },
+    "flipped": false
+  },
+  {
+    "id": 52,
+    "resource": "LEAVES",
+    "tr": "MANUSCRIPT",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "FORBIDDEN",
+    "points": 1,
+    "pointsStrategy": {
+      "name": "SymbolsPointsStrategy",
+      "symbol": "MANUSCRIPT"
+    },
+    "price": {
+      "MUSHROOMS": 1,
+      "WOLVES": 0,
+      "LEAVES": 2,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 53,
+    "resource": "LEAVES",
+    "tr": "FORBIDDEN",
+    "tl": "EMPTY",
+    "br": "INKWELL",
+    "bl": "EMPTY",
+    "points": 1,
+    "pointsStrategy": {
+      "name": "SymbolsPointsStrategy",
+      "symbol": "INKWELL"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 1,
+      "LEAVES": 2,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 54,
+    "resource": "LEAVES",
+    "tr": "EMPTY",
+    "tl": "FORBIDDEN",
+    "br": "EMPTY",
+    "bl": "EMPTY",
+    "points": 2,
+    "pointsStrategy": {
+      "name": "CornersPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 3,
+      "BUGS": 1
+    },
+    "flipped": false
+  },
+  {
+    "id": 55,
+    "resource": "LEAVES",
+    "tr": "EMPTY",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "EMPTY",
+    "points": 2,
+    "pointsStrategy": {
+      "name": "CornersPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 1,
+      "LEAVES": 3,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 56,
+    "resource": "LEAVES",
+    "tr": "FORBIDDEN",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "EMPTY",
+    "points": 2,
+    "pointsStrategy": {
+      "name": "CornersPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 1,
+      "WOLVES": 0,
+      "LEAVES": 3,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 57,
+    "resource": "LEAVES",
+    "tr": "FORBIDDEN",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "QUILL",
+    "points": 3,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 3,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 58,
+    "resource": "LEAVES",
+    "tr": "EMPTY",
+    "tl": "MANUSCRIPT",
+    "br": "FORBIDDEN",
+    "bl": "FORBIDDEN",
+    "points": 3,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 3,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 59,
+    "resource": "LEAVES",
+    "tr": "INKWELL",
+    "tl": "FORBIDDEN",
+    "br": "EMPTY",
+    "bl": "FORBIDDEN",
+    "points": 3,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 3,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 60,
+    "resource": "LEAVES",
+    "tr": "EMPTY",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "FORBIDDEN",
+    "points": 5,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 5,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 61,
+    "resource": "WOLVES",
+    "tr": "EMPTY",
+    "tl": "INKWELL",
+    "br": "FORBIDDEN",
+    "bl": "EMPTY",
+    "points": 1,
+    "pointsStrategy": {
+      "name": "SymbolsPointsStrategy",
+      "symbol": "INKWELL"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 2,
+      "LEAVES": 0,
+      "BUGS": 1
+    },
+    "flipped": false
+  },
+  {
+    "id": 62,
+    "resource": "WOLVES",
+    "tr": "EMPTY",
+    "tl": "FORBIDDEN",
+    "br": "MANUSCRIPT",
+    "bl": "EMPTY",
+    "points": 1,
+    "pointsStrategy": {
+      "name": "SymbolsPointsStrategy",
+      "symbol": "MANUSCRIPT"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 2,
+      "LEAVES": 1,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 63,
+    "resource": "WOLVES",
+    "tr": "FORBIDDEN",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "QUILL",
+    "points": 1,
+    "pointsStrategy": {
+      "name": "SymbolsPointsStrategy",
+      "symbol": "QUILL"
+    },
+    "price": {
+      "MUSHROOMS": 1,
+      "WOLVES": 2,
+      "LEAVES": 0,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 64,
+    "resource": "WOLVES",
+    "tr": "EMPTY",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "FORBIDDEN",
+    "points": 2,
+    "pointsStrategy": {
+      "name": "CornersPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 3,
+      "LEAVES": 0,
+      "BUGS": 1
+    },
+    "flipped": false
+  },
+  {
+    "id": 65,
+    "resource": "WOLVES",
+    "tr": "FORBIDDEN",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "EMPTY",
+    "points": 2,
+    "pointsStrategy": {
+      "name": "CornersPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 1,
+      "WOLVES": 3,
+      "LEAVES": 0,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 66,
+    "resource": "WOLVES",
+    "tr": "EMPTY",
+    "tl": "FORBIDDEN",
+    "br": "EMPTY",
+    "bl": "EMPTY",
+    "points": 2,
+    "pointsStrategy": {
+      "name": "CornersPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 3,
+      "LEAVES": 1,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 67,
+    "resource": "WOLVES",
+    "tr": "FORBIDDEN",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "MANUSCRIPT",
+    "points": 3,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 3,
+      "LEAVES": 0,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 68,
+    "resource": "WOLVES",
+    "tr": "INKWELL",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "FORBIDDEN",
+    "points": 3,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 3,
+      "LEAVES": 0,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 69,
+    "resource": "WOLVES",
+    "tr": "EMPTY",
+    "tl": "FORBIDDEN",
+    "br": "QUILL",
+    "bl": "FORBIDDEN",
+    "points": 3,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 3,
+      "LEAVES": 0,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 70,
+    "resource": "WOLVES",
+    "tr": "EMPTY",
+    "tl": "FORBIDDEN",
+    "br": "EMPTY",
+    "bl": "FORBIDDEN",
+    "points": 5,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 5,
+      "LEAVES": 0,
+      "BUGS": 0
+    },
+    "flipped": false
+  },
+  {
+    "id": 71,
+    "resource": "BUGS",
+    "tr": "QUILL",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "FORBIDDEN",
+    "points": 1,
+    "pointsStrategy": {
+      "name": "SymbolsPointsStrategy",
+      "symbol": "QUILL"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 1,
+      "BUGS": 2
+    },
+    "flipped": false
+  },
+  {
+    "id": 72,
+    "resource": "BUGS",
+    "tr": "FORBIDDEN",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "MANUSCRIPT",
+    "points": 1,
+    "pointsStrategy": {
+      "name": "SymbolsPointsStrategy",
+      "symbol": "MANUSCRIPT"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 1,
+      "LEAVES": 0,
+      "BUGS": 2
+    },
+    "flipped": false
+  },
+  {
+    "id": 73,
+    "resource": "BUGS",
+    "tr": "EMPTY",
+    "tl": "FORBIDDEN",
+    "br": "INKWELL",
+    "bl": "EMPTY",
+    "points": 1,
+    "pointsStrategy": {
+      "name": "SymbolsPointsStrategy",
+      "symbol": "INKWELL"
+    },
+    "price": {
+      "MUSHROOMS": 1,
+      "WOLVES": 0,
+      "LEAVES": 0,
+      "BUGS": 2
+    },
+    "flipped": false
+  },
+  {
+    "id": 74,
+    "resource": "BUGS",
+    "tr": "EMPTY",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "FORBIDDEN",
+    "points": 2,
+    "pointsStrategy": {
+      "name": "CornersPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 1,
+      "LEAVES": 0,
+      "BUGS": 3
+    },
+    "flipped": false
+  },
+  {
+    "id": 75,
+    "resource": "BUGS",
+    "tr": "EMPTY",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "EMPTY",
+    "points": 2,
+    "pointsStrategy": {
+      "name": "CornersPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 1,
+      "BUGS": 3
+    },
+    "flipped": false
+  },
+  {
+    "id": 76,
+    "resource": "BUGS",
+    "tr": "FORBIDDEN",
+    "tl": "EMPTY",
+    "br": "EMPTY",
+    "bl": "EMPTY",
+    "points": 2,
+    "pointsStrategy": {
+      "name": "CornersPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 1,
+      "WOLVES": 0,
+      "LEAVES": 0,
+      "BUGS": 3
+    },
+    "flipped": false
+  },
+  {
+    "id": 77,
+    "resource": "BUGS",
+    "tr": "FORBIDDEN",
+    "tl": "INKWELL",
+    "br": "FORBIDDEN",
+    "bl": "EMPTY",
+    "points": 3,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 0,
+      "BUGS": 3
+    },
+    "flipped": false
+  },
+  {
+    "id": 78,
+    "resource": "BUGS",
+    "tr": "MANUSCRIPT",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "FORBIDDEN",
+    "points": 3,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 0,
+      "BUGS": 3
+    },
+    "flipped": false
+  },
+  {
+    "id": 79,
+    "resource": "BUGS",
+    "tr": "FORBIDDEN",
+    "tl": "FORBIDDEN",
+    "br": "EMPTY",
+    "bl": "QUILL",
+    "points": 3,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 0,
+      "BUGS": 3
+    },
+    "flipped": false
+  },
+  {
+    "id": 80,
+    "resource": "BUGS",
+    "tr": "EMPTY",
+    "tl": "EMPTY",
+    "br": "FORBIDDEN",
+    "bl": "FORBIDDEN",
+    "points": 5,
+    "pointsStrategy": {
+      "name": "BasicPointsStrategy"
+    },
+    "price": {
+      "MUSHROOMS": 0,
+      "WOLVES": 0,
+      "LEAVES": 0,
+      "BUGS": 5
+    },
+    "flipped": false
   }
 ]
