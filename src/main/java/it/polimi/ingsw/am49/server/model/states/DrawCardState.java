@@ -68,6 +68,18 @@ public class DrawCardState extends GameState {
     }
 
     /**
+     * Skips this state if there are no cards to draw
+     */
+    @Override
+    public void setUp() {
+        if (this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty() &&
+                this.game.emptyRevealedResources() && this.game.emptyRevealedGolds())
+            this.game.handleSwitchToNextTurn();
+        else
+            super.setUp();
+    }
+
+    /**
      * Handles the drawing process from the chosen {@link DrawPosition}. After drawing the hand is updated and an event
      * is triggered.
      * The method also checks if the game is over, if not it moves to the next turn.
@@ -139,10 +151,12 @@ public class DrawCardState extends GameState {
      */
     private void afkAction(Player player) {
         try {
-            if (!this.resourceGameDeck.isEmpty())
+            if (!this.resourceGameDeck.isEmpty()) {
                 this.execute(new DrawCardAction(player.getUsername(), DrawPosition.RESOURCE_DECK, 0));
-            else if (!this.goldGameDeck.isEmpty()) {
+                return;
+            } else if (!this.goldGameDeck.isEmpty()) {
                 this.execute(new DrawCardAction(player.getUsername(), DrawPosition.GOLD_DECK, 0));
+                return;
             }
 
             for (GoldCard revealedGold : this.revealedGolds)

@@ -198,12 +198,6 @@ public class Game implements Serializable, EventEmitter {
 
         do {
 
-//            // TODO: REMOVE THIS IF STATEMENT (here only for debugging purposes)
-//            if (this.game.getTurn() > 2) {
-//                this.goToNextState(new EndGameState(this.game));
-//                return;
-//            }
-
             if (this.isFinalRound() && this.currentPlayer.equals(this.getLastPlayer())
                     || this.allPlayersDeadlocked()) {
                 this.gameState.goToNextState(new EndGameState(this));
@@ -441,6 +435,24 @@ public class Game implements Serializable, EventEmitter {
      */
     public synchronized GoldCard[] getRevealedGolds() {
         return revealedGolds;
+    }
+
+    /**
+     * @return true if there are no revealed resource cards to draw
+     */
+    public synchronized boolean emptyRevealedResources() {
+        for (ResourceCard res : this.revealedResources)
+            if (res != null) return false;
+        return true;
+    }
+
+    /**
+     * @return true if there are no revealed gold cards to draw
+     */
+    public synchronized boolean emptyRevealedGolds() {
+        for (GoldCard gold : this.revealedGolds)
+            if (gold != null) return false;
+        return true;
     }
 
     /**
