@@ -36,39 +36,38 @@ public class ServerSetUpController extends GuiController {
             port = ClientConfig.serverPort.toString();
             connectorType = ClientConfig.connectionType;
             connectToServer();
-        } else {
-            ip = serveripTextfield.getText();
-            port = serverportTextfield.getText();
-            // Update ip and port when the text fields lose focus
-            serveripTextfield.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                if (!newValue) { // focus lost
-                    String tmp = serveripTextfield.getText();
-                    if (!ip.equals(tmp) && !ClientApp.isIpValid(tmp))
-                        showErrorPopup("IP address " + tmp + " is invalid");
-                    ip = tmp;
-                }
-            });
-
-            serverportTextfield.focusedProperty().addListener((observable, oldValue, newValue) -> {
-                if (!newValue) { // focus lost
-                    String tmp = serverportTextfield.getText();
-                    if (!port.equals(tmp) && !ClientApp.isPortValid(tmp))
-                        showErrorPopup("Port " + tmp + " is invalid");
-                    port = tmp;
-                }
-            });
-
-            rmiTogglebutton.setOnAction(e -> {
-                connectorType = ConnectorType.RMI;
-            });
-
-            socketTogglebutton.setOnAction(e -> {
-                connectorType = ConnectorType.SOCKET;
-            });
-
-            connecttoserverButton.setOnAction(e -> connectToServer());
-
         }
+
+        ip = serveripTextfield.getText();
+        port = serverportTextfield.getText();
+        // Update ip and port when the text fields lose focus
+        serveripTextfield.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // focus lost
+                String tmp = serveripTextfield.getText();
+                if (!ip.equals(tmp) && !ClientApp.isIpValid(tmp))
+                    showErrorPopup("IP address " + tmp + " is invalid");
+                ip = tmp;
+            }
+        });
+
+        serverportTextfield.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) { // focus lost
+                String tmp = serverportTextfield.getText();
+                if (!port.equals(tmp) && !ClientApp.isPortValid(tmp))
+                    showErrorPopup("Port " + tmp + " is invalid");
+                port = tmp;
+            }
+        });
+
+        rmiTogglebutton.setOnAction(e -> {
+            connectorType = ConnectorType.RMI;
+        });
+
+        socketTogglebutton.setOnAction(e -> {
+            connectorType = ConnectorType.SOCKET;
+        });
+
+        connecttoserverButton.setOnAction(e -> connectToServer());
     }
 
     private void connectToServer() {
