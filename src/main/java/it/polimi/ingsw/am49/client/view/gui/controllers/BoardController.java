@@ -19,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -39,7 +40,7 @@ public class BoardController extends GuiController {
     private List<VirtualPlayer> players;
     private Pane innerPane, imagePane, borderPane;
     private final double cardWidth = 135;
-    private final double cardHeight = 82;
+    private final double cardHeight = 90;
     private final double cornerWidth = cardWidth * 0.25;
     private final double cornerHeight = cardHeight * 0.44;
     private final double innerPaneWidth = 877;
@@ -49,7 +50,7 @@ public class BoardController extends GuiController {
     private final Map<VirtualPlayer, List<ImageView>> playerBoards = new HashMap<>();
     private final List<CardPane> myBoard = new ArrayList<>();
     private final Map<VirtualPlayer, Pair<Double, Double>> playerToBoardCoords = new HashMap<>();
-    private Label boardName, boardRound;
+    private Label boardName, boardRound, finalRoundLabel;
     String myUsername;
     private VirtualPlayer currentPlayer;
 
@@ -70,6 +71,8 @@ public class BoardController extends GuiController {
             // sets up the starting coordinates for all the boards
             playerToBoardCoords.put(player, new Pair<>(0.0, 0.0));
         }
+
+        clearFinalRound();
 
         setupPanes();
         setUpBoardInfo();
@@ -154,6 +157,23 @@ public class BoardController extends GuiController {
         boardRound.setText(Integer.toString(0));
 
         containerPane.getChildren().addAll(boardNameInfo, boardName, boardRoundInfo, boardRound);
+    }
+
+    public void setFinalRound(){
+        finalRoundLabel = new Label();
+        finalRoundLabel.setText("FINAL ROUND");
+        finalRoundLabel.setFont(Font.font("DejaVu Sans Mono", FontWeight.EXTRA_BOLD, 25));
+        finalRoundLabel.setTextFill(Color.RED);
+        finalRoundLabel.setLayoutY(10);
+        finalRoundLabel.setLayoutX(-270);
+        containerPane.getChildren().add(finalRoundLabel);
+    }
+
+    public void clearFinalRound(){
+        if (finalRoundLabel != null) {
+            containerPane.getChildren().remove(finalRoundLabel);
+            finalRoundLabel = null;
+        }
     }
 
     /**
@@ -266,6 +286,7 @@ public class BoardController extends GuiController {
         imageView.setId(id);
         imageView.setLayoutX(x);
         imageView.setLayoutY(y);
+        imageView.getStyleClass().add("clickableImage");
 
         return imageView;
     }
@@ -288,6 +309,7 @@ public class BoardController extends GuiController {
         imageView.setId(id);
 
         StackPane cardStackpane = new StackPane();
+        cardStackpane.getStyleClass().add("clickableImage");
         cardStackpane.setLayoutX(x);
         cardStackpane.setLayoutY(y);
         cardStackpane.setPrefSize(cardWidth, cardHeight);

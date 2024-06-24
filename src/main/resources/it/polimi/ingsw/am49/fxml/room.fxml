@@ -50,22 +50,22 @@
                      <children>
                         <ImageView fx:id="redImageview" fitHeight="56.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" styleClass="button">
                            <image>
-                              <Image url="@../images/CODEX_pion_rouge.png" />
+                              <Image url="@../images/elements/totems/red_totem.png" />
                            </image>
                         </ImageView>
                         <ImageView fx:id="greenImageview" fitHeight="119.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" styleClass="button">
                            <image>
-                              <Image url="@../images/CODEX_pion_vert.png" />
+                              <Image url="@../images/elements/totems/green_totem.png" />
                            </image>
                         </ImageView>
                         <ImageView fx:id="blueImageview" fitHeight="150.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" styleClass="button">
                            <image>
-                              <Image url="@../images/CODEX_pion_bleu.png" />
+                              <Image url="@../images/elements/totems/blue_totem.png" />
                            </image>
                         </ImageView>
                         <ImageView fx:id="yellowImageview" fitHeight="150.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" styleClass="button">
                            <image>
-                              <Image url="@../images/CODEX_pion_jaune.png" />
+                              <Image url="@../images/elements/totems/yellow_totem.png" />
                            </image>
                         </ImageView>
                         <Button fx:id="notreadyButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="105.0" text="Not ready">

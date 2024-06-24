@@ -18,7 +18,7 @@
          <top>
             <ImageView fitHeight="96.0" fitWidth="184.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                <image>
-                  <Image url="@../images/elements/codex_naturalis_logo.png" />
+                  <Image url="@../images/backgrounds/codex_naturalis_logo.png" />
                </image>
                <BorderPane.margin>
                   <Insets top="20.0" />

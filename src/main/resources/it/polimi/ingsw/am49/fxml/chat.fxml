@@ -16,7 +16,7 @@
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../images/Network_word_icon.png" />
+                                <Image url="@../images/elements/global_chat_icon.png" />
                             </image>
                         </ImageView>
                     </graphic>
@@ -27,7 +27,7 @@
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../images/CODEX_pion_rouge.png" />
+                                <Image url="@../images/elements/totems/red_totem.png" />
                             </image>
                         </ImageView>
                     </graphic>
@@ -38,7 +38,7 @@
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../images/CODEX_pion_bleu.png" />
+                                <Image url="@../images/elements/totems/blue_totem.png" />
                             </image>
                         </ImageView>
                     </graphic>
@@ -49,7 +49,7 @@
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../images/CODEX_pion_jaune.png" />
+                                <Image url="@../images/elements/totems/yellow_totem.png" />
                             </image>
                         </ImageView>
                     </graphic>
@@ -60,7 +60,7 @@
                     <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../images/CODEX_pion_vert.png" />
+                                <Image url="@../images/elements/totems/green_totem.png" />
                             </image>
                         </ImageView>
                     </graphic>

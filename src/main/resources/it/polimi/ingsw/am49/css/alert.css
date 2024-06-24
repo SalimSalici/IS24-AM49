@@ -1,6 +1,6 @@
 /* alert-styles.css */
 .alert {
-    -fx-background-image:  url("../images/elements/background.jpeg");
+    -fx-background-image:  url("../images/backgrounds/background.jpg");
     -fx-background-size: 2500;
     -fx-border-color: #a33420;
     -fx-border-width: 4;

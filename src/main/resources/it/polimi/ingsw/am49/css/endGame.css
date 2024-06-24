@@ -1,0 +1,64 @@
+/* File: style.css */
+
+/* Style for the main VBox containing the ranking */
+.mainBackground {
+    -fx-background-image: url("../images/backgrounds/codex_frame.jpg");
+    -fx-background-size: stretch;
+}
+
+#rankingVbox {
+    -fx-alignment: center;
+}
+
+.grey-label {
+    -fx-text-fill: grey;
+}
+
+.button {
+    -fx-background-color: A39E20;
+    -fx-border-color: #21130b;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: #21130b;
+    -fx-font-family: "DejaVu Sans Mono";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-effect: dropshadow(one-pass-box, #72cfc5, 50, 0, 0, 0);
+}
+
+.button:pressed {
+    -fx-background-color: #21130b;
+}
+
+/* Style for the labels */
+.label {
+    -fx-font-family: "DejaVu Sans Mono";
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+#titleLabel {
+    -fx-font-size: 55;
+}
+
+#forfeitLabel {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+#labelsHbox {
+    -fx-spacing: 0;
+}
+
+
+.list-cell {
+    -fx-padding: 8;
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #ddd;
+    -fx-border-width: 0 0 1 0;
+    -fx-font-size: 14px;
+}

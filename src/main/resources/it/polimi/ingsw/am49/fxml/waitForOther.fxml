@@ -12,7 +12,7 @@
    <children>
       <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true">
          <image>
-            <Image url="@../images/elements/Cornici-03.jpg" />
+            <Image url="@../images/backgrounds/codex_frame.jpg" />
          </image>
       </ImageView>
       <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">

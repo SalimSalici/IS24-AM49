@@ -36,7 +36,7 @@ public class GuiTextureManager {
             resourceBack.put(resource, loadCardBack(resource, false));
         }
 
-        objectiveBack = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/gold_card_back/087.png")));
+        objectiveBack = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/cards_back/087.png")));
         turnIndicator = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/turnIndicator.png")));
 
         this.textures = new HashMap<>();
@@ -52,11 +52,11 @@ public class GuiTextureManager {
     private GuiTexture loadCard(int id) {
         try {
             String zeros = "0".repeat(3 - String.valueOf(id).length());
-            String subFolder_front = "gold_cards_front_resized";
-            String subFolder_back = "gold_card_back_resized";
+            String subFolder_front = "cards_front";
+            String subFolder_back = "cards_back";
 
-            Image frontImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/Resized/" + subFolder_front + "/" + zeros + id + ".png")));
-            Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/Resized/" + subFolder_back + "/" + zeros + id + ".png")));
+            Image frontImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/" + subFolder_front + "/" + zeros + id + ".png")));
+            Image backImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/" + subFolder_back + "/" + zeros + id + ".png")));
 
             return new GuiTexture(frontImage, backImage);
         } catch (NullPointerException | IllegalArgumentException e) {
@@ -156,14 +156,14 @@ public class GuiTextureManager {
     public Image getImageByTotemColor(Color color){
         String fileColor;
         switch (color){
-            case RED -> fileColor = "rouge";
-            case BLUE -> fileColor = "bleu";
-            case GREEN -> fileColor = "vert";
-            case YELLOW -> fileColor = "jaune";
-            default -> fileColor = "noir";
+            case RED -> fileColor = "red";
+            case BLUE -> fileColor = "blue";
+            case GREEN -> fileColor = "green";
+            case YELLOW -> fileColor = "yellow";
+            default -> fileColor = "disabled";
         }
 
-        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/" + "CODEX_pion_" + fileColor + ".png")));
+        return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/totems/" + fileColor + "_totem.png")));
     }
 
     /**

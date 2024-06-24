@@ -1,5 +1,5 @@
 .mainBackground {
-    -fx-background-image: url("../images/elements/Cornici-03.jpg");
+    -fx-background-image: url("../images/backgrounds/codex_frame.jpg");
     -fx-background-size: stretch;
 }
 
@@ -33,8 +33,4 @@
 
 .button:pressed {
     -fx-background-color: #21130b;
-}
-
-.prova:hover {
-    -fx-effect: dropshadow(one-pass-box, #72cfc5, 50, 0, 0, 0);
 }

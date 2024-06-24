@@ -1,30 +1,6 @@
 .mainBackground {
-    -fx-background-image: url("../images/elements/background_with_outline.jpg");
+    -fx-background-image: url("../images/backgrounds/background_with_outline.jpg");
     -fx-background-size: stretch;
-}
-
-.decksBackground{
-    -fx-background-image: url("../images/elements/decks_background.png");
-    -fx-background-size: stretch;
-}
-
-.handBackground{
-    -fx-background-image: url("../images/elements/hand_background.jpg");
-    -fx-background-size: stretch;
-}
-
-.resourcesBackground{
-    -fx-background-image: url("../images/elements/resource_background.jpg");
-    -fx-background-size: stretch;
-}
-
-.symbolsBackground{
-    -fx-background-image: url("../images/elements/symbol_background.jpg");
-    -fx-background-size: stretch;
-}
-
-.innerPaneBackground{
-    -fx-background-image: url("../images/elements/background.jpeg");
 }
 
 .containerPane{

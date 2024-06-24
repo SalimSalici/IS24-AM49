@@ -41,7 +41,7 @@ public class OverviewController extends GuiController {
     @FXML
     private BoardController playerboardController;
     @FXML
-    private Pane pointsPane, playersContainerPane, objectivesContainerPane, handContainerPane, drawablesContainerPane , generalHandContainerPane, resourceContainerPane, itemsContainerPane;
+    private Pane pointsPane;
     @FXML
     private ChatController chatController;
     @FXML
@@ -63,7 +63,6 @@ public class OverviewController extends GuiController {
     private boolean endGame = false;
     private boolean finalRoundAlreadyShown = false;
     private Button activeViewButton;
-//    private Map<VirtualPlayer, Integer> playerToTotem = new HashMap<>();
 
     /**
      * Initializes the controller and sets up the game state and UI components.
@@ -75,7 +74,7 @@ public class OverviewController extends GuiController {
         this.players = this.game.getPlayers();
         this.drawableArea = this.game.getDrawableArea();
         this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
-        rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_Icon.png")));
+        rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_icon.png")));
         for(VirtualPlayer player : players)
             updateHand(player.getUsername());
 
@@ -108,16 +107,13 @@ public class OverviewController extends GuiController {
 
         this.playerboardController.setBoardRound(this.game.getRound());
 
-        if(endGame)
-            endGameSettings();
-
         // links all the observers
         this.game.addObserver(() -> {
             drawCurrentPlayerIndicator();
             drawPointsTokens();
             if(this.game.getFinalRound() && !finalRoundAlreadyShown){
+                Platform.runLater(() -> this.playerboardController.setFinalRound());
                 Platform.runLater(this::showFinalRoundPopUp);
-                changeBorderColor("#a33420");
             }
             // sets the scene for when the game has ended
             if (this.game.getGameState() == GameStateType.END_GAME) {
@@ -155,6 +151,7 @@ public class OverviewController extends GuiController {
         unselectCard();
         setPersonalObjectives();
         disableButtons();
+        playerboardController.clearFinalRound();
         Platform.runLater(() -> {
             leaveButton.setText("RESULTS");
             leaveButton.setOnMouseClicked(actionEvent -> {
@@ -268,16 +265,14 @@ public class OverviewController extends GuiController {
                 if(this.drawableArea.getRevealedResourcesIds().get(index) != null) {
                     int cardId = this.drawableArea.getRevealedResourcesIds().get(index);
                     ImageView cardImageview = new ImageView();
+
                     cardImageview.getStyleClass().add("clickableImage");
                     cardImageview.setImage(this.guiTextureManager.getCardImage(cardId, false));
-                    cardImageview.setFitWidth(130);
-                    cardImageview.setFitHeight(80);
+                    setCardStyle(cardImageview);
 
                     cardImageview.setOnMouseClicked(mouseEvent -> drawCard(cardId, REVEALED));
 
                     drawableGridpane.add(cardImageview, 0, index + 1);
-                    GridPane.setHalignment(cardImageview, HPos.CENTER);
-                    GridPane.setValignment(cardImageview, VPos.CENTER);
                 }
         });
 
@@ -305,7 +300,7 @@ public class OverviewController extends GuiController {
      */
     private void drawPlayers() {
         playersGridpane.getChildren().clear();
-        Image offlineTotemImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/CODEX_pion_disabled.png")));
+        Image offlineTotemImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/totems/disabled_totem.png")));
         int index = 0;
         for (VirtualPlayer player : this.players) {
             Button viewboardButton = new Button("VIEW");
@@ -369,6 +364,7 @@ public class OverviewController extends GuiController {
      * Draws the current player indicator on the UI.
      */
     private void drawCurrentPlayerIndicator() {
+        Platform.runLater(this::clearTurnIndicator);
         Platform.runLater(() -> {
             int index = 0;
             ImageView indicatorImageView = new ImageView(this.guiTextureManager.getTurnIndicator());
@@ -378,7 +374,6 @@ public class OverviewController extends GuiController {
             GridPane.setHalignment(indicatorImageView, HPos.CENTER);
             GridPane.setValignment(indicatorImageView, VPos.CENTER);
 
-            clearTurnIndicator();
             for (VirtualPlayer player : this.players) {
                 if (this.game.getCurrentPlayer().getUsername().equals(player.getUsername())) { //if is the turn of player
                     playersGridpane.add(indicatorImageView, 1, index);
@@ -540,7 +535,7 @@ public class OverviewController extends GuiController {
      */
     private void drawPointsBoard(){
         // Carica l'immagine
-        Image pointsBoardImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/plateau_score/plateau.png")));
+        Image pointsBoardImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/plateau.png")));
         ImageView pointsBoardImageview = new ImageView(pointsBoardImage);
 
         // Imposta la larghezza e l'altezza dell'ImageView in base al Pane
@@ -697,22 +692,10 @@ public class OverviewController extends GuiController {
      * @param cardImage The card image to set the style for.
      */
     private void setCardStyle(ImageView cardImage){
-        cardImage.setFitWidth(143);
-        cardImage.setFitHeight(88);
+        cardImage.setFitWidth(135);
+        cardImage.setFitHeight(90);
         GridPane.setHalignment(cardImage, HPos.CENTER);
         GridPane.setValignment(cardImage, VPos.CENTER);
     }
 
-    /**
-     * Changes the border color of various UI components.
-     * @param newColor The new border color to set.
-     */
-    private void changeBorderColor(String newColor) {
-        String style = String.format("-fx-border-color: %s; -fx-border-width: 5;", newColor);
-        Platform.runLater(() -> {
-            for (Pane pane : Arrays.asList(playersContainerPane, generalHandContainerPane, drawablesContainerPane, handContainerPane, objectivesContainerPane, resourceContainerPane, itemsContainerPane, playerboardController.getInnerPane(), chatframeAnchorpane)) {
-                pane.setStyle(style);
-            }
-        });
-    }
 }
