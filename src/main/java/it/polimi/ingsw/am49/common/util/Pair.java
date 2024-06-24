@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.common.util;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * A generic container to hold a pair of objects.
@@ -35,5 +36,24 @@ public class Pair<T, E> implements Serializable {
     public Pair(T first, E second) {
         this.first = first;
         this.second = second;
+    }
+
+    /**
+     * @param other the other pair
+     * @return true if the two pairs are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof Pair<?, ?> pair)) return false;
+        return Objects.equals(first, pair.first) && Objects.equals(second, pair.second);
+    }
+
+    /**
+     * @return hash code of the object
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
     }
 }
