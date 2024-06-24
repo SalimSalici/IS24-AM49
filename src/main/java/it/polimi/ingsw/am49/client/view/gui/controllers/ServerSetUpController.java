@@ -1,5 +1,7 @@
 package it.polimi.ingsw.am49.client.view.gui.controllers;
 
+import it.polimi.ingsw.am49.client.ClientApp;
+import it.polimi.ingsw.am49.client.ClientConfig;
 import it.polimi.ingsw.am49.client.connectors.ConnectorType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,77 +27,57 @@ public class ServerSetUpController extends GuiController {
     private String ip, port;
 
     private ConnectorType connectorType = ConnectorType.RMI;
-    private boolean errorDisplayed = true; // Flag to track if error is displayed
 
     @Override
     public void init() {
-        ip = serveripTextfield.getText();
-        port = serverportTextfield.getText();
-        // Update ip and port when the text fields lose focus
-        serveripTextfield.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) { // focus lost
-                if (!ip.equals(serveripTextfield.getText()))
-                    errorDisplayed = false;
-                ip = serveripTextfield.getText();
-                isIpValid();
-            }
-        });
 
-        serverportTextfield.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) { // focus lost
-                if (!port.equals(serverportTextfield.getText()))
-                    errorDisplayed = false;
-                port = serverportTextfield.getText();
-                isPortValid();
-            }
-        });
+        if (ClientConfig.connectionType != null && ClientConfig.serverHost != null && ClientConfig.serverPort != null){
+            ip = ClientConfig.serverHost;
+            port = ClientConfig.serverPort.toString();
+            connectorType = ClientConfig.connectionType;
+            connectToServer();
+        } else {
+            ip = serveripTextfield.getText();
+            port = serverportTextfield.getText();
+            // Update ip and port when the text fields lose focus
+            serveripTextfield.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue) { // focus lost
+                    String tmp = serveripTextfield.getText();
+                    if (!ip.equals(tmp) && !ClientApp.isIpValid(tmp))
+                        showErrorPopup("IP address " + tmp + " is invalid");
+                    ip = tmp;
+                }
+            });
 
-        rmiTogglebutton.setOnAction(e -> {
-            connectorType = ConnectorType.RMI;
-        });
+            serverportTextfield.focusedProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue) { // focus lost
+                    String tmp = serverportTextfield.getText();
+                    if (!port.equals(tmp) && !ClientApp.isPortValid(tmp))
+                        showErrorPopup("Port " + tmp + " is invalid");
+                    port = tmp;
+                }
+            });
 
-        socketTogglebutton.setOnAction(e -> {
-            connectorType = ConnectorType.SOCKET;
-        });
+            rmiTogglebutton.setOnAction(e -> {
+                connectorType = ConnectorType.RMI;
+            });
 
-        connecttoserverButton.setOnAction(e -> connectToServer());
+            socketTogglebutton.setOnAction(e -> {
+                connectorType = ConnectorType.SOCKET;
+            });
+
+            connecttoserverButton.setOnAction(e -> connectToServer());
+
+        }
     }
 
     private void connectToServer() {
-        ip = serveripTextfield.getText();
-        port = serverportTextfield.getText();
-        errorDisplayed = false;
-        if (isIpValid() && isPortValid()) {
+        if (ClientApp.isIpValid(ip) && ClientApp.isPortValid(port)) {
             try {
                 menuController.connectToServer(ip, Integer.parseInt(port), connectorType);
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
-        }
-    }
-
-    private boolean isIpValid() {
-        if (!ip.isEmpty() && ip.contains(".") && ip.length() < 15 && ip.length() > 7) {
-            return true;
-        } else {
-            if (!errorDisplayed) {
-                showErrorPopup("IP address " + ip + " is invalid");
-                errorDisplayed = true; // Set the flag to true
-            }
-        }
-        return false;
-    }
-
-
-    private boolean isPortValid() {
-        if (!port.isEmpty() && port.length() <= 5) {
-            return true;
-        } else {
-                if (!errorDisplayed) {
-                    showErrorPopup("Port address " + port + " is invalid");
-                    errorDisplayed = true;
-                }
-            return false;
         }
     }
 
