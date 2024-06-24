@@ -28,7 +28,7 @@
       <version>21</version>
     </dependency>
 
-  <dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>${junit.version}</version>
@@ -40,6 +40,7 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+
     <!--  Gson: Java to JSON conversion -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -73,55 +74,104 @@
           <target>21</target>
         </configuration>
       </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>3.2.0</version>
-          <configuration>
-            <mainClass>it.polimi.ingsw.am49.client.view.gui.GuiManager</mainClass>
-          </configuration>
-        </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.3.0</version>
-        <executions>
-          <!-- Execution for the Server jar -->
-          <execution>
-            <id>server-package</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>it.polimi.ingsw.am49.server.ServerApp</mainClass>
-                </transformer>
-              </transformers>
-              <finalName>server</finalName>
-            </configuration>
-          </execution>
-
-          <!-- Execution for the Client jar -->
-          <execution>
-            <id>client-package</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>it.polimi.ingsw.am49.client.ClientApp</mainClass>
-                </transformer>
-              </transformers>
-              <finalName>client</finalName>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>server</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.3.0</version>
+            <executions>
+            <!-- Execution for the Server jar -->
+              <execution>
+                <id>server-package</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                      <mainClass>it.polimi.ingsw.am49.server.ServerApp</mainClass>
+                    </transformer>
+                  </transformers>
+                  <finalName>server</finalName>
+                  <filters>
+                    <filter>
+                      <artifact>*:*</artifact>
+                      <includes>
+                        <include>it/polimi/ingsw/am49/server/**</include>
+                        <include>it/polimi/ingsw/am49/common/**</include>
+                        <include>it/polimi/ingsw/am49/config/**</include>
+                        <include>it/polimi/ingsw/am49/model/**</include>
+                        <include>com/google/gson/**</include>
+                      </includes>
+                    </filter>
+                  </filters>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+
+      <id>client</id>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>0.0.8</version>
+            <configuration>
+              <mainClass>${client.main.class}</mainClass>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.3.0</version>
+            <executions>
+              <!-- Execution for the Client jar -->
+              <execution>
+                <id>client-package</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                      <mainClass>it.polimi.ingsw.am49.client.ClientApp</mainClass>
+                    </transformer>
+                  </transformers>
+                  <finalName>client</finalName>
+                  <filters>
+                    <filter>
+                      <artifact>*:*</artifact>
+                      <excludes>
+                        <exclude>it/polimi/ingsw/am49/server/**</exclude>
+                        <exclude>it/polimi/ingsw/am49/model/**</exclude>
+                        <exclude>com/google/gson/**</exclude>
+                      </excludes>
+                    </filter>
+                  </filters>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
 </project>
