@@ -188,7 +188,7 @@ public class ClientApp implements Client {
      */
     public static void main(String[] args) throws IOException, NotBoundException {
         String serverHost = "127.0.0.1";
-//        String serverHost = "10.147.20.206";
+//        String serverHost = "10.147.20.145";
         int serverPort = 8458;
 
         ClientApp client;
@@ -243,6 +243,42 @@ public class ClientApp implements Client {
     private static ClientApp getClient(List<String> argsList) throws RemoteException {
         return argsList.contains("--socket") ? new ClientApp(true) : new ClientApp(false);
     }
+
+    public static boolean isIpValid(String ip) {
+        if (ip == null || ip.isEmpty())
+            return false;
+
+        if (ip.equals("localhost")) return true;
+
+        String[] parts = ip.split("\\.");
+        if (parts.length != 4)
+            return false;
+
+        for (String part : parts) {
+            try {
+                int num = Integer.parseInt(part);
+                if (num < 0 || num > 255)
+                    return false;
+                if (part.length() > 1 && part.startsWith("0"))
+                    return false;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean isPortValid(String input) {
+        int port = 0;
+        try {
+            port = Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return !(port < 1 || port > 65535);
+    }
+
 //    private static ClientApp getClient(String[] args) throws RemoteException {
 //        return List.of(args).contains("--gui") ? new GuiApp(args) : new TuiApp();
 //    }

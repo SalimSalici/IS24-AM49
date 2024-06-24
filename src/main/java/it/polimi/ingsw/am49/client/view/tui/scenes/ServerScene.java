@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.view.tui.scenes;
 
+import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.connectors.ConnectorType;
 import it.polimi.ingsw.am49.client.controller.MenuController;
 import it.polimi.ingsw.am49.client.view.tui.SceneManager;
@@ -89,7 +90,7 @@ public class ServerScene extends Scene {
             this.refreshView();
             return;
         }
-        else if (!this.isValidIPv4(input)) {
+        else if (!ClientApp.isIpValid(input)) {
             this.showError("Invalid ip address. Please try again.");
             return;
         }
@@ -107,7 +108,7 @@ public class ServerScene extends Scene {
                     port = 8459;
             } else {
                 port = Integer.parseInt(input);
-                if (port < 1 || port > 65535) throw new NumberFormatException();
+                if (ClientApp.isPortValid(input)) throw new NumberFormatException();
             }
             this.menuController.connectToServer(this.host, port, this.connectorType);
         } catch (NumberFormatException e) {
@@ -116,31 +117,6 @@ public class ServerScene extends Scene {
             this.host = null;
             this.showError("Connection to server failed. Please try again.");
         }
-    }
-
-    private boolean isValidIPv4(String ip) {
-        if (ip == null || ip.isEmpty())
-            return false;
-
-        if (ip.equals("localhost")) return true;
-
-        String[] parts = ip.split("\\.");
-        if (parts.length != 4)
-            return false;
-
-        for (String part : parts) {
-            try {
-                int num = Integer.parseInt(part);
-                if (num < 0 || num > 255)
-                    return false;
-                if (part.length() > 1 && part.startsWith("0"))
-                    return false;
-            } catch (NumberFormatException e) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     @Override
