@@ -4,7 +4,7 @@ import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.client.connectors.ConnectorType;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
-import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.common.exceptions.CreateRoomException;
 import it.polimi.ingsw.am49.common.exceptions.GameAlreadyStartedException;

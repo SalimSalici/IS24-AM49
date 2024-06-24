@@ -3,12 +3,12 @@ package it.polimi.ingsw.am49.client.sockets;
 import it.polimi.ingsw.am49.common.exceptions.*;
 import it.polimi.ingsw.am49.common.messages.*;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
-import it.polimi.ingsw.am49.client.Client;
+import it.polimi.ingsw.am49.common.Client;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.common.actions.GameAction;
 import it.polimi.ingsw.am49.common.enumerations.Color;
-import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.util.Log;
 
 import java.io.IOException;

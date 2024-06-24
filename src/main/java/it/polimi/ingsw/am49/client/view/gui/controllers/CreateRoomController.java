@@ -1,6 +1,6 @@
 package it.polimi.ingsw.am49.client.view.gui.controllers;
 
-import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.common.exceptions.CreateRoomException;
 import it.polimi.ingsw.am49.client.view.gui.SceneTitle;

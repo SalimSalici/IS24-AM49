@@ -3,7 +3,7 @@ package it.polimi.ingsw.am49.client.controller;
 import it.polimi.ingsw.am49.client.ClientApp;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.common.enumerations.Color;
-import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.exceptions.RoomException;
 
 import java.rmi.RemoteException;

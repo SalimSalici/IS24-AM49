@@ -1,8 +1,9 @@
 package it.polimi.ingsw.am49.server;
 
+import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.exceptions.*;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
-import it.polimi.ingsw.am49.client.Client;
+import it.polimi.ingsw.am49.common.Client;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
 import it.polimi.ingsw.am49.server.controller.room.Room;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.am49.client;
+package it.polimi.ingsw.am49.common;
 
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;

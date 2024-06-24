@@ -8,7 +8,7 @@ import it.polimi.ingsw.am49.client.controller.RoomController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
-import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.common.Server;
 
 import java.util.HashMap;
 import java.util.List;

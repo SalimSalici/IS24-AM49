@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.server;
 
+import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.util.Log;
 
 import java.io.IOException;

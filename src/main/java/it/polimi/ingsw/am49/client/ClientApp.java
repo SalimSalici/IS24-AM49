@@ -4,20 +4,19 @@ import it.polimi.ingsw.am49.client.connectors.ConnectorType;
 import it.polimi.ingsw.am49.client.connectors.ServerConnector;
 import it.polimi.ingsw.am49.client.connectors.ServerConnectorRMI;
 import it.polimi.ingsw.am49.client.connectors.ServerConnectorSocket;
+import it.polimi.ingsw.am49.common.Client;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.controller.MenuController;
 import it.polimi.ingsw.am49.client.controller.RoomController;
-import it.polimi.ingsw.am49.client.sockets.ServerSocketHandler;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
-import it.polimi.ingsw.am49.config.StaticConfig;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
 import it.polimi.ingsw.am49.common.gameupdates.ChoosableObjectivesUpdate;
 import it.polimi.ingsw.am49.common.gameupdates.GameStartedUpdate;
 import it.polimi.ingsw.am49.common.gameupdates.GameUpdateType;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.common.gameupdates.GameUpdate;
-import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.util.Log;
 import it.polimi.ingsw.am49.common.util.IntervalTimer;
 import it.polimi.ingsw.am49.client.view.GuiView;
@@ -27,8 +26,6 @@ import it.polimi.ingsw.am49.client.view.View;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -214,12 +211,20 @@ public class ClientApp implements Client {
             String arg = argsList.get(i);
             if (arg.equals("--host") || arg.equals("--h")) {
                 String host = argsList.get(i+1);
-                if (true)
+                if (isIpValid(host))
                     ClientConfig.serverHost = host;
+                else {
+                    System.out.println("Invalid host. Terminating.");
+                    System.exit(0);
+                }
             } else if (arg.equals("--port") || arg.equals("--p")) {
-                int port = Integer.parseInt(argsList.get(i+1));
-                if (true)
-                    ClientConfig.serverPort = port;
+                String portString = argsList.get(i+1);
+                if (isPortValid(portString))
+                    ClientConfig.serverPort = Integer.parseInt(portString);
+                else {
+                    System.out.println("Invalid port. Terminating.");
+                    System.exit(0);
+                }
             }
         }
     }
@@ -250,7 +255,7 @@ public class ClientApp implements Client {
     }
 
     public static boolean isPortValid(String input) {
-        int port = 0;
+        int port;
         try {
             port = Integer.parseInt(input);
         } catch (NumberFormatException e) {

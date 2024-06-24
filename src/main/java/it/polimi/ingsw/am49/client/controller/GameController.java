@@ -8,7 +8,7 @@ import it.polimi.ingsw.am49.common.actions.DrawCardAction;
 import it.polimi.ingsw.am49.common.actions.PlaceCardAction;
 import it.polimi.ingsw.am49.common.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.common.enumerations.DrawPosition;
-import it.polimi.ingsw.am49.server.Server;
+import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.common.exceptions.NotInGameException;
 import it.polimi.ingsw.am49.common.exceptions.NotYourTurnException;

@@ -1,8 +1,8 @@
-package it.polimi.ingsw.am49.server;
+package it.polimi.ingsw.am49.common;
 
 import it.polimi.ingsw.am49.common.exceptions.*;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
-import it.polimi.ingsw.am49.client.Client;
+import it.polimi.ingsw.am49.common.Client;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.common.actions.GameAction;
