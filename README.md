@@ -1,5 +1,5 @@
 
-<img src="src/main/resources/it/polimi/ingsw/am49/images/elements/Codex_banner.png" alt="Game Logo"/>
+<img src="src/main/resources/it/polimi/ingsw/am49/images/readME_images/codex_banner.png" alt="Game Logo"/>
 
 # Codex Naturalis - Software Version
 

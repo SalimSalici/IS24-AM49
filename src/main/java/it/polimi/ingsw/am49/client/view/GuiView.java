@@ -9,6 +9,7 @@ import it.polimi.ingsw.am49.client.controller.MenuController;
 import it.polimi.ingsw.am49.client.controller.RoomController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
+import javafx.application.Platform;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -42,8 +43,8 @@ public class GuiView extends View {
 
     @Override
     public void showServerSelection(){
-        this.manager.getCurrentController().showErrorPopup("Connection to server lost. Going back to server selection.");
-        this.manager.changeScene(SceneTitle.SERVER_SETUP, true);
+        Platform.runLater(() -> this.manager.getCurrentController().showErrorPopup("Connection to server lost. Going back to server selection."));
+        Platform.runLater(() -> this.manager.changeScene(SceneTitle.SERVER_SETUP, true));
     }
 
 
