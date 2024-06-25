@@ -193,8 +193,8 @@ public class OverviewController extends GuiController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(SceneTitle.CHAT.getFilePath()));
             AnchorPane chatFrame = loader.load();
 
-            chatFrame.setLayoutX(7);
-            chatFrame.setLayoutY(10);
+            chatFrame.setLayoutX(5);
+            chatFrame.setLayoutY(5);
 
             chatframeAnchorpane.getChildren().setAll(chatFrame);
 

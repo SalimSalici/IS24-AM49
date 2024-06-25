@@ -141,6 +141,13 @@ public class ClientApp implements Client {
         return username;
     }
 
+    /**
+     * Sets the server connection with the given host, port, and connection type.
+     * @param host the server host
+     * @param port the server port
+     * @param type the type of connection (RMI or SOCKET)
+     * @throws RemoteException if an RMI error occurs
+     */
     public void setServer(String host, int port, ConnectorType type) throws RemoteException {
         this.serverConnector.disconnect(this);
         if (serverConnector.getConnectorType() != type)
@@ -192,15 +199,19 @@ public class ClientApp implements Client {
         client.initialize(argsList.contains("--gui"));
     }
 
+    /**
+     * Parses command line arguments to configure the client application.
+     * @param argsList the list of command line arguments
+     */
     private static void parseArgs(List<String> argsList) {
         if (argsList.contains("--disable-tui-colors"))
             ClientConfig.disableColors();
 
-        // If both port and host are set, then user RMI by default
+        // If both port and host are set, then use RMI by default
         if (argsList.contains("--port") && argsList.contains("--host"))
             ClientConfig.connectionType = ConnectorType.RMI;
 
-        // Buf if socket is set, then use that
+        // But if socket is set, then use that
         if (argsList.contains("--socket"))
             ClientConfig.connectionType = ConnectorType.SOCKET;
 
@@ -229,6 +240,11 @@ public class ClientApp implements Client {
         }
     }
 
+    /**
+     * Validates the given IP address.
+     * @param ip the IP address to validate
+     * @return true if the IP address is valid, false otherwise
+     */
     public static boolean isIpValid(String ip) {
         if (ip == null || ip.isEmpty())
             return false;
@@ -254,6 +270,11 @@ public class ClientApp implements Client {
         return true;
     }
 
+    /**
+     * Validates the given port number.
+     * @param input the port number to validate
+     * @return true if the port number is valid, false otherwise
+     */
     public static boolean isPortValid(String input) {
         int port;
         try {

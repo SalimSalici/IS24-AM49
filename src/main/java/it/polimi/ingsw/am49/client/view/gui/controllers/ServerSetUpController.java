@@ -10,6 +10,10 @@ import javafx.scene.control.ToggleButton;
 
 import java.rmi.RemoteException;
 
+/**
+ * Controller class for the server setup screen in the GUI. Handles user inputs
+ * for server IP, port, and connection type, and attempts to connect to the server.
+ */
 public class ServerSetUpController extends GuiController {
 
     @FXML
@@ -28,6 +32,11 @@ public class ServerSetUpController extends GuiController {
 
     private ConnectorType connectorType = ConnectorType.RMI;
 
+    /**
+     * Initializes the server setup screen. If server configuration is already provided in
+     * the client configuration, it uses that to connect to the server. It also sets up
+     * listeners for input validation and updates connector type based on user selection.
+     */
     @Override
     public void init() {
 
@@ -70,6 +79,11 @@ public class ServerSetUpController extends GuiController {
         connecttoserverButton.setOnAction(e -> connectToServer());
     }
 
+    /**
+     * Attempts to connect to the server using the provided IP address, port, and connector type.
+     * Validates the IP address and port before attempting the connection. Throws a RuntimeException
+     * if a RemoteException occurs during the connection attempt.
+     */
     private void connectToServer() {
         if (ClientApp.isIpValid(ip) && ClientApp.isPortValid(port)) {
             try {

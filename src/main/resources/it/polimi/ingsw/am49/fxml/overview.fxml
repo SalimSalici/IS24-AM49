@@ -20,7 +20,7 @@
          <children>
             <AnchorPane fx:id="chatframeAnchorpane" layoutX="15.0" layoutY="46.0" prefHeight="350.0" prefWidth="310.0" styleClass="containerPane">
                <children>
-                   <fx:include source="chat.fxml" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="10.0" />
+                   <fx:include source="chat.fxml" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children></AnchorPane>
             <AnchorPane fx:id="drawablesContainerPane" layoutY="392.0" prefHeight="333.0" prefWidth="308.0" styleClass="containerPane" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0">
                <children>
