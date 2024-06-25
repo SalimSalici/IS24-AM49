@@ -11,6 +11,8 @@ import it.polimi.ingsw.am49.common.exceptions.GameAlreadyStartedException;
 import it.polimi.ingsw.am49.common.exceptions.JoinRoomException;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -32,10 +34,14 @@ public class MenuController extends ClientController {
      * Fetches a list of available rooms from the server.
      *
      * @return a list of RoomInfo objects representing the available rooms
-     * @throws RemoteException if a remote communication error occurs
      */
-    public List<RoomInfo> fetchRooms() throws RemoteException {
-        return this.server.fetchRooms(client);
+    public List<RoomInfo> fetchRooms() {
+        try {
+            return this.server.fetchRooms(client);
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+            return new LinkedList<>();
+        }
     }
 
     /**
@@ -46,12 +52,16 @@ public class MenuController extends ClientController {
      * @return the RoomInfo object representing the newly created room
      * @throws AlreadyInRoomException if the client is already in another room
      * @throws CreateRoomException if the room cannot be created
-     * @throws RemoteException if a remote communication error occurs
      */
-    public RoomInfo createRoom(String roomName, int numPlayers) throws AlreadyInRoomException, CreateRoomException, RemoteException {
-        RoomInfo roomInfo = this.server.createRoom(client, roomName, numPlayers, ClientApp.getUsername());
-        this.view.showRoom(roomInfo);
-        return roomInfo;
+    public RoomInfo createRoom(String roomName, int numPlayers) throws AlreadyInRoomException, CreateRoomException {
+        try {
+            RoomInfo roomInfo = this.server.createRoom(client, roomName, numPlayers, ClientApp.getUsername());
+            this.view.showRoom(roomInfo);
+            return roomInfo;
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+            return new RoomInfo("error", 2, new HashMap<>());
+        }
     }
 
     /**
@@ -61,13 +71,17 @@ public class MenuController extends ClientController {
      * @return the RoomInfo object representing the joined room
      * @throws AlreadyInRoomException if the client is already in another room
      * @throws JoinRoomException if there is an error joining the room
-     * @throws RemoteException if a remote communication error occurs
      * @throws GameAlreadyStartedException if the game in the room has already started
      */
-    public RoomInfo joinRoom(String roomName) throws AlreadyInRoomException, JoinRoomException, RemoteException, GameAlreadyStartedException {
-        RoomInfo roomInfo = this.server.joinRoom(client, roomName, ClientApp.getUsername());
-        this.view.showRoom(roomInfo);
-        return roomInfo;
+    public RoomInfo joinRoom(String roomName) throws AlreadyInRoomException, JoinRoomException, GameAlreadyStartedException {
+        try {
+            RoomInfo roomInfo = this.server.joinRoom(client, roomName, ClientApp.getUsername());
+            this.view.showRoom(roomInfo);
+            return roomInfo;
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+            return new RoomInfo("error", 2, new HashMap<>());
+        }
     }
 
     /**
@@ -76,12 +90,15 @@ public class MenuController extends ClientController {
      * @param roomName the name of the room to reconnect to
      * @throws AlreadyInRoomException if the client is already in another room
      * @throws JoinRoomException if there is an error reconnecting to the room
-     * @throws RemoteException if a remote communication error occurs
      */
-    public void reconnect(String roomName) throws AlreadyInRoomException, JoinRoomException, RemoteException {
-        CompleteGameInfo completeGameInfo = this.server.reconnect(client, roomName, ClientApp.getUsername());
-        this.client.loadGame(completeGameInfo);
-        this.view.showGame(this.client.getVirtualGame());
+    public void reconnect(String roomName) throws AlreadyInRoomException, JoinRoomException {
+        try {
+            CompleteGameInfo completeGameInfo = this.server.reconnect(client, roomName, ClientApp.getUsername());
+            this.client.loadGame(completeGameInfo);
+            this.view.showGame(this.client.getVirtualGame());
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+        }
     }
 
     /**

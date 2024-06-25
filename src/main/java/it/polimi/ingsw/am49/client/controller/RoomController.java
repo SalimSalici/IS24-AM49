@@ -7,6 +7,7 @@ import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.exceptions.RoomException;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
 
 /**
  * Controller class for room-related actions on the client side.
@@ -29,10 +30,14 @@ public class RoomController extends ClientController {
      * @param color the color chosen by the client
      * @return RoomInfo containing the updated room state
      * @throws RoomException if there is an issue with room operations
-     * @throws RemoteException if there is an issue with remote method invocation
      */
-    public RoomInfo readyUp(Color color) throws RoomException, RemoteException {
-        return this.server.readyUp(this.client, color);
+    public RoomInfo readyUp(Color color) throws RoomException {
+        try {
+            return this.server.readyUp(this.client, color);
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+            return new RoomInfo("fail", 2, new HashMap<>());
+        }
     }
 
     /**
@@ -40,19 +45,22 @@ public class RoomController extends ClientController {
      * 
      * @return RoomInfo containing the updated room state
      * @throws RoomException if there is an issue with room operations
-     * @throws RemoteException if there is an issue with remote method invocation
      */
-    public RoomInfo readyDown() throws RoomException, RemoteException {
-        return this.server.readyDown(this.client);
+    public RoomInfo readyDown() throws RoomException {
+        try {
+            return this.server.readyDown(this.client);
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+            return new RoomInfo("fail", 2, new HashMap<>());
+        }
     }
 
     /**
      * Requests the server to remove the client from the room and stops the client's heartbeat.
      * 
      * @throws RoomException if there is an issue with leaving the room
-     * @throws RemoteException if there is an issue with remote method invocation
      */
-    public void leaveRoom() throws RoomException, RemoteException {
+    public void leaveRoom() throws RoomException {
         try {
             new Thread(() -> {
                 try {

@@ -38,6 +38,14 @@ public class TuiView extends View {
     }
 
     /**
+     * Initializes the scene manager.
+     */
+    @Override
+    public void showServerSelection() {
+        this.sceneManager.forceServerSelection();
+    }
+
+    /**
      * Displays the welcome scene.
      */
     @Override

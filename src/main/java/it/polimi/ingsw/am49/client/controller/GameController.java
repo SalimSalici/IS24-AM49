@@ -38,10 +38,13 @@ public class GameController extends ClientController {
      * @throws InvalidActionException if the action is invalid
      * @throws NotYourTurnException if it is not the player's turn
      * @throws NotInGameException if the player is not in a game
-     * @throws RemoteException if a remote communication error occurs
      */
-    public void chooseStarterSide(boolean side) throws InvalidActionException, NotYourTurnException, NotInGameException, RemoteException {
-        this.server.executeAction(this.client, new ChooseStarterSideAction(ClientApp.getUsername(), side));
+    public void chooseStarterSide(boolean side) throws InvalidActionException, NotYourTurnException, NotInGameException {
+        try {
+            this.server.executeAction(this.client, new ChooseStarterSideAction(ClientApp.getUsername(), side));
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+        }
     }
 
     /**
@@ -51,10 +54,13 @@ public class GameController extends ClientController {
      * @throws InvalidActionException if the action is invalid
      * @throws NotYourTurnException if it is not the player's turn
      * @throws NotInGameException if the player is not in a game
-     * @throws RemoteException if a remote communication error occurs
      */
-    public void chooseObjective(int objectiveId) throws InvalidActionException, NotYourTurnException, NotInGameException, RemoteException {
-        this.server.executeAction(this.client, new ChooseObjectiveAction(ClientApp.getUsername(), objectiveId));
+    public void chooseObjective(int objectiveId) throws InvalidActionException, NotYourTurnException, NotInGameException {
+        try {
+            this.server.executeAction(this.client, new ChooseObjectiveAction(ClientApp.getUsername(), objectiveId));
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+        }
     }
 
     /**
@@ -68,10 +74,13 @@ public class GameController extends ClientController {
      * @throws InvalidActionException if the action is invalid
      * @throws NotYourTurnException if it is not the player's turn
      * @throws NotInGameException if the player is not in a game
-     * @throws RemoteException if a remote communication error occurs
      */
-    public void placeCard(int cardId, int parentRow, int parentCol, CornerPosition cornerPosition, boolean flipped) throws InvalidActionException, NotYourTurnException, NotInGameException, RemoteException {
-        this.server.executeAction(this.client, new PlaceCardAction(ClientApp.getUsername(), cardId, parentRow, parentCol, cornerPosition, flipped));
+    public void placeCard(int cardId, int parentRow, int parentCol, CornerPosition cornerPosition, boolean flipped) throws InvalidActionException, NotYourTurnException, NotInGameException {
+        try {
+            this.server.executeAction(this.client, new PlaceCardAction(ClientApp.getUsername(), cardId, parentRow, parentCol, cornerPosition, flipped));
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+        }
     }
 
     /**
@@ -82,21 +91,27 @@ public class GameController extends ClientController {
      * @throws InvalidActionException if the action is invalid
      * @throws NotYourTurnException if it is not the player's turn
      * @throws NotInGameException if the player is not in a game
-     * @throws RemoteException if a remote communication error occurs
      */
-    public void drawCard(DrawPosition drawPosition, int idOfRevealedDrawn) throws InvalidActionException, NotYourTurnException, NotInGameException, RemoteException {
-        this.server.executeAction(this.client, new DrawCardAction(ClientApp.getUsername(), drawPosition, idOfRevealedDrawn));
+    public void drawCard(DrawPosition drawPosition, int idOfRevealedDrawn) throws InvalidActionException, NotYourTurnException, NotInGameException {
+        try {
+            this.server.executeAction(this.client, new DrawCardAction(ClientApp.getUsername(), drawPosition, idOfRevealedDrawn));
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+        }
     }
 
     /**
      * Sends a chat message to a specified recipient.
-     * 
+     *
      * @param message the message to send
      * @param recipient the recipient of the message
-     * @throws RemoteException if a remote communication error occurs
      */
-    public void chatMessage(String message, String recipient) throws RemoteException {
-        this.server.chatMessage(this.client, new ChatMSG(message, ClientApp.getUsername(), recipient));
+    public void chatMessage(String message, String recipient) {
+        try {
+            this.server.chatMessage(this.client, new ChatMSG(message, ClientApp.getUsername(), recipient));
+        } catch (RemoteException e) {
+            this.view.showServerSelection();
+        }
     }
 
     /**

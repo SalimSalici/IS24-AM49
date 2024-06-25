@@ -108,13 +108,8 @@ public class MainMenuScene extends Scene {
     }
 
     public void focus() {
-        try {
-            this.rooms = this.menuController.fetchRooms();
-            this.printView();
-        } catch (RemoteException e) {
-            // TODO: handle exception (show scene anyway, with empty list of rooms, and print error message saying an issue occurred)
-            throw new RuntimeException(e);
-        }
+        this.rooms = this.menuController.fetchRooms();
+        this.printView();
     }
 
     private void handleUsername(String[] args) {
@@ -164,9 +159,6 @@ public class MainMenuScene extends Scene {
         } catch (CreateRoomException | AlreadyInRoomException e) {
             this.isLoading = false;
             this.showError("Failed to create room. " + e.getMessage());
-        } catch (RemoteException e) {
-            this.isLoading = false;
-            this.showError("RemoteException. " + e.getMessage());
         }
     }
 
@@ -191,9 +183,6 @@ public class MainMenuScene extends Scene {
         } catch (JoinRoomException | AlreadyInRoomException | GameAlreadyStartedException  e) {
             this.isLoading = false;
             this.showError("Failed to join room. " + e.getMessage());
-        } catch (RemoteException e) {
-            this.isLoading = false;
-            this.showError("RemoteException. " + e.getMessage());
         }
     }
 
@@ -219,19 +208,12 @@ public class MainMenuScene extends Scene {
         } catch (JoinRoomException | AlreadyInRoomException  e) {
             this.isLoading = false;
             this.showError("Failed to join room. " + e.getMessage());
-        } catch (RemoteException e) {
-            this.isLoading = false;
-            this.showError("RemoteException. " + e.getMessage());
         }
     }
 
     public void handleRefreshRooms() {
-        try {
-            this.showInfoMessage("Updating list of available room. Please wait...");
-            this.rooms = this.menuController.fetchRooms();
-            this.refreshView();
-        } catch (RemoteException e) {
-            this.showError("RemoteException. " + e.getMessage());
-        }
+        this.showInfoMessage("Updating list of available room. Please wait...");
+        this.rooms = this.menuController.fetchRooms();
+        this.refreshView();
     }
 }
