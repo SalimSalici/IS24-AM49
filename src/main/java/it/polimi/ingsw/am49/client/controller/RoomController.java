@@ -57,10 +57,8 @@ public class RoomController extends ClientController {
 
     /**
      * Requests the server to remove the client from the room and stops the client's heartbeat.
-     * 
-     * @throws RoomException if there is an issue with leaving the room
      */
-    public void leaveRoom() throws RoomException {
+    public void leaveRoom() {
         try {
             new Thread(() -> {
                 try {

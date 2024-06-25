@@ -135,10 +135,6 @@ public class StarterCardScene extends Scene {
         } catch (InvalidActionException | NotInGameException | NotYourTurnException e) {
             this.chosen = false;
             this.showError(e.getMessage());
-        } catch (RemoteException e) {
-            this.chosen = false;
-            // TODO: Handle exception
-            throw new RuntimeException(e);
         }
     }
 

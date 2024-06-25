@@ -108,12 +108,7 @@ public class RoomController extends GuiController {
     private void leaveRoom(){
         this.manager.executorService.submit(() -> {
             this.totemColor = null;
-            try{
-                this.roomController.leaveRoom();
-            } catch (RoomException e) {
-                Platform.runLater(() -> showErrorPopup(e.getMessage()));
-                throw new RuntimeException(e);
-            }
+            this.roomController.leaveRoom();
         });
     }
 

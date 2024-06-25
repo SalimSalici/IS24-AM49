@@ -129,13 +129,8 @@ public class ChatScene extends Scene implements Observer {
      * @param message The message to send.
      */
     private void handleSendMessage(String message) {
-        try {
-            this.gameController.chatMessage(message, "*");
-            this.refreshView();
-        } catch (RemoteException e) {
-            this.showError("Network error");
-            e.printStackTrace();
-        }
+        this.gameController.chatMessage(message, "*");
+        this.refreshView();
     }
 
     /**
@@ -147,13 +142,9 @@ public class ChatScene extends Scene implements Observer {
             showError("Invalid command. You must specify recipient and message text.");
             return;
         }
-        try {
-            String message = Arrays.stream(parts).skip(2).collect(Collectors.joining(" "));
-            this.gameController.chatMessage(message, parts[1]);
-            this.refreshView();
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        }
+        String message = Arrays.stream(parts).skip(2).collect(Collectors.joining(" "));
+        this.gameController.chatMessage(message, parts[1]);
+        this.refreshView();
     }
 
     /**

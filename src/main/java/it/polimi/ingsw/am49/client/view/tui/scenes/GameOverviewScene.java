@@ -182,8 +182,6 @@ public class GameOverviewScene extends Scene implements Observer {
             this.showError(e.getMessage());
         } catch (NotInGameException e) {
             this.showError("It seems like you are not in a game. Please restart the application.");
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
         }
     }
 

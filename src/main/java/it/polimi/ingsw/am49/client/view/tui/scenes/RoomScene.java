@@ -158,9 +158,8 @@ public class RoomScene extends Scene {
             this.refreshView();
         } catch (IllegalArgumentException e) {
             this.showError("Invalid color. Please try again.");
-        } catch (RemoteException | RoomException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
+        } catch (RoomException e) {
+            this.showError("Error: " + e.getMessage());
         }
     }
 
@@ -178,9 +177,8 @@ public class RoomScene extends Scene {
             this.roomInfo = this.roomController.readyDown();
             this.isReady = false;
             this.refreshView();
-        }catch (RemoteException | RoomException e) {
-            // TODO: Handle exception
-            throw new RuntimeException(e);
+        }catch (RoomException e) {
+            this.showError("Error: " + e.getMessage());
         }
     }
 

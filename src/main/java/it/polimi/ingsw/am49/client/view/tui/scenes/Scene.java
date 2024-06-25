@@ -118,11 +118,7 @@ public abstract class Scene {
         this.unfocus();
         if (leaveRoom) {
             new Thread(() -> {
-                try {
-                    this.sceneManager.getRoomController().leaveRoom();
-                } catch (RoomException | RemoteException e) {
-                    Log.getLogger().severe("Exception while leaving room from RoomScene: " + e.getMessage());
-                }
+                this.sceneManager.getRoomController().leaveRoom();
             }).start();
             try {
                 Thread.sleep(250);

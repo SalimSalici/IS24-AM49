@@ -202,9 +202,6 @@ public class PlayerScene extends Scene implements Observer {
             this.showError("You must wait for your turn.");
         } catch (NotInGameException e) {
             this.showError("Failed to place the card. (NotInGameException)");
-        } catch (RemoteException e) {
-            this.showError("Failed to place the card. Please try again.");
-            e.printStackTrace();
         }
     }
 
