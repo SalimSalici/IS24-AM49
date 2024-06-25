@@ -142,7 +142,7 @@ public class StarterCardScene extends Scene {
      * Handles the action to leave the current scene.
      */
     private void handleLeave() {
-        this.backToMainMenu(true);
+        this.gameController.leave();
     }
 
     @Override

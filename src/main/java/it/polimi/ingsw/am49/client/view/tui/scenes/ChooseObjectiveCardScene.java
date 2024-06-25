@@ -144,7 +144,7 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
      * Handles the action to leave the current scene.
      */
     private void handleLeave() {
-        this.backToMainMenu(true);
+        this.gameController.leave();
     }
 
     @Override

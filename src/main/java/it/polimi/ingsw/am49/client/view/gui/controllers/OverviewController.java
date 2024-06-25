@@ -321,9 +321,7 @@ public class OverviewController extends GuiController {
                     new ImageView(offlineTotemImage);
             Label usernameLabel = new Label(player.getUsername());
 
-            int finalIndex = index;
             player.addObserver(() -> Platform.runLater(() -> {
-                playersGridpane.getChildren().removeIf(node -> {Integer columnIndex = GridPane.getColumnIndex(node); Integer rowIndex = GridPane.getRowIndex(node); return columnIndex != null && rowIndex != null && columnIndex == 1 && rowIndex == finalIndex;});
                 //TODO: replace black totem with gray one
                 totemImageview.setImage(player.getPlaying() ? totemImage : offlineTotemImage);
                 totemImageview.setFitWidth(33);
@@ -371,8 +369,8 @@ public class OverviewController extends GuiController {
      * Draws the current player indicator on the UI.
      */
     private void drawCurrentPlayerIndicator() {
-        clearTurnIndicator();
         Platform.runLater(() -> {
+            clearTurnIndicator();
             int index = 0;
             ImageView indicatorImageView = new ImageView(this.guiTextureManager.getTurnIndicator());
             indicatorImageView.setFitWidth(130);

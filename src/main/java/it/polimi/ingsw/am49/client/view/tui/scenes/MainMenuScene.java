@@ -95,7 +95,7 @@ public class MainMenuScene extends Scene {
                 handleRefreshRooms();
                 break;
             case "7":
-                this.sceneManager.forceServerSelection();
+                this.sceneManager.forceServerSelection(null);
                 break;
             case "exit":
                 System.exit(0);

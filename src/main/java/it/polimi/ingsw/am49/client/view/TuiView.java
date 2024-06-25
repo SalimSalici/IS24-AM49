@@ -41,8 +41,8 @@ public class TuiView extends View {
      * Initializes the scene manager.
      */
     @Override
-    public void showServerSelection() {
-        this.sceneManager.forceServerSelection();
+    public void showServerSelection(String message) {
+        this.sceneManager.forceServerSelection(message);
     }
 
     /**

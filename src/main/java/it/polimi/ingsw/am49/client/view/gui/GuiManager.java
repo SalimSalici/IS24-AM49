@@ -35,6 +35,7 @@ public class GuiManager {
     private final RoomController roomController;
     private final GameController gameController;
     public final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    public boolean executorBusy = false;
   
     // CONSTRUCTOR
 
@@ -51,6 +52,19 @@ public class GuiManager {
 
     // PUBLIC METHODS
 
+    /**
+     * Sumbits a tast to be executed, but execute it only if there are no other tasks currently being executed.
+     *
+     * @param runnable the tast to be executed
+     */
+    public synchronized void execute(Runnable runnable) {
+        if (this.executorBusy) return;
+        this.executorBusy = true;
+        this.executorService.submit(() -> {
+            runnable.run();
+            this.executorBusy = false;
+        });
+    }
 
     /**
      * Starts the GUI manager by setting up the stage and running the initial scene.

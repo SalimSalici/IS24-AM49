@@ -129,7 +129,7 @@ public class ClientApp implements Client {
         this.stopHeartbeat();
         if (this.game != null)
             this.game.clearAllObservers();
-        this.view.showServerSelection();
+        this.view.showServerSelection("Connection to server lost.");
     }
 
     /**

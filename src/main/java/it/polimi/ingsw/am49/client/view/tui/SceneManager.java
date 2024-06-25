@@ -76,7 +76,7 @@ public class SceneManager {
         this.scenes.put(SceneType.CHAT_SCENE, chatScene);
 
 //        this.switchScene(SceneType.WELCOME_SCENE);
-        this.forceServerSelection();
+        this.forceServerSelection(null);
 
         this.loop();
     }
@@ -222,8 +222,10 @@ public class SceneManager {
         this.gameController.setServer(server);
     }
 
-    public synchronized void forceServerSelection() {
+    public synchronized void forceServerSelection(String message) {
         this.switchScene(serverScene);
+        if (message != null)
+            this.serverScene.showError(message);
     }
 
     /**

@@ -186,7 +186,7 @@ public class RoomScene extends Scene {
      * Handles the 'leave' command to exit the room.
      */
     private void handleLeave() {
-        this.backToMainMenu(true);
+        this.roomController.leaveRoom();
     }
 
     /**

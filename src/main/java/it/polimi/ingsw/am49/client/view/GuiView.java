@@ -42,7 +42,7 @@ public class GuiView extends View {
     }
 
     @Override
-    public void showServerSelection(){
+    public void showServerSelection(String message){
         Platform.runLater(() -> this.manager.getCurrentController().showErrorPopup("Connection to server lost. Going back to server selection."));
         Platform.runLater(() -> this.manager.changeScene(SceneTitle.SERVER_SETUP, true));
     }

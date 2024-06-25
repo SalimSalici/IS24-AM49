@@ -2,14 +2,9 @@ package it.polimi.ingsw.am49.client.view.tui.scenes;
 
 import it.polimi.ingsw.am49.client.ClientConfig;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
-import it.polimi.ingsw.am49.config.StaticConfig;
 import it.polimi.ingsw.am49.common.enumerations.Color;
-import it.polimi.ingsw.am49.common.exceptions.RoomException;
-import it.polimi.ingsw.am49.common.util.Log;
 import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 import it.polimi.ingsw.am49.client.view.tui.textures.AnsiColor;
-
-import java.rmi.RemoteException;
 
 /**
  * Abstract class representing a scene in the TUI.
@@ -91,7 +86,7 @@ public abstract class Scene {
      * Displays an error message and refreshes the view.
      * @param message The error message.
      */
-    protected void showError(String message) {
+    public void showError(String message) {
         this.errorMessage = message;
         this.refreshView();
     }
@@ -108,25 +103,6 @@ public abstract class Scene {
             System.out.println(errorMessage);
         this.infoMessage = "";
         this.errorMessage = "";
-    }
-
-    /**
-     * Handles the action to go back to the main menu, optionally leaving the room.
-     * @param leaveRoom Specifies whether to leave the room.
-     */
-    protected void backToMainMenu(boolean leaveRoom) {
-        this.unfocus();
-        if (leaveRoom) {
-            new Thread(() -> {
-                this.sceneManager.getRoomController().leaveRoom();
-            }).start();
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException ignored) {}
-        }
-        // TODO: stop heartbeat when leaving
-//        this.tuiApp.stopHeartbeat();
-        this.sceneManager.switchScene(SceneType.MAIN_MENU_SCENE);
     }
 
     /**

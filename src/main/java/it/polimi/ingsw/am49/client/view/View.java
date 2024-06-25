@@ -39,7 +39,7 @@ public abstract class View {
     /**
      * Displays server selection.
      */
-    public abstract void showServerSelection();
+    public abstract void showServerSelection(String message);
 
     /**
      * Displays the welcome message.

@@ -23,7 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import java.rmi.RemoteException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -398,7 +398,7 @@ public class BoardController extends GuiController {
             double newX = cardpane.stackPane().getLayoutX() + offsetX;
             double newY = cardpane.stackPane().getLayoutY() + offsetY;
 
-            this.manager.executorService.submit( () -> {
+            this.manager.execute(() -> {
                 try {
                     gameController.placeCard(card.id(), cardpane.row(), cardpane.col(), cornerPosition, card.flipped());
                     Pair<Integer, Integer> newCoords = VirtualBoard.getCoords(cornerPosition.toRelativePosition(), cardpane.row(), cardpane.col());
