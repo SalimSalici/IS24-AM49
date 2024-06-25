@@ -30,7 +30,7 @@ public class CreateRoomController extends GuiController {
     public void init() {
 //        this.server = this.app.getServer();
 
-        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 4, 2);
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 4, 2);
         numplayerSpinner.setValueFactory( valueFactory);
 
         createButton.setOnAction(x-> execute());

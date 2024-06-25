@@ -107,7 +107,7 @@ public class SocketHandler {
                 );
             }
 
-            Object result = future.get(10, TimeUnit.SECONDS);
+            Object result = future.get(2000, TimeUnit.MILLISECONDS);
 
             if (result instanceof Throwable) {
                 throw (Exception) result;

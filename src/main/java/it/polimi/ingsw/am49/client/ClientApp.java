@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.client.connectors.ServerConnector;
 import it.polimi.ingsw.am49.client.connectors.ServerConnectorRMI;
 import it.polimi.ingsw.am49.client.connectors.ServerConnectorSocket;
 import it.polimi.ingsw.am49.common.Client;
+import it.polimi.ingsw.am49.common.exceptions.RoomException;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.controller.MenuController;
@@ -114,7 +115,21 @@ public class ClientApp implements Client {
      * Sends a ping to the server to maintain the connection alive.
      */
     private void pingServer() {
-        try { this.server.ping(this); } catch (Exception ignored) {}
+        try {
+            this.server.ping(this);
+        } catch (Exception ignored) {
+            this.backToServerChoice();
+        }
+    }
+
+    public void backToServerChoice() {
+        new Thread(() -> {
+            try { server.leaveRoom(this); } catch (RemoteException | RoomException ignored) {}
+        }).start();
+        this.stopHeartbeat();
+        if (this.game != null)
+            this.game.clearAllObservers();
+        this.view.showServerSelection();
     }
 
     /**

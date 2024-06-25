@@ -43,7 +43,7 @@ public class GameController extends ClientController {
         try {
             this.server.executeAction(this.client, new ChooseStarterSideAction(ClientApp.getUsername(), side));
         } catch (RemoteException e) {
-            this.backToServerSelection();
+            this.client.backToServerChoice();
         }
     }
 
@@ -59,7 +59,7 @@ public class GameController extends ClientController {
         try {
             this.server.executeAction(this.client, new ChooseObjectiveAction(ClientApp.getUsername(), objectiveId));
         } catch (RemoteException e) {
-            this.backToServerSelection();
+            this.client.backToServerChoice();
         }
     }
 
@@ -79,7 +79,7 @@ public class GameController extends ClientController {
         try {
             this.server.executeAction(this.client, new PlaceCardAction(ClientApp.getUsername(), cardId, parentRow, parentCol, cornerPosition, flipped));
         } catch (RemoteException e) {
-            this.backToServerSelection();
+            this.client.backToServerChoice();
         }
     }
 
@@ -96,7 +96,7 @@ public class GameController extends ClientController {
         try {
             this.server.executeAction(this.client, new DrawCardAction(ClientApp.getUsername(), drawPosition, idOfRevealedDrawn));
         } catch (RemoteException e) {
-            this.backToServerSelection();
+            this.client.backToServerChoice();
         }
     }
 
@@ -110,7 +110,7 @@ public class GameController extends ClientController {
         try {
             this.server.chatMessage(this.client, new ChatMSG(message, ClientApp.getUsername(), recipient));
         } catch (RemoteException e) {
-            this.backToServerSelection();
+            this.client.backToServerChoice();
         }
     }
 
@@ -131,14 +131,5 @@ public class GameController extends ClientController {
         } finally {
             this.client.stopHeartbeat();
         }
-    }
-
-    private void backToServerSelection() {
-        new Thread(() -> {
-            try { server.leaveRoom(this.client); } catch (RemoteException | RoomException ignored) {}
-        }).start();
-        if (this.client.getVirtualGame() != null)
-            this.client.getVirtualGame().clearAllObservers();
-        this.view.showServerSelection();
     }
 }

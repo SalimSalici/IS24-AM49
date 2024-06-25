@@ -67,7 +67,7 @@ public class ServerApp implements Server {
         if (roomName.length() < 2 || roomName.length() > 15)
             throw new CreateRoomException("Invalid room name. Room name should be between 2 and 15 charactes.");
 
-        if (numPlayers < 2 || numPlayers > 4)
+        if (numPlayers < 1 || numPlayers > 4)
             throw new CreateRoomException("Invalid number of players. Must be between 2 and 4.");
 
         if (creatorUsername.length() < 2 || creatorUsername.length() > 15)

@@ -35,7 +35,7 @@ public class RoomController extends ClientController {
         try {
             return this.server.readyUp(this.client, color);
         } catch (RemoteException e) {
-            this.view.showServerSelection();
+            this.client.backToServerChoice();
             return new RoomInfo("fail", 2, new HashMap<>());
         }
     }
@@ -50,7 +50,7 @@ public class RoomController extends ClientController {
         try {
             return this.server.readyDown(this.client);
         } catch (RemoteException e) {
-            this.view.showServerSelection();
+            this.client.backToServerChoice();
             return new RoomInfo("fail", 2, new HashMap<>());
         }
     }

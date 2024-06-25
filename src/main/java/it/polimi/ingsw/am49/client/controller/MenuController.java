@@ -39,7 +39,7 @@ public class MenuController extends ClientController {
         try {
             return this.server.fetchRooms(client);
         } catch (RemoteException e) {
-            this.view.showServerSelection();
+            this.client.backToServerChoice();
             return new LinkedList<>();
         }
     }
@@ -59,7 +59,7 @@ public class MenuController extends ClientController {
             this.view.showRoom(roomInfo);
             return roomInfo;
         } catch (RemoteException e) {
-            this.view.showServerSelection();
+            this.client.backToServerChoice();
             return new RoomInfo("error", 2, new HashMap<>());
         }
     }
@@ -79,7 +79,7 @@ public class MenuController extends ClientController {
             this.view.showRoom(roomInfo);
             return roomInfo;
         } catch (RemoteException e) {
-            this.view.showServerSelection();
+            this.client.backToServerChoice();
             return new RoomInfo("error", 2, new HashMap<>());
         }
     }
@@ -97,7 +97,7 @@ public class MenuController extends ClientController {
             this.client.loadGame(completeGameInfo);
             this.view.showGame(this.client.getVirtualGame());
         } catch (RemoteException e) {
-            this.view.showServerSelection();
+            this.client.backToServerChoice();
         }
     }
 
