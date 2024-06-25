@@ -424,7 +424,8 @@ public class Room {
     public void close() {
         this.stopPauseTimer();
         for (PlayerInfo pInfo : this.usernamesToPlayers.values())
-            pInfo.getVirtualView().destroy();
+            if (pInfo.getVirtualView() != null)
+                pInfo.getVirtualView().destroy();
     }
 
     /**
