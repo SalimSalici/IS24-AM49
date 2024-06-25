@@ -72,8 +72,7 @@ public class DrawCardState extends GameState {
      */
     @Override
     public void setUp() {
-        if (this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty() &&
-                this.game.emptyRevealedResources() && this.game.emptyRevealedGolds())
+        if (this.game.drawAreaEmpty())
             this.game.handleSwitchToNextTurn();
         else
             super.setUp();

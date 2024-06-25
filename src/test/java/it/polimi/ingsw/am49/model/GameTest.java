@@ -4,10 +4,13 @@ import it.polimi.ingsw.am49.server.controller.VirtualView;
 import it.polimi.ingsw.am49.common.actions.ChooseObjectiveAction;
 import it.polimi.ingsw.am49.common.actions.ChooseStarterSideAction;
 import it.polimi.ingsw.am49.server.model.Game;
+import it.polimi.ingsw.am49.server.model.cards.placeables.GoldCard;
+import it.polimi.ingsw.am49.server.model.cards.placeables.ResourceCard;
 import it.polimi.ingsw.am49.server.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.common.enumerations.Color;
 import it.polimi.ingsw.am49.common.enumerations.GameEventType;
 import it.polimi.ingsw.am49.common.enumerations.GameStateType;
+import it.polimi.ingsw.am49.server.model.decks.GameDeck;
 import it.polimi.ingsw.am49.server.model.events.ChoosableObjectivesEvent;
 import it.polimi.ingsw.am49.server.model.players.Player;
 import it.polimi.ingsw.am49.common.exceptions.InvalidActionException;
@@ -17,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -158,6 +163,30 @@ class GameTest {
 
         game.forfeitWinner(firstPlayer.getUsername());
         assertEquals(GameStateType.END_GAME, game.getGameState().getType());
+    }
+
+    @Test
+    void testEmptyDrawArea() {
+        Game game = new Game(3);
+
+        GameDeck<ResourceCard> resDeck = game.getResourceGameDeck();
+        GameDeck<GoldCard> goldDeck = game.getGoldGameDeck();
+
+        while (!resDeck.isEmpty()) resDeck.draw();
+        assertFalse(game.drawAreaEmpty());
+
+        while (!goldDeck.isEmpty()) goldDeck.draw();
+        assertFalse(game.drawAreaEmpty());
+
+        ResourceCard[] revealedRes = game.getRevealedResources();
+        GoldCard[] revealedGolds = game.getRevealedGolds();
+
+        Arrays.fill(revealedRes, null);
+        assertFalse(game.drawAreaEmpty());
+
+        Arrays.fill(revealedGolds, null);
+
+        assertTrue(game.drawAreaEmpty());
     }
 
     @Test

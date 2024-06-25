@@ -456,6 +456,15 @@ public class Game implements Serializable, EventEmitter {
     }
 
     /**
+     * @return true if there are cards availabe to draw (both resource and gold decks are empty,
+     * and no remaining revealed cards)
+     */
+    public synchronized boolean drawAreaEmpty() {
+        return this.emptyRevealedResources() && this.emptyRevealedGolds()
+                && this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty();
+    }
+
+    /**
      * @return true if the game is paused, false otherwise
      */
     public synchronized boolean isPaused() {
