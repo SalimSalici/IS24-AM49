@@ -60,8 +60,8 @@ public class OverviewController extends GuiController {
     private MyCard selectedCard;
     private Image rotationImage;
     private final List<Button> rotationButtonList = new ArrayList<>();
-    private boolean endGame = false;
-    private boolean finalRoundAlreadyShown = false;
+    private boolean gameEnded;
+    private boolean finalRoundAlreadyShown;
     private Button activeViewButton;
 
     /**
@@ -74,11 +74,12 @@ public class OverviewController extends GuiController {
         this.players = this.game.getPlayers();
         this.drawableArea = this.game.getDrawableArea();
         this.focusedPlayer = this.game.getPlayerByUsername(myUsername);
+        this.finalRoundAlreadyShown = false;
+        this.gameEnded = false;
         rotationImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/it/polimi/ingsw/am49/images/elements/rotate_icon.png")));
         for(VirtualPlayer player : players)
             updateHand(player.getUsername());
 
-        this.endGame = manager.getVirtualGame().getEndGame();
 
         // draws every element of the scene
         roomnameLabel.setText(this.manager.getRoomInfo().roomName());
@@ -107,6 +108,12 @@ public class OverviewController extends GuiController {
 
         this.playerboardController.setBoardRound(this.game.getRound());
 
+        // manages what happens if a player joins when the game is alrady in the final round state
+        if(this.manager.getVirtualGame().getFinalRound()){
+            finalRoundAlreadyShown = true;
+            this.playerboardController.setFinalRound();
+        }
+
         // links all the observers
         this.game.addObserver(() -> {
             drawCurrentPlayerIndicator();
@@ -117,9 +124,9 @@ public class OverviewController extends GuiController {
             }
             // sets the scene for when the game has ended
             if (this.game.getGameState() == GameStateType.END_GAME) {
-                endGame = true;
-                this.endGameSettings();
+                this.gameEnded = true;
                 this.manager.changeScene(SceneTitle.END_GAME, true);
+                this.endGameSettings();
             }
             this.playerboardController.setBoardRound(this.game.getRound());
         });
@@ -476,7 +483,7 @@ public class OverviewController extends GuiController {
 
                     // sets the rotation action
                     final int i = index;
-                    if (!endGame){
+                    if (!gameEnded){
                         this.rotationButtonList.get(i).setVisible(true);
                         this.rotationButtonList.get(i).setOnAction(event -> {
                             if (card.equals(this.selectedCard))
@@ -609,7 +616,7 @@ public class OverviewController extends GuiController {
             this.playerboardController.switchPlayerBoard(focusedPlayer);
             this.drawHand(focusedPlayer.getUsername());
             this.drawSymbols();
-            if(endGame){
+            if(gameEnded){
                 this.drawPersonalObjective();
             }
         }
@@ -678,7 +685,7 @@ public class OverviewController extends GuiController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Final Round");
         alert.setHeaderText(null);
-        alert.setContentText("After the end of the current round there will be one final round!");
+        alert.setContentText("The final round just started!");
 
         String css = this.getClass().getResource("/it/polimi/ingsw/am49/css/alert.css").toExternalForm();
         alert.getDialogPane().getStylesheets().add(css);
