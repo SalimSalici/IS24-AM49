@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.sockets;
 
+import it.polimi.ingsw.am49.client.ClientConfig;
 import it.polimi.ingsw.am49.common.messages.ReturnMessage;
 import it.polimi.ingsw.am49.common.messages.SocketMessage;
 import it.polimi.ingsw.am49.common.util.Log;
@@ -107,7 +108,7 @@ public class SocketHandler {
                 );
             }
 
-            Object result = future.get(2000, TimeUnit.MILLISECONDS);
+            Object result = future.get(ClientConfig.responseTimeout, TimeUnit.MILLISECONDS);
 
             if (result instanceof Throwable) {
                 throw (Exception) result;

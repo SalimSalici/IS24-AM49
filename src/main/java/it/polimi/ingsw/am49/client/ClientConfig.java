@@ -9,6 +9,8 @@ public class ClientConfig {
     public static Integer serverPort = null;
     private static boolean colors = true;
 
+    public static final int responseTimeout = 5000;
+
     /**
      * Disables the color display in the text-based user interface.
      */

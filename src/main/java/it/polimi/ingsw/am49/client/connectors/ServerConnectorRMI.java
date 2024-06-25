@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.client.connectors;
 
 import it.polimi.ingsw.am49.client.ClientApp;
+import it.polimi.ingsw.am49.client.ClientConfig;
 import it.polimi.ingsw.am49.common.Server;
 
 import java.io.IOException;
@@ -56,9 +57,9 @@ public class ServerConnectorRMI implements ServerConnector {
         RMISocketFactory.setSocketFactory(new RMISocketFactory() {
             public Socket createSocket(String host, int port ) throws IOException {
                 Socket socket = new Socket();
-                socket.setSoTimeout( 2000 );
+                socket.setSoTimeout(ClientConfig.responseTimeout);
                 socket.setSoLinger(false, 0);
-                socket.connect(new InetSocketAddress(host, port), 2000);
+                socket.connect(new InetSocketAddress(host, port), ClientConfig.responseTimeout);
                 return socket;
             }
 
