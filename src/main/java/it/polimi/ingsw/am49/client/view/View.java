@@ -37,6 +37,11 @@ public abstract class View {
     public abstract void initialize();
 
     /**
+     * Displays server selection.
+     */
+    public abstract void showServerSelection();
+
+    /**
      * Displays the welcome message.
      */
     public abstract void showWelcome();
