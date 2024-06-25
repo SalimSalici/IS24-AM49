@@ -74,11 +74,8 @@ public class MainMenuController extends GuiController {
     private void refreshRooms() {
         this.manager.executorService.submit(() -> {
             roomsListview.getItems().clear();
-            try {
-                this.rooms = this.menuController.fetchRooms();
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
+
+            this.rooms = this.menuController.fetchRooms();
 
             List<RoomInfoItem> roomItems = rooms.stream()
                     .map(room -> new RoomInfoItem(
@@ -110,7 +107,7 @@ public class MainMenuController extends GuiController {
                     Platform.runLater(() -> showErrorPopup(e.getMessage()));
                     System.out.println(e.getMessage());
                     return;
-            } catch (AlreadyInRoomException | RemoteException e) {
+            } catch (AlreadyInRoomException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 throw new RuntimeException(e);
             } catch (GameAlreadyStartedException e) {
@@ -119,7 +116,7 @@ public class MainMenuController extends GuiController {
                     this.menuController.reconnect(selectedRoom.getRoomName());
 //                    this.app.loadGame(completeGameInfo);
 //                    this.manager.changeScene(SceneTitle.OVERVIEW, true);
-                } catch (AlreadyInRoomException | JoinRoomException | RemoteException ex) {
+                } catch (AlreadyInRoomException | JoinRoomException ex) {
                     Platform.runLater(() -> showErrorPopup(e.getMessage()));
                     throw new RuntimeException(e);
                 }

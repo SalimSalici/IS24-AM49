@@ -408,7 +408,7 @@ public class BoardController extends GuiController {
                         this.overviewController.unselectCard();
                     });
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException | NotInGameException |
-                         NotYourTurnException | RemoteException | InvalidActionException e) {
+                         NotYourTurnException | InvalidActionException e) {
                     Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 }
             });

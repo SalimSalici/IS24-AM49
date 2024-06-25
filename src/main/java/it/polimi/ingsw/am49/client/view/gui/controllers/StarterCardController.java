@@ -71,7 +71,7 @@ public class StarterCardController extends GuiController{
             try {
                 this.manager.changeScene(SceneTitle.WAITING, true);
                 this.gameController.chooseStarterSide(flipped);
-            } catch (InvalidActionException | NotYourTurnException | NotInGameException | RemoteException e) {
+            } catch (InvalidActionException | NotYourTurnException | NotInGameException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 Platform.runLater(() -> {
                     this.manager.changeScene(SceneTitle.MAIN_MENU, true);

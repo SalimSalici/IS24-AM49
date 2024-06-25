@@ -110,7 +110,7 @@ public class RoomController extends GuiController {
             this.totemColor = null;
             try{
                 this.roomController.leaveRoom();
-            } catch (RemoteException | RoomException e) {
+            } catch (RoomException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
                 throw new RuntimeException(e);
             }
@@ -143,9 +143,6 @@ public class RoomController extends GuiController {
 
             } catch (IllegalArgumentException e) {
                 this.totemColor = null;
-            } catch (RemoteException e) {
-                Platform.runLater(() -> showErrorPopup(e.getMessage()));
-                throw new RuntimeException(e);
             } catch (RoomException e){
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
             }

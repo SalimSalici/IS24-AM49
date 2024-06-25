@@ -371,7 +371,7 @@ public class OverviewController extends GuiController {
      * Draws the current player indicator on the UI.
      */
     private void drawCurrentPlayerIndicator() {
-        Platform.runLater(this::clearTurnIndicator);
+        clearTurnIndicator();
         Platform.runLater(() -> {
             int index = 0;
             ImageView indicatorImageView = new ImageView(this.guiTextureManager.getTurnIndicator());
@@ -589,8 +589,6 @@ public class OverviewController extends GuiController {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
             } catch (NotInGameException e) {
                 Platform.runLater(() -> showErrorPopup("It seems like you are not in a game. Please restart the application."));
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
             }
         });
     }

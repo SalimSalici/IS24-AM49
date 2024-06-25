@@ -53,7 +53,7 @@ public class CreateRoomController extends GuiController {
 //                RoomInfo roomInfo = this.menuController.createRoom(nameTextfield.getText(), numplayerSpinner.getValue());
 //                this.manager.setRoomInfo(roomInfo);
 //                this.manager.changeScene(SceneTitle.ROOM, true);
-            } catch (CreateRoomException | RemoteException | AlreadyInRoomException e){
+            } catch (CreateRoomException | AlreadyInRoomException e){
                 System.out.println(e.getMessage());
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
             }

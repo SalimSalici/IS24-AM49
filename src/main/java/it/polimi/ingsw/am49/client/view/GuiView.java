@@ -40,6 +40,13 @@ public class GuiView extends View {
         GuiEntry.main(new String[0]);
     }
 
+    @Override
+    public void showServerSelection(){
+        this.manager.getCurrentController().showErrorPopup("Connection to server lost. Going back to server selection.");
+        this.manager.changeScene(SceneTitle.SERVER_SETUP, true);
+    }
+
+
     /**
      * Displays a welcome message or screen.
      */
@@ -115,6 +122,7 @@ public class GuiView extends View {
     public void roomUpdate(RoomInfo roomInfo, String message) {
         this.manager.getCurrentController().roomUpdate(roomInfo, message);
     }
+
 
     /**
      * Sets the virtual game state.
