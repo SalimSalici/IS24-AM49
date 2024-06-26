@@ -74,12 +74,12 @@ public class ClientApp implements Client {
     }
 
     @Override
-    public void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException {
+    public synchronized void roomUpdate(RoomInfo roomInfo, String message) throws RemoteException {
         this.view.roomUpdate(roomInfo, message);
     }
 
     @Override
-    public void receiveGameUpdate(GameUpdate gameUpdate) {
+    public synchronized void receiveGameUpdate(GameUpdate gameUpdate) {
         if (gameUpdate == null) {
             Log.getLogger().severe("Received a null GameUpdate from the server.");
             return;
@@ -106,7 +106,7 @@ public class ClientApp implements Client {
     }
 
     @Override
-    public void receiveChatMessage(ChatMSG msg){
+    public synchronized void receiveChatMessage(ChatMSG msg){
         game.getPlayerByUsername(username).setMessage(msg.text(), msg.sender(), msg.recipient(), LocalTime.now().truncatedTo(ChronoUnit.MINUTES));
         this.view.receiveChatMessage(msg);
     }

@@ -9,13 +9,14 @@ import it.polimi.ingsw.am49.common.exceptions.InvalidActionException;
 import it.polimi.ingsw.am49.common.exceptions.NotYourTurnException;
 import it.polimi.ingsw.am49.common.util.Log;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Abstract class for implementing the State pattern in the handling of the main phases of the game.
  */
-public abstract class GameState {
+public abstract class GameState implements Serializable {
 
     /**
      * This attribute indicates witch of the possible {@link GameStateType} is rapresented by the class that will

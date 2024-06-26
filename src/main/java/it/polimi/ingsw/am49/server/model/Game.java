@@ -21,6 +21,9 @@ import it.polimi.ingsw.am49.common.util.Log;
 import it.polimi.ingsw.am49.server.model.cards.placeables.GoldCard;
 import it.polimi.ingsw.am49.server.model.cards.placeables.ResourceCard;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
@@ -74,7 +77,7 @@ public class Game implements Serializable, EventEmitter {
     /**
      * The event manager for the game.
      */
-    private final EventManager eventManager;
+    private transient EventManager eventManager;
     
     /**
      * The common objectives for the game.
@@ -483,5 +486,11 @@ public class Game implements Serializable, EventEmitter {
         for (Player p : this.players)
             if (!p.getBoard().isDeadlocked()) return false;
         return true;
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.eventManager = new EventManager();
     }
 }

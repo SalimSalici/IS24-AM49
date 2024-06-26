@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompletePlayerInfo;
+import it.polimi.ingsw.am49.server.GameRestorer;
 import it.polimi.ingsw.am49.server.controller.VirtualView;
 import it.polimi.ingsw.am49.common.gameupdates.DrawAreaUpdate;
 import it.polimi.ingsw.am49.common.gameupdates.GameStateChangedUpdate;
@@ -32,21 +33,21 @@ public class Room {
     /**
      * Name of the room. This should be unique within the server.
      */
-    private final String roomName;
+    protected final String roomName;
 
-    private final ServerApp server;
+    protected final ServerApp server;
 
     /**
      * Number of players of the game being played in this room. This number is not equal to the number of
      * connected clients (some clients may have crashed).
      */
-    private final int maxPlayers;
-    private int currentPlayers;
-    private final HashMap<String, PlayerInfo> usernamesToPlayers;
-    private Game game;
-    private boolean gameStarted;
-    private Timer pauseTimer;
-    private final int forwaitTimeoutInSecond = 60;
+    protected final int maxPlayers;
+    protected int currentPlayers;
+    protected final HashMap<String, PlayerInfo> usernamesToPlayers;
+    protected Game game;
+    protected boolean gameStarted;
+    protected Timer pauseTimer;
+    protected final int forwaitTimeoutInSecond = 60;
 
     /**
      * Constructor for the Room class.
@@ -64,6 +65,15 @@ public class Room {
         this.usernamesToPlayers.put(creatorUsername, new PlayerInfo(creatorUsername, creatorClient));
         this.server = server;
 
+        this.currentPlayers = 1;
+        this.gameStarted = false;
+    }
+
+    protected Room(String roomName,  ServerApp server, int maxPlayers) {
+        this.roomName = roomName;
+        this.server = server;
+        this.maxPlayers = maxPlayers;
+        this.usernamesToPlayers = new HashMap<>();
         this.currentPlayers = 1;
         this.gameStarted = false;
     }
@@ -154,7 +164,7 @@ public class Room {
      *
      * @param playerInfo the player information of the player to be removed
      */
-    private synchronized void removePlayerFromGame(PlayerInfo playerInfo) {
+    protected synchronized void removePlayerFromGame(PlayerInfo playerInfo) {
         playerInfo.getVirtualView().destroy();
 
         if (this.currentPlayers >= 1)
@@ -170,7 +180,7 @@ public class Room {
     /**
      * Starts the pause timer for the game.
      */
-    private synchronized void startPauseTimer() {
+    protected synchronized void startPauseTimer() {
         Room self = this;
         this.pauseTimer = new Timer();
         this.pauseTimer.schedule(new TimerTask() {
@@ -181,7 +191,7 @@ public class Room {
         }, 1000 * forwaitTimeoutInSecond);
     }
 
-    private synchronized void declareforfeitWinnerAndDestroy() {
+    protected synchronized void declareforfeitWinnerAndDestroy() {
         this.game.forfeitWinner(usernamesToPlayers.keySet().iterator().next());
         this.server.destroyRoom(this);
     }
@@ -189,7 +199,7 @@ public class Room {
     /**
      * Stops the pause timer for the game.
      */
-    private synchronized void stopPauseTimer() {
+    protected synchronized void stopPauseTimer() {
         if (this.pauseTimer != null) {
             this.pauseTimer.cancel();
             this.pauseTimer = null;
@@ -258,7 +268,7 @@ public class Room {
      *
      * @return true if all players are ready, false otherwise
      */
-    private synchronized boolean allPlayersReady() {
+    protected synchronized boolean allPlayersReady() {
         for (PlayerInfo pInfo : this.usernamesToPlayers.values())
             if (!pInfo.isReadyToPlay()) return false;
         return true;
@@ -267,7 +277,7 @@ public class Room {
     /**
      * Starts the game.
      */
-    private synchronized void startGame() {
+    protected synchronized void startGame() {
         this.game = new Game(maxPlayers);
         this.gameStarted = true;
 
@@ -295,6 +305,9 @@ public class Room {
         if (!this.usernameCorrespondsToClient(action.getUsername(), client))
             throw new InvalidActionException("Client and username don't correspond. Aborting.");
         this.game.executeAction(action);
+
+        if (this.game.getGameState().getType() == GameStateType.PLACE_CARD || this.game.getGameState().getType() == GameStateType.DRAW_CARD)
+            GameRestorer.saveGame(this.roomName, this.game);
     }
 
     /**
@@ -306,7 +319,7 @@ public class Room {
      * @throws JoinRoomException if the client cannot join the room
      * @throws GameAlreadyStartedException if the game has already started
      */
-    private synchronized void checkIfNewPlayerCanJoin(ClientHandler playerClient, String playerUsername) throws JoinRoomException, GameAlreadyStartedException {
+    protected synchronized void checkIfNewPlayerCanJoin(ClientHandler playerClient, String playerUsername) throws JoinRoomException, GameAlreadyStartedException {
         if (!this.isUsernameAvailable(playerUsername))
             throw new JoinRoomException("Username already taken. Please choose another username.");
 
@@ -326,7 +339,7 @@ public class Room {
      * @param username the username of the player
      * @return the client handler of the player
      */
-    private synchronized ClientHandler getClientByUsername(String username) {
+    protected synchronized ClientHandler getClientByUsername(String username) {
         PlayerInfo pInfo = this.usernamesToPlayers.get(username);
         if (pInfo != null) return pInfo.getClient();
         return null;
@@ -338,7 +351,7 @@ public class Room {
      * @param client the client handler of the player
      * @return the username of the player
      */
-    private synchronized String getUsernameByClient(ClientHandler client) {
+    protected synchronized String getUsernameByClient(ClientHandler client) {
         for (Map.Entry<String, PlayerInfo> entry : this.usernamesToPlayers.entrySet()) {
             if (entry.getValue().getClient().equals(client)) return entry.getKey();
         }
@@ -351,7 +364,7 @@ public class Room {
      * @param username the username to check
      * @return true if the username is available, false otherwise
      */
-    private synchronized boolean isUsernameAvailable(String username) {
+    protected synchronized boolean isUsernameAvailable(String username) {
         return !this.usernamesToPlayers.containsKey(username);
     }
 
@@ -361,7 +374,7 @@ public class Room {
      * @param color the color to check
      * @return true if the color is available, false otherwise
      */
-    private synchronized boolean isColorAvailale(Color color) {
+    protected synchronized boolean isColorAvailale(Color color) {
         for (PlayerInfo pInfo : this.usernamesToPlayers.values())
             if (pInfo.getColor() != null && pInfo.getColor().equals(color)) return false;
         return true;
@@ -375,7 +388,7 @@ public class Room {
      * @return true if the username corresponds to the client handler, false otherwise
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private synchronized boolean usernameCorrespondsToClient(String username, ClientHandler client) {
+    protected synchronized boolean usernameCorrespondsToClient(String username, ClientHandler client) {
         // Important to use .equals() when comparing remote objects
         return client != null && client.equals(this.getClientByUsername(username));
     }
@@ -434,7 +447,7 @@ public class Room {
      * @param username the username of the player
      * @return the complete game information for the player
      */
-    private synchronized CompleteGameInfo getCompleteGameInfo(String username) {
+    protected synchronized CompleteGameInfo getCompleteGameInfo(String username) {
         LinkedList<Integer> commonObjectivesIds = Arrays.stream(this.game.getCommonObjectives()).map(Card::getId).collect(Collectors.toCollection(java.util.LinkedList::new));
         LinkedList<CompletePlayerInfo> players = this.game.getPlayers().stream()
                 .map(player -> {
