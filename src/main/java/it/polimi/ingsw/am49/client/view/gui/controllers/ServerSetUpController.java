@@ -50,6 +50,9 @@ public class ServerSetUpController extends GuiController {
             ip = ClientConfig.serverHost;
             port = ClientConfig.serverPort.toString();
             connectorType = ClientConfig.connectionType;
+
+            serveripTextfield.setText(ip);
+            serverportTextfield.setText(port);
             handleConnectButton();
         }
 
