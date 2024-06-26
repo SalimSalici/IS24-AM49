@@ -8,6 +8,7 @@ import it.polimi.ingsw.am49.common.util.Log;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.concurrent.CompletableFuture;
@@ -38,8 +39,14 @@ public class SocketHandler {
      * @throws IOException if an I/O error occurs when creating the socket
      */
     public SocketHandler(String host, int port) throws IOException {
-        this.socket = new Socket(host, port);
+        this.socket = new Socket();
+        InetSocketAddress endpoint = new InetSocketAddress(host, port);
+        this.socket.connect(endpoint, 5000);
+
+        // this is added in case of a socket client connecting to the RMI port, in which case
+        // an IOException will be thrown after 5000 ms because the RMI will not provide an InputStream
         socket.setSoTimeout(5000);
+
         this.output = new ObjectOutputStream(socket.getOutputStream());
         this.input = new ObjectInputStream(socket.getInputStream());
         socket.setSoTimeout(0);
