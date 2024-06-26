@@ -26,4 +26,10 @@ class SymbolsPointsStrategyTest {
         int points = itemTest.execute(testBoard, tile2);
         Assertions.assertEquals(2, points);
     }
+
+    @Test
+    void getSymbol(){
+        SymbolsPointsStrategy itemTest = new SymbolsPointsStrategy(Symbol.INKWELL);
+        Assertions.assertEquals(Symbol.INKWELL, itemTest.getSymbol());
+    }
 }

@@ -118,37 +118,37 @@ public class StarterCard extends PlaceableCard implements Serializable {
         return Collections.unmodifiableList(centerResources);
     }
 
-    /**
-     *
-     * @return the symbol in the front right corner of the card's back
-     */
-    public Symbol getTrb() {
-        return trb;
-    }
-
-    /**
-     *
-     * @return the symbol in the front left corner of the card's back
-     */
-    public Symbol getTlb() {
-        return tlb;
-    }
-
-    /**
-     *
-     * @return the symbol in the bottom right corner of the card's back
-     */
-    public Symbol getBrb() {
-        return brb;
-    }
-
-    /**
-     *
-     * @return the symbol in the bottom left corner of the card's back
-     */
-    public Symbol getBlb() {
-        return blb;
-    }
+//    /**
+//     *
+//     * @return the symbol in the front right corner of the card's back
+//     */
+//    public Symbol getTrb() {
+//        return trb;
+//    }
+//
+//    /**
+//     *
+//     * @return the symbol in the front left corner of the card's back
+//     */
+//    public Symbol getTlb() {
+//        return tlb;
+//    }
+//
+//    /**
+//     *
+//     * @return the symbol in the bottom right corner of the card's back
+//     */
+//    public Symbol getBrb() {
+//        return brb;
+//    }
+//
+//    /**
+//     *
+//     * @return the symbol in the bottom left corner of the card's back
+//     */
+//    public Symbol getBlb() {
+//        return blb;
+//    }
 
     @Override
     public StarterCard clone() {
