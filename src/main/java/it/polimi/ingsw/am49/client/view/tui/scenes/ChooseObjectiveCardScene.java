@@ -12,7 +12,6 @@ import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 import it.polimi.ingsw.am49.client.view.tui.renderers.TuiCardRenderer;
 import it.polimi.ingsw.am49.client.view.tui.textures.TuiTextureManager;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -22,6 +21,7 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
 
     private VirtualGame game;
     private List<Integer> objectiveCardIds;
+    private int starterCardId;
     private final TuiCardRenderer renderer;
     private boolean chosen = false;
     private final GameController gameController;
@@ -34,7 +34,7 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
     public ChooseObjectiveCardScene(SceneManager sceneManager, GameController gameController) {
         super(sceneManager);
         this.gameController = gameController;
-        this.renderer = new TuiCardRenderer(31, 5);
+        this.renderer = new TuiCardRenderer(31, 11);
     }
 
     /**
@@ -44,6 +44,7 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
     public void setObjectiveCardIds(List<Integer> objectiveCardIds) {
         this.chosen = false;
         this.objectiveCardIds = objectiveCardIds;
+        this.starterCardId = this.sceneManager.getVirtualGame().getPlayerByUsername(ClientApp.getUsername()).getStarterCard().id();
     }
 
     @Override
@@ -108,7 +109,9 @@ public class ChooseObjectiveCardScene extends Scene implements Observer {
         TuiTextureManager textureManager = TuiTextureManager.getInstance();
         this.renderer.draw(textureManager.getTexture(this.objectiveCardIds.getFirst(), false), 7, 2);
         this.renderer.draw(textureManager.getTexture(this.objectiveCardIds.get(1), false), 23, 2);
+        this.renderer.draw(textureManager.getTexture(this.starterCardId, false), 7, 8);
         this.renderer.print();
+        System.out.println("       ^ your starter card");
         System.out.println("\n");
     }
 

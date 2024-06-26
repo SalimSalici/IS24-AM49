@@ -17,7 +17,6 @@ import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 import it.polimi.ingsw.am49.client.view.tui.renderers.TuiBoardRenderer;
 import it.polimi.ingsw.am49.client.view.tui.renderers.TuiPlayerRenderer;
 
-import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 

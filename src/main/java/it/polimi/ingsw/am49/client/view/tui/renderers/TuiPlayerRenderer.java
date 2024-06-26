@@ -3,7 +3,6 @@ package it.polimi.ingsw.am49.client.view.tui.renderers;
 import it.polimi.ingsw.am49.client.ClientConfig;
 import it.polimi.ingsw.am49.client.view.tui.textures.BackTexture;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
-import it.polimi.ingsw.am49.config.StaticConfig;
 import it.polimi.ingsw.am49.common.enumerations.Color;
 import it.polimi.ingsw.am49.common.enumerations.Resource;
 import it.polimi.ingsw.am49.common.enumerations.Symbol;

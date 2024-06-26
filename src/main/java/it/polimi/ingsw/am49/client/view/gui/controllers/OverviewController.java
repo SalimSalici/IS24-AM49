@@ -27,7 +27,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
 

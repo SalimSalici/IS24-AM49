@@ -7,7 +7,6 @@ import it.polimi.ingsw.am49.common.enumerations.Color;
 import it.polimi.ingsw.am49.common.exceptions.RoomException;
 import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 
-import java.rmi.RemoteException;
 import java.util.Map;
 
 /**

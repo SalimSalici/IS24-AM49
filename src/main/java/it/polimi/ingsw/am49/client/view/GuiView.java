@@ -11,7 +11,6 @@ import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import javafx.application.Platform;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 /**

@@ -14,7 +14,6 @@ import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 import it.polimi.ingsw.am49.client.view.tui.renderers.TuiDrawAreaRenderer;
 import it.polimi.ingsw.am49.client.view.tui.renderers.TuiPlayerRenderer;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 public class GameOverviewScene extends Scene implements Observer {

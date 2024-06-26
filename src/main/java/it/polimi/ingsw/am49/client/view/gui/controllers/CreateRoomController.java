@@ -8,8 +8,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import java.rmi.RemoteException;
-
 /**
  * Controller class for the create room GUI screen.
  * Handles user interactions for creating a new game room.

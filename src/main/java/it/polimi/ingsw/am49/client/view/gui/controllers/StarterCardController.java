@@ -14,8 +14,6 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-import java.rmi.RemoteException;
-
 /**
  * Controller class for the starter card selection GUI screen.
  * Handles user interactions for selecting the side of the starter card.

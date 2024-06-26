@@ -8,8 +8,6 @@ import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 import it.polimi.ingsw.am49.client.view.tui.renderers.TuiCardRenderer;
 import it.polimi.ingsw.am49.client.view.tui.textures.TuiTextureManager;
 
-import java.rmi.RemoteException;
-
 /**
  * Scene for choosing whether to flip the starter card in the game.
  */

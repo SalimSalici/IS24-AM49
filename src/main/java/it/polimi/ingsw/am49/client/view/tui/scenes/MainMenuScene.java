@@ -9,7 +9,6 @@ import it.polimi.ingsw.am49.common.exceptions.GameAlreadyStartedException;
 import it.polimi.ingsw.am49.common.exceptions.JoinRoomException;
 import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 public class MainMenuScene extends Scene {

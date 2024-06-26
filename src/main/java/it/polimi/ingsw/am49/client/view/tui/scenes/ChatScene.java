@@ -9,7 +9,6 @@ import it.polimi.ingsw.am49.common.enumerations.GameStateType;
 import it.polimi.ingsw.am49.common.util.Observer;
 import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 
-import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;

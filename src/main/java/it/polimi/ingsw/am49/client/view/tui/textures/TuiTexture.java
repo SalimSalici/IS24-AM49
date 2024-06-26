@@ -1,7 +1,6 @@
 package it.polimi.ingsw.am49.client.view.tui.textures;
 
 import it.polimi.ingsw.am49.client.ClientConfig;
-import it.polimi.ingsw.am49.config.StaticConfig;
 
 public class TuiTexture {
     private ColoredChar[][] frontBuffer;

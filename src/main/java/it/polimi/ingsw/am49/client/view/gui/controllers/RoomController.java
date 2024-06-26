@@ -16,8 +16,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-import java.rmi.RemoteException;
-
 /**
  * Controller class for the room GUI screen.
  * Handles user interactions within a game room, such as selecting a totem color, leaving the room, and updating room state.

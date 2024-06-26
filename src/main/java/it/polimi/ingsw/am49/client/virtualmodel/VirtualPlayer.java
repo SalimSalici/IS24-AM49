@@ -6,10 +6,6 @@ import it.polimi.ingsw.am49.common.enumerations.Symbol;
 import it.polimi.ingsw.am49.common.util.Observable;
 import it.polimi.ingsw.am49.common.util.Pair;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.time.LocalTime;
 import java.util.*;
 
