@@ -70,10 +70,14 @@ public class ServerSetUpController extends GuiController {
 
         rmiTogglebutton.setOnAction(e -> {
             connectorType = ConnectorType.RMI;
+            socketTogglebutton.setStyle("-fx-background-color: transparent; -fx-border-color: #21130b; -fx-border-width: 2; -fx-text-fill: #21130b; -fx-font-family: 'DejaVu Sans Mono'; -fx-font-size: 13px; -fx-background-radius: 10; -fx-border-radius: 10;");
+            rmiTogglebutton.setStyle("-fx-background-color: A39E20; -fx-border-color: #21130b; -fx-border-width: 2; -fx-text-fill: #21130b; -fx-font-family: 'DejaVu Sans Mono'; -fx-font-size: 13px; -fx-background-radius: 10; -fx-border-radius: 10;");
         });
 
         socketTogglebutton.setOnAction(e -> {
             connectorType = ConnectorType.SOCKET;
+            rmiTogglebutton.setStyle("-fx-background-color: transparent; -fx-border-color: #21130b; -fx-border-width: 2; -fx-text-fill: #21130b; -fx-font-family: 'DejaVu Sans Mono'; -fx-font-size: 13px; -fx-background-radius: 10; -fx-border-radius: 10;");
+            socketTogglebutton.setStyle("-fx-background-color: A39E20; -fx-border-color: #21130b; -fx-border-width: 2; -fx-text-fill: #21130b; -fx-font-family: 'DejaVu Sans Mono'; -fx-font-size: 13px; -fx-background-radius: 10; -fx-border-radius: 10;");
         });
 
         connecttoserverButton.setOnAction(e -> connectToServer());
@@ -89,7 +93,7 @@ public class ServerSetUpController extends GuiController {
             try {
                 menuController.connectToServer(ip, Integer.parseInt(port), connectorType);
             } catch (RemoteException e) {
-                throw new RuntimeException(e);
+                showErrorPopup("Connect to server failed");
             }
         }
     }

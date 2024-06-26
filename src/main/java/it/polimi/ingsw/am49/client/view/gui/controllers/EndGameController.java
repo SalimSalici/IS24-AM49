@@ -129,7 +129,7 @@ public class EndGameController extends GuiController {
      * If an error occurs, shows an error popup with the appropriate message.
      */
     private void leave(){
-        this.manager.executorService.submit(() -> this.gameController.leave());
+        this.manager.execute(() -> this.gameController.leave());
     }
 
     /**

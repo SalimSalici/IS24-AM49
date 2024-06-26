@@ -47,7 +47,7 @@ public class CreateRoomController extends GuiController {
      * If an exception occurs, it shows an error popup with the appropriate message.
      */
     private void execute(){
-        this.manager.executorService.submit(() -> {
+        this.manager.execute(() -> {
             try {
                 this.menuController.createRoom(nameTextfield.getText(), numplayerSpinner.getValue());
 //                RoomInfo roomInfo = this.menuController.createRoom(nameTextfield.getText(), numplayerSpinner.getValue());

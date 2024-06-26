@@ -72,7 +72,7 @@ public class MainMenuController extends GuiController {
      * Refreshes the list of rooms by fetching room data from the server.
      */
     private void refreshRooms() {
-        this.manager.executorService.submit(() -> {
+        this.manager.execute(() -> {
             roomsListview.getItems().clear();
 
             this.rooms = this.menuController.fetchRooms();
@@ -96,7 +96,7 @@ public class MainMenuController extends GuiController {
      * If an exception occurs, shows an error popup with the appropriate message.
      */
     private void joinRoom(){
-        this.manager.executorService.submit(() -> {
+        this.manager.execute(() -> {
             try {
                 System.out.println("Joining room: " + selectedRoom);
 //                RoomInfo roomInfo = this.server.joinRoom(this.app, selectedRoom.getRoomName(), ClientApp.getUsername());

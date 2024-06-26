@@ -106,7 +106,7 @@ public class RoomController extends GuiController {
      * If an error occurs, shows an error popup with the appropriate message.
      */
     private void leaveRoom(){
-        this.manager.executorService.submit(() -> {
+        this.manager.execute(() -> {
             this.totemColor = null;
             this.roomController.leaveRoom();
         });
@@ -117,7 +117,7 @@ public class RoomController extends GuiController {
      * If an error occurs, shows an error popup with the appropriate message.
      */
     private void setColor(){
-        this.manager.executorService.submit(() -> {
+        this.manager.execute(() -> {
             try {
                 // if color isn't set
                 if(totemColor == null){

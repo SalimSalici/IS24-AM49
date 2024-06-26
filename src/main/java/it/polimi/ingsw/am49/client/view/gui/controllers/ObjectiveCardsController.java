@@ -54,7 +54,7 @@ public class ObjectiveCardsController extends GuiController{
      * @param objectiveId the ID of the chosen objective card
      */
     private void chooseObj(int objectiveId){
-        this.manager.executorService.submit(() -> {
+        this.manager.execute(() -> {
             try {
                 this.manager.changeScene(SceneTitle.WAITING, true);
                 this.manager.getVirtualGame().getPlayerByUsername(ClientApp.getUsername()).setPersonalObjectiveId(objectiveId);

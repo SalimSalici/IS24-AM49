@@ -579,7 +579,7 @@ public class OverviewController extends GuiController {
      * @param drawPosition The position from which to draw the card.
      */
     private void drawCard(int cardId, DrawPosition drawPosition) {
-        this.manager.executorService.submit(() -> {
+        this.manager.execute(() -> {
             try {
                 gameController.drawCard(drawPosition, cardId);
                 unselectCard();
@@ -669,7 +669,7 @@ public class OverviewController extends GuiController {
      * Leaves the game.
      */
     public void leaveGame(){
-        this.manager.executorService.submit(() -> gameController.leave());
+        this.manager.execute(() -> gameController.leave());
     }
 
     /**

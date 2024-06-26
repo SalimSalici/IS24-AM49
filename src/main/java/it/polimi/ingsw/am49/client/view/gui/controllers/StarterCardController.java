@@ -67,7 +67,7 @@ public class StarterCardController extends GuiController{
      * @param flipped whether the back side of the card is chosen
      */
     private void chooseSide(boolean flipped){
-        this.manager.executorService.submit(() -> {
+        this.manager.execute(() -> {
             try {
                 this.manager.changeScene(SceneTitle.WAITING, true);
                 this.gameController.chooseStarterSide(flipped);
