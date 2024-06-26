@@ -108,7 +108,6 @@ public class MainMenuController extends GuiController {
                     return;
             } catch (AlreadyInRoomException e) {
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
-                throw new RuntimeException(e);
             } catch (GameAlreadyStartedException e) {
                 try {
                     this.manager.setRoomInfo(selectedRoom.toRoomInfo());
@@ -117,7 +116,6 @@ public class MainMenuController extends GuiController {
 //                    this.manager.changeScene(SceneTitle.OVERVIEW, true);
                 } catch (AlreadyInRoomException | JoinRoomException ex) {
                     Platform.runLater(() -> showErrorPopup(e.getMessage()));
-                    throw new RuntimeException(e);
                 }
             }
         });

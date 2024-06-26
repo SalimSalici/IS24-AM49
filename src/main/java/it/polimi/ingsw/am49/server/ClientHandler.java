@@ -24,7 +24,7 @@ public class ClientHandler implements Client {
     private long lastHeartbeat;
     private final IntervalTimer hearbeatCheckerTimer;
     @SuppressWarnings("FieldCanBeLocal")
-    private final int timeoutInSeconds = 5;
+    private final int timeoutInSeconds = ServerConfig.clientHeartbeatTimeout;
 
     /**
      * Constructs a ClientHandler for managing a client's connection and interactions.

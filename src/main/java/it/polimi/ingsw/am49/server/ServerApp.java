@@ -13,8 +13,6 @@ import it.polimi.ingsw.am49.common.enumerations.Color;
 import it.polimi.ingsw.am49.common.util.Log;
 import it.polimi.ingsw.am49.server.model.Game;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -48,9 +46,8 @@ public class ServerApp implements Server {
     @Override
     public List<RoomInfo> fetchRooms(Client client) {
         List<RoomInfo> roomInfos = new LinkedList<>();
-        for (Room room : this.rooms) {
+        for (Room room : this.rooms)
             roomInfos.add(room.getRoomInfo());
-        }
         return roomInfos;
     }
 
@@ -177,7 +174,10 @@ public class ServerApp implements Server {
         clientHandler.close();
 
         Room room = this.clientsToRooms.get(clientHandler);
-        if (room == null) return false;
+        if (room == null) {
+            this.clientsToRooms.remove(clientHandler);
+            return false;
+        }
 
         boolean roomLeft = room.removePlayer(clientHandler);
         if (roomLeft) {
@@ -225,6 +225,7 @@ public class ServerApp implements Server {
      */
     public void destroyRoom(Room room) {
         room.close();
+        GameRestorer.deleteGame(room.getRoomName());
         this.clientsToRooms.forEach((key, value) -> { if (value.equals(room)) key.close(); });
         this.clientsToRooms.entrySet().removeIf(entry -> entry.getValue().equals(room));
         this.rooms.remove(room);
@@ -294,32 +295,11 @@ public class ServerApp implements Server {
     }
 
     private void restoreGames() {
-        File dir = new File(".");
-
-        if (!dir.exists() || !dir.isDirectory()) {
-            System.err.println("The specified path is not a directory or does not exist.");
-            return;
-        }
-
-        File[] files = dir.listFiles((dir1, name) -> name.toLowerCase().endsWith(".cn"));
-
-        if (files == null || files.length == 0) {
-            System.out.println("No game files found.");
-            return;
-        }
-
-        for (File file : files) {
-            String fileName = file.getName();
-            String roomName = fileName.substring(0, fileName.length() - 3);
-
-            Game game = GameRestorer.loadGame(roomName);
-
-            if (game == null) continue;
-
+        Map<String, Game> games = GameRestorer.loadAllGames();
+        games.forEach((roomName, game) -> {
             this.rooms.add(new RestoredRoom(game, roomName, this));
-
             System.out.println("Room restored: " + roomName);
-        }
+        });
     }
 
     public static void main(String[] args) throws IOException, AlreadyBoundException {
@@ -352,7 +332,8 @@ public class ServerApp implements Server {
             new ServerSocketManager(server, socketPort);
             Log.getLogger().info("Socket Server started on port " + socketPort);
 
-            server.restoreGames();
+            ServerConfig.persistence = Arrays.asList(args).contains("--persistence");
+            if (ServerConfig.persistence) server.restoreGames();
         } catch (Exception e) {
             System.out.println("Could not initialize server: " + e.getMessage());
             System.out.println("Terminating.");

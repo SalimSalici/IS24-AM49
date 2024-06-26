@@ -401,7 +401,7 @@ public class OverviewController extends GuiController {
      */
     public void drawRotationButtons() {
         Platform.runLater(() -> {
-            for (int index = 0; index < this.myHand.size(); index++) {
+            for (int index = 0; index < 3; index++) {
                 ImageView rotationImageview = new ImageView(rotationImage);
                 Button rotationButton = new Button();
                 GridPane.setHalignment(rotationButton, HPos.CENTER);
