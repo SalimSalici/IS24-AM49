@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.view;
 
+import it.polimi.ingsw.am49.client.view.tui.textures.TuiTextureManager;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.controller.MenuController;
@@ -27,6 +28,7 @@ public class TuiView extends View {
     public TuiView(MenuController menuController, RoomController roomController, GameController gameController) {
         super(menuController, roomController, gameController);
         sceneManager = new SceneManager(menuController, roomController, gameController);
+        TuiTextureManager.getInstance(); // preloads all tui textures
     }
 
     /**

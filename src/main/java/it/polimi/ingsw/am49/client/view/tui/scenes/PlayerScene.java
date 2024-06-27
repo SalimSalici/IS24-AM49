@@ -29,7 +29,6 @@ public class PlayerScene extends Scene implements Observer {
     private final VirtualGame game;
     private final TuiBoardRenderer boardRenderer;
     private final TuiPlayerRenderer tuiPlayerRenderer;
-    private final VirtualPlayer player;
     private final VirtualBoard board;
     private int row = CommonConfig.starterCardRow;
     private int col = CommonConfig.starterCardCol;
@@ -45,7 +44,6 @@ public class PlayerScene extends Scene implements Observer {
     public PlayerScene(SceneManager sceneManager, VirtualGame game, VirtualPlayer player, GameController gameController) {
         super(sceneManager);
         this.game = game;
-        this.player = player;
         this.board = player.getBoard();
         this.boardRenderer = new TuiBoardRenderer(player.getBoard());
         this.gameController = gameController;
@@ -81,15 +79,17 @@ public class PlayerScene extends Scene implements Observer {
      */
     private void printPrompt() {
         this.printInfoOrError();
+        System.out.println("Movements can be stacked (example: 'eed' moves twice top right and once bottom right').");
         System.out.print("Available commands: ");
-        System.out.print("(Q) Move Top Left | ");
-        System.out.print("(E) Move Top Right | ");
-        System.out.print("(A) Move Bottom Left | ");
-        System.out.print("(D) Move Bottom Right | ");
+        System.out.print("(s) Move to center | ");
+        System.out.print("(q) Move Top Left | ");
+        System.out.print("(e) Move Top Right | ");
+        System.out.print("(a) Move Bottom Left | ");
+        System.out.print("(d) Move Bottom Right | ");
         if (this.canPlace()) {
-            System.out.print("(P) Place a card | ");
+            System.out.print("(p) Place a card | ");
         }
-        System.out.print("(B) Back");
+        System.out.print("(b) Back");
         System.out.print("\n>>> ");
     }
 
@@ -162,6 +162,13 @@ public class PlayerScene extends Scene implements Observer {
      * @param args the arguments specifying the card placement details
      */
     private void handlePlaceCard(String[] args) {
+        if (args.length >= 2 && args[1].equals("--help")) {
+            this.showHelpMessage("Places a card from your hand above the currently centered card in the board.\n" +
+                    "You must specify which card, the corner and if it should be flipped.\n" +
+                    "Corners: tl=TopLeft, tr=TopRight, bl=BottomLeft, br=BottomRight.", "p 2 tr f  - places the second card in your hand in the top right corner and flips it.");
+            return;
+        }
+
         String username = ClientApp.getUsername();
         VirtualPlayer player = this.game.getPlayerByUsername(username);
         if (player == null) {
@@ -224,6 +231,7 @@ public class PlayerScene extends Scene implements Observer {
             this.row = row;
             this.col = col;
         }
+        this.refreshView();
     }
 
     /**

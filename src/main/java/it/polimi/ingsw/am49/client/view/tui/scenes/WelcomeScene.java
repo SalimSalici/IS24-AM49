@@ -27,9 +27,10 @@ public class WelcomeScene extends Scene {
     @Override
     public void printView() {
         this.clearScreen();
-        System.out.println("*******************************");
-        System.out.println("| Welcome to Codex Naturalis! |");
-        System.out.println("*******************************");
+        this.printBigHeader();
+        System.out.println("\n\n");
+        System.out.println("Please, maximize the terminal for an optimal playing experience.");
+        System.out.println("Minimum terminal width should be 165 characters.");
         System.out.println("\n\n");
         System.out.println(AnsiColor.ANSI_RED + errorMessage + AnsiColor.ANSI_RESET);
         System.out.print("Choose a username> ");
