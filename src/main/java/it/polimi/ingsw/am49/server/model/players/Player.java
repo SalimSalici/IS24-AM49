@@ -104,10 +104,6 @@ public class Player implements Serializable {
         return newTile;
     }
 
-    public BoardTile placeCard(PlaceableCard card, BoardTile boardTile, CornerPosition corner) throws Exception {
-        return this.placeCard(card, boardTile.getRow(), boardTile.getCol(), corner);
-    }
-
     /**
      * Adds the card passed as parameter to the hand.
      * @param card is a {@link GoldCard} or a {@link ResourceCard}.

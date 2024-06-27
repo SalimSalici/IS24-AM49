@@ -25,22 +25,26 @@ ChangeUsernameController extends GuiController {
      * The exit button clears the text field and returns to the main menu.
      */
     public void initialize(){
-        confButton.setOnAction(e -> {
-            if(this.isUsernameValid(usernameTextfield.getText())) {
-                ClientApp.setUsername(usernameTextfield.getText());
-                this.manager.changeScene(SceneTitle.MAIN_MENU, true);
-            }else {
-                System.out.println("The username your trying to use is not allowed");
-                showErrorPopup("The username your trying to use is not allowed");
-            }
-
-            usernameTextfield.clear();
-        });
+        usernameTextfield.setOnAction(e -> execute());
+        confButton.setOnAction(e -> execute());
 
         exitButton.setOnAction(x -> {
             this.manager.changeScene(SceneTitle.MAIN_MENU, true);
             usernameTextfield.clear();
         });
+    }
+
+    private void execute(){
+        String text = usernameTextfield.getText();
+        if(this.isUsernameValid(text)) {
+            ClientApp.setUsername(text);
+            this.manager.changeScene(SceneTitle.MAIN_MENU, true);
+        }else {
+            System.out.println("The username your trying to use is not allowed");
+            showErrorPopup("The username your trying to use is not allowed");
+        }
+
+        usernameTextfield.clear();
     }
 
     /**

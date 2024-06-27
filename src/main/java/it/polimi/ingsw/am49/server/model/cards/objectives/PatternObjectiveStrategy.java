@@ -23,8 +23,6 @@ public class PatternObjectiveStrategy implements ObjectivePointsStrategy, Serial
      */
     @Override
     public int execute(PlayerBoard playerBoard) {
-        // TODO: this is the naive approach... can be optimized
-
         // Extract all pivots for the pattern from the player board
         List<PivotGroup> pivotsGroups = new ArrayList<>();
         for (BoardTile boardTile : playerBoard.getPlacementOrder()) {

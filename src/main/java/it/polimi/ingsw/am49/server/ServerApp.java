@@ -280,11 +280,10 @@ public class ServerApp implements Server {
      * @throws RemoteException If an RMI error occurs.
      */
     @Override
-    public void chatMessage(Client client, ChatMSG msg) throws RemoteException { //TODO: create custom exeption
+    public void chatMessage(Client client, ChatMSG msg) throws RemoteException {
         ClientHandler clientHandler = this.getClientHandlerByClient(client);
         Room room = this.clientsToRooms.get(clientHandler);
         if (room != null) room.newChatMSG(msg);
-        // TODO: throw exception
     }
 
     /**
