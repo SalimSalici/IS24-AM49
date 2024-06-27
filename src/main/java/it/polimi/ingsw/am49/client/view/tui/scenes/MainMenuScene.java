@@ -40,7 +40,7 @@ public class MainMenuScene extends Scene {
         if (this.isLoading)
             System.out.println("exit");
         else
-            System.out.println("(1) username | (2) create | (3) join | (4) reconnect | (5) help | (6) refresh rooms | (7) server selection | exit");
+            System.out.println("(1) username | (2) create | (3) join | (4) reconnect | (5) refresh rooms | (6) server selection | exit");
         System.out.print(">>> ");
     }
 
@@ -88,12 +88,9 @@ public class MainMenuScene extends Scene {
                 handleReconnectRoom(parts);
                 break;
             case "5":
-                // TODO: Handle help
-                break;
-            case "6":
                 handleRefreshRooms();
                 break;
-            case "7":
+            case "6":
                 this.sceneManager.forceServerSelection(null);
                 break;
             case "exit":
@@ -151,10 +148,8 @@ public class MainMenuScene extends Scene {
         try {
             this.isLoading = true;
             this.showInfoMessage("Loading room...");
-//            RoomInfo roomInfo = this.menuController.createRoom(roomName, numPlayers);
             this.menuController.createRoom(roomName, numPlayers);
             this.isLoading = false;
-//            this.sceneManager.switchScene(roomInfo);
         } catch (CreateRoomException | AlreadyInRoomException e) {
             this.isLoading = false;
             this.showError("Failed to create room. " + e.getMessage());
@@ -175,10 +170,8 @@ public class MainMenuScene extends Scene {
         try {
             this.isLoading = true;
             this.showInfoMessage("Loading room...");
-//            RoomInfo roomInfo = this.menuController.joinRoom(roomName);
             this.menuController.joinRoom(roomName);
             this.isLoading = false;
-//            this.sceneManager.switchScene(roomInfo);
         } catch (JoinRoomException | AlreadyInRoomException | GameAlreadyStartedException  e) {
             this.isLoading = false;
             this.showError("Failed to join room. " + e.getMessage());
@@ -201,8 +194,6 @@ public class MainMenuScene extends Scene {
             this.isLoading = true;
             this.showInfoMessage("Loading game...");
             this.menuController.reconnect(roomName);
-//            this.sceneManager.initializePlayerScenes();
-//            this.sceneManager.switchScene(SceneType.OVERVIEW_SCENE);
             this.isLoading = false;
         } catch (JoinRoomException | AlreadyInRoomException  e) {
             this.isLoading = false;
