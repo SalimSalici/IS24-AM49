@@ -58,9 +58,16 @@ The game is divided into two JAR files, available for download from the [Deliver
 
 
 ### Running the Server
+To start the server, use the following command with the required arguments:
 
 ```sh
-java -jar target/server.jar
+java -jar target/server.jar --host <server-ip> --r <rmi-port> --s <socket-port>
+```
+Replace <server-ip> with the server's IP address, <rmi-port> with the desired RMI port, and <socket-port> with the desired socket port.
+
+If you want to enable the "disconnection resilience" feature, you can use the --persistence argument:
+```sh
+java -jar target/server.jar --host <server-ip> --r <rmi-port> --s <socket-port> --persistence
 ```
 
 ### Running the Client
@@ -77,11 +84,34 @@ java -jar target/client.jar --gui
 java -jar target/client.jar
 ```
 
-To play the game using a socket connection, add the --socket option to the client command.
+For those playing from the CLI, you can disable the use of colors by adding the --disable-tui-colors option:
+
+```sh
+java -jar target/client.jar --disable-tui-colors
+```
+\
+Additionally, you can specify the server IP, port, and connection type directly from the command line:
+
+ ##### For socket connection:
+```sh
+java -jar target/client.jar --host <server-ip> --port <port> --socket
+```
+
+##### For RMI connection:
+```sh
+java -jar target/client.jar --host <server-ip> --port <port> --rmi
+```
 
 ## Testing
 
-The project includes extensive unit tests to ensure the correctness and stability of the implementation.    
+The project includes extensive unit tests to ensure the correctness and stability of the implementation.
+
+**Test Coverage:**
+
+| Package    | Class Coverage | Method Coverage | Line Coverage |
+|------------|----------------|-----------------|---------------|
+| Controller | 100%           | 93%             | 91%           |
+| Model      | 100%           | 94%             | 90%           |    
 
 ## Documentation
 
