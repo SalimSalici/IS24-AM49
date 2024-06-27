@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.server.model.players;
 
+import it.polimi.ingsw.am49.common.CommonConfig;
 import it.polimi.ingsw.am49.server.model.cards.placeables.PlaceableCard;
 import it.polimi.ingsw.am49.server.model.cards.placeables.StarterCard;
 import it.polimi.ingsw.am49.common.enumerations.RelativePosition;
@@ -42,9 +43,9 @@ public class PlayerBoard implements Serializable {
      */
     public PlayerBoard(StarterCard starterCard) {
         this.placementOrder = new ArrayList<>();
-        this.board = new BoardTile[50][50];
-        this.starterTile = new BoardTile(starterCard, 25, 25, this);
-        this.board[25][25] = this.starterTile;
+        this.board = new BoardTile[CommonConfig.boardMatrixHeight][CommonConfig.boardMatrixWidth];
+        this.starterTile = new BoardTile(starterCard, CommonConfig.starterCardRow, CommonConfig.starterCardCol, this);
+        this.board[CommonConfig.starterCardRow][CommonConfig.starterCardCol] = this.starterTile;
         this.placementOrder.add(this.starterTile);
         this.availableResources = new HashMap<>();
         for (Symbol s : Symbol.values()) {

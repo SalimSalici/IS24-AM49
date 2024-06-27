@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.virtualmodel;
 
+import it.polimi.ingsw.am49.common.CommonConfig;
 import it.polimi.ingsw.am49.common.enumerations.RelativePosition;
 import it.polimi.ingsw.am49.common.util.Observable;
 import it.polimi.ingsw.am49.common.util.Pair;
@@ -24,7 +25,7 @@ public class VirtualBoard extends Observable {
      * Initializes the board and other state variables.
      */
     public VirtualBoard() {
-        this.board = new VirtualTile[50][50];
+        this.board = new VirtualTile[CommonConfig.boardMatrixHeight][CommonConfig.boardMatrixWidth];
         this.lastZIndex = 0;
         this.lastPlacedRow = -1;
         this.lastPlacedCol = -1;

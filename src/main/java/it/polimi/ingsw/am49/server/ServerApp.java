@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.server;
 
+import it.polimi.ingsw.am49.common.CommonConfig;
 import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.exceptions.*;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
@@ -69,7 +70,7 @@ public class ServerApp implements Server {
         if (roomName.length() < 2 || roomName.length() > 15)
             throw new CreateRoomException("Invalid room name. Room name should be between 2 and 15 charactes.");
 
-        if (numPlayers < 1 || numPlayers > 4)
+        if (numPlayers < CommonConfig.minPlayers || numPlayers > CommonConfig.maxPlayers)
             throw new CreateRoomException("Invalid number of players. Must be between 2 and 4.");
 
         if (creatorUsername.length() < 2 || creatorUsername.length() > 15)

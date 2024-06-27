@@ -5,6 +5,7 @@ import it.polimi.ingsw.am49.client.controller.GameController;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualBoard;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualGame;
 import it.polimi.ingsw.am49.client.virtualmodel.VirtualPlayer;
+import it.polimi.ingsw.am49.common.CommonConfig;
 import it.polimi.ingsw.am49.common.enumerations.CornerPosition;
 import it.polimi.ingsw.am49.common.enumerations.GameStateType;
 import it.polimi.ingsw.am49.common.enumerations.RelativePosition;
@@ -30,8 +31,8 @@ public class PlayerScene extends Scene implements Observer {
     private final TuiPlayerRenderer tuiPlayerRenderer;
     private final VirtualPlayer player;
     private final VirtualBoard board;
-    private int row = 25;
-    private int col = 25;
+    private int row = CommonConfig.starterCardRow;
+    private int col = CommonConfig.starterCardCol;
     private final GameController gameController;
 
     /**
@@ -103,7 +104,7 @@ public class PlayerScene extends Scene implements Observer {
         if (!command.isEmpty() && List.of('q', 'e', 'a', 'd').contains(command.charAt(0))) {
             this.handleMove(command);
         } else switch (command) {
-            case "s", "starter" -> this.moveBoard(25, 25);
+            case "s", "starter" -> this.moveBoard(CommonConfig.starterCardRow, CommonConfig.starterCardCol);
             case "p", "place" -> {
                 if (this.canPlace())
                     this.handlePlaceCard(parts);

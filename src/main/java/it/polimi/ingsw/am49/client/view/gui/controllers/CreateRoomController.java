@@ -1,5 +1,6 @@
 package it.polimi.ingsw.am49.client.view.gui.controllers;
 
+import it.polimi.ingsw.am49.common.CommonConfig;
 import it.polimi.ingsw.am49.common.Server;
 import it.polimi.ingsw.am49.common.exceptions.AlreadyInRoomException;
 import it.polimi.ingsw.am49.common.exceptions.CreateRoomException;
@@ -26,9 +27,7 @@ public class CreateRoomController extends GuiController {
 
     @Override
     public void init() {
-//        this.server = this.app.getServer();
-
-        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 4, 2);
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(CommonConfig.minPlayers, CommonConfig.maxPlayers, 2);
         numplayerSpinner.setValueFactory( valueFactory);
 
         createButton.setOnAction(x-> execute());
@@ -48,9 +47,6 @@ public class CreateRoomController extends GuiController {
         this.manager.execute(() -> {
             try {
                 this.menuController.createRoom(nameTextfield.getText(), numplayerSpinner.getValue());
-//                RoomInfo roomInfo = this.menuController.createRoom(nameTextfield.getText(), numplayerSpinner.getValue());
-//                this.manager.setRoomInfo(roomInfo);
-//                this.manager.changeScene(SceneTitle.ROOM, true);
             } catch (CreateRoomException | AlreadyInRoomException e){
                 System.out.println(e.getMessage());
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
