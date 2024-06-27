@@ -17,6 +17,7 @@ public class GuiEntry extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        System.setProperty("prism.allowhidpi", "false");
         launch(args);
     }
     @Override
