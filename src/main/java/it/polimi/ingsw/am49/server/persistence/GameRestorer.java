@@ -1,5 +1,6 @@
-package it.polimi.ingsw.am49.server;
+package it.polimi.ingsw.am49.server.persistence;
 
+import it.polimi.ingsw.am49.server.ServerConfig;
 import it.polimi.ingsw.am49.server.model.Game;
 
 import java.io.*;
@@ -8,7 +9,16 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Handles the persistence of game states, providing methods to save, load, and delete game instances.
+ */
 public class GameRestorer {
+    /**
+     * Saves the given game state to a file with the specified name.
+     *
+     * @param name the name of the game to save
+     * @param game the game instance to save
+     */
     public static void saveGame(String name, Game game) {
         if (!ServerConfig.persistence) return;
 
@@ -27,6 +37,11 @@ public class GameRestorer {
         }
     }
 
+    /**
+     * Loads all saved game states from the persistence directory.
+     *
+     * @return a map containing the names and corresponding game instances of all saved games
+     */
     public static Map<String, Game> loadAllGames() {
         HashMap<String, Game> games = new HashMap<>();
 
@@ -34,8 +49,16 @@ public class GameRestorer {
 
         File dir = new File(ServerConfig.savedGamesPath);
 
-        if (!dir.exists() || !dir.isDirectory()) {
-            System.err.println("The specified path is not a directory or does not exist.");
+        if (!dir.exists()) {
+            boolean created = dir.mkdirs();
+            if (!created) {
+                System.err.println("Failed to create the directory: " + ServerConfig.savedGamesPath);
+                return games;
+            }
+            System.out.println("Created directory: " + ServerConfig.savedGamesPath);
+            return games;
+        } else if (!dir.isDirectory()) {
+            System.err.println("The specified path is not a directory: " + ServerConfig.savedGamesPath);
             return games;
         }
 
@@ -57,6 +80,12 @@ public class GameRestorer {
         return games;
     }
 
+    /**
+     * Loads the game state with the specified name from a file.
+     *
+     * @param name the name of the game to load
+     * @return the loaded game instance, or null if loading fails
+     */
     public static Game loadGame(String name) {
         String filename = ServerConfig.savedGamesPath + name + ".cn";
 
@@ -72,6 +101,11 @@ public class GameRestorer {
         return null;
     }
 
+    /**
+     * Deletes the saved game state file with the specified name.
+     *
+     * @param name the name of the game to delete
+     */
     public static void deleteGame(String name) {
         if (!ServerConfig.persistence) return;
         try {

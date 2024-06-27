@@ -1,4 +1,4 @@
-package it.polimi.ingsw.am49.server.controller.room;
+package it.polimi.ingsw.am49.server.persistence;
 
 import it.polimi.ingsw.am49.common.actions.GameAction;
 import it.polimi.ingsw.am49.common.enumerations.Color;
@@ -12,6 +12,8 @@ import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.server.ClientHandler;
 import it.polimi.ingsw.am49.server.ServerApp;
 import it.polimi.ingsw.am49.server.ServerConfig;
+import it.polimi.ingsw.am49.server.controller.room.PlayerInfo;
+import it.polimi.ingsw.am49.server.controller.room.Room;
 import it.polimi.ingsw.am49.server.model.Game;
 import it.polimi.ingsw.am49.server.model.players.Player;
 

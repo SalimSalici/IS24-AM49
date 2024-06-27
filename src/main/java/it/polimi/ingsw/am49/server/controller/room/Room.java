@@ -5,7 +5,7 @@ import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompletePlayerInfo;
-import it.polimi.ingsw.am49.server.GameRestorer;
+import it.polimi.ingsw.am49.server.persistence.GameRestorer;
 import it.polimi.ingsw.am49.server.controller.VirtualView;
 import it.polimi.ingsw.am49.common.gameupdates.DrawAreaUpdate;
 import it.polimi.ingsw.am49.common.gameupdates.GameStateChangedUpdate;

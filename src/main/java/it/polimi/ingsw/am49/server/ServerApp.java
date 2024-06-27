@@ -5,7 +5,8 @@ import it.polimi.ingsw.am49.common.exceptions.*;
 import it.polimi.ingsw.am49.common.gameupdates.ChatMSG;
 import it.polimi.ingsw.am49.common.Client;
 import it.polimi.ingsw.am49.common.reconnectioninfo.CompleteGameInfo;
-import it.polimi.ingsw.am49.server.controller.room.RestoredRoom;
+import it.polimi.ingsw.am49.server.persistence.GameRestorer;
+import it.polimi.ingsw.am49.server.persistence.RestoredRoom;
 import it.polimi.ingsw.am49.server.controller.room.Room;
 import it.polimi.ingsw.am49.common.reconnectioninfo.RoomInfo;
 import it.polimi.ingsw.am49.common.actions.GameAction;
@@ -231,6 +232,11 @@ public class ServerApp implements Server {
         this.rooms.remove(room);
     }
 
+    /**
+     * Given a string retrieves the room with the matching name if present
+     * @param roomName name of the desired room
+     * @return the room if presetn, otherwise null
+     */
     private Room getRoomByName(String roomName) {
         for (Room room : this.rooms)
             if (room.getRoomName().equals(roomName))
@@ -238,6 +244,11 @@ public class ServerApp implements Server {
         return null;
     }
 
+    /**
+     * Given a {@link it.polimi.ingsw.am49.client.ClientApp} returns the corresponding {@link ClientHandler}
+     * @param client for witch the handler is needed
+     * @return the client handler or null if not present
+     */
     private ClientHandler getClientHandlerByClient(Client client) {
         for (ClientHandler clientHandler : this.clientsToRooms.keySet()) {
             if (clientHandler.getClient().equals(client))
@@ -275,6 +286,15 @@ public class ServerApp implements Server {
         // TODO: throw exception
     }
 
+    /**
+     * Checks that the username and the room are correct and returns the room
+     * @param client that is trying to join the room
+     * @param roomName that the user whants to join
+     * @param username that the client chose
+     * @return the {@link it.polimi.ingsw.am49.server.controller.room}
+     * @throws AlreadyInRoomException if there is already a player with that username in the room
+     * @throws JoinRoomException if the rooom that the player is trying to join doesn't exist
+     */
     private Room validateNewClientAndGetRoom(Client client, String roomName, String username) throws AlreadyInRoomException, JoinRoomException {
         if (username == null)
             throw new JoinRoomException("Username is null.");
@@ -294,6 +314,9 @@ public class ServerApp implements Server {
         return room;
     }
 
+    /**
+     * Restores saved games from persistent storage.
+     */
     private void restoreGames() {
         Map<String, Game> games = GameRestorer.loadAllGames();
         games.forEach((roomName, game) -> {
@@ -302,6 +325,12 @@ public class ServerApp implements Server {
         });
     }
 
+    /**
+     * Main method to start the server application.
+     * @param args Command line arguments for host, RMI port, and socket port.
+     * @throws IOException If an I/O error occurs.
+     * @throws AlreadyBoundException If the RMI registry already contains the specified binding.
+     */
     public static void main(String[] args) throws IOException, AlreadyBoundException {
 
         String host = getHostFromArgs(args);
@@ -341,6 +370,11 @@ public class ServerApp implements Server {
         }
     }
 
+    /**
+     * Retrieves the host address from command line arguments.
+     * @param args Command line arguments.
+     * @return The host address if specified, otherwise null.
+     */
     public static String getHostFromArgs(String[] args) {
         for (int i = 0; i < args.length - 1; i++)
             if (args[i].equals("--host") || args[i].equals("--h"))
@@ -348,6 +382,12 @@ public class ServerApp implements Server {
         return null;
     }
 
+    /**
+     * Retrieves the RMI port from command line arguments.
+     * @param args Command line arguments.
+     * @return The RMI port.
+     * @throws NumberFormatException If the RMI port is missing or not a valid number.
+     */
     public static int getRMIPortFromArgs(String[] args) {
         for (int i = 0; i < args.length - 1; i++)
             if (args[i].equals("--r"))
@@ -355,6 +395,12 @@ public class ServerApp implements Server {
         throw new NumberFormatException("Missing RMI port.");
     }
 
+    /**
+     * Retrieves the socket port from command line arguments.
+     * @param args Command line arguments.
+     * @return The socket port.
+     * @throws NumberFormatException If the socket port is missing or not a valid number.
+     */
     public static int getSocketPortFromArgs(String[] args) {
         for (int i = 0; i < args.length - 1; i++)
             if (args[i].equals("--s"))

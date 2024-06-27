@@ -90,7 +90,6 @@ public class ServerSetUpController extends GuiController {
      * if a RemoteException occurs during the connection attempt.
      */
     private void handleConnectButton() {
-        System.out.println("CONNECT CLICKED");
         if (ClientApp.isIpValid(ip) && ClientApp.isPortValid(port)) {
             manager.execute(this::attemptConnection);
         }
@@ -106,7 +105,6 @@ public class ServerSetUpController extends GuiController {
             disableConnectButton();
             menuController.connectToServer(ip, Integer.parseInt(port), connectorType);
         } catch (RemoteException e) {
-            System.out.println("EXCEOTUIB");
             Platform.runLater(() -> showErrorPopup("Connect to server failed"));
         } finally {
             enableConnectButton();
