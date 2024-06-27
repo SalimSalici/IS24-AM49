@@ -101,7 +101,7 @@ public class GameOverviewScene extends Scene implements Observer {
         String command = parts[0];
         switch (command) {
             case "1", "chat":
-                this.sceneManager.switchScene(SceneType.CHAT_SCENE);
+                this.handleChat(parts);
                 break;
             case "2", "focus":
                 this.handleFocusPlayer(parts);
@@ -113,17 +113,30 @@ public class GameOverviewScene extends Scene implements Observer {
                 this.handleDrawCard(parts);
                 break;
             case "r", "rankings":
-                this.handleRankings();
+                this.handleRankings(parts);
                 break;
             case "leave":
-                this.handleLeave();
+                this.handleLeave(parts);
                 break;
             default:
                 this.showError("Invalid command, please try again.");
         }
     }
 
+    private void handleChat(String[] args) {
+        if (args.length == 2 && args[1].equals("--help")) {
+            this.showHelpMessage("Shows the chat.", "1");
+            return;
+        }
+        this.sceneManager.switchScene(SceneType.CHAT_SCENE);
+    }
+
     private void handleFocusPlayer(String[] args) {
+        if (args.length >= 2 && args[1].equals("--help")) {
+            this.showHelpMessage("Shows the hand of the i-th player. If you don't pass a parameter, your hand will be focused" +
+                    " You can see the player above, in the 'Players' section.", "focus 2  (or equivalently)  2 2");
+            return;
+        }
         try {
             VirtualPlayer player = args.length < 2 ?
                     this.getClientPlayer() :
@@ -143,6 +156,11 @@ public class GameOverviewScene extends Scene implements Observer {
     }
 
     private void handleViewPlayer(String[] args) {
+        if (args.length >= 2 && args[1].equals("--help")) {
+            this.showHelpMessage("Shows the board of the i-th player. If you don't pass a parameter, your hand will be focused." +
+                    " You can see the player above, in the 'Players' section.", "view 2  (or equivalently)  2 2");
+            return;
+        }
         try {
             VirtualPlayer player = args.length < 2 ?
                     this.getClientPlayer() :
@@ -161,6 +179,10 @@ public class GameOverviewScene extends Scene implements Observer {
     }
 
     private void handleDrawCard(String[] args) {
+        if (args.length >= 2 && args[1].equals("--help")) {
+            this.showHelpMessage("Draw the i-th card. Cards are numbered above, in the draw area.", "draw 5  (or equivalently)  4 5");
+            return;
+        }
         if (!this.canDraw()) {
             this.showError("You cannot draw a card now.");
             return;
@@ -208,38 +230,20 @@ public class GameOverviewScene extends Scene implements Observer {
         }
     }
 
-//    private DrawCardAction getDrawCardAction(int choice) throws InvalidActionException {
-//        DrawPosition drawPosition = switch (choice) {
-//            case 1 -> DrawPosition.RESOURCE_DECK;
-//            case 4 -> DrawPosition.GOLD_DECK;
-//            case 2, 3, 5, 6 -> DrawPosition.REVEALED;
-//            default -> throw new IndexOutOfBoundsException("Unexpected value: " + choice);
-//        };
-//
-//        int drawId = 0;
-//        try {
-//            drawId = switch (choice) {
-//                case 1, 4 -> 0;
-//                case 2 -> this.game.getDrawableArea().getRevealedResourcesIds().getFirst();
-//                case 3 -> this.game.getDrawableArea().getRevealedResourcesIds().get(1);
-//                case 5 -> this.game.getDrawableArea().getRevealedGoldsIds().getFirst();
-//                case 6 -> this.game.getDrawableArea().getRevealedGoldsIds().get(1);
-//                default -> throw new IndexOutOfBoundsException("Unexpected value: " + choice);
-//            };
-//        } catch (NullPointerException e) {
-//            throw new InvalidActionException("That revealed card slot is empty.");
-//        }
-//        return new DrawCardAction(ClientApp.getUsername(), drawPosition, drawId);
-//    }
-
-    private void handleRankings() {
+    private void handleRankings(String[] args) {
+        if (args.length >= 2 && args[1].equals("--help")) {
+            this.showHelpMessage("Go to the end game screen.", "r");
+            return;
+        }
         this.sceneManager.switchScene(SceneType.END_GAME_SCENE);
     }
 
-    private void handleLeave() {
-//        this.sceneManager.destroyPlayerScenes();
+    private void handleLeave(String[] args) {
+        if (args.length >= 2 && args[1].equals("--help")) {
+            this.showHelpMessage("Leave the game.", "leave");
+            return;
+        }
         this.gameController.leave();
-//        this.backToMainMenu(true);
     }
 
     @Override

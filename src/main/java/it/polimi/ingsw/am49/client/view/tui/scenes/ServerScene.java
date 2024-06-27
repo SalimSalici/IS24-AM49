@@ -25,17 +25,11 @@ public class ServerScene extends Scene {
     @Override
     public void printView() {
         this.clearScreen();
-        this.printHeader();
+        this.printBigHeader();
+        System.out.println("\n");
+        System.out.println("Server selection.");
         System.out.println("\n");
         this.printPrompt();
-    }
-
-    private void printHeader() {
-        System.out.println("*******************************");
-        System.out.println("| Welcome to Codex Naturalis! |");
-        System.out.println("*******************************");
-        System.out.println("    |  Server selection  |     ");
-        System.out.println("    **********************     ");
     }
 
     private void printPrompt() {
@@ -67,7 +61,7 @@ public class ServerScene extends Scene {
         }
 
         if (this.connectorType == null) {
-          this.handleConnectionType(input);
+            this.handleConnectionType(input);
         } else if (this.host == null) {
             this.handleHost(input);
         } else
