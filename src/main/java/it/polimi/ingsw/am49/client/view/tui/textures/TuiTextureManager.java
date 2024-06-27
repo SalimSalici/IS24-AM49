@@ -29,9 +29,8 @@ public class TuiTextureManager {
                 }
             }
         } catch (IOException e) {
-            // TODO: handle exception
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            System.out.println("Error. Could not load textures. " + e.getMessage());
+            System.exit(1);
         }
 
         this.textures = new HashMap<>();
@@ -39,9 +38,8 @@ public class TuiTextureManager {
             for (int i = 1; i <= 102; i++)
                 this.textures.put(i, this.loadTexture(i));
         } catch (IOException e) {
-            // TODO: handle exception
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            System.out.println("Error. Could not load textures. " + e.getMessage());
+            System.exit(1);
         }
     }
 
