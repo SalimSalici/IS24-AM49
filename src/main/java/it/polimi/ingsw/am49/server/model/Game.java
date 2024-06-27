@@ -1,6 +1,7 @@
 package it.polimi.ingsw.am49.server.model;
 
 import it.polimi.ingsw.am49.common.actions.GameAction;
+import it.polimi.ingsw.am49.server.ServerConfig;
 import it.polimi.ingsw.am49.server.model.cards.objectives.ObjectiveCard;
 import it.polimi.ingsw.am49.server.model.decks.DeckLoader;
 import it.polimi.ingsw.am49.server.model.decks.GameDeck;
@@ -218,7 +219,7 @@ public class Game implements Serializable, EventEmitter {
      * Handles the logic for determining if the end game phase or final round should start.
      */
     private synchronized void handleEndGameAndFinalRound() {
-        if (this.currentPlayer.getPoints() >= 20 || (this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty()))
+        if (this.currentPlayer.getPoints() >= ServerConfig.pointsToStartEndgame || (this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty()))
             this.setEndGame(true);
 
         if (this.currentPlayer.equals(this.getLastPlayer())) {
