@@ -321,7 +321,6 @@ public class OverviewController extends GuiController {
             Label usernameLabel = new Label(player.getUsername());
 
             player.addObserver(() -> Platform.runLater(() -> {
-                //TODO: replace black totem with gray one
                 totemImageview.setImage(player.getPlaying() ? totemImage : offlineTotemImage);
                 totemImageview.setFitWidth(33);
                 totemImageview.setFitHeight(36);

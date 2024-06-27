@@ -68,7 +68,6 @@ public class VirtualBoard extends Observable {
         return this.starterTile;
     }
 
-    // TODO: instead of code duplication, consider making this method static in PlayerBoard.java
     /**
      * Given the coordinates of a card and a relative position, returns the coordinates of the card in the specified relative position.
      *
