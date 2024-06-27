@@ -219,6 +219,7 @@ public class Game implements Serializable, EventEmitter {
      * Handles the logic for determining if the end game phase or final round should start.
      */
     private synchronized void handleEndGameAndFinalRound() {
+        System.out.println(this.currentPlayer.getPoints());
         if (this.currentPlayer.getPoints() >= ServerConfig.pointsToStartEndgame || (this.resourceGameDeck.isEmpty() && this.goldGameDeck.isEmpty()))
             this.setEndGame(true);
 

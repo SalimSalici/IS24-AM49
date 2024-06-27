@@ -33,7 +33,6 @@ public class RoomController extends GuiController {
     @FXML
     private HBox totemHBox;
 
-//    private Server server;
     private RoomInfo roomInfo;
     private Color totemColor;
 
@@ -43,7 +42,6 @@ public class RoomController extends GuiController {
 
     @Override
     public void init() {
-//        this.server = this.app.getServer();
         this.roomInfo = this.manager.getRoomInfo();
 
         totemHBox.setVisible(false);
@@ -54,28 +52,38 @@ public class RoomController extends GuiController {
         drawPlayersCount();
 
         this.redImageview.setOnMouseClicked(e -> {
-            this.totemColor = Color.RED;
-            this.setColor();
+            if(this.totemColor != Color.RED){
+                this.totemColor = Color.RED;
+                this.setColor();
+            }
         });
 
         this.greenImageview.setOnMouseClicked(e -> {
-            this.totemColor = Color.GREEN;
-            this.setColor();
+            if(this.totemColor != Color.GREEN){
+                this.totemColor = Color.GREEN;
+                this.setColor();
+            }
         });
 
         this.blueImageview.setOnMouseClicked(e -> {
-            this.totemColor = Color.BLUE;
-            this.setColor();
+            if(this.totemColor != Color.BLUE){
+                this.totemColor = Color.BLUE;
+                this.setColor();
+            }
         });
 
         this.yellowImageview.setOnMouseClicked(e -> {
-            this.totemColor = Color.YELLOW;
-            this.setColor();
+            if(this.totemColor != Color.YELLOW){
+                this.totemColor = Color.YELLOW;
+                this.setColor();
+            }
         });
 
         this.notreadyButton.setOnAction(e -> {
-            this.totemColor = null;
-            this.setColor();
+            if(this.totemColor != null){
+                this.totemColor = null;
+                this.setColor();
+            }
         });
 
         this.leaveButton.setOnAction(e -> {
@@ -137,6 +145,7 @@ public class RoomController extends GuiController {
             } catch (IllegalArgumentException e) {
                 this.totemColor = null;
             } catch (RoomException e){
+                this.totemColor = null;
                 Platform.runLater(() -> showErrorPopup(e.getMessage()));
             }
         });

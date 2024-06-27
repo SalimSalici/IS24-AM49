@@ -39,8 +39,6 @@ public class MainMenuController extends GuiController {
 
     @Override
     public void init(){
-        //this.server = this.app.getServer();
-        refreshRooms();
         roomsListview.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<RoomInfoItem>() {
             @Override
             public void changed(ObservableValue<? extends RoomInfoItem> observableValue, RoomInfoItem oldItem, RoomInfoItem newItem) {
@@ -65,6 +63,8 @@ public class MainMenuController extends GuiController {
         createroomButton.setOnAction(e -> {
             createRoom();
         });
+
+        Platform.runLater(this::refreshRooms);
     }
 
     /**
