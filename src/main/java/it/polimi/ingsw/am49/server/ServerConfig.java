@@ -5,7 +5,7 @@ public abstract class ServerConfig {
     /**
      * The amount of points that will activate the end game phase of a game
      */
-    public static final int pointsToStartEndgame = 20;
+    public static final int pointsToStartEndgame = 1;
 
     /**
      * Whether to activate the "Persistence" additional functionality or not.

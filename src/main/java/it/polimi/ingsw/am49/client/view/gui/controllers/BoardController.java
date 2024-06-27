@@ -171,7 +171,7 @@ public class BoardController extends GuiController {
 
     public void clearFinalRound(){
         if (finalRoundLabel != null) {
-            containerPane.getChildren().remove(finalRoundLabel);
+            Platform.runLater(() -> containerPane.getChildren().remove(finalRoundLabel));
             finalRoundLabel = null;
         }
     }

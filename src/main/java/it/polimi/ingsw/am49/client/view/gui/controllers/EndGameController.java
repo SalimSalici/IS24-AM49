@@ -98,6 +98,8 @@ public class EndGameController extends GuiController {
             ));
         }
 
+        rankingListview.setMouseTransparent( true );
+        rankingListview.setFocusTraversable( false );
         rankingListview.getItems().addAll(endGameItems);
         rankingListview.setCellFactory(param -> new EndGameInfoListCell());
         rankingVbox.getChildren().addAll(labelsHbox, rankingListview);

@@ -10,8 +10,9 @@
     -fx-border-radius: 10;
     -fx-background-radius: 10;
     -fx-text-fill: #21130b;
-    -fx-font-family: "Gebetbuch Fraktur";
-    -fx-font-size: 35px;
+    -fx-font-family: "DejaVu Sans Mono";
+    -fx-font-weight: normal;
+    -fx-font-size: 30px;
 }
 
 

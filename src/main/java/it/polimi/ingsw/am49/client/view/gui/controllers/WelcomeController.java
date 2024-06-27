@@ -45,6 +45,9 @@ public class WelcomeController extends GuiController {
         if(this.isUsernameValid(usernameTextfield.getText())) {
             ClientApp.setUsername(usernameTextfield.getText());
             this.manager.changeScene(SceneTitle.MAIN_MENU, true);
-        }else System.out.println("The username your trying to use is not allowed");
+        }else {
+            System.out.println("The username your trying to use is not allowed");
+            showErrorPopup("The username your trying to use is not allowed");
+        }
     }
 }

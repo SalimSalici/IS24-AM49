@@ -32,7 +32,7 @@ public class MainMenuController extends GuiController {
     @FXML
     private ListView<RoomInfoItem> roomsListview;
 
-    private RoomInfoItem selectedRoom;
+    private RoomInfoItem selectedRoom = null;
     private Server server;
 
     private List<RoomInfo> rooms;
@@ -95,6 +95,8 @@ public class MainMenuController extends GuiController {
      * If an exception occurs, shows an error popup with the appropriate message.
      */
     private void joinRoom(){
+        if(selectedRoom == null)
+            return;
         this.manager.execute(() -> {
             try {
                 System.out.println("Joining room: " + selectedRoom);

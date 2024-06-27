@@ -26,7 +26,10 @@
                   <Font name="DejaVu Sans Mono Oblique" size="13.0" />
                </font>
             </TextField>
-            <Button fx:id="confirmButton" mnemonicParsing="false" prefHeight="75.0" prefWidth="187.0" text="Confirm" />
+            <Button fx:id="confirmButton" mnemonicParsing="false" prefHeight="75.0" prefWidth="187.0" text="ENTER">
+               <font>
+                  <Font name="DejaVu Sans Mono" size="13.0" />
+               </font></Button>
          </children>
          <padding>
             <Insets left="100.0" right="100.0" />
