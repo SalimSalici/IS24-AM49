@@ -87,7 +87,6 @@ public class ChatController extends GuiController {
      */
     private final Map<Tab, String> initialTabTitles = new HashMap<>();
 
-
     /**
      * Initializes the chat controller.
      */
@@ -146,15 +145,18 @@ public class ChatController extends GuiController {
      */
     private void displayConversation(List<String> conversation, Tab selectedTab) {
         VBox vBox = tabToVBox.get(selectedTab);
+        vBox.getChildren().clear();
         ScrollPane scrollPane = tabToScrollPane.get(selectedTab);
 
-        Text message = new Text(conversation.getLast());
-        message.setStyle("-fx-padding: 3px;");
-        TextFlow textFlow = new TextFlow(message);
-        textFlow.setMaxWidth(vBox.getPrefWidth() - 10);
-        vBox.getChildren().add(textFlow);
-        Separator separator = new Separator();
-        vBox.getChildren().add(separator);
+        for (String text : conversation) {
+            Text message = new Text(text);
+            message.setStyle("-fx-padding: 3px;");
+            TextFlow textFlow = new TextFlow(message);
+            textFlow.setMaxWidth(vBox.getPrefWidth() - 10);
+            vBox.getChildren().add(textFlow);
+            Separator separator = new Separator();
+            vBox.getChildren().add(separator);
+        }
 
         readMessageCount.put(selectedTab, conversation.size());
         updateTabTitle(selectedTab, 0);
@@ -201,30 +203,30 @@ public class ChatController extends GuiController {
             anchorInTab.setPrefWidth(300);
             anchorInTab.setPrefHeight(333);
 
-                ScrollPane scrollPane = new ScrollPane();
-                scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-                scrollPane.setPrefWidth(300);
-                scrollPane.setPrefHeight(278);
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            scrollPane.setPrefWidth(300);
+            scrollPane.setPrefHeight(278);
 
-                    VBox vBox = new VBox();
-                    vBox.setLayoutX(5);
-                    vBox.setSpacing(1);
-                    vBox.setPrefWidth(282);
-                    vBox.setPrefHeight(278);
-                    scrollPane.setContent(vBox);
+            VBox vBox = new VBox();
+            vBox.setLayoutX(5);
+            vBox.setSpacing(1);
+            vBox.setPrefWidth(282);
+            vBox.setPrefHeight(278);
+            scrollPane.setContent(vBox);
 
-                HBox hBox = new HBox();
-                hBox.setLayoutY(278);
+            HBox hBox = new HBox();
+            hBox.setLayoutY(278);
 
-                    TextField textField = new TextField();
-                    textField.setPrefWidth(265);
-                    textField.setPrefHeight(31);
-                    hBox.getChildren().add(textField);
+            TextField textField = new TextField();
+            textField.setPrefWidth(265);
+            textField.setPrefHeight(31);
+            hBox.getChildren().add(textField);
 
-                    Button sendButton = new Button("↵");
-                    sendButton.setPrefWidth(35);
-                    sendButton.setPrefHeight(30);
-                hBox.getChildren().add(sendButton);
+            Button sendButton = new Button("↵");
+            sendButton.setPrefWidth(35);
+            sendButton.setPrefHeight(30);
+            hBox.getChildren().add(sendButton);
 
             anchorInTab.getChildren().addAll(scrollPane, hBox);
 
