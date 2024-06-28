@@ -17,7 +17,7 @@ public class StarterCard extends PlaceableCard implements Serializable {
     private final List<Resource> centerResources;
 
     /**
-     * The symbol present in the top righ corner of the card's back.
+     * The symbol present in the top right corner of the card's back.
      */
     private final Symbol trb;
 
@@ -27,7 +27,7 @@ public class StarterCard extends PlaceableCard implements Serializable {
     private final Symbol tlb;
 
     /**
-     * The symbol present in the bottom righ corner of the card's back.
+     * The symbol present in the bottom right corner of the card's back.
      */
     private final Symbol brb;
 
@@ -37,7 +37,7 @@ public class StarterCard extends PlaceableCard implements Serializable {
     private final Symbol blb;
 
     /**
-     * Costructs a new StarterCard, with the specified parameters.
+     * Constructs a new StarterCard, with the specified parameters.
      *
      * @param id the unique identifier of the card
      * @param tr the symbol in the top right corner of the card's front
@@ -63,7 +63,7 @@ public class StarterCard extends PlaceableCard implements Serializable {
     }
 
     /**
-     * Costructs a copy of another {@link StarterCard}.
+     * Constructs a copy of another {@link StarterCard}.
      *
      * @param other the {@link StarterCard} that is being copied
      */
@@ -117,38 +117,6 @@ public class StarterCard extends PlaceableCard implements Serializable {
     public List<Resource> getCenterResources() {
         return Collections.unmodifiableList(centerResources);
     }
-
-//    /**
-//     *
-//     * @return the symbol in the front right corner of the card's back
-//     */
-//    public Symbol getTrb() {
-//        return trb;
-//    }
-//
-//    /**
-//     *
-//     * @return the symbol in the front left corner of the card's back
-//     */
-//    public Symbol getTlb() {
-//        return tlb;
-//    }
-//
-//    /**
-//     *
-//     * @return the symbol in the bottom right corner of the card's back
-//     */
-//    public Symbol getBrb() {
-//        return brb;
-//    }
-//
-//    /**
-//     *
-//     * @return the symbol in the bottom left corner of the card's back
-//     */
-//    public Symbol getBlb() {
-//        return blb;
-//    }
 
     @Override
     public StarterCard clone() {

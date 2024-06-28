@@ -19,29 +19,51 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * This class creates the immutable decks by reading the JSON files in the resouces. The immutable decks are used as
+ * This class creates the immutable decks by reading the JSON files in the resources. The immutable decks are used as
  * a starting point to create different shuffled decks for every individual game.
- * The class is implemented with the Singleton design pattern to ensure that only one DeckLoder istance in created.
+ * The class is implemented with the Singleton design pattern to ensure that only one DeckLoader instance is created.
  * See the following path for resources: {@code src/main/resources/}.
  */
 public class DeckLoader {
 
-    private static DeckLoader instance;
     /**
-     * There is an immutable deck for each deck in the game.
+     * Singleton instance of DeckLoader.
+     */
+    private static DeckLoader instance;
+
+    /**
+     * Immutable deck of resource cards.
      * @see ImmutableDeck
      */
     private final ImmutableDeck<ResourceCard> resourceCardImmutableDeck;
+
+    /**
+     * Immutable deck of gold cards.
+     * @see ImmutableDeck
+     */
     private final ImmutableDeck<GoldCard> goldCardImmutableDeck;
+
+    /**
+     * Immutable deck of starter cards.
+     * @see ImmutableDeck
+     */
     private final ImmutableDeck<StarterCard> starterCardImmutableDeck;
+
+    /**
+     * Immutable deck of objective cards.
+     * @see ImmutableDeck
+     */
     private final ImmutableDeck<ObjectiveCard> objectiveCardImmutableDeck;
 
+    /**
+     * Gson object with custom type adapters for JSON serialization and deserialization.
+     */
     private final Gson gson;
 
     /**
      * Constructs a new DeckLoader instance. It initializes the Gson object with custom type adapters
      * for the different card types to handle JSON serialization and deserialization.
-     * The Gson object is set to Pretty printing to enhance redability.
+     * The Gson object is set to pretty printing to enhance readability.
      */
     private DeckLoader() {
         Log.getLogger().info("Loading cards from jsons.");
@@ -54,7 +76,7 @@ public class DeckLoader {
                 .setPrettyPrinting()
                 .create();
         this.resourceCardImmutableDeck = new ImmutableDeck<>(this.loadResourcesFromJson());
-        Log.getLogger().info("Reource cards loaded.");
+        Log.getLogger().info("Resource cards loaded.");
         this.goldCardImmutableDeck = new ImmutableDeck<>(this.loadGoldsFromJson());
         Log.getLogger().info("Gold cards loaded.");
         this.starterCardImmutableDeck = new ImmutableDeck<>(this.loadStartersFromJson());
@@ -64,7 +86,8 @@ public class DeckLoader {
     }
 
     /**
-     * @return the DeckLoader istance if present, creats and returns it otherwise.
+     * Gets the singleton instance of DeckLoader.
+     * @return the DeckLoader instance if present, creates and returns it otherwise.
      */
     public static DeckLoader getInstance() {
         if (DeckLoader.instance != null) return instance;
@@ -73,7 +96,8 @@ public class DeckLoader {
     }
 
     /**
-     * @return the Gson object with custom type adapters for card objects.
+     * Gets the Gson object with custom type adapters for card objects.
+     * @return the Gson object
      */
     public Gson getGson() {
         return this.gson;
@@ -81,7 +105,7 @@ public class DeckLoader {
 
     /**
      * Makes a copy of each resource card and creates an array containing all the resource cards.
-     * @return the resource card array.
+     * @return the resource card array
      */
     public GameDeck<ResourceCard> getNewResourceDeck() {
         return new GameDeck<>(this.resourceCardImmutableDeck.getCardsCopy().toArray(ResourceCard[]::new));
@@ -89,7 +113,7 @@ public class DeckLoader {
 
     /**
      * Makes a copy of each gold card and creates an array containing all the gold cards.
-     * @return the gold card array.
+     * @return the gold card array
      */
     public GameDeck<GoldCard> getNewGoldDeck() {
         return new GameDeck<>(this.goldCardImmutableDeck.getCardsCopy().toArray(GoldCard[]::new));
@@ -97,7 +121,7 @@ public class DeckLoader {
 
     /**
      * Makes a copy of each starter card and creates an array containing all the starter cards.
-     * @return the starter card array.
+     * @return the starter card array
      */
     public GameDeck<StarterCard> getNewStarterDeck() {
         return new GameDeck<>(this.starterCardImmutableDeck.getCardsCopy().toArray(StarterCard[]::new));
@@ -105,48 +129,52 @@ public class DeckLoader {
 
     /**
      * Makes a copy of each objective card and creates an array containing all the objective cards.
-     * @return the objective card array.
+     * @return the objective card array
      */
     public GameDeck<ObjectiveCard> getNewObjectiveDeck() {
         return new GameDeck<>(this.objectiveCardImmutableDeck.getCardsCopy().toArray(ObjectiveCard[]::new));
     }
 
     /**
-     * @param id the id of the requested card
-     * @return a copy of the card with the specified id, or null if it doesn't exist
+     * Gets a new resource card by its ID.
+     * @param id the ID of the requested card
+     * @return a copy of the card with the specified ID, or null if it doesn't exist
      */
     public ResourceCard getNewResourceCardById(int id) {
         return this.resourceCardImmutableDeck.getCardCopyById(id);
     }
 
     /**
-     * @param id the id of the requested card
-     * @return a copy of the card with the specified id, or null if it doesn't exist
+     * Gets a new gold card by its ID.
+     * @param id the ID of the requested card
+     * @return a copy of the card with the specified ID, or null if it doesn't exist
      */
     public GoldCard getNewGoldCardById(int id) {
         return this.goldCardImmutableDeck.getCardCopyById(id);
     }
 
     /**
-     * @param id the id of the requested card
-     * @return a copy of the card with the specified id, or null if it doesn't exist
+     * Gets a new objective card by its ID.
+     * @param id the ID of the requested card
+     * @return a copy of the card with the specified ID, or null if it doesn't exist
      */
     public ObjectiveCard getNewObjectiveCardById(int id) {
         return this.objectiveCardImmutableDeck.getCardCopyById(id);
     }
 
     /**
-     * @param id the id of the requested card
-     * @return a copy of the card with the specified id, or null if it doesn't exist
+     * Gets a new starter card by its ID.
+     * @param id the ID of the requested card
+     * @return a copy of the card with the specified ID, or null if it doesn't exist
      */
     public StarterCard getNewStarterCardById(int id) {
         return this.starterCardImmutableDeck.getCardCopyById(id);
     }
 
     /**
-     * Finds the path to the JSON file containing the cards and reads it as a stream that is converted into a list of cards.
-     * @return the list of cards.
-     * See the following path for the resourcesCards JSON file: {@code src/main/resources/resourceCards.jason}.
+     * Finds the path to the JSON file containing the resource cards and reads it as a stream that is converted into a list of cards.
+     * @return the list of resource cards
+     * See the following path for the resourcesCards JSON file: {@code src/main/resources/resourceCards.json}.
      */
     private List<ResourceCard> loadResourcesFromJson() {
 
@@ -167,9 +195,9 @@ public class DeckLoader {
     }
 
     /**
-     * Finds the path to the JSON file containing the cards and reads it as a stream that is converted into a list of cards.
-     * @return the list of cards.
-     * See the following path for the goldCards JSON file: {@code src/main/resources/goldCards.jason}.
+     * Finds the path to the JSON file containing the gold cards and reads it as a stream that is converted into a list of cards.
+     * @return the list of gold cards
+     * See the following path for the goldCards JSON file: {@code src/main/resources/goldCards.json}.
      */
     private List<GoldCard> loadGoldsFromJson() {
 
@@ -190,9 +218,9 @@ public class DeckLoader {
     }
 
     /**
-     * Finds the path to the JSON file containing the cards and reads it as a stream that is converted into a list of cards.
-     * @return the list of cards.
-     * See the following path for the starterCards JSON file: {@code src/main/resources/starterCards.jason}.
+     * Finds the path to the JSON file containing the starter cards and reads it as a stream that is converted into a list of cards.
+     * @return the list of starter cards
+     * See the following path for the starterCards JSON file: {@code src/main/resources/starterCards.json}.
      */
     private List<StarterCard> loadStartersFromJson() {
 
@@ -213,9 +241,9 @@ public class DeckLoader {
     }
 
     /**
-     * Finds the path to the JSON file containing the cards and reads it as a stream that is converted into a list of cards.
-     * @return the list of cards.
-     * See the following path for the objectiveCards JSON file: {@code src/main/resources/objectiveCards.jason}.
+     * Finds the path to the JSON file containing the objective cards and reads it as a stream that is converted into a list of cards.
+     * @return the list of objective cards
+     * See the following path for the objectiveCards JSON file: {@code src/main/resources/objectiveCards.json}.
      */
     private List<ObjectiveCard> loadObjectivesFromJson() {
 

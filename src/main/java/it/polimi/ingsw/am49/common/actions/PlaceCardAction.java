@@ -7,10 +7,29 @@ import it.polimi.ingsw.am49.common.enumerations.CornerPosition;
  */
 public class PlaceCardAction extends GameAction {
 
+    /**
+     * The ID of the card being placed.
+     */
     private final int cardId;
+
+    /**
+     * The row of the parent card.
+     */
     private final int parentRow;
+
+    /**
+     * The column of the parent card.
+     */
     private final int parentCol;
+
+    /**
+     * The corner position where the card is placed relative to the parent card.
+     */
     private final CornerPosition cornerPosition;
+
+    /**
+     * Indicates if the card is placed flipped.
+     */
     private final boolean flipped;
 
     /**

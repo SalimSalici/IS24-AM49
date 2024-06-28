@@ -11,23 +11,46 @@ import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 
 import java.util.List;
 
+/**
+ * Represents the main menu scene in the text-based user interface.
+ */
 public class MainMenuScene extends Scene {
 
+    /**
+     * The menu controller for handling menu-related actions.
+     */
     private final MenuController menuController;
+
+    /**
+     * The list of available rooms.
+     */
     private List<RoomInfo> rooms;
+
+    /**
+     * Flag indicating if the scene is currently loading.
+     */
     private boolean isLoading = false;
 
+    /**
+     * Constructs a MainMenuScene with the specified scene manager and menu controller.
+     *
+     * @param sceneManager the scene manager
+     * @param menuController the menu controller
+     */
     public MainMenuScene(SceneManager sceneManager, MenuController menuController) {
         super(sceneManager);
         this.menuController = menuController;
     }
 
+    /**
+     * Prints the current view of the main menu scene.
+     */
     @Override
     public void printView() {
         this.clearScreen();
         this.printHeader();
         System.out.println("\n\n\n");
-        System.out.println("You username is: " + ClientApp.getUsername()) ;
+        System.out.println("Your username is: " + ClientApp.getUsername());
         System.out.println("\n\n\n");
         this.printRoomList();
         System.out.println("\n\n");
@@ -35,6 +58,9 @@ public class MainMenuScene extends Scene {
         this.printPrompt();
     }
 
+    /**
+     * Prints the prompt for user commands in the main menu scene.
+     */
     private void printPrompt() {
         System.out.print("Available commands: ");
         if (this.isLoading)
@@ -44,6 +70,9 @@ public class MainMenuScene extends Scene {
         System.out.print(">>> ");
     }
 
+    /**
+     * Prints the header of the main menu scene.
+     */
     private void printHeader() {
         System.out.println("*******************************");
         System.out.println("| Welcome to Codex Naturalis! |");
@@ -52,6 +81,9 @@ public class MainMenuScene extends Scene {
         System.out.println("        *************          ");
     }
 
+    /**
+     * Prints the list of available rooms.
+     */
     private void printRoomList() {
         System.out.println("Available rooms");
         System.out.println("--------------------------\n");
@@ -64,6 +96,11 @@ public class MainMenuScene extends Scene {
         }
     }
 
+    /**
+     * Handles user input in the main menu scene.
+     *
+     * @param input the user input string
+     */
     @Override
     public void handleInput(String input) {
         String[] parts = input.split(" ");
@@ -103,11 +140,19 @@ public class MainMenuScene extends Scene {
         }
     }
 
+    /**
+     * Focuses on the main menu scene, fetching the list of available rooms.
+     */
     public void focus() {
         this.rooms = this.menuController.fetchRooms();
         this.printView();
     }
 
+    /**
+     * Handles the username change command.
+     *
+     * @param args the command arguments
+     */
     private void handleUsername(String[] args) {
         if (args.length < 2) {
             this.showError("Username missing, please try again. Type '1 --help' for more information about this command.");
@@ -126,6 +171,11 @@ public class MainMenuScene extends Scene {
         this.refreshView();
     }
 
+    /**
+     * Handles the create room command.
+     *
+     * @param args the command arguments
+     */
     private void handleCreateRoom(String[] args) {
         if (args.length > 1 && args[1].equals("--help")) {
             this.showHelpMessage("The 'create' command is used to create a new room. When creating a room, you must specify its name and amount of players.", "Example usage: 2 [room name] [number of players]");
@@ -156,6 +206,11 @@ public class MainMenuScene extends Scene {
         }
     }
 
+    /**
+     * Handles the join room command.
+     *
+     * @param args the command arguments
+     */
     private void handleJoinRoom(String[] args) {
         if (args.length < 2) {
             this.showError("Missing parameters, please try again. Type '3 --help' for more information about this command.");
@@ -178,6 +233,11 @@ public class MainMenuScene extends Scene {
         }
     }
 
+    /**
+     * Handles the reconnect room command.
+     *
+     * @param args the command arguments
+     */
     private void handleReconnectRoom(String[] args) {
         if (args.length < 2) {
             this.showError("Missing parameters, please try again. Type '3 --help' for more information about this command.");
@@ -201,8 +261,11 @@ public class MainMenuScene extends Scene {
         }
     }
 
+    /**
+     * Handles the refresh rooms command, updating the list of available rooms.
+     */
     public void handleRefreshRooms() {
-        this.showInfoMessage("Updating list of available room. Please wait...");
+        this.showInfoMessage("Updating list of available rooms. Please wait...");
         this.rooms = this.menuController.fetchRooms();
         this.refreshView();
     }

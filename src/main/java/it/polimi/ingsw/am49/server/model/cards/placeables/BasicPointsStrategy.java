@@ -6,7 +6,7 @@ import it.polimi.ingsw.am49.server.model.players.PlayerBoard;
 import java.io.Serializable;
 
 /**
- * Is the strategy of {@link PlacementPointsStrategy} used to rapresent the
+ * Is the strategy of {@link PlacementPointsStrategy} used to represent the
  * {@link PlaceableCard}s that give a fixed amount of points.
  */
 public class BasicPointsStrategy implements PlacementPointsStrategy, Serializable {

@@ -19,7 +19,7 @@ import java.util.Set;
 public abstract class GameState implements Serializable {
 
     /**
-     * This attribute indicates witch of the possible {@link GameStateType} is rapresented by the class that will
+     * This attribute indicates witch of the possible {@link GameStateType} is represented by the class that will
      * inherit from {@link GameState}
      */
     protected final GameStateType type;
@@ -41,9 +41,9 @@ public abstract class GameState implements Serializable {
     protected String notYourTurnMessage;
 
     /**
-     * Costructor for the {@link GameState} class.
-     * @param type rapresents the {@link GameStateType}.
-     * @param game object rapresenting the {@link Game}.
+     * Constructor for the {@link GameState} class.
+     * @param type represents the {@link GameStateType}.
+     * @param game object representing the {@link Game}.
      * @param acceptableActionTypes set containing the allowed actions, see {@link GameActionType}.
      */
     protected GameState(GameStateType type, Game game, Set<GameActionType> acceptableActionTypes) {
@@ -54,7 +54,7 @@ public abstract class GameState implements Serializable {
     }
 
     /**
-     * Is used to handle some tasks needed for the proprer functioning of the state (es. drowing the common objectives).
+     * Is used to handle some tasks needed for the proper functioning of the state (es. drawing the common objectives).
      */
     public void setUp() {
         this.game.triggerEvent(new GameStateChangedEvent(

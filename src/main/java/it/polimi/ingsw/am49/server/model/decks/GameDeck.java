@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 /**
  * This class is used to create a stack for every deck, from witch the cards can be drawn.
- * The usage of a stack allows each card to be drawn only onece in a game.
+ * The usage of a stack allows each card to be drawn only once in a game.
  * @param <T> tells the type of cards that are in the deck that is being handled.
  */
 public class GameDeck<T extends Card> implements Serializable {
@@ -30,6 +30,10 @@ public class GameDeck<T extends Card> implements Serializable {
         return deck.pop();
     }
 
+    /**
+     * Allows to see the first without removing it
+     * @return the first element
+     */
     public T peek(){
         return deck.peek();
     }

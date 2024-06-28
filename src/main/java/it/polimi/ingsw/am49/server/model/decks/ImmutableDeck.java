@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Creates the list rappresentig the immutable deck and handles the copy of cards for the GameLoader {@link DeckLoader} class.
+ * Creates the list representing the immutable deck and handles the copy of cards for the GameLoader {@link DeckLoader} class.
  * @param <T> tells the type of card that are in the immutable deck that is being handled.
  */
 public class ImmutableDeck<T extends Card> {

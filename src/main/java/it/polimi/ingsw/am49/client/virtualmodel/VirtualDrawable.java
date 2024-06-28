@@ -9,11 +9,35 @@ import java.util.List;
  * Represents a virtual drawable entity in the game that tracks resources and golds.
  */
 public class VirtualDrawable extends Observable {
+
+    /**
+     * The count of remaining resources.
+     */
     private int remainingResources;
+
+    /**
+     * The count of remaining golds.
+     */
     private int remainingGolds;
+
+    /**
+     * The resource at the top of the resource deck.
+     */
     private Resource deckTopResource;
+
+    /**
+     * The resource at the top of the gold deck.
+     */
     private Resource deckTopGold;
+
+    /**
+     * The list of IDs for the revealed resources.
+     */
     private List<Integer> revealedResourcesIds;
+
+    /**
+     * The list of IDs for the revealed golds.
+     */
     private List<Integer> revealedGoldsIds;
 
     /**

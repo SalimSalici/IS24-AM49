@@ -40,17 +40,17 @@ public class ChooseStarterSideState extends GameState {
 
     /**
      * Constructor for ChoseStarterSideState.
-     * @param game istance of the {@link Game} class.
+     * @param game instance of the {@link Game} class.
      */
     public ChooseStarterSideState(Game game) {
         super(GameStateType.CHOOSE_STARTER_SIDE, game, Set.of(GameActionType.CHOOSE_STARTER_SIDE));
         this.playersChoosing = new HashSet<>(game.getPlayers());
-        this.notYourTurnMessage = "You have already choosen the side of your starter card. You must wait for the other players.";
+        this.notYourTurnMessage = "You have already chosen the side of your starter card. You must wait for the other players.";
         this.objectiveDeck = DeckLoader.getInstance().getNewObjectiveDeck();
     }
 
     /**
-     * Deals one starter card for every player in the game and norifies that the game state has changed to ChooseStarterSide.
+     * Deals one starter card for every player in the game and notifies that the game state has changed to ChooseStarterSide.
      */
     @Override
     public void setUp() {
@@ -84,7 +84,7 @@ public class ChooseStarterSideState extends GameState {
 
     /**
      * Handles the main logic for the {@link ChooseStarterSideState}.
-     * @param action tells witch type of {@link GameAction} neds to be handled.
+     * @param action tells witch type of {@link GameAction} needs to be handled.
      * @throws InvalidActionException if the action is not supported by this state.
      * @throws NotYourTurnException if the player making the action is not the current player.
      */
@@ -110,7 +110,7 @@ public class ChooseStarterSideState extends GameState {
     }
 
     /**
-     * Deals three cards for the initial hand of eatch player.
+     * Deals three cards for the initial hand of each player.
      */
     private void assignInitialHand() {
         for (Player p : this.game.getPlayers()) {

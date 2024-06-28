@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Is the strategy of {@link ObjectivePointsStrategy} used to rapresent the
+ * Is the strategy of {@link ObjectivePointsStrategy} used to represent the
  * {@link ObjectiveCard}s that give to the player the amount of points
  * shown on the card multiplied by how many times a specific set of symbols appear
  * in the playing board.
@@ -24,7 +24,7 @@ public class SymbolsObjectiveStrategy implements ObjectivePointsStrategy, Serial
     private final Map<Symbol, Integer> requirements;
 
     /**
-     * Costructs a new {@link SymbolsObjectiveStrategy} object with the
+     * Constructs a new {@link SymbolsObjectiveStrategy} object with the
      * specified requirements
      *
      * @param requirements is the set of symbols that determines how many
@@ -45,7 +45,7 @@ public class SymbolsObjectiveStrategy implements ObjectivePointsStrategy, Serial
                 itemCount += tile.getActiveSymbols().get(k);
             }
 
-            iterationsList.add(itemCount / v); // division of int should already return the floored number so no need to add Math.floor()
+            iterationsList.add(itemCount / v);
             }
         );
 

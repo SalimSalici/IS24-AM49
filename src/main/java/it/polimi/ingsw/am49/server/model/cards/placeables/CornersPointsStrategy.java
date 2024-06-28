@@ -7,7 +7,7 @@ import it.polimi.ingsw.am49.server.model.players.PlayerBoard;
 import java.io.Serializable;
 
 /**
- * Is the strategy of {@link PlacementPointsStrategy} used to rapresent the
+ * Is the strategy of {@link PlacementPointsStrategy} used to represent the
  * {@link PlaceableCard}s that give to the player the amount of points
  * shown on the card multiplied by the number of corners the card covers.
  */

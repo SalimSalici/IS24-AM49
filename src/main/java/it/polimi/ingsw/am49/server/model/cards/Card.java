@@ -49,7 +49,7 @@ public abstract class Card implements Serializable {
 
     /**
      *
-     * @return a string rapresenting the card
+     * @return a string representing the card
      */
     public String toString() {
         Gson gson = DeckLoader.getInstance().getGson();

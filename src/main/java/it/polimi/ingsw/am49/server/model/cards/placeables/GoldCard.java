@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * Are a type of {@link PlaceableCard} that can be placed in the board.
- * If the player wants to put down this card facing upwords he needs to
+ * If the player wants to put down this card facing upwards he needs to
  * make sure that the required resources are present in the play area.
  */
 public class GoldCard extends PlaceableCard implements Serializable {
@@ -38,7 +38,7 @@ public class GoldCard extends PlaceableCard implements Serializable {
     }
 
     /**
-     * Costructs a copy of another {@link GoldCard}.
+     * Constructs a copy of another {@link GoldCard}.
      *
      * @param other the {@link GoldCard} that is being copied
      */

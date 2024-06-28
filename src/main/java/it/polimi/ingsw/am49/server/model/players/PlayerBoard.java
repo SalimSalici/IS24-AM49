@@ -28,12 +28,12 @@ public class PlayerBoard implements Serializable {
     private final List<BoardTile> placementOrder;
 
     /**
-     * Saves the starter tile for eatch player.
+     * Saves the starter tile for each player.
      */
     private final BoardTile starterTile;
 
     /**
-     * Is a map <{@link Symbol, Integer} used to keep track of the resources that are available on the board.
+     * Is a Map&lt;{@link Symbol}, {@link Integer}&gt; used to keep track of the resources that are available on the board.
      */
     private final Map<Symbol, Integer> availableResources;
 
@@ -164,7 +164,7 @@ public class PlayerBoard implements Serializable {
     /**
      * This method checks if the player has enough resources in his player board to pay the cost of the card.
      * For card with no cost the method returns true.
-     * @param card is a {@link PlaceableCard} containing all the inforamtion regarding cards that can be played
+     * @param card is a {@link PlaceableCard} containing all the information regarding cards that can be played
      * @return true if the cost is met false otherwise
      */
     public boolean isCardCostMet(PlaceableCard card){

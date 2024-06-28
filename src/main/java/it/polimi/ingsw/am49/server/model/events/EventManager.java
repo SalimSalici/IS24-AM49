@@ -50,7 +50,7 @@ public class EventManager implements EventEmitter {
     }
 
     /**
-     * Deregisters a listener from a specific type of game event.
+     * Unsubscribes a listener from a specific type of game event.
      *
      * @param gameEventType the type of event to stop listening for
      * @param eventListener the listener to remove

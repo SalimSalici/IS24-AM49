@@ -26,12 +26,39 @@ import java.util.List;
  */
 public class PlayerScene extends Scene implements Observer {
 
+    /**
+     * The virtual game being played.
+     */
     private final VirtualGame game;
+
+    /**
+     * The renderer for the player's board.
+     */
     private final TuiBoardRenderer boardRenderer;
+
+    /**
+     * The renderer for the player's information.
+     */
     private final TuiPlayerRenderer tuiPlayerRenderer;
+
+    /**
+     * The virtual board for the player.
+     */
     private final VirtualBoard board;
+
+    /**
+     * The row position of the starter card on the board.
+     */
     private int row = CommonConfig.starterCardRow;
+
+    /**
+     * The column position of the starter card on the board.
+     */
     private int col = CommonConfig.starterCardCol;
+
+    /**
+     * The game controller for handling game actions.
+     */
     private final GameController gameController;
 
     /**
@@ -140,9 +167,7 @@ public class PlayerScene extends Scene implements Observer {
             this.refreshView();
         } catch (IllegalArgumentException e) {
             this.showError(e.getMessage());
-            return;
         }
-
     }
 
     /**
@@ -217,7 +242,7 @@ public class PlayerScene extends Scene implements Observer {
      * @return true if the player can place a card, otherwise false
      */
     private boolean canPlace() {
-        return  this.game.getCurrentPlayer().getUsername().equals(ClientApp.getUsername())
+        return this.game.getCurrentPlayer().getUsername().equals(ClientApp.getUsername())
                 && this.game.getGameState() == GameStateType.PLACE_CARD;
     }
 

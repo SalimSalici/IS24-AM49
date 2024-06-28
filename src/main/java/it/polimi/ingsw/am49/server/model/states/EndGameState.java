@@ -11,12 +11,18 @@ import it.polimi.ingsw.am49.common.exceptions.NotYourTurnException;
 import java.util.*;
 
 /**
- * Rapresents the game after the final round has been played.
+ * Represents the game after the final round has been played.
  */
 public class EndGameState extends GameState {
 
+    /**
+     * List of all the players
+     */
     private final List<Player> players;
 
+    /**
+     * The player that wins the game by forfeit in certain conditions
+     */
     private final Player forfeitWinner;
 
     /**
@@ -26,7 +32,7 @@ public class EndGameState extends GameState {
 
     /**
      * Constructs the EndGameState.
-     * @param game istance of the {@link Game} class.
+     * @param game instance of the {@link Game} class.
      */
     public EndGameState(Game game, Player forfeitWinner) {
         super(GameStateType.END_GAME, game, Set.of());
@@ -39,14 +45,14 @@ public class EndGameState extends GameState {
 
     /**
      * Constructs the EndGameState.
-     * @param game istance of the {@link Game} class.
+     * @param game instance of the {@link Game} class.
      */
     public EndGameState(Game game) {
         this(game, null);
     }
 
     /**
-     * Calculates objective points and how many objectives every player has achived.
+     * Calculates objective points and how many objectives every player has achieved.
      */
     @Override
     public void setUp() {

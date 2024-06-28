@@ -35,76 +35,77 @@ import java.util.*;
  * handling to manage game-related events dynamically.
  */
 public class Game implements Serializable, EventEmitter {
+
     /**
      * The number of players in the game.
      */
     private final int numPlayers;
-    
+
     /**
      * The current turn number.
      */
     private int turn;
-    
+
     /**
      * The current round number.
      */
     private int round;
-    
+
     /**
      * A list of all players in the game.
      */
     private final List<Player> players;
-    
+
     /**
      * The player whose turn it is currently.
      */
     private Player currentPlayer;
-    
+
     /**
      * Whether the game has entered the end game phase.
      */
     private boolean endGame;
-    
+
     /**
      * Whether the game is paused.
      */
     private boolean paused;
-    
+
     /**
      * Whether this is the final round of the game.
      */
     private boolean finalRound;
-    
+
     /**
      * The event manager for the game.
      */
     private transient EventManager eventManager;
-    
+
     /**
      * The common objectives for the game.
      */
     private final ObjectiveCard[] commonObjectives;
-    
+
     /**
      * The current game state.
      */
     private GameState gameState;
-    
+
     /**
      * The revealed resource cards.
      */
     private final ResourceCard[] revealedResources;
-    
+
     /**
      * The revealed gold cards.
      */
     private final GoldCard[] revealedGolds;
-    
+
     /**
      * The deck of resource cards.
      */
     private final GameDeck<ResourceCard> resourceGameDeck;
-    
+
     /**
      * The deck of gold cards.
      */
@@ -141,6 +142,12 @@ public class Game implements Serializable, EventEmitter {
         Log.getLogger().info("Game created.");
     }
 
+    /**
+     * Adds a player to the game with a given username and color.
+     *
+     * @param username the username of the player
+     * @param color the color assigned to the player
+     */
     public synchronized void addPlayer(String username, Color color) {
         if (this.players.size() < this.numPlayers) {
             Player newPlayer = new Player(username);
@@ -149,6 +156,11 @@ public class Game implements Serializable, EventEmitter {
         }
     }
 
+    /**
+     * Adds a player to the game.
+     *
+     * @param player the player to add
+     */
     public synchronized void addPlayer(Player player) {
         if (this.players.size() < this.numPlayers && this.getPlayerByUsername(player.getUsername()) == null) {
             this.players.add(player);
@@ -484,6 +496,9 @@ public class Game implements Serializable, EventEmitter {
         this.paused = paused;
     }
 
+    /**
+     * @return true if all players are deadlocked, false otherwise
+     */
     public synchronized boolean allPlayersDeadlocked() {
         for (Player p : this.players)
             if (!p.getBoard().isDeadlocked()) return false;

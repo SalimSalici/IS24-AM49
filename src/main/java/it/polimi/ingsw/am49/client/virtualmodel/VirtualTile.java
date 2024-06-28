@@ -7,10 +7,30 @@ import it.polimi.ingsw.am49.common.util.Pair;
  * Represents a virtual tile on the game board. Manages the position, card, and neighbors of the tile.
  */
 public class VirtualTile implements Comparable<VirtualTile> {
+
+    /**
+     * The card that is in this virtual tile
+     */
     private final VirtualCard card;
+
+    /**
+     * the row of the tile in the matrix representing the game board
+     */
     private final int row;
+
+    /**
+     * the column of the tile in the matrix representing the game board
+     */
     private final int col;
+
+    /**
+     * Used to identify which is above
+     */
     private final int zIndex;
+
+    /**
+     * The board that the tile is a part of
+     */
     private final VirtualBoard board;
 
     /**

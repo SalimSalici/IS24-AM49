@@ -29,7 +29,14 @@ import java.util.*;
  */
 public class ServerApp implements Server {
 
+    /**
+     * List of all the rooms in the server
+     */
     List<Room> rooms;
+
+    /**
+     * Binds every client with his room
+     */
     Map<ClientHandler, Room> clientsToRooms;
 
     /**

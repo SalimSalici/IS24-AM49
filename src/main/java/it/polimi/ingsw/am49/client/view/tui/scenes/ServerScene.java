@@ -8,20 +8,45 @@ import it.polimi.ingsw.am49.client.view.tui.SceneManager;
 
 import java.rmi.RemoteException;
 
+/**
+ * This class represents the scene for selecting and connecting to a server in the TUI version of the game.
+ */
 public class ServerScene extends Scene {
 
+    /**
+     * The menu controller for handling menu-related actions.
+     */
     private final MenuController menuController;
 
+    /**
+     * The type of connector (RMI or SOCKET) for the server connection.
+     */
     private ConnectorType connectorType;
+
+    /**
+     * The host address of the server.
+     */
     private String host;
 
+    /**
+     * Flag indicating if the scene is in startup mode.
+     */
     private boolean startup = true;
 
+    /**
+     * Constructs a new ServerScene with the specified scene manager and menu controller.
+     *
+     * @param sceneManager   the scene manager
+     * @param menuController the menu controller
+     */
     public ServerScene(SceneManager sceneManager, MenuController menuController) {
         super(sceneManager);
         this.menuController = menuController;
     }
 
+    /**
+     * Prints the view for the server selection scene.
+     */
     @Override
     public void printView() {
         this.clearScreen();
@@ -32,6 +57,9 @@ public class ServerScene extends Scene {
         this.printPrompt();
     }
 
+    /**
+     * Prints the prompt for user input during server selection.
+     */
     private void printPrompt() {
         this.printInfoOrError();
         if (this.connectorType == null) {
@@ -42,7 +70,7 @@ public class ServerScene extends Scene {
             System.out.println();
             System.out.println("Connection type: " + this.connectorType + "\n");
             System.out.println("Default if empty: 127.0.0.1");
-            System.out.print("Enter the ip address of the server> ");
+            System.out.print("Enter the IP address of the server> ");
         } else {
             System.out.println("Connection type: " + this.connectorType);
             System.out.println("Inserted host: " + this.host + "\n");
@@ -54,6 +82,11 @@ public class ServerScene extends Scene {
         }
     }
 
+    /**
+     * Handles the user input for server selection.
+     *
+     * @param input the user input
+     */
     @Override
     public void handleInput(String input) {
         if (input.equals("back")) {
@@ -68,6 +101,11 @@ public class ServerScene extends Scene {
             this.handlePort(input);
     }
 
+    /**
+     * Handles the user input for selecting the connection type.
+     *
+     * @param input the user input for connection type
+     */
     public void handleConnectionType(String input) {
         input = input.toLowerCase();
         if (input.isEmpty() || input.startsWith("r"))
@@ -81,20 +119,29 @@ public class ServerScene extends Scene {
         this.refreshView();
     }
 
+    /**
+     * Handles the user input for specifying the host address.
+     *
+     * @param input the user input for host address
+     */
     public void handleHost(String input) {
         if (input.isEmpty()) {
             this.host = "127.0.0.1";
             this.refreshView();
             return;
-        }
-        else if (!ClientApp.isIpValid(input)) {
-            this.showError("Invalid ip address. Please try again.");
+        } else if (!ClientApp.isIpValid(input)) {
+            this.showError("Invalid IP address. Please try again.");
             return;
         }
         this.host = input;
         this.refreshView();
     }
 
+    /**
+     * Handles the user input for specifying the port number.
+     *
+     * @param input the user input for port number
+     */
     public void handlePort(String input) {
         try {
             int port;
@@ -116,6 +163,9 @@ public class ServerScene extends Scene {
         }
     }
 
+    /**
+     * Focuses the view, initializing or resetting the connection parameters.
+     */
     @Override
     public void focus() {
         this.host = null;

@@ -10,11 +10,35 @@ import java.util.concurrent.TimeUnit;
  * It uses a ScheduledExecutorService to manage the scheduling of tasks.
  */
 public class IntervalTimer {
+
+    /**
+     * The ScheduledExecutorService used to schedule and execute tasks.
+     */
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+    /**
+     * The ScheduledFuture representing the scheduled task.
+     */
     private ScheduledFuture<?> scheduledFuture;
+
+    /**
+     * The task to be executed periodically.
+     */
     private final Runnable task;
+
+    /**
+     * The initial delay before the task is first executed.
+     */
     private final long initialDelay;
+
+    /**
+     * The period between successive executions of the task.
+     */
     private final long period;
+
+    /**
+     * The time unit of the initial delay and period.
+     */
     private final TimeUnit unit;
 
     /**

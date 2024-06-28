@@ -18,11 +18,35 @@ import java.util.concurrent.TimeUnit;
  * Handles client-server interactions, including heartbeat checks and message forwarding.
  */
 public class ClientHandler implements Client {
+
+    /**
+     * The client that is being handled
+     */
     private final Client client;
+
+    /**
+     * The server that the client is connected to
+     */
     private final Server server;
+
+    /**
+     * Used to manage multi threading
+     */
     private final ExecutorService executorService;
+
+    /**
+     *Saves the time of the last heartbeat
+     */
     private long lastHeartbeat;
-    private final IntervalTimer hearbeatCheckerTimer;
+
+    /**
+     * Used to set the interval for the heartbeat
+     */
+    private final IntervalTimer heartbeatCheckerTimer;
+
+    /**
+     * Used to set the time after witch if the heartbeat is failed the client should be disconnected.
+     */
     @SuppressWarnings("FieldCanBeLocal")
     private final int timeoutInSeconds = ServerConfig.clientHeartbeatTimeout;
 
@@ -35,7 +59,7 @@ public class ClientHandler implements Client {
         this.client = client;
         this.server = server;
         this.executorService = Executors.newSingleThreadExecutor();
-        this.hearbeatCheckerTimer = new IntervalTimer(this::checkHeartbeat, 10, 2000, TimeUnit.MILLISECONDS);
+        this.heartbeatCheckerTimer = new IntervalTimer(this::checkHeartbeat, 10, 2000, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -44,7 +68,7 @@ public class ClientHandler implements Client {
     public void initializeHeartbeat() {
         this.lastHeartbeat = System.currentTimeMillis();
         try { this.client.startHeartbeat(); } catch (RemoteException ignored) {}
-        this.hearbeatCheckerTimer.start();
+        this.heartbeatCheckerTimer.start();
     }
 
     /**
@@ -145,8 +169,8 @@ public class ClientHandler implements Client {
      */
     public void close() {
         this.stopHeartbeat();
-        this.hearbeatCheckerTimer.stop();
-        this.hearbeatCheckerTimer.shutdown();
+        this.heartbeatCheckerTimer.stop();
+        this.heartbeatCheckerTimer.shutdown();
     }
 
     /**

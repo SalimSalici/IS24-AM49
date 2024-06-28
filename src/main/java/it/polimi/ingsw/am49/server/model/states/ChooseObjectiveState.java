@@ -19,11 +19,11 @@ import it.polimi.ingsw.am49.common.util.Log;
 import java.util.*;
 
 /**
- * Rapresents the game state in witch every player selects his personal objective from a set of options.
- * The choosen objective will be the secret personal objective of the player for ste rest of the match.
+ * Represents the game state in witch every player selects his personal objective from a set of options.
+ * The chosen objective will be the secret personal objective of the player for ste rest of the match.
  * <p>
- * This class is resposible for dealing the personal {@link ObjectiveCard} options to eatch {@link Player} and
- * handling the chosing process.
+ * This class is responsible for dealing the personal {@link ObjectiveCard} options to each {@link Player} and
+ * handling the choosing process.
  * <p>
  * This class extends {@link GameState} and utilizes events such as {@link ChoosableObjectivesEvent},
  * {@link CommonObjectivesDrawnEvent}, and {@link PersonalObjectiveChosenEvent} to manage the flow of the game state
@@ -32,7 +32,7 @@ import java.util.*;
 public class ChooseObjectiveState extends GameState {
 
     /**
-     * Mapps every player to a list of the possible objective cards from witch che can choose.
+     * Maps every player to a list of the possible objective cards from witch che can choose.
      */
     private final Map<Player, List<ObjectiveCard>> playersToObjectives;
 
@@ -45,7 +45,7 @@ public class ChooseObjectiveState extends GameState {
     protected ChooseObjectiveState(Game game, GameDeck<ObjectiveCard> objectiveDeck) {
         super(GameStateType.CHOOSE_OBJECTIVE, game, Set.of(GameActionType.CHOOSE_OBJECTIVE));
         this.playersToObjectives = new HashMap<>();
-        this.notYourTurnMessage = "You have already choosen your personal objective. You must wait for the other players.";
+        this.notYourTurnMessage = "You have already chosen your personal objective. You must wait for the other players.";
         this.objectiveDeck = objectiveDeck;
     }
 
@@ -79,9 +79,9 @@ public class ChooseObjectiveState extends GameState {
     }
 
     /**
-     * Handles the logic to choose witch prsonal objective to pick from the options presented.
-     * @param action tells witch type of {@link GameAction} neds to be handled.
-     * @throws InvalidActionException if the player didn't choose an objetive of the ones dealt to him.
+     * Handles the logic to choose witch personal objective to pick from the options presented.
+     * @param action tells witch type of {@link GameAction} needs to be handled.
+     * @throws InvalidActionException if the player didn't choose an objective of the ones dealt to him.
      * @throws NotYourTurnException if the player making the action is not the current player.
      */
     @Override

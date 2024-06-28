@@ -36,10 +36,6 @@ public class RoomController extends GuiController {
     private RoomInfo roomInfo;
     private Color totemColor;
 
-    public void initialize(){
-
-    }
-
     @Override
     public void init() {
         this.roomInfo = this.manager.getRoomInfo();

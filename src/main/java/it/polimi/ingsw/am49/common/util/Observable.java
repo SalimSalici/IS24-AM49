@@ -8,6 +8,10 @@ import java.util.List;
  * It can be subclassed to represent an object that the application wants to have observed.
  */
 public class Observable {
+
+    /**
+     * List of all the subscribed observers
+     */
     private final List<Observer> observers;
 
     /**

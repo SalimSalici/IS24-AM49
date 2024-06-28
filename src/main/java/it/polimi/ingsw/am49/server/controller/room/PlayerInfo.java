@@ -9,10 +9,30 @@ import it.polimi.ingsw.am49.server.ClientHandler;
  * ready state. It also manages the {@link VirtualView} of the client.
  */
 public class PlayerInfo {
+
+    /**
+     * The username of the player.
+     */
     private final String username;
+
+    /**
+     * The client handler associated with the player.
+     */
     private final ClientHandler client;
+
+    /**
+     * The color associated with the player.
+     */
     private Color color;
+
+    /**
+     * Indicates if the player is ready to play.
+     */
     private boolean readyToPlay;
+
+    /**
+     * The virtual view associated with the player.
+     */
     private VirtualView virtualView;
 
     /**

@@ -19,11 +19,34 @@ import java.util.List;
  */
 public class TuiPlayerRenderer {
 
+    /**
+     * The card renderer for drawing cards.
+     */
     private final TuiCardRenderer renderer;
+
+    /**
+     * The virtual player to render.
+     */
     private final VirtualPlayer player;
+
+    /**
+     * Flag indicating whether the player's hand should be hidden.
+     */
     private final boolean hiddenHand;
+
+    /**
+     * Flag indicating whether the player's personal objective should be hidden.
+     */
     private final boolean hiddenPersonalObjective;
+
+    /**
+     * The list of common objectives.
+     */
     private final List<Integer> commonObjectives;
+
+    /**
+     * The texture manager for managing TUI textures.
+     */
     private final TuiTextureManager textureManager;
 
     /**
@@ -72,11 +95,14 @@ public class TuiPlayerRenderer {
 
         this.drawHand();
         this.drawPersonalObjective();
-
         this.drawCommonObjectives();
+
         this.renderer.print();
     }
 
+    /**
+     * Draws the player's hand.
+     */
     private void drawHand() {
         if (!this.hiddenHand) {
             List<Integer> hand = this.player.getHand();
@@ -95,6 +121,9 @@ public class TuiPlayerRenderer {
         }
     }
 
+    /**
+     * Draws the player's personal objective card.
+     */
     private void drawPersonalObjective() {
         if (!this.hiddenPersonalObjective) {
             Integer personalObjectiveId = this.player.getPersonalObjectiveId();
@@ -161,12 +190,25 @@ public class TuiPlayerRenderer {
         this.printInfo();
     }
 
+    /**
+     * Gets the colored username of the player.
+     *
+     * @param player the virtual player
+     * @return the colored username string
+     */
     protected String getColoredUsername(VirtualPlayer player) {
         if (player == null) return null;
         String offline = player.getPlaying() ? "" : " (offline)";
         return this.getColoredUsername(player.getUsername(), player.getColor()) + offline;
     }
 
+    /**
+     * Gets the colored username based on the player's color.
+     *
+     * @param username the player's username
+     * @param color the player's color
+     * @return the colored username string
+     */
     protected String getColoredUsername(String username, Color color) {
         if (color == null) return username;
         if (ClientConfig.getColors())

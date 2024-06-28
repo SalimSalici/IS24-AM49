@@ -27,8 +27,11 @@ public abstract class GuiController {
      * Initializes the {@link GuiTextureManager} instance.
      *
      * @param manager the GUI manager
+     * @param menuController the menu controller
+     * @param roomController the room controller
+     * @param gameController the game controller
      */
-    public void setGui(GuiManager manager, MenuController menuController, RoomController roomController, GameController gameController){
+    public void setGui(GuiManager manager, MenuController menuController, RoomController roomController, GameController gameController) {
         this.manager = manager;
         this.menuController = menuController;
         this.roomController = roomController;
@@ -50,7 +53,6 @@ public abstract class GuiController {
      *
      * @param roomInfo the new room information
      * @param message a message associated with the update
-     * @throws InvalidSceneException if the current scene is invalid for this update
      */
     public void roomUpdate(RoomInfo roomInfo, String message){}
 
@@ -59,7 +61,6 @@ public abstract class GuiController {
      * This method can be overridden by subclasses to handle game updates.
      *
      * @param gameUpdate the new game update
-     * @throws InvalidSceneException if the current scene is invalid for this update
      */
     public void gameUpdate(GameUpdate gameUpdate){}
 

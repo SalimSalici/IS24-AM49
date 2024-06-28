@@ -32,7 +32,7 @@ public class ResourceCard extends PlaceableCard implements Serializable {
     }
 
     /**
-     * Costructs a copy of another {@link PlaceableCard}.
+     * Constructs a copy of another {@link PlaceableCard}.
      *
      * @param other the {@link PlaceableCard} that is being copied
      */

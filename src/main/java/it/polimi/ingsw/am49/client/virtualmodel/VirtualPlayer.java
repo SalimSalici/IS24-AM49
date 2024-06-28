@@ -9,7 +9,6 @@ import it.polimi.ingsw.am49.common.util.Pair;
 import java.time.LocalTime;
 import java.util.*;
 
-
 /**
  * Represents a virtual player in the game.
  *
@@ -19,16 +18,60 @@ import java.util.*;
  * This class extends {@link Observable}, allowing it to notify observers when changes occur.
  */
 public class VirtualPlayer extends Observable {
+
+    /**
+     * The username of the player.
+     */
     private final String username;
+
+    /**
+     * The points scored by the player.
+     */
     private int points;
+
+    /**
+     * The number of completed objectives by the player.
+     */
     private int completedObjectives;
+
+    /**
+     * The virtual board associated with the player.
+     */
     private final VirtualBoard board;
+
+    /**
+     * The list of card IDs in the player's hand.
+     */
     private List<Integer> hand;
+
+    /**
+     * The list of hidden resources in the player's hand.
+     */
     private List<Pair<Resource, Boolean>> hiddenHand;
+
+    /**
+     * The map of active symbols and their counts for the player.
+     */
     private Map<Symbol, Integer> activeSymbols;
+
+    /**
+     * The color representing the player in the game.
+     */
     private final Color color;
+
+    /**
+     * The ID of the personal objective card.
+     */
     private int personalObjectiveId;
+
+    /**
+     * The list of chat messages for the player.
+     */
     private final List<VirtualChatMessage> messages;
+
+    /**
+     * The flag indicating if the player is currently playing.
+     */
     private boolean playing = true;
 
     /**
@@ -58,10 +101,18 @@ public class VirtualPlayer extends Observable {
         return username;
     }
 
-    public void setPlaiyng(boolean playing) {
+    /**
+     * Sets the playing status of the player.
+     *
+     * @param playing the new playing status.
+     */
+    public void setPlaying(boolean playing) {
         this.playing = playing;
     }
 
+    /**
+     * @return the playing status of the player.
+     */
     public boolean getPlaying(){
         return playing;
     }
@@ -90,7 +141,7 @@ public class VirtualPlayer extends Observable {
     }
 
     /**
-     * @return the number of completed objectives
+     * @return the number of completed objectives.
      */
     public int getCompletedObjectives() {
         return this.completedObjectives;
@@ -99,38 +150,37 @@ public class VirtualPlayer extends Observable {
     /**
      * Sets the number of objectives completed by the player.
      *
-     * @param completedObjectives the new number of completed objectives
+     * @param completedObjectives the new number of completed objectives.
      */
     public void setCompletedObjectives(int completedObjectives) {
         this.completedObjectives = completedObjectives;
     }
 
     /**
-     * @return a map of active symbols and their counts
+     * @return a map of active symbols and their counts.
      */
     public Map<Symbol, Integer> getActiveSymbols() {
         return activeSymbols;
     }
 
-
     /**
      * Sets the active symbols and their counts for the player.
      *
-     * @param activeSymbols the new map of active symbols and their counts
+     * @param activeSymbols the new map of active symbols and their counts.
      */
     public void setActiveSymbols(Map<Symbol, Integer> activeSymbols) {
         this.activeSymbols = activeSymbols;
     }
 
     /**
-     * @return the color of the player
+     * @return the color of the player.
      */
     public Color getColor() {
         return color;
     }
 
     /**
-     * @return the JavaFX color of the player
+     * @return the JavaFX color of the player.
      */
     public javafx.scene.paint.Color getJavaFXColor() {
         return switch (color) {
@@ -142,28 +192,30 @@ public class VirtualPlayer extends Observable {
     }
 
     /**
-     * @return the hand of the player
+     * @return the hand of the player.
      */
     public List<Integer> getHand() {
         return hand;
     }
 
     /**
-     * @return the ID of the personal objective card
+     * @return the ID of the personal objective card.
      */
-    public int getPersonalObjectiveId() {return personalObjectiveId;}
+    public int getPersonalObjectiveId() {
+        return personalObjectiveId;
+    }
 
     /**
      * Sets the hand of the player.
      *
-     * @param hand the new hand of the player
+     * @param hand the new hand of the player.
      */
     public void setHand(List<Integer> hand) {
         this.hand = hand;
     }
 
     /**
-     * @return the hidden hand of the player
+     * @return the hidden hand of the player.
      */
     public List<Pair<Resource, Boolean>> getHiddenHand() {
         return hiddenHand;
@@ -172,7 +224,7 @@ public class VirtualPlayer extends Observable {
     /**
      * Sets the hidden hand of the player.
      *
-     * @param hiddenHand the new hidden hand of the player
+     * @param hiddenHand the new hidden hand of the player.
      */
     public void setHiddenHand(List<Pair<Resource, Boolean>> hiddenHand) {
         this.hiddenHand = hiddenHand;
@@ -181,12 +233,14 @@ public class VirtualPlayer extends Observable {
     /**
      * Sets the personal objective of the player.
      *
-     * @param personalObjectiveId the new ID of the personal objective card
+     * @param personalObjectiveId the new ID of the personal objective card.
      */
-    public void setPersonalObjectiveId(int personalObjectiveId) {this.personalObjectiveId = personalObjectiveId;}
+    public void setPersonalObjectiveId(int personalObjectiveId) {
+        this.personalObjectiveId = personalObjectiveId;
+    }
 
     /**
-     * @return the starter card, or null if no starter tile is found
+     * @return the starter card, or null if no starter tile is found.
      */
     public VirtualCard getStarterCard() {
         VirtualTile starterTile = this.board.getStarterTile();
@@ -195,24 +249,46 @@ public class VirtualPlayer extends Observable {
         return null;
     }
 
+    /**
+     * Adds a new message to the player's chat and notifies observers.
+     *
+     * @param text the text of the message.
+     * @param sender the sender of the message.
+     * @param recipient the recipient of the message.
+     * @param time the time the message was sent.
+     */
     public void setMessage(String text, String sender, String recipient, LocalTime time) {
-        messages.add( new VirtualChatMessage(text, sender, recipient, time));
+        messages.add(new VirtualChatMessage(text, sender, recipient, time));
         this.notifyObservers();
     }
 
-    public List<VirtualChatMessage> getMessages() { return messages; }
+    /**
+     * @return the list of chat messages for the player.
+     */
+    public List<VirtualChatMessage> getMessages() {
+        return messages;
+    }
 
-    public List<String> getGlobalChat(){
+    /**
+     * @return the global chat messages for the player.
+     */
+    public List<String> getGlobalChat() {
         return messages.stream()
                 .filter(m -> !m.isPrivate())
-                .map(m -> m.getTimeAsString()+ " " + m.getSender() +": "+ m.getText())
+                .map(m -> m.getTimeAsString() + " " + m.getSender() + ": " + m.getText())
                 .toList();
     }
 
-    public List<String> getPrivateChat(VirtualPlayer recipient){
+    /**
+     * Retrieves the private chat messages between the player and a recipient.
+     *
+     * @param recipient the recipient of the private messages.
+     * @return the list of private chat messages.
+     */
+    public List<String> getPrivateChat(VirtualPlayer recipient) {
         return messages.stream()
-                .filter(m -> m.getRecipient().equals(recipient.username) || (m.getSender().equals(recipient.username)&& m.getRecipient().equals(username)))
-                .map(m -> m.getSender().equals(username) ? m.getTimeAsString() + " " + m.getText() : m.getTimeAsString() +" " + m.getSender() + ": "+ m.getText())
+                .filter(m -> m.getRecipient().equals(recipient.username) || (m.getSender().equals(recipient.username) && m.getRecipient().equals(username)))
+                .map(m -> m.getSender().equals(username) ? m.getTimeAsString() + " " + m.getText() : m.getTimeAsString() + " " + m.getSender() + ": " + m.getText())
                 .toList();
     }
 }

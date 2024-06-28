@@ -18,7 +18,7 @@ public class ObjectiveCardTypeAdapter implements JsonDeserializer<ObjectiveCard>
      * Serializes an {@link ObjectiveCard} instance into its JSON representation.
      * 
      * @param src The source {@link ObjectiveCard} that needs to be serialized.
-     * @param typeOfSrc The specific genericized type of source object.
+     * @param typeOfSrc The specific generalized type of source object.
      * @param context The context of the JSON serialization process.
      * @return A {@link JsonElement} corresponding to the serialized JSON form of the {@link ObjectiveCard}.
      */

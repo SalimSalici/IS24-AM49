@@ -16,18 +16,45 @@ import it.polimi.ingsw.am49.client.view.tui.renderers.TuiPlayerRenderer;
 
 import java.util.List;
 
+/**
+ * Represents the game overview scene in the text-based user interface.
+ */
 public class GameOverviewScene extends Scene implements Observer {
 
+    /**
+     * The virtual game being played.
+     */
     private VirtualGame game;
+
+    /**
+     * The renderer for the draw area.
+     */
     private TuiDrawAreaRenderer drawAreaRenderer;
+
+    /**
+     * The renderer for the focused player.
+     */
     private TuiPlayerRenderer focusedPlayerRenderer;
+
+    /**
+     * The game controller for handling game actions.
+     */
     private final GameController gameController;
 
+    /**
+     * Constructs a GameOverviewScene with the specified scene manager and game controller.
+     *
+     * @param sceneManager the scene manager
+     * @param gameController the game controller
+     */
     public GameOverviewScene(SceneManager sceneManager, GameController gameController) {
         super(sceneManager);
         this.gameController = gameController;
     }
 
+    /**
+     * Prints the current view of the game overview scene.
+     */
     @Override
     public void printView() {
         this.clearScreen();
@@ -42,6 +69,9 @@ public class GameOverviewScene extends Scene implements Observer {
         this.printPrompt();
     }
 
+    /**
+     * Prints the header of the game overview scene.
+     */
     private void printHeader() {
         System.out.println("*******************************");
         System.out.println("| Welcome to Codex Naturalis! |");
@@ -53,6 +83,9 @@ public class GameOverviewScene extends Scene implements Observer {
         System.out.println("\nEnd game: " + this.game.getEndGame() + " - Final round: " + this.game.getFinalRound());
     }
 
+    /**
+     * Prints the list of players in the game.
+     */
     private void printPlayerList() {
         System.out.println("------ Players " + "-".repeat(95));
         System.out.print("\nPlayers *current* [points]:");
@@ -71,18 +104,27 @@ public class GameOverviewScene extends Scene implements Observer {
         System.out.print("\n");
     }
 
+    /**
+     * Prints the draw area.
+     */
     private void printDrawArea() {
         System.out.println("------ Draw Area " + "-".repeat(95));
         System.out.println();
         this.drawAreaRenderer.print();
     }
 
+    /**
+     * Prints the focused player's information.
+     */
     private void printFocusedPlayer() {
         System.out.println("------ Focused Player " + "-".repeat(95));
         System.out.println();
         this.focusedPlayerRenderer.print();
     }
 
+    /**
+     * Prints the prompt for user commands in the game overview scene.
+     */
     private void printPrompt() {
         this.printInfoOrError();
         System.out.print("Available commands: ");
@@ -95,6 +137,11 @@ public class GameOverviewScene extends Scene implements Observer {
         System.out.print("\n>>> ");
     }
 
+    /**
+     * Handles user input in the game overview scene.
+     *
+     * @param input the user input string
+     */
     @Override
     public void handleInput(String input) {
         String[] parts = input.split(" ");
@@ -123,6 +170,11 @@ public class GameOverviewScene extends Scene implements Observer {
         }
     }
 
+    /**
+     * Handles the chat command.
+     *
+     * @param args the command arguments
+     */
     private void handleChat(String[] args) {
         if (args.length == 2 && args[1].equals("--help")) {
             this.showHelpMessage("Shows the chat.", "1");
@@ -131,6 +183,11 @@ public class GameOverviewScene extends Scene implements Observer {
         this.sceneManager.switchScene(SceneType.CHAT_SCENE);
     }
 
+    /**
+     * Handles the focus player command.
+     *
+     * @param args the command arguments
+     */
     private void handleFocusPlayer(String[] args) {
         if (args.length >= 2 && args[1].equals("--help")) {
             this.showHelpMessage("Shows the hand of the i-th player. If you don't pass a parameter, your hand will be focused" +
@@ -155,6 +212,11 @@ public class GameOverviewScene extends Scene implements Observer {
         }
     }
 
+    /**
+     * Handles the view player command.
+     *
+     * @param args the command arguments
+     */
     private void handleViewPlayer(String[] args) {
         if (args.length >= 2 && args[1].equals("--help")) {
             this.showHelpMessage("Shows the board of the i-th player. If you don't pass a parameter, your hand will be focused." +
@@ -171,13 +233,16 @@ public class GameOverviewScene extends Scene implements Observer {
                 this.showError("Unexpected error occurred. If it persists, please restart the client.");
         } catch (NumberFormatException e) {
             this.showError("Argument must be a number. Please try again.");
-            return;
         } catch (IndexOutOfBoundsException e) {
             this.showError("Argument must be between 1 and " + this.game.getPlayers().size());
-            return;
         }
     }
 
+    /**
+     * Handles the draw card command.
+     *
+     * @param args the command arguments
+     */
     private void handleDrawCard(String[] args) {
         if (args.length >= 2 && args[1].equals("--help")) {
             this.showHelpMessage("Draw the i-th card. Cards are numbered above, in the draw area.", "draw 5  (or equivalently)  4 5");
@@ -206,6 +271,13 @@ public class GameOverviewScene extends Scene implements Observer {
         }
     }
 
+    /**
+     * Retrieves the draw position based on the user's choice.
+     *
+     * @param choice the user's choice
+     * @return the draw position
+     * @throws IndexOutOfBoundsException if the choice is invalid
+     */
     private DrawPosition getDrawPosition(int choice) throws IndexOutOfBoundsException {
         return switch (choice) {
             case 1 -> DrawPosition.RESOURCE_DECK;
@@ -215,6 +287,14 @@ public class GameOverviewScene extends Scene implements Observer {
         };
     }
 
+    /**
+     * Retrieves the draw ID based on the user's choice.
+     *
+     * @param choice the user's choice
+     * @return the draw ID
+     * @throws IndexOutOfBoundsException if the choice is invalid
+     * @throws InvalidActionException if the draw ID is invalid
+     */
     private int getDrawId(int choice) throws IndexOutOfBoundsException, InvalidActionException {
         try {
             return switch (choice) {
@@ -230,6 +310,11 @@ public class GameOverviewScene extends Scene implements Observer {
         }
     }
 
+    /**
+     * Handles the rankings command.
+     *
+     * @param args the command arguments
+     */
     private void handleRankings(String[] args) {
         if (args.length >= 2 && args[1].equals("--help")) {
             this.showHelpMessage("Go to the end game screen.", "r");
@@ -238,6 +323,11 @@ public class GameOverviewScene extends Scene implements Observer {
         this.sceneManager.switchScene(SceneType.END_GAME_SCENE);
     }
 
+    /**
+     * Handles the leave command.
+     *
+     * @param args the command arguments
+     */
     private void handleLeave(String[] args) {
         if (args.length >= 2 && args[1].equals("--help")) {
             this.showHelpMessage("Leave the game.", "leave");
@@ -246,6 +336,9 @@ public class GameOverviewScene extends Scene implements Observer {
         this.gameController.leave();
     }
 
+    /**
+     * Focuses on the game overview scene, initializing necessary components.
+     */
     @Override
     public void focus() {
         this.game = this.sceneManager.getVirtualGame();
@@ -255,11 +348,17 @@ public class GameOverviewScene extends Scene implements Observer {
         this.printView();
     }
 
+    /**
+     * Unfocuses from the game overview scene, removing it as an observer from the game.
+     */
     @Override
     public void unfocus() {
         this.game.deleteObserver(this);
     }
 
+    /**
+     * Updates the game overview scene based on game state changes.
+     */
     @Override
     public void update() {
         if (this.game.getGameState() == GameStateType.END_GAME)
@@ -269,7 +368,9 @@ public class GameOverviewScene extends Scene implements Observer {
     }
 
     /**
-     * @return the {@link VirtualPlayer} associated with this client
+     * Retrieves the {@link VirtualPlayer} associated with this client.
+     *
+     * @return the VirtualPlayer associated with this client
      */
     private VirtualPlayer getClientPlayer() {
         for (VirtualPlayer p : this.game.getPlayers())
@@ -278,8 +379,13 @@ public class GameOverviewScene extends Scene implements Observer {
         return null;
     }
 
+    /**
+     * Checks if the current player can draw a card.
+     *
+     * @return true if the player can draw a card, otherwise false
+     */
     private boolean canDraw() {
-        return  this.game.getCurrentPlayer().getUsername().equals(ClientApp.getUsername())
+        return this.game.getCurrentPlayer().getUsername().equals(ClientApp.getUsername())
                 && this.game.getGameState() == GameStateType.DRAW_CARD;
     }
 }

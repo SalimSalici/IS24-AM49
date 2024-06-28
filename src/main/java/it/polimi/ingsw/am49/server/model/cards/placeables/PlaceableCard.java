@@ -10,8 +10,8 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Rapresents the cards that can be placed on the player board. This abstract class
- * provides the common methods for all the types of placeables cards.
+ * Represents the cards that can be placed on the player board. This abstract class
+ * provides the common methods for all the types of placeable cards.
  *
  * @see StarterCard
  * @see ResourceCard
@@ -57,7 +57,7 @@ public abstract class PlaceableCard extends Card implements Serializable {
     protected final int points;
 
     /**
-     * Is rapresenting the required resources that must be on the player board
+     * Is representing the required resources that must be on the player board
      * if the player wants to place the card's face showing the price.
      */
     protected final Map<Symbol, Integer> price;
@@ -67,11 +67,14 @@ public abstract class PlaceableCard extends Card implements Serializable {
      */
     protected final PlacementPointsStrategy pointsStrategy;
 
+    /**
+     * Used to easily check if a card is a gold card
+     */
     protected boolean isGoldCard;
 
 
     /**
-     * Costructs a new PlaceableCard object with the specified symbols in the
+     * Constructs a new PlaceableCard object with the specified symbols in the
      * corners and identified by id.
      *
      * @param id the unique identifier of the card
@@ -107,7 +110,7 @@ public abstract class PlaceableCard extends Card implements Serializable {
      * the condition shown on the card is accomplished.
      *
      * @param playerBoard the whole player board, containing all the already placed cards
-     * @param boardTile the object of type {@link BoardTile} rapresenting the tile in which the card is placed
+     * @param boardTile the object of type {@link BoardTile} representing the tile in which the card is placed
      * @return the total points the player gets from placing the card
      */
     public int calculatePoints(PlayerBoard playerBoard, BoardTile boardTile) {
@@ -243,7 +246,7 @@ public abstract class PlaceableCard extends Card implements Serializable {
 
     /**
      *
-     * @return true if the card on the playaer board is placed flipped, false otherwise
+     * @return true if the card on the player board is placed flipped, false otherwise
      */
     public boolean isFlipped() {
         return flipped;
@@ -257,5 +260,8 @@ public abstract class PlaceableCard extends Card implements Serializable {
         this.flipped = flipped;
     }
 
+    /**
+     * @return the value of isGoldCard
+     */
     public boolean isGoldCard() { return isGoldCard; }
 }

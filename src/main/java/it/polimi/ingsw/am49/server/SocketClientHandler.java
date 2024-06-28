@@ -19,10 +19,24 @@ import java.rmi.RemoteException;
  */
 public class SocketClientHandler implements Client {
 
+    /**
+     * The client socket associated with this handler.
+     */
     private final Socket clientSocket;
+
+    /**
+     * The server instance to manage client connections.
+     */
     private final Server server;
+
+    /**
+     * The output stream to send data to the client.
+     */
     private final ObjectOutputStream objectOutputStream;
 
+    /**
+     * Indicates whether the handler should continue listening for messages.
+     */
     private boolean shouldListen = true;
 
     /**
@@ -46,7 +60,6 @@ public class SocketClientHandler implements Client {
                 System.out.println("Socket " + clientSocket.getRemoteSocketAddress() + " disconnected.");
             }
         }).start();
-
     }
 
     /**
@@ -121,16 +134,16 @@ public class SocketClientHandler implements Client {
             }
             case ReadyDownMTS ignored -> {
                 Object returnValue;
-                try{
+                try {
                     returnValue = this.server.readyDown(this);
-                }catch (RemoteException | RoomException e){
+                } catch (RemoteException | RoomException e){
                     returnValue = e;
                 }
                 this.writeToOutputStream(new ReturnMessage(msg.id(), returnValue));
             }
             case LeaveRoomMTS ignored -> {
                 Object returnValue;
-                try{
+                try {
                     returnValue = this.server.leaveRoom(this);
                 } catch (RemoteException | RoomException e) {
                     returnValue = e;
@@ -158,7 +171,7 @@ public class SocketClientHandler implements Client {
             case ReconnectMTS params -> {
                 Object returnValue;
                 try {
-                    returnValue = this.server.reconnect(this, params.roomName(), params.useraname());
+                    returnValue = this.server.reconnect(this, params.roomName(), params.username());
                 } catch (Exception e) {
                     returnValue = e;
                 }

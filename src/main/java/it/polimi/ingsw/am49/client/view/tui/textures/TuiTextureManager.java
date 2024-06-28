@@ -7,16 +7,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class handles loading textures from disk for the TUI version of the game
+ * This class handles loading textures from disk for the TUI version of the game.
  */
 public class TuiTextureManager {
 
+    /**
+     * A map to store textures with their corresponding IDs.
+     */
     private final Map<Integer, TuiTexture> textures;
+
+    /**
+     * A map to store background textures.
+     */
     private final Map<BackTexture, ColoredChar[][]> backTextures;
+
+    /**
+     * The singleton instance of the TuiTextureManager.
+     */
     private static TuiTextureManager instance;
 
+    /**
+     * Private constructor to initialize the texture manager.
+     * Loads all the textures from the disk and stores them in maps.
+     */
     private TuiTextureManager() {
-
         this.backTextures = new HashMap<>();
         try {
             for (BackTexture bt : BackTexture.values()) {
@@ -43,12 +57,24 @@ public class TuiTextureManager {
         }
     }
 
+    /**
+     * Returns the singleton instance of the TuiTextureManager.
+     *
+     * @return the singleton instance
+     */
     public static TuiTextureManager getInstance() {
         if (TuiTextureManager.instance == null)
             TuiTextureManager.instance = new TuiTextureManager();
         return TuiTextureManager.instance;
     }
 
+    /**
+     * Loads a texture with the specified ID from the disk.
+     *
+     * @param id the ID of the texture to load
+     * @return the loaded TuiTexture
+     * @throws IOException if an I/O error occurs while loading the texture
+     */
     private TuiTexture loadTexture(int id) throws IOException {
         ColoredChar[][] front;
         ColoredChar[][] back;
@@ -68,6 +94,13 @@ public class TuiTextureManager {
         return new TuiTexture(front, back);
     }
 
+    /**
+     * Reads a texture from a BufferedReader.
+     *
+     * @param reader the BufferedReader to read from
+     * @return a 2D array of ColoredChar representing the texture
+     * @throws IOException if an I/O error occurs while reading the texture
+     */
     private ColoredChar[][] readTexture(BufferedReader reader) throws IOException {
         String line;
         String[] charBuffer = new String[5];
@@ -93,6 +126,13 @@ public class TuiTextureManager {
         return buffer;
     }
 
+    /**
+     * Retrieves the texture with the specified ID, optionally flipped.
+     *
+     * @param id the ID of the texture to retrieve
+     * @param flipped whether to retrieve the flipped version of the texture
+     * @return a 2D array of ColoredChar representing the texture
+     */
     public ColoredChar[][] getTexture(int id, boolean flipped) {
         Log.getLogger().info("Texture requested. Id: " + id + " - flipped: " + flipped);
         TuiTexture texture = this.textures.get(id);
@@ -101,6 +141,12 @@ public class TuiTextureManager {
         return texture.getFrontBuffer();
     }
 
+    /**
+     * Retrieves the background texture for the specified BackTexture.
+     *
+     * @param backTexture the BackTexture to retrieve
+     * @return a 2D array of ColoredChar representing the background texture
+     */
     public ColoredChar[][] getBackTexture(BackTexture backTexture) {
         return this.backTextures.get(backTexture);
     }

@@ -23,17 +23,26 @@ import java.util.List;
 
 /**
  * This class implements a room that has been restored following a server crash.
- * The room can either be in restoration phase or not. If not in restoration phase, 
- * the overriden methods will fall back to the Room methods, otherwise they will
+ * The room can either be in restoration phase or not. If not in restoration phase,
+ * the overridden methods will fall back to the Room methods; otherwise, they will
  * implement the methods to handle returning clients.
  */
 public class RestoredRoom extends Room {
 
+    /**
+     * Indicates if the room is in restoration phase.
+     */
     private boolean inRestoration = true;
 
+    /**
+     * Indicates if the room should be destroyed after restoration timeout.
+     */
     private boolean shouldBeDestroyed = true;
 
-    private final List<PlayerInfo> returingPlayers;
+    /**
+     * List of players returning to the room after a restoration.
+     */
+    private final List<PlayerInfo> returningPlayers;
 
     /**
      * Constructs a RestoredRoom with the specified game, room name, and server.
@@ -46,10 +55,11 @@ public class RestoredRoom extends Room {
         super(roomName, server, game.getNumPlayers());
         this.game = game;
         this.gameStarted = true;
-        this.returingPlayers = new LinkedList<>();
+        this.returningPlayers = new LinkedList<>();
 
-        for (Player p : this.game.getPlayers())
+        for (Player p : this.game.getPlayers()) {
             p.setIsOnline(false);
+        }
 
         new Thread(this::abortRestore).start();
     }
@@ -82,23 +92,25 @@ public class RestoredRoom extends Room {
      */
     @Override
     public synchronized CompleteGameInfo reconnect(ClientHandler playerClient, String playerUsername) throws JoinRoomException {
-        if (!this.inRestoration)
+        if (!this.inRestoration) {
             return super.reconnect(playerClient, playerUsername);
+        }
 
         if (this.isClientAlreadyConnected(playerClient)) throw new JoinRoomException("Client is already connected to the room.");
         if (game.getPlayerByUsername(playerUsername) == null) throw new JoinRoomException("Username chosen is not in the game.");
 
         PlayerInfo pInfo = new PlayerInfo(playerUsername, playerClient);
-        this.returingPlayers.add(pInfo);
+        this.returningPlayers.add(pInfo);
 
         this.game.reconnectPlayer(playerUsername);
 
-        for (PlayerInfo p : this.returingPlayers) {
+        for (PlayerInfo p : this.returningPlayers) {
             p.getClient().receiveGameUpdate(new IsPlayingUpdate(playerUsername, true));
         }
 
-        if (this.returingPlayers.size() == this.maxPlayers)
+        if (this.returningPlayers.size() == this.maxPlayers) {
             this.restartGame();
+        }
 
         this.shouldBeDestroyed = false;
 
@@ -131,19 +143,22 @@ public class RestoredRoom extends Room {
      */
     @Override
     public synchronized boolean removePlayer(ClientHandler client) {
-        if (!this.inRestoration)
+        if (!this.inRestoration) {
             return super.removePlayer(client);
+        }
 
         PlayerInfo playerInfo = this.getPlayerInfoFromClient(client);
-        if (playerInfo == null)
+        if (playerInfo == null) {
             return false;
+        }
 
         this.game.getPlayerByUsername(playerInfo.getUsername()).setIsOnline(false);
         this.game.disconnectPlayer(playerInfo.getUsername());
-        this.returingPlayers.remove(playerInfo);
+        this.returningPlayers.remove(playerInfo);
 
-        for (PlayerInfo p : this.returingPlayers)
+        for (PlayerInfo p : this.returningPlayers) {
             p.getClient().receiveGameUpdate(new IsPlayingUpdate(playerInfo.getUsername(), false));
+        }
 
         return true;
     }
@@ -155,10 +170,11 @@ public class RestoredRoom extends Room {
      */
     @Override
     public synchronized int getCurrentPlayers() {
-        if (!this.inRestoration)
+        if (!this.inRestoration) {
             return super.getCurrentPlayers();
-        else
-            return this.returingPlayers.size();
+        } else {
+            return this.returningPlayers.size();
+        }
     }
 
     /**
@@ -168,11 +184,11 @@ public class RestoredRoom extends Room {
      */
     @Override
     public synchronized RoomInfo getRoomInfo() {
-        if (!this.inRestoration)
+        if (!this.inRestoration) {
             return super.getRoomInfo();
-        else {
+        } else {
             HashMap<String, Color> playersToColors = new HashMap<>();
-            for (PlayerInfo pInfo : this.returingPlayers) {
+            for (PlayerInfo pInfo : this.returningPlayers) {
                 playersToColors.put(pInfo.getUsername(), this.game.getPlayerByUsername(pInfo.getUsername()).getColor());
             }
             return new RoomInfo(this.roomName, this.maxPlayers, playersToColors);
@@ -185,13 +201,14 @@ public class RestoredRoom extends Room {
      * @throws JoinRoomException if a player cannot join the room
      */
     private void restartGame() throws JoinRoomException {
-        for (Player p : this.game.getPlayers())
+        for (Player p : this.game.getPlayers()) {
             p.setIsOnline(false);
+        }
 
-        for (PlayerInfo p : this.returingPlayers) {
+        for (PlayerInfo p : this.returningPlayers) {
             super.reconnect(p.getClient(), p.getUsername());
         }
-        this.currentPlayers = this.returingPlayers.size();
+        this.currentPlayers = this.returningPlayers.size();
         this.inRestoration = false;
     }
 
@@ -202,8 +219,11 @@ public class RestoredRoom extends Room {
      * @return true if the client is already connected, false otherwise
      */
     private boolean isClientAlreadyConnected(ClientHandler client) {
-        for (PlayerInfo p : this.returingPlayers)
-            if (p.getClient().equals(client)) return true;
+        for (PlayerInfo p : this.returningPlayers) {
+            if (p.getClient().equals(client)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -214,9 +234,11 @@ public class RestoredRoom extends Room {
      * @return the player information, or null if not found
      */
     private PlayerInfo getPlayerInfoFromClient(ClientHandler client) {
-        for (PlayerInfo playerInfo : this.returingPlayers)
-            if (playerInfo.getClient().equals(client))
+        for (PlayerInfo playerInfo : this.returningPlayers) {
+            if (playerInfo.getClient().equals(client)) {
                 return playerInfo;
+            }
+        }
         return null;
     }
 
@@ -230,7 +252,8 @@ public class RestoredRoom extends Room {
             this.server.destroyRoom(this);
         }
 
-        if (this.shouldBeDestroyed)
+        if (this.shouldBeDestroyed) {
             this.server.destroyRoom(this);
+        }
     }
 }

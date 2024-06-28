@@ -6,6 +6,10 @@ import it.polimi.ingsw.am49.common.enumerations.DrawPosition;
  * Represents an action of drawing a card in the game.
  */
 public class DrawCardAction extends GameAction {
+
+    /**
+     * The position in the draw area from which to draw
+     */
     private final DrawPosition drawPosition;
     private final int idOfRevealedDrawn;
 

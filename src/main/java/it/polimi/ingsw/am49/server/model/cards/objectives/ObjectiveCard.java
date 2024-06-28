@@ -6,7 +6,7 @@ import it.polimi.ingsw.am49.server.model.players.PlayerBoard;
 import java.io.Serializable;
 
 /**
- * Rapresents the cards that give points to the player once the game is over,
+ * Represents the cards that give points to the player once the game is over,
  * considering if and how many times the objective shown on the card is completed.
  */
 public class ObjectiveCard extends Card implements Serializable {
@@ -23,7 +23,7 @@ public class ObjectiveCard extends Card implements Serializable {
     protected final ObjectivePointsStrategy pointsStrategy;
 
     /**
-     * Costructs a new ObjectiveCard object with the specified parameters.
+     * Constructs a new ObjectiveCard object with the specified parameters.
      *
      * @param id the unique identifier of the card
      * @param points The amount of points given to the player assuming the objective shown on the card
@@ -37,7 +37,7 @@ public class ObjectiveCard extends Card implements Serializable {
     }
 
     /**
-     * Costructs a copy of another {@link ObjectiveCard}.
+     * Constructs a copy of another {@link ObjectiveCard}.
      *
      * @param other the {@link ObjectiveCard} that is being copied
      */

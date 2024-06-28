@@ -19,15 +19,55 @@ import java.util.stream.Collectors;
  * It manages game state, player information, and game updates.
  */
 public class VirtualGame extends Observable {
+
+    /**
+     * The list of players in the game.
+     */
     private final List<VirtualPlayer> players;
+
+    /**
+     * The current round number.
+     */
     private int round;
+
+    /**
+     * The current turn number.
+     */
     private int turn;
+
+    /**
+     * Indicates if the game has ended.
+     */
     private boolean endGame;
+
+    /**
+     * Indicates if the game is in the final round.
+     */
     private boolean finalRound;
+
+    /**
+     * The current game state.
+     */
     private GameStateType gameState;
+
+    /**
+     * The player whose turn it currently is.
+     */
     private VirtualPlayer currentPlayer;
+
+    /**
+     * The list of common objectives in the game.
+     */
     private List<Integer> commonObjectives;
+
+    /**
+     * The drawable area of the game, which includes resources and golds.
+     */
     private VirtualDrawable drawableArea;
+
+    /**
+     * The player who won by forfeit, if any.
+     */
     private VirtualPlayer forfeitWinner;
 
     /**
@@ -80,7 +120,7 @@ public class VirtualGame extends Observable {
         );
         game.handleGameStateUpdate(gameInfo.gameState());
         return game;
-     }
+    }
 
     /**
      * Initializes a VirtualPlayer from complete player information.
@@ -94,7 +134,7 @@ public class VirtualGame extends Observable {
         player.setHand(completePlayerInfo.hand().handIds());
         player.setHiddenHand(completePlayerInfo.hiddenHand().hiddenHand());
         player.setActiveSymbols(completePlayerInfo.activeSymbols());
-        player.setPlaiyng(completePlayerInfo.playing());
+        player.setPlaying(completePlayerInfo.playing());
         return player;
     }
 
@@ -141,7 +181,7 @@ public class VirtualGame extends Observable {
      */
     private void handleIsPlayingUpdate(IsPlayingUpdate update){
         VirtualPlayer player = this.getPlayerByUsername(update.username());
-        player.setPlaiyng(update.status());
+        player.setPlaying(update.status());
         player.notifyObservers();
         this.notifyObservers();
     }
@@ -346,7 +386,7 @@ public class VirtualGame extends Observable {
      * @param color The color to search for.
      * @return The VirtualPlayer with the specified color, or null if not found.
      */
-    public VirtualPlayer getVirtualPlayerByColor( Color color ){
+    public VirtualPlayer getVirtualPlayerByColor(Color color) {
         return this.players.stream().filter(p -> p.getColor().equals(color)).findFirst().orElse(null);
     }
 

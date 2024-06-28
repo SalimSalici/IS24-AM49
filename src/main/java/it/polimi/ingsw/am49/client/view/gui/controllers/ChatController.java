@@ -122,7 +122,7 @@ public class ChatController extends GuiController {
         readMessageCount.put(selectedTab, conversation.size());
         updateTabTitle(selectedTab, 0);
 
-        // Ensure the layout is updated and bind the scrollPane's vvalue to the VBox height
+        // Ensure the layout is updated and bind the scrollPane's value to the VBox height
         if (scrollPane != null) {
             vBox.heightProperty().addListener((observable, oldValue, newValue) -> {
                 scrollPane.setVvalue(1.0);

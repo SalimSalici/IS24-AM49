@@ -14,9 +14,25 @@ import java.util.List;
  * This class provides the structure for UI components and interaction handling.
  */
 public abstract class View {
+
+    /**
+     * The controller for the menu.
+     */
     protected final MenuController menuController;
+
+    /**
+     * The controller for the room.
+     */
     protected final RoomController roomController;
+
+    /**
+     * The controller for the game.
+     */
     protected final GameController gameController;
+
+    /**
+     * The virtual game instance representing the current game state.
+     */
     protected VirtualGame virtualGame;
 
     /**

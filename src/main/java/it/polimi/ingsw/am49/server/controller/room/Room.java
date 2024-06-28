@@ -35,6 +35,9 @@ public class Room {
      */
     protected final String roomName;
 
+    /**
+     * Server on witch there is this room
+     */
     protected final ServerApp server;
 
     /**
@@ -191,6 +194,9 @@ public class Room {
         }, 1000 * forwaitTimeoutInSecond);
     }
 
+    /**
+     * Sets the forfeit winner and destroys the room
+     */
     protected synchronized void declareforfeitWinnerAndDestroy() {
         this.game.forfeitWinner(usernamesToPlayers.keySet().iterator().next());
         this.server.destroyRoom(this);

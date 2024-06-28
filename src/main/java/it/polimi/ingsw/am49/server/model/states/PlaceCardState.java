@@ -24,11 +24,14 @@ import java.util.Set;
  */
 public class PlaceCardState extends GameState {
 
+    /**
+     * The player that has to place the card
+     */
     private final Player currentPlayer;
 
     /**
      * Constructor for the PlaceCardState.
-     * @param game istance of the {@link Game} class.
+     * @param game instance of the {@link Game} class.
      */
     public PlaceCardState(Game game) {
         super(GameStateType.PLACE_CARD, game, Set.of(GameActionType.PLACE_CARD));

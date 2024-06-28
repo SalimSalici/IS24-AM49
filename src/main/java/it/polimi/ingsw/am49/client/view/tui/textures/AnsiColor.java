@@ -30,7 +30,7 @@ public enum AnsiColor {
     }
 
     /**
-     * Creates the binding letter color for the reading of the .txt file rappresenting the cards
+     * Creates the binding letter color for the reading of the .txt file representing the cards
      */
     private static final Map<Character, AnsiColor> colorMap = new HashMap<>();
 

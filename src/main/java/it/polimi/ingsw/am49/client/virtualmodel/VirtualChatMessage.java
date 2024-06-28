@@ -8,9 +8,24 @@ import java.time.LocalTime;
  */
 public class VirtualChatMessage {
 
+    /**
+     * The text of the message.
+     */
     private final String text;
+
+    /**
+     * The sender of the message.
+     */
     private final String sender;
+
+    /**
+     * The recipient of the message.
+     */
     private final String recipient;
+
+    /**
+     * The time when the message was sent.
+     */
     private final LocalTime time;
 
     /**
@@ -56,9 +71,19 @@ public class VirtualChatMessage {
      */
     public LocalTime getTime() { return time; }
 
+    /**
+     * Returns the time when the message was sent as a string.
+     *
+     * @return the time as a string
+     */
     public String getTimeAsString() { return time.toString(); }
 
-    public boolean isPrivate(){
+    /**
+     * Determines if the message is private.
+     *
+     * @return true if the message is private, false otherwise
+     */
+    public boolean isPrivate() {
         return !recipient.equals("*");
     }
 }

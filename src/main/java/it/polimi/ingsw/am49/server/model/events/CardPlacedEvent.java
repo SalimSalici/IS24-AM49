@@ -8,7 +8,7 @@ import it.polimi.ingsw.am49.server.model.players.Player;
 /**
  * Implements the event that notifies when a card gets placed.
  * @param player the player that placed the card
- * @param boardTile the boardTile in whitch the card gets placed
+ * @param boardTile the boardTile in which the card gets placed
  */
 public record CardPlacedEvent(Player player, BoardTile boardTile) implements GameEvent {
 

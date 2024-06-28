@@ -21,26 +21,26 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * This class implements the logic for the players
+ * This class implements the logic for the players.
  */
 public class Player implements Serializable {
     /**
-     * Username of the player
+     * Username of the player.
      */
     private final String username;
 
     /**
-     * Stores the color choosen by the player.
+     * Stores the color chosen by the player.
      */
     private Color color;
 
     /**
-     * Is the personal objective chusen by the player in the {@link ChooseObjectiveState}.
+     * The personal objective chosen by the player in the {@link ChooseObjectiveState}.
      */
     private ObjectiveCard personalObjective;
 
     /**
-     * Is the {@link StarterCard} of the player.
+     * The {@link StarterCard} of the player.
      */
     private StarterCard starterCard;
 
@@ -60,7 +60,7 @@ public class Player implements Serializable {
     private final int maxCards;
 
     /**
-     * Tracks if a player is online or offline
+     * Tracks if a player is online or offline.
      */
     private boolean isOnline;
 
@@ -71,8 +71,8 @@ public class Player implements Serializable {
     private PlayerBoard board;
 
     /**
-     * Constructor of the class player
-     * @param username of the playere
+     * Constructor of the Player class.
+     * @param username the username of the player
      */
     public Player(String username){
         this.username = username;
@@ -83,15 +83,15 @@ public class Player implements Serializable {
     }
 
     /**
-     * Implements the logic to place a card regarding it's cost and the availability of cards in the hand.
-     * For the logic to check if the card is placable in a specific tile see {@link BoardTile}.
-     * @param card rapresents a {@link PlaceableCard}.
-     * @param parentRow the row of the tile on witch the card tries to be placed.
-     * @param parentCol the col of the tile on witch the card tries to be placed.
-     * @param corner represents the corner on witch the card tries to be placed see {@link CornerPosition}.
-     * @throws InvalidActionException signals that there aren't enough cards in the hand, card cost is not met or tile position is not valid.
+     * Implements the logic to place a card regarding its cost and the availability of cards in the hand.
+     * For the logic to check if the card is playable in a specific tile see {@link BoardTile}.
+     * @param card represents a {@link PlaceableCard}.
+     * @param parentRow the row of the tile on which the card tries to be placed.
+     * @param parentCol the col of the tile on which the card tries to be placed.
+     * @param corner represents the corner on which the card tries to be placed see {@link CornerPosition}.
+     * @throws InvalidActionException signals that there aren't enough cards in the hand, card cost is not met, or tile position is not valid.
      */
-    public BoardTile  placeCard(PlaceableCard card, int parentRow, int parentCol, CornerPosition corner) throws InvalidActionException {
+    public BoardTile placeCard(PlaceableCard card, int parentRow, int parentCol, CornerPosition corner) throws InvalidActionException {
         if (!hand.contains(card)) throw new InvalidActionException("You don't have the card you're trying to place");
 
         if(!card.isFlipped()){
@@ -117,16 +117,16 @@ public class Player implements Serializable {
 
     /**
      * Gets a card from the hand.
-     * @param id univocaly identifies every card in the deck.
-     * @return returns the selected desired card as a {@link PlaceableCard}.
+     * @param id distinctively identifies every card in the deck.
+     * @return the selected desired card as a {@link PlaceableCard}.
      */
     public PlaceableCard getHandCardById(int id) {
         return this.hand.stream().filter(c -> c.getId() == id).findAny().orElse(null);
     }
 
     /**
-     * At the beginning the player chose a personal objective between two cards
-     * @param personalObjective is the objective chosen by the player
+     * At the beginning the player chooses a personal objective between two cards.
+     * @param personalObjective the objective chosen by the player
      */
     public void setPersonalObjective(ObjectiveCard personalObjective) {
         this.personalObjective = personalObjective;
@@ -134,15 +134,23 @@ public class Player implements Serializable {
 
     /**
      * Setter for the color attribute of the player.
-     * @param color the color choosen by the player.
+     * @param color the color chosen by the player.
      */
     public void setColor(Color color){this.color = color;}
 
+    /**
+     * Setter for the starter card attribute of the player.
+     * @param starterCard the starter card chosen by the player.
+     */
     public void setStarterCard(StarterCard starterCard) {
         this.starterCard = starterCard;
         this.board = new PlayerBoard(starterCard);
     }
 
+    /**
+     * Chooses the starter side of the starter card.
+     * @param flipped true if the starter card should be flipped, false otherwise
+     */
     public void chooseStarterSide(boolean flipped){
         if (flipped)
             starterCard.setFlipped(true);
@@ -152,9 +160,9 @@ public class Player implements Serializable {
 
     /**
      * Calculates the final points of a player summing their current points to the ones obtained
-     * with the objective cards (both common objectives and personal objective)
+     * with the objective cards (both common objectives and personal objective).
      *
-     * @param commonObjectives common objective of the game
+     * @param commonObjectives common objectives of the game
      * @return the number of achieved objectives (one objective card is achieved only once)
      */
     public int calculateFinalPoints(List<ObjectiveCard> commonObjectives){
@@ -172,7 +180,7 @@ public class Player implements Serializable {
 
     /**
      * Getter for the username.
-     * @return returns a string.
+     * @return the username
      */
     public String getUsername(){
         return this.username;
@@ -180,7 +188,7 @@ public class Player implements Serializable {
 
     /**
      * Getter for the color of the player.
-     * @return the color.
+     * @return the color
      */
     public Color getColor(){
         return color;
@@ -188,7 +196,7 @@ public class Player implements Serializable {
 
     /**
      * Getter for the player points.
-     * @return returns the points as int.
+     * @return the points as int
      */
     public int getPoints(){
         return points;
@@ -196,7 +204,7 @@ public class Player implements Serializable {
 
     /**
      * Getter for the personal objective.
-     * @return the personal objective.
+     * @return the personal objective
      */
     public ObjectiveCard getPersonalObjective(){
         return personalObjective;
@@ -204,7 +212,7 @@ public class Player implements Serializable {
 
     /**
      * Getter for the hand.
-     * @return a stack.
+     * @return the hand
      */
     public List<PlaceableCard> getHand() {
         return hand;
@@ -212,7 +220,7 @@ public class Player implements Serializable {
 
     /**
      * Getter for isOnline.
-     * @return true when online false when ofline.
+     * @return true if online, false if offline
      */
     public boolean isOnline() {
         return isOnline;
@@ -220,6 +228,7 @@ public class Player implements Serializable {
 
     /**
      * Setter for isOnline.
+     * @param online true if the player is online, false otherwise
      */
     public void setIsOnline(boolean online) {
         this.isOnline = online;
@@ -227,7 +236,7 @@ public class Player implements Serializable {
 
     /**
      * Getter for the player's board.
-     * @return the board.
+     * @return the board
      */
     public PlayerBoard getBoard() {
         return board;
@@ -237,9 +246,13 @@ public class Player implements Serializable {
     public String toString() {
         return "Player: " + this.username + "\n" +
                 "\tpoints: " + this.points;
-
     }
 
+    /**
+     * Converts player information to CompletePlayerInfo.
+     * @param hidden true if the information should be hidden, false otherwise
+     * @return the complete player information
+     */
     public CompletePlayerInfo toCompletePlayerInfo(boolean hidden) {
         LinkedList<TileInfo> tiles = this.board.getPlacementOrder().stream()
                 .map(boardTile ->  new TileInfo(boardTile.getCard().getId(), boardTile.getRow(), boardTile.getCol(), boardTile.getCard().isFlipped()))

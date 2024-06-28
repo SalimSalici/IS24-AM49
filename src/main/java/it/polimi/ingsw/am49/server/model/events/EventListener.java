@@ -6,7 +6,7 @@ package it.polimi.ingsw.am49.server.model.events;
 public interface EventListener {
 
     /**
-     * Lissens for the specific event.
+     * Listens for the specific event.
      * @param event is the type of event to listen for.
      */
     public void onEventTrigger(GameEvent event);

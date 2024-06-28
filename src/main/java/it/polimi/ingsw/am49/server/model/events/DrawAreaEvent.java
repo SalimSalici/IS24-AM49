@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
  * @param remainingGolds how many cards are left in the gold deck
  * @param deckTopResource the resource of the top card of the resource's deck
  * @param deckTopGold the resource of the top card of the gold's deck
- * @param revealedResources the list of reveald resource cards that can be drawn
- * @param revealedGolds the list of reveald gold cards that can be drawn
+ * @param revealedResources the list of revealed resource cards that can be drawn
+ * @param revealedGolds the list of revealed gold cards that can be drawn
  */
 public record DrawAreaEvent(
         int remainingResources,

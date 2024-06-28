@@ -37,17 +37,55 @@ import java.time.LocalTime;
  */
 public class ClientApp implements Client {
 
+    /**
+     * The username of the client.
+     */
     protected static String username;
 
+    /**
+     * The server the client is connected to.
+     */
     protected Server server;
+
+    /**
+     * The view used by the client (either GUI or TUI).
+     */
     protected View view;
+
+    /**
+     * The virtual game instance representing the current game state.
+     */
     protected VirtualGame game;
+
+    /**
+     * The controller for the menu.
+     */
     protected MenuController menuController;
+
+    /**
+     * The controller for the room.
+     */
     protected RoomController roomController;
+
+    /**
+     * The controller for the game.
+     */
     protected GameController gameController;
+
+    /**
+     * The server connector used to establish the connection to the server.
+     */
     protected ServerConnector serverConnector;
+
+    /**
+     * The interval timer used to send periodic pings to the server to maintain the connection.
+     */
     private final IntervalTimer heartbeatInterval;
 
+    /**
+     * Constructs a new ClientApp instance.
+     * @throws RemoteException if an RMI error occurs during the initialization
+     */
     public ClientApp() throws RemoteException {
         this.serverConnector = ClientConfig.connectionType == ConnectorType.SOCKET ?
                 new ServerConnectorSocket() :
@@ -122,6 +160,9 @@ public class ClientApp implements Client {
         }
     }
 
+    /**
+     * Handles the disconnection from the server and returns to the server selection screen.
+     */
     public void backToServerChoice() {
         new Thread(() -> {
             try { server.leaveRoom(this); } catch (RemoteException | RoomException ignored) {}
