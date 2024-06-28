@@ -6,7 +6,6 @@ target/
 !**/src/test/**/target/
 
 .idea/
-.mvn/
 .htmlReport/
 
 ### IntelliJ IDEA ###
