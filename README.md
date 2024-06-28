@@ -53,7 +53,7 @@ The project involves the development of a software version of the Codex Naturali
 <img src="src/main/resources/it/polimi/ingsw/am49/images/readme_pictures/gui_gameplay.gif" alt="menu" />
 
 ## Running the Game
-The game is divided into two JAR files, available for download from the [Deliverables directory](path to dir).
+The game is divided into two JAR files, available for download from the [Deliverables directory](/deliverables/jar).
 <br>To start a non-local game, ensure that a Server application instance is running before the client attempts to connect.</br>
 
 
@@ -61,13 +61,13 @@ The game is divided into two JAR files, available for download from the [Deliver
 To start the server, use the following command with the required arguments:
 
 ```sh
-java -jar target/server.jar --host <server-ip> --r <rmi-port> --s <socket-port>
+java -jar server.jar --host <server-ip> --r <rmi-port> --s <socket-port>
 ```
 Replace <server-ip> with the server's IP address, <rmi-port> with the desired RMI port, and <socket-port> with the desired socket port.
 
 If you want to enable the "disconnection resilience" feature, you can use the --persistence argument:
 ```sh
-java -jar target/server.jar --host <server-ip> --r <rmi-port> --s <socket-port> --persistence
+java -jar server.jar --host <server-ip> --r <rmi-port> --s <socket-port> --persistence
 ```
 
 ### Running the Client
@@ -75,31 +75,31 @@ java -jar target/server.jar --host <server-ip> --r <rmi-port> --s <socket-port> 
 #### GUI Mode
 
 ```sh
-java -jar target/client.jar --gui
+java -jar client.jar --gui
 ```
 
-#### CLI Mode
+#### TUI Mode
 
 ```sh
-java -jar target/client.jar
+java -jar client.jar
 ```
 
-For those playing from the CLI, you can disable the use of colors by adding the --disable-tui-colors option:
+For those playing from the TUI, you can disable the use of colors by adding the --disable-tui-colors option:
 
 ```sh
-java -jar target/client.jar --disable-tui-colors
+java -jar client.jar --disable-tui-colors
 ```
 \
 Additionally, you can specify the server IP, port, and connection type directly from the command line:
 
  ##### For socket connection:
 ```sh
-java -jar target/client.jar --host <server-ip> --port <port> --socket
+java -jar client.jar --host <server-ip> --port <port> --socket
 ```
 
 ##### For RMI connection:
 ```sh
-java -jar target/client.jar --host <server-ip> --port <port> --rmi
+java -jar client.jar --host <server-ip> --port <port> --rmi
 ```
 
 ## Testing
