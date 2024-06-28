@@ -23,8 +23,6 @@ public class CreateRoomController extends GuiController {
     @FXML
     private Button createButton, exitButton;
 
-    private Server server;
-
     @Override
     public void init() {
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(CommonConfig.minPlayers, CommonConfig.maxPlayers, 2);

@@ -23,18 +23,69 @@ import java.util.concurrent.Executors;
  */
 public class GuiManager {
 
+    /**
+     * The current scene being displayed.
+     */
     private Scene currentScene;
+
+    /**
+     * The main stage of the application.
+     */
     private Stage stage;
+
+    /**
+     * BiMap mapping scene titles to scenes.
+     */
     private final BiMap<SceneTitle, Scene> titleToScene = new BiMap<>();
+
+    /**
+     * BiMap mapping scene titles to GUI controllers.
+     */
     private final BiMap<SceneTitle, GuiController> titleToController = new BiMap<>();
+
+    /**
+     * Information about the current room.
+     */
     private RoomInfo roomInfo;
+
+    /**
+     * The ID of the starter card.
+     */
     private int starterCardId;
+
+    /**
+     * List of objective card IDs.
+     */
     private List<Integer> objectiveCardsIds;
+
+    /**
+     * The virtual game instance.
+     */
     private VirtualGame virtualGame;
+
+    /**
+     * The menu controller for handling menu actions.
+     */
     private final MenuController menuController;
+
+    /**
+     * The room controller for handling room actions.
+     */
     private final RoomController roomController;
+
+    /**
+     * The game controller for handling game actions.
+     */
     private final GameController gameController;
+
+    /**
+     * Executor service for running tasks in a single background thread.
+     */
     public final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    /**
+     * Flag indicating if the executor is currently busy.
+     */
     public boolean executorBusy = false;
   
     // CONSTRUCTOR

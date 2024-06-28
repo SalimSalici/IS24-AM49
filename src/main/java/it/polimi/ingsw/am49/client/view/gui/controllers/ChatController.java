@@ -37,16 +37,56 @@ public class ChatController extends GuiController {
     @FXML
     private Tab chatyellowTab;
 
+    /**
+     * The virtual game instance.
+     */
     private VirtualGame game;
+
+    /**
+     * The virtual player instance representing the player running the game.
+     */
     private VirtualPlayer myVirtualPlayer;
+
+    /**
+     * A bi-directional map of players to their chat tabs.
+     */
     private final BiMap<VirtualPlayer, Tab> playerToChatTab = new BiMap<>();
+
+    /**
+     * A list of chat tabs.
+     */
     private final List<Tab> chatTabs = new ArrayList<>();
+
+    /**
+     * A bi-directional map of tabs to their associated text fields.
+     */
     private final BiMap<Tab, TextField> tabToTextField = new BiMap<>();
+
+    /**
+     * A bi-directional map of tabs to their associated buttons.
+     */
     private final BiMap<Tab, Button> tabToButton = new BiMap<>();
+
+    /**
+     * A map of tabs to their associated VBox containers.
+     */
     private final Map<Tab, VBox> tabToVBox = new HashMap<>();
+
+    /**
+     * A map of tabs to their associated scroll panes.
+     */
     private final Map<Tab, ScrollPane> tabToScrollPane = new HashMap<>();
+
+    /**
+     * A map of tabs to the count of read messages.
+     */
     private final Map<Tab, Integer> readMessageCount = new HashMap<>();
+
+    /**
+     * A map of tabs to their initial titles.
+     */
     private final Map<Tab, String> initialTabTitles = new HashMap<>();
+
 
     /**
      * Initializes the chat controller.
@@ -106,18 +146,15 @@ public class ChatController extends GuiController {
      */
     private void displayConversation(List<String> conversation, Tab selectedTab) {
         VBox vBox = tabToVBox.get(selectedTab);
-        vBox.getChildren().clear();
         ScrollPane scrollPane = tabToScrollPane.get(selectedTab);
 
-        for (String text : conversation) {
-            Text message = new Text(text);
-            message.setStyle("-fx-padding: 3px;");
-            TextFlow textFlow = new TextFlow(message);
-            textFlow.setMaxWidth(vBox.getPrefWidth() - 10);
-            vBox.getChildren().add(textFlow);
-            Separator separator = new Separator();
-            vBox.getChildren().add(separator);
-        }
+        Text message = new Text(conversation.getLast());
+        message.setStyle("-fx-padding: 3px;");
+        TextFlow textFlow = new TextFlow(message);
+        textFlow.setMaxWidth(vBox.getPrefWidth() - 10);
+        vBox.getChildren().add(textFlow);
+        Separator separator = new Separator();
+        vBox.getChildren().add(separator);
 
         readMessageCount.put(selectedTab, conversation.size());
         updateTabTitle(selectedTab, 0);

@@ -36,22 +36,109 @@ public class BoardController extends GuiController {
 
     @FXML
     private Pane containerPane;
+    /**
+     * The overview controller.
+     */
     private OverviewController overviewController;
+
+    /**
+     * The list of players in the game.
+     */
     private List<VirtualPlayer> players;
-    private Pane innerPane, imagePane, borderPane;
+
+    /**
+     * The inner pane for the board.
+     */
+    private Pane innerPane;
+
+    /**
+     * The image pane for the board.
+     */
+    private Pane imagePane;
+
+    /**
+     * The border pane for the board.
+     */
+    private Pane borderPane;
+
+    /**
+     * The width of a single card.
+     */
     private final double cardWidth = 135;
+
+    /**
+     * The height of a single card.
+     */
     private final double cardHeight = 90;
+
+    /**
+     * The width of a card's corner.
+     */
     private final double cornerWidth = cardWidth * 0.25;
+
+    /**
+     * The height of a card's corner.
+     */
     private final double cornerHeight = cardHeight * 0.44;
+
+    /**
+     * The width of the inner pane.
+     */
     private final double innerPaneWidth = 877;
+
+    /**
+     * The height of the inner pane.
+     */
     private final double innerPaneHeight = 330;
+
+    /**
+     * The initial x-coordinate for the first card in the board.
+     */
     private final double initialX = (innerPaneWidth - cardWidth) / 2;
+
+    /**
+     * The initial y-coordinate for the first card in the board.
+     */
     private final double initialY = (innerPaneHeight - cardHeight) / 2;
+
+    /**
+     * A map of players to their boards.
+     */
     private final Map<VirtualPlayer, List<ImageView>> playerBoards = new HashMap<>();
+
+    /**
+     * The board for the player running the game.
+     */
     private final List<CardPane> myBoard = new ArrayList<>();
+
+    /**
+     * A map of players to their board coordinates to keep track of its position.
+     */
     private final Map<VirtualPlayer, Pair<Double, Double>> playerToBoardCoords = new HashMap<>();
-    private Label boardName, boardRound, finalRoundLabel;
+
+    /**
+     * The label for the board name.
+     */
+    private Label boardName;
+
+    /**
+     * The label for the round.
+     */
+    private Label boardRound;
+
+    /**
+     * The label for the final round.
+     */
+    private Label finalRoundLabel;
+
+    /**
+     * The username of the player.
+     */
     String myUsername;
+
+    /**
+     * The current player.
+     */
     private VirtualPlayer currentPlayer;
 
     /**
@@ -159,6 +246,10 @@ public class BoardController extends GuiController {
         containerPane.getChildren().addAll(boardNameInfo, boardName, boardRoundInfo, boardRound);
     }
 
+
+    /**
+     * Sets the final round label.
+     */
     public void setFinalRound(){
         finalRoundLabel = new Label();
         finalRoundLabel.setText("FINAL ROUND");
@@ -169,6 +260,10 @@ public class BoardController extends GuiController {
         containerPane.getChildren().add(finalRoundLabel);
     }
 
+
+    /**
+     * Clears the final round label.
+     */
     public void clearFinalRound(){
         if (finalRoundLabel != null) {
             finalRoundLabel.setVisible(false);

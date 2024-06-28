@@ -48,23 +48,80 @@ public class OverviewController extends GuiController {
     @FXML
     private Label roomnameLabel;
 
+    /**
+     * The virtual game instance
+     */
     private VirtualGame game;
+
+    /**
+     * The username of the current player
+     */
     private String myUsername;
+
+    /**
+     * The list of players in the game
+     */
     private List<VirtualPlayer> players;
+
+    /**
+     * The drawable area in the game
+     */
     private VirtualDrawable drawableArea;
+
+    /**
+     * The player currently focused on in the UI
+     */
     private VirtualPlayer focusedPlayer;
+
+    /**
+     * The hand of the player running the game
+     */
     private List<MyCard> myHand = new ArrayList<>();
+
+
+    /**
+     * A map of players to their hands (image views of the back of the cards)
+     */
     private final Map<VirtualPlayer, List<ImageView>> playersHands = new HashMap<>();
+
+    /**
+     * A map of players to their personal objectives (image views).
+     */
     private final Map<VirtualPlayer, ImageView> playersPersonalObjectives = new HashMap<>();
+
+    /**
+     * The currently selected card in the hand of the player
+     */
     private MyCard selectedCard;
+
+    /**
+     * The image for the rotate card button
+     */
     private Image rotationImage;
+
+
+    /**
+     * The list of rotation buttons
+     */
     private final List<Button> rotationButtonList = new ArrayList<>();
+
+    /**
+     * Flag indicating if the game has ended
+     */
     private boolean gameEnded;
+
+    /**
+     * Flag indicating if the final round pop up has already been shown
+     */
     private boolean finalRoundAlreadyShown;
+
+    /**
+     * The currently active view button
+     */
     private Button activeViewButton;
 
     /**
-     * Initializes the controller and sets up the game state and UI components.
+     * Initializes the controller and sets up the game state and UI components
      */
     @Override
     public void init() {
@@ -153,6 +210,9 @@ public class OverviewController extends GuiController {
         }
     }
 
+    /**
+     * Sets the settings and the UI elements for when the game is over.
+     */
     private void endGameSettings(){
         unselectCard();
         setPersonalObjectives();

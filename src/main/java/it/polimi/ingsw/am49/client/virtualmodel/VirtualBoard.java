@@ -14,10 +14,29 @@ import java.util.Objects;
  * Represents a virtual board in the game. Manages the placement of virtual tiles and cards, and provides methods for retrieving and manipulating the board state.
  */
 public class VirtualBoard extends Observable {
+    /**
+     * The board matrix representing the placement of tiles.
+     */
     private final VirtualTile[][] board;
+
+    /**
+     * The Z-index of the last placed tile.
+     */
     private int lastZIndex;
+
+    /**
+     * The row of the last placed tile.
+     */
     private int lastPlacedRow;
+
+    /**
+     * The column of the last placed tile.
+     */
     private int lastPlacedCol;
+
+    /**
+     * The starter tile on the board.
+     */
     private VirtualTile starterTile;
 
     /**
