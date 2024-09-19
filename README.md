@@ -15,7 +15,7 @@
 - [Trombini Lorenzo](https://github.com/L-Trombini-Polimi)
 - [Matteo Scarlino](https://github.com/mttscrl)
 
-<!--**Final Grade:** -->
+**Final Grade:** 30/30 cum laude
 
 ## Table of Contents
 
